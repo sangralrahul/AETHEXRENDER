@@ -599,27 +599,34 @@ STRICT RULES for diagram fields:
       p.drawText(cl, { x: cx - Math.min(clW / 2, 48), y: cy - 1, size: 9, font: boldFont, color: WHITE });
     };
 
-    // PATHWAY — tier-based layout from edges
-    const drawPathwayPDF = (p: Page, cx: number, topY: number, nodes: string[], edges: [number, number][], th: Theme) => {
+    // PATHWAY — tier-based branching layout (FIXED level assignment)
+    const drawPathwayPDF = (p: Page, cx: number, topY: number, availH: number, nodes: string[], edges: [number, number][], th: Theme) => {
       const n = Math.min(nodes.length, 6);
-      if (n < 2) { drawConceptPDF(p, cx, topY - 80, nodes, th); return; }
-      // Assign levels via BFS
+      if (n < 2) { drawConceptPDF(p, cx, topY - availH / 2, nodes, th); return; }
+      // BFS level assignment — FIXED: use levels[src] not levels[dst]
       const levels = new Array(n).fill(0);
-      edges.forEach(([, dst]) => { levels[dst] = Math.max(levels[dst], levels[dst] + 1); });
-      // Simple fallback if all levels = 0: assign linearly
-      if (levels.every(l => l === 0)) edges.forEach(([src, dst]) => { if (dst < n) levels[dst] = Math.max(levels[dst], levels[src] + 1); });
-      const maxLevel = Math.max(...levels);
+      let changed = true;
+      while (changed) {
+        changed = false;
+        edges.forEach(([src, dst]) => {
+          if (src < n && dst < n && levels[src] + 1 > levels[dst]) {
+            levels[dst] = levels[src] + 1;
+            changed = true;
+          }
+        });
+      }
+      const maxLevel = Math.max(...levels, 1);
       const levelCounts = new Array(maxLevel + 1).fill(0);
       const levelIdxs  = new Array(maxLevel + 1).fill(0);
       levels.forEach(l => levelCounts[l]++);
-      const TIER_H = Math.min(55, (topY - 40) / Math.max(maxLevel, 1));
+      const TIER_H = Math.min(60, availH / maxLevel);
       const positions: { x: number; y: number }[] = [];
       for (let i = 0; i < n; i++) {
         const lv = levels[i], cnt = levelCounts[lv], idx = levelIdxs[lv]++;
-        const spacing = Math.min(130, 280 / Math.max(cnt, 1));
+        const spacing = Math.min(120, 260 / Math.max(cnt, 1));
         positions.push({ x: cx + (-(cnt - 1) * spacing / 2 + idx * spacing), y: topY - lv * TIER_H });
       }
-      // Edge lines + directional arrowheads
+      // Edges first
       edges.forEach(([src, dst]) => {
         if (src >= n || dst >= n) return;
         const { x: sx, y: sy } = positions[src], { x: dx, y: dy } = positions[dst];
@@ -628,25 +635,43 @@ STRICT RULES for diagram fields:
         p.drawLine({ start: { x: dx - Math.cos(ang - 0.42) * 8, y: dy - Math.sin(ang - 0.42) * 8 }, end: { x: dx, y: dy }, thickness: 1.4, color: th.accent });
         p.drawLine({ start: { x: dx - Math.cos(ang + 0.42) * 8, y: dy - Math.sin(ang + 0.42) * 8 }, end: { x: dx, y: dy }, thickness: 1.4, color: th.accent });
       });
-      // Node boxes
       for (let i = 0; i < n; i++) {
         const { x, y } = positions[i];
         const isRoot = levels[i] === 0;
         const isLeaf = !edges.some(([src]) => src === i);
-        drawNodeBox(p, x, y, isRoot ? 118 : 88, 22, nodes[i], isRoot || isLeaf, th);
+        drawNodeBox(p, x, y, isRoot ? 116 : 86, 22, nodes[i], isRoot || isLeaf, th);
       }
     };
 
-    // Master dispatcher
+    // Master dispatcher — FIXED: compute safe Y positions within the diagram area
     const drawDiagramPDF = (
-      p: Page, diag: string, cx: number, cy: number,
+      p: Page, diag: string, cx: number,
+      diagAreaTop: number, diagAreaBot: number,          // exact safe bounds
       nodes: string[], edges: [number, number][], th: Theme,
     ) => {
       if (!nodes.length) return;
+      const availH = diagAreaTop - diagAreaBot;
+      const centerY = diagAreaBot + availH / 2;
+      const BOX_H = 26, STEP = 44;
+      const n = Math.min(nodes.length, 6);
       switch (diag) {
-        case "flowchart": drawFlowchartPDF(p, cx, cy, nodes, th); break;
-        case "pathway":   drawPathwayPDF(p, cx, cy + 80, nodes, edges, th); break;
-        default:          drawConceptPDF(p, cx, cy, nodes, th); break;
+        case "flowchart": {
+          // topY chosen so 6 boxes fit vertically within the safe area
+          const totalH = (n - 1) * STEP + BOX_H;
+          const topY = diagAreaBot + totalH + (availH - totalH) / 2;
+          drawFlowchartPDF(p, cx, topY, nodes, th);
+          break;
+        }
+        case "pathway": {
+          const topY = diagAreaTop - 16;
+          drawPathwayPDF(p, cx, topY, availH - 32, nodes, edges, th);
+          break;
+        }
+        default: {
+          // concept / mindmap — radial centered in safe area
+          drawConceptPDF(p, cx, centerY, nodes, th);
+          break;
+        }
       }
     };
 
@@ -703,8 +728,11 @@ STRICT RULES for diagram fields:
     const LEFT_W   = 464;
     const RIGHT_X  = 480;
     const RIGHT_W  = W - RIGHT_X - 12;
-    const MAP_CX   = RIGHT_X + RIGHT_W / 2;
-    const MAP_CY   = FOOTER_H + (H - HEADER_H - FOOTER_H) / 2 + 6;
+    const MAP_CX      = RIGHT_X + RIGHT_W / 2;
+    // Safe diagram area: between the "KEY INSIGHT" card (top ~102) and the header label (bottom ~493)
+    const KF_H_PX     = 60;                               // key-fact card height + breathing room
+    const DIAG_AREA_BOT = FOOTER_H + KF_H_PX;            // = 42 + 60 = 102
+    const DIAG_AREA_TOP = H - HEADER_H - 22;             // = 595 - 74 - 22 = 499
     const totalSlides = pres.slides.length;
 
     for (let si = 0; si < pres.slides.length; si++) {
@@ -786,10 +814,13 @@ STRICT RULES for diagram fields:
       p.drawText(diagLabel[slide.diag ?? "concept"] ?? "DIAGRAM",
         { x: RIGHT_X + 4, y: H - HEADER_H - 14, size: 7, font: boldFont, color: th.accentBrt });
 
-      if ((slide.nodes ?? []).length) {
-        drawDiagramPDF(p, slide.diag ?? "concept", MAP_CX,
-          FOOTER_H + (H - HEADER_H - FOOTER_H) * 0.42, slide.nodes ?? [], slide.edges ?? [], th);
-      }
+      // Ensure there's always something to show even if AI skips node labels
+      const diagNodes = (slide.nodes ?? []).length
+        ? slide.nodes!
+        : [slide.title, slide.b1, slide.b2, slide.b3, slide.b4, slide.b5]
+            .filter(Boolean).map(t => String(t).split(" ").slice(0, 3).join(" ")).slice(0, 6);
+      drawDiagramPDF(p, slide.diag ?? "concept", MAP_CX,
+        DIAG_AREA_TOP, DIAG_AREA_BOT, diagNodes, slide.edges ?? [], th);
 
       // Key Fact card at bottom of right column
       const KF_Y = FOOTER_H + 4;

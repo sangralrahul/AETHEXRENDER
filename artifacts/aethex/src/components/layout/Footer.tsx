@@ -101,8 +101,6 @@ export function Footer() {
             <span>© {new Date().getFullYear()} aethex. All rights reserved.</span>
             <span className="hidden sm:inline">•</span>
             <span>Registered in India</span>
-            <span className="hidden sm:inline">•</span>
-            <span>GSTIN: 07AAAAA0000A1Z5</span>
           </div>
 
           <div className="flex gap-6 text-sm text-slate-500">
@@ -113,6 +111,19 @@ export function Footer() {
 
         <div className="mt-8 text-center text-xs text-slate-600">
           Accepted Payments: VisaCard • Mastercard • UPI • Net Banking • COD
+        </div>
+
+        {/* Parent company */}
+        <div className="mt-8 pt-6 border-t border-slate-800/60 flex flex-col items-center gap-3">
+          <p className="text-xs text-slate-600 tracking-widest uppercase">A product of</p>
+          <div className="flex items-center gap-3">
+            <img
+              src={`${import.meta.env.BASE_URL}nexrya-logo.jpg`}
+              alt="nexrya technologies logo"
+              className="w-8 h-8 object-contain brightness-0 invert opacity-50"
+            />
+            <span className="text-slate-500 text-sm font-semibold tracking-wide">nexrya technologies pvt ltd</span>
+          </div>
         </div>
       </div>
     </footer>

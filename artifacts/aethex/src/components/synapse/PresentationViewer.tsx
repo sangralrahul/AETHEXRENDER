@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, X, Download, Maximize2, ZoomIn, ZoomOut } from "lucide-react";
-import { ConceptMapSVG, FlowchartSVG, PathwaySVG, MindMapFullSVG } from "./SlideDiagrams";
+import { ChevronLeft, ChevronRight, X, Download } from "lucide-react";
+import MermaidDiagram from "./MermaidDiagram";
 
 export interface PresentationSlide {
   n: number;
@@ -22,6 +22,8 @@ export interface PresentationData {
   refs?: { term: string; definition: string }[];
   conditions?: { name: string; features: string; clue: string }[];
   redflags?: string[];
+  pdfBase64?: string;
+  docxBase64?: string;
 }
 
 interface Props {
@@ -31,111 +33,249 @@ interface Props {
   docxBase64?: string;
 }
 
-const NAVY = "#060D1F";
-const NAVY2 = "#0A1628";
 const TEAL = "#00BCD4";
-const TEAL_DIM = "#006978";
+const TEAL_DIM = "#007C91";
 const TEAL_BRT = "#4DD0E1";
+const NAVY = "#0A0F2C";
+const NAVY2 = "#1a1f4e";
 
-function DiagramBox({ diag, nodes = [], edges = [] }: { diag?: string; nodes?: string[]; edges?: [number, number][] }) {
-  if (!diag || diag === "none" || !nodes.length) return null;
+function nodesToMermaid(diag: string, nodes: string[], edges: [number, number][]): string {
+  if (!nodes.length) return "";
+
+  const cleanLabel = (s: string) =>
+    s.replace(/"/g, "'").replace(/[<>{}|]/g, " ").replace(/\s+/g, " ").trim().substring(0, 28);
+
+  if (diag === "mindmap") {
+    let chart = `mindmap\n  root((${cleanLabel(nodes[0] ?? "Overview")}))\n`;
+    nodes.slice(1, 8).forEach((n) => {
+      chart += `    ${cleanLabel(n)}\n`;
+    });
+    return chart;
+  }
+
+  const dir = diag === "concept" ? "LR" : "TD";
+  let chart = `flowchart ${dir}\n`;
+
+  nodes.forEach((node, i) => {
+    const label = cleanLabel(node);
+    const isTerminal = diag === "flowchart" && (i === 0 || i === nodes.length - 1);
+    chart += isTerminal
+      ? `  N${i}([${label}])\n`
+      : `  N${i}[${label}]\n`;
+  });
+
+  if (edges.length) {
+    edges.forEach(([src, dst]) => {
+      if (src < nodes.length && dst < nodes.length) {
+        chart += `  N${src} --> N${dst}\n`;
+      }
+    });
+  } else {
+    if (diag === "concept") {
+      for (let i = 1; i < nodes.length; i++) chart += `  N0 --> N${i}\n`;
+    } else {
+      for (let i = 0; i < nodes.length - 1; i++) chart += `  N${i} --> N${i + 1}\n`;
+    }
+  }
+
+  chart += `  style N0 fill:#00BCD4,color:#fff,stroke:#007C91\n`;
+  if (nodes.length > 1 && (diag === "flowchart" || diag === "pathway")) {
+    chart += `  style N${nodes.length - 1} fill:#007C91,color:#fff,stroke:#004D61\n`;
+  }
+  return chart;
+}
+
+function DiagramLabel({ diag }: { diag: string }) {
+  const labels: Record<string, string> = {
+    flowchart: "MECHANISM FLOWCHART",
+    anatomy: "ANATOMY DIAGRAM",
+    mindmap: "MIND MAP",
+    pathway: "CLINICAL PATHWAY",
+    concept: "CONCEPT MAP",
+  };
   return (
-    <div className="flex flex-col gap-1">
-      <div className="text-[9px] font-bold tracking-widest uppercase opacity-60" style={{ color: TEAL_BRT }}>
-        {diag === "flowchart" ? "Mechanism Flowchart" : diag === "concept" ? "Concept Map" : diag === "pathway" ? "Pathway Map" : "Diagram"}
-      </div>
-      <div className="rounded-xl overflow-hidden flex items-center justify-center py-2"
-        style={{ background: "rgba(0,188,212,0.04)", border: `1px solid ${TEAL_DIM}` }}>
-        {diag === "flowchart" ? <FlowchartSVG nodes={nodes} edges={edges} />
-          : diag === "concept" ? <ConceptMapSVG nodes={nodes} edges={edges} />
-          : <PathwaySVG nodes={nodes} edges={edges} />}
-      </div>
+    <p style={{ color: TEAL, fontSize: 10, fontWeight: "bold", textTransform: "uppercase", margin: "0 0 10px", letterSpacing: "0.06em" }}>
+      {labels[diag] ?? "DIAGRAM"}
+    </p>
+  );
+}
+
+function ConceptStrip({ nodes }: { nodes: string[] }) {
+  if (!nodes.length) return null;
+  return (
+    <div style={{
+      background: "rgba(0,0,0,0.38)",
+      padding: "7px 28px",
+      display: "flex",
+      gap: 6,
+      alignItems: "center",
+      flexWrap: "nowrap",
+      overflowX: "auto",
+      flexShrink: 0,
+    }}>
+      {nodes.slice(0, 7).map((node, i) => (
+        <React.Fragment key={i}>
+          <div style={{
+            background: "rgba(0,188,212,0.18)",
+            border: `1px solid ${TEAL}`,
+            borderRadius: 20,
+            padding: "3px 11px",
+            color: "white",
+            fontSize: 10,
+            whiteSpace: "nowrap",
+            fontWeight: 500,
+          }}>
+            {node}
+          </div>
+          {i < Math.min(nodes.length, 7) - 1 && (
+            <span style={{ color: TEAL, fontSize: 14, flexShrink: 0, lineHeight: 1 }}>→</span>
+          )}
+        </React.Fragment>
+      ))}
     </div>
   );
 }
 
-function KeyInsightBar({ text }: { text: string }) {
-  if (!text) return null;
-  return (
-    <div className="flex items-start gap-3 rounded-lg px-4 py-3 mt-auto"
-      style={{ background: "rgba(0,188,212,0.10)", borderLeft: `3px solid ${TEAL}` }}>
-      <span className="text-[9px] font-black tracking-widest uppercase whitespace-nowrap shrink-0 mt-0.5" style={{ color: TEAL }}>KEY INSIGHT</span>
-      <span className="text-xs leading-relaxed italic opacity-90 text-white">{text}</span>
-    </div>
-  );
-}
+function SpecSlide({ slide, current, total }: { slide: PresentationSlide; current: number; total: number }) {
+  const diag = slide.diag ?? "none";
+  const nodes = slide.nodes ?? [];
+  const edges = slide.edges ?? [];
+  const hasDiag = diag !== "none" && nodes.length > 0;
+  const chart = hasDiag ? nodesToMermaid(diag, nodes, edges) : "";
 
-function SlideHeader({ title, current, total }: { title: string; current: number; total: number }) {
   return (
-    <div className="flex items-center justify-between px-6 py-2 shrink-0"
-      style={{ background: "rgba(0,0,0,0.4)", borderBottom: `1px solid ${TEAL_DIM}` }}>
-      <span className="text-[9px] font-bold tracking-widest uppercase" style={{ color: TEAL }}>MEDICAL EDUCATION  |  SYNAPSE</span>
-      <div className="flex items-center gap-2">
-        <span className="text-[9px] text-white opacity-50 truncate max-w-[200px] hidden sm:block">{title}</span>
-        <span className="text-[9px] font-bold px-2 py-0.5 rounded" style={{ background: TEAL, color: "white" }}>
-          {current} / {total}
+    <div style={{
+      background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY2} 100%)`,
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      fontFamily: "'Inter', 'DM Sans', sans-serif",
+      overflow: "hidden",
+    }}>
+      {/* ── TOP BAR (teal) ── */}
+      <div style={{
+        background: TEAL,
+        padding: "8px 24px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexShrink: 0,
+      }}>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>
+          MEDICAL EDUCATION | SYNAPSE
+        </span>
+        <span style={{ color: "white", fontSize: 12 }}>
+          Slide {current} / {total}
         </span>
       </div>
-    </div>
-  );
-}
 
-function BulletList({ bullets }: { bullets: string[] }) {
-  return (
-    <div className="flex flex-col gap-2 flex-1">
-      {bullets.slice(0, 6).map((b, i) => (
-        <div key={i} className="flex items-start gap-3">
-          <div className="shrink-0 w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-black"
-            style={{ background: TEAL, color: "white" }}>{i + 1}</div>
-          <p className="text-sm leading-snug text-white opacity-90 pt-0.5">{b}</p>
+      {/* ── MAIN CONTENT: 1fr 1fr ── */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        flex: 1,
+        gap: 20,
+        padding: "20px 28px",
+        minHeight: 0,
+        overflow: "hidden",
+      }}>
+        {/* LEFT PANEL */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 0, overflow: "hidden" }}>
+          <h2 style={{
+            color: TEAL,
+            fontSize: 20,
+            fontWeight: 800,
+            margin: "0 0 12px",
+            lineHeight: 1.2,
+            fontFamily: "'Space Grotesk', 'Inter', sans-serif",
+          }}>
+            {slide.t}
+          </h2>
+
+          <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column", gap: 8 }}>
+            {slide.bullets.slice(0, 6).map((b, i) => (
+              <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                <span style={{ color: TEAL, fontWeight: "bold", fontSize: 14, flexShrink: 0, marginTop: 1 }}>&#9658;</span>
+                <p style={{ color: "white", fontSize: 13, lineHeight: 1.55, margin: 0, opacity: 0.92 }}>{b}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* KEY INSIGHT */}
+          {slide.ki && (
+            <div style={{
+              borderLeft: `4px solid ${TEAL}`,
+              background: "rgba(0,188,212,0.10)",
+              padding: "10px 14px",
+              marginTop: 12,
+              borderRadius: "0 8px 8px 0",
+              flexShrink: 0,
+            }}>
+              <div style={{ color: TEAL, fontWeight: "bold", fontSize: 10, letterSpacing: "0.06em", marginBottom: 4 }}>
+                ⚡ KEY INSIGHT
+              </div>
+              <p style={{ color: "#e0f7fa", fontStyle: "italic", fontSize: 12, margin: 0, lineHeight: 1.55 }}>
+                {slide.ki}
+              </p>
+            </div>
+          )}
         </div>
-      ))}
+
+        {/* RIGHT PANEL — DIAGRAM */}
+        <div style={{
+          background: "rgba(255,255,255,0.04)",
+          borderRadius: 14,
+          border: `1px solid rgba(0,188,212,0.28)`,
+          padding: "14px 14px 10px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: hasDiag ? "flex-start" : "center",
+          overflow: "hidden",
+        }}>
+          {hasDiag ? (
+            <>
+              <DiagramLabel diag={diag} />
+              <div style={{ width: "100%", overflow: "auto", flex: 1 }}>
+                <MermaidDiagram chart={chart} />
+              </div>
+            </>
+          ) : (
+            <p style={{ color: "rgba(0,188,212,0.25)", fontSize: 12, margin: 0 }}>No diagram available</p>
+          )}
+        </div>
+      </div>
+
+      {/* ── BOTTOM CONCEPT STRIP ── */}
+      <ConceptStrip nodes={nodes} />
     </div>
   );
 }
 
 function TitleSlide({ slide, current, total }: { slide: PresentationSlide; current: number; total: number }) {
   return (
-    <div className="flex flex-col h-full" style={{ background: `linear-gradient(135deg, ${NAVY} 0%, #0D1F3C 50%, #061828 100%)` }}>
-      <SlideHeader title={slide.t} current={current} total={total} />
-      <div className="flex-1 flex flex-col items-center justify-center px-12 text-center gap-6">
-        <div className="w-16 h-1 rounded-full" style={{ background: TEAL }} />
-        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white leading-tight">{slide.t}</h1>
-        {slide.sub && <p className="text-base sm:text-lg opacity-60 text-white max-w-xl leading-relaxed">{slide.sub}</p>}
-        <div className="flex items-center gap-3 mt-2">
-          <span className="px-4 py-2 rounded-full text-sm font-bold" style={{ background: TEAL_DIM, color: "white" }}>
-            {total} Slides
-          </span>
-          <span className="px-4 py-2 rounded-full text-sm font-semibold border" style={{ borderColor: TEAL_DIM, color: TEAL_BRT }}>
-            SYNAPSE Medical Education
-          </span>
+    <div style={{
+      background: `linear-gradient(135deg, ${NAVY} 0%, #0D1F3C 50%, #061828 100%)`,
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      fontFamily: "'Inter', 'DM Sans', sans-serif",
+    }}>
+      <div style={{ background: TEAL, padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE</span>
+        <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
+      </div>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 48px", textAlign: "center", gap: 16 }}>
+        <div style={{ width: 64, height: 4, borderRadius: 2, background: TEAL }} />
+        <h1 style={{ color: "white", fontSize: 40, fontWeight: 900, margin: 0, lineHeight: 1.1, letterSpacing: "-0.02em" }}>{slide.t}</h1>
+        {slide.sub && <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 16, margin: 0, maxWidth: 520, lineHeight: 1.6 }}>{slide.sub}</p>}
+        <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+          <span style={{ padding: "8px 18px", borderRadius: 24, fontSize: 13, fontWeight: "bold", background: TEAL_DIM, color: "white" }}>{total} Slides</span>
+          <span style={{ padding: "8px 18px", borderRadius: 24, fontSize: 13, fontWeight: 600, border: `1px solid ${TEAL_DIM}`, color: TEAL_BRT }}>SYNAPSE Medical Education</span>
         </div>
       </div>
-      <div className="shrink-0 flex justify-center pb-6 opacity-20">
-        <div className="w-32 h-0.5 rounded-full" style={{ background: TEAL }} />
-      </div>
-    </div>
-  );
-}
-
-function ContentSlide({ slide, current, total }: { slide: PresentationSlide; current: number; total: number }) {
-  const hasDiag = slide.diag && slide.diag !== "none" && (slide.nodes?.length ?? 0) > 0;
-  return (
-    <div className="flex flex-col h-full" style={{ background: NAVY2 }}>
-      <SlideHeader title={slide.t} current={current} total={total} />
-      <div className="px-5 py-3 shrink-0" style={{ borderBottom: `2px solid ${TEAL}` }}>
-        <h2 className="text-xl font-black text-white">{slide.t}</h2>
-      </div>
-      <div className="flex-1 flex gap-4 px-5 py-4 min-h-0 overflow-hidden">
-        <div className="flex flex-col gap-3 flex-1 min-w-0 overflow-hidden" style={{ flexBasis: hasDiag ? "55%" : "100%" }}>
-          <BulletList bullets={slide.bullets} />
-          <KeyInsightBar text={slide.ki ?? ""} />
-        </div>
-        {hasDiag && (
-          <div className="shrink-0 flex flex-col gap-2 overflow-hidden" style={{ flexBasis: "42%", width: "42%" }}>
-            <DiagramBox diag={slide.diag} nodes={slide.nodes} edges={slide.edges} />
-          </div>
-        )}
+      <div style={{ padding: "0 0 20px", display: "flex", justifyContent: "center", opacity: 0.18 }}>
+        <div style={{ width: 120, height: 2, borderRadius: 1, background: TEAL }} />
       </div>
     </div>
   );
@@ -144,29 +284,23 @@ function ContentSlide({ slide, current, total }: { slide: PresentationSlide; cur
 function ConditionsSlide({ slide, conditions, current, total }: { slide: PresentationSlide; conditions?: PresentationData["conditions"]; current: number; total: number }) {
   const items = conditions?.slice(0, 6) ?? [];
   return (
-    <div className="flex flex-col h-full" style={{ background: NAVY2 }}>
-      <SlideHeader title={slide.t} current={current} total={total} />
-      <div className="px-5 py-3 shrink-0" style={{ borderBottom: `2px solid ${TEAL}` }}>
-        <h2 className="text-xl font-black text-white">{slide.t}</h2>
+    <div style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY2} 100%)`, height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ background: TEAL, padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE</span>
+        <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
       </div>
-      <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-3 px-5 py-4 content-start overflow-auto">
-        {items.length ? items.map((c, i) => (
-          <div key={i} className="rounded-xl p-3 flex flex-col gap-1"
-            style={{ background: "rgba(0,188,212,0.07)", border: `1px solid ${TEAL_DIM}` }}>
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded flex items-center justify-center text-[9px] font-black shrink-0"
-                style={{ background: TEAL, color: "white" }}>{i + 1}</span>
-              <span className="text-xs font-bold text-white truncate">{c.name}</span>
+      <div style={{ padding: "14px 24px 8px", borderBottom: `2px solid ${TEAL}`, flexShrink: 0 }}>
+        <h2 style={{ color: TEAL, fontSize: 20, fontWeight: 800, margin: 0 }}>{slide.t}</h2>
+      </div>
+      <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, padding: "14px 24px", overflow: "auto" }}>
+        {(items.length ? items : slide.bullets.slice(0, 6).map(b => ({ name: b, features: "", clue: "" }))).map((c, i) => (
+          <div key={i} style={{ borderRadius: 12, padding: 12, background: "rgba(0,188,212,0.07)", border: `1px solid ${TEAL_DIM}` }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <span style={{ width: 20, height: 20, borderRadius: 5, background: TEAL, color: "white", fontSize: 9, fontWeight: "black", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{i + 1}</span>
+              <span style={{ color: "white", fontSize: 11, fontWeight: "bold" }}>{c.name}</span>
             </div>
-            <p className="text-[10px] leading-relaxed opacity-70 text-white">{c.features}</p>
-            <p className="text-[10px] font-semibold mt-auto" style={{ color: TEAL_BRT }}>↗ {c.clue}</p>
-          </div>
-        )) : slide.bullets.slice(0, 6).map((b, i) => (
-          <div key={i} className="rounded-xl p-3 flex flex-col gap-1"
-            style={{ background: "rgba(0,188,212,0.07)", border: `1px solid ${TEAL_DIM}` }}>
-            <span className="w-5 h-5 rounded flex items-center justify-center text-[9px] font-black shrink-0 mb-1"
-              style={{ background: TEAL, color: "white" }}>{i + 1}</span>
-            <p className="text-xs leading-relaxed opacity-80 text-white">{b}</p>
+            {c.features && <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 10, lineHeight: 1.5, margin: "0 0 4px" }}>{c.features}</p>}
+            {c.clue && <p style={{ color: TEAL_BRT, fontSize: 10, fontWeight: 600, margin: 0 }}>↗ {c.clue}</p>}
           </div>
         ))}
       </div>
@@ -177,17 +311,19 @@ function ConditionsSlide({ slide, conditions, current, total }: { slide: Present
 function RedFlagsSlide({ slide, redflags, current, total }: { slide: PresentationSlide; redflags?: string[]; current: number; total: number }) {
   const flags = redflags?.length ? redflags.slice(0, 8) : slide.bullets.slice(0, 8);
   return (
-    <div className="flex flex-col h-full" style={{ background: "#140A0A" }}>
-      <SlideHeader title={slide.t} current={current} total={total} />
-      <div className="px-5 py-3 shrink-0" style={{ borderBottom: "2px solid #EF4444" }}>
-        <h2 className="text-xl font-black text-white">{slide.t}</h2>
+    <div style={{ background: "#140A0A", height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ background: "#c62828", padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE — RED FLAGS</span>
+        <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
       </div>
-      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 px-5 py-4 content-start overflow-auto">
+      <div style={{ padding: "14px 24px 8px", borderBottom: "2px solid #EF4444", flexShrink: 0 }}>
+        <h2 style={{ color: "white", fontSize: 20, fontWeight: 800, margin: 0 }}>{slide.t}</h2>
+      </div>
+      <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "14px 24px", overflow: "auto" }}>
         {flags.map((f, i) => (
-          <div key={i} className="rounded-xl p-3 flex items-center gap-3"
-            style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.35)" }}>
-            <span className="text-base shrink-0">⚠️</span>
-            <p className="text-sm leading-snug text-white opacity-90">{f}</p>
+          <div key={i} style={{ borderRadius: 12, padding: 12, display: "flex", alignItems: "flex-start", gap: 10, background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.35)" }}>
+            <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
+            <p style={{ color: "white", fontSize: 13, lineHeight: 1.5, margin: 0, opacity: 0.9 }}>{f}</p>
           </div>
         ))}
       </div>
@@ -195,49 +331,34 @@ function RedFlagsSlide({ slide, redflags, current, total }: { slide: Presentatio
   );
 }
 
-function MindMapSlide({ slide, current, total }: { slide: PresentationSlide; current: number; total: number }) {
-  return (
-    <div className="flex flex-col h-full" style={{ background: NAVY }}>
-      <SlideHeader title={slide.t} current={current} total={total} />
-      <div className="px-5 py-3 shrink-0" style={{ borderBottom: `2px solid ${TEAL}` }}>
-        <h2 className="text-xl font-black text-white">{slide.t}</h2>
-      </div>
-      <div className="flex-1 flex items-center justify-center px-4 py-3 min-h-0 overflow-hidden">
-        <MindMapFullSVG center={slide.t.split(/\s+/).slice(0, 3).join(" ")} nodes={slide.nodes?.length ? slide.nodes : slide.bullets.slice(0, 8)} />
-      </div>
-    </div>
-  );
-}
-
 function FAQSlide({ slide, faq, current, total }: { slide: PresentationSlide; faq?: PresentationData["faq"]; current: number; total: number }) {
   const [open, setOpen] = useState<number | null>(null);
-  const items = faq?.length ? faq.slice(0, 8) : [];
+  const items = faq?.length ? faq.slice(0, 10) : [];
   return (
-    <div className="flex flex-col h-full" style={{ background: NAVY2 }}>
-      <SlideHeader title={slide.t} current={current} total={total} />
-      <div className="px-5 py-3 shrink-0" style={{ borderBottom: `2px solid ${TEAL}` }}>
-        <h2 className="text-xl font-black text-white">{slide.t}</h2>
+    <div style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY2} 100%)`, height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ background: TEAL, padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE</span>
+        <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
       </div>
-      <div className="flex-1 overflow-auto px-5 py-3 flex flex-col gap-2">
-        {items.length ? items.map((qa, i) => (
-          <div key={i} className="rounded-xl overflow-hidden" style={{ border: `1px solid ${open === i ? TEAL : TEAL_DIM}` }}>
-            <button className="w-full flex items-center gap-3 px-4 py-3 text-left"
-              style={{ background: open === i ? "rgba(0,188,212,0.12)" : "rgba(0,188,212,0.04)" }}
+      <div style={{ padding: "14px 24px 8px", borderBottom: `2px solid ${TEAL}`, flexShrink: 0 }}>
+        <h2 style={{ color: TEAL, fontSize: 20, fontWeight: 800, margin: 0 }}>{slide.t}</h2>
+      </div>
+      <div style={{ flex: 1, overflow: "auto", padding: "12px 24px", display: "flex", flexDirection: "column", gap: 8 }}>
+        {(items.length ? items : slide.bullets.map(b => ({ question: b, answer: "" }))).map((qa, i) => (
+          <div key={i} style={{ borderRadius: 12, overflow: "hidden", border: `1px solid ${open === i ? TEAL : TEAL_DIM}` }}>
+            <button
+              style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", textAlign: "left", background: open === i ? "rgba(0,188,212,0.12)" : "rgba(0,188,212,0.04)", cursor: "pointer", border: "none" }}
               onClick={() => setOpen(open === i ? null : i)}>
-              <span className="w-6 h-6 rounded flex items-center justify-center text-[10px] font-black shrink-0"
-                style={{ background: TEAL, color: "white" }}>Q{i + 1}</span>
-              <span className="text-sm font-semibold text-white flex-1 leading-snug">{qa.question}</span>
-              <span className="text-white opacity-50 text-lg leading-none">{open === i ? "−" : "+"}</span>
+              <span style={{ width: 24, height: 24, borderRadius: 6, background: TEAL, color: "white", fontSize: 9, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>Q{i + 1}</span>
+              <span style={{ color: "white", fontSize: 12, fontWeight: 600, flex: 1, lineHeight: 1.4 }}>{qa.question}</span>
+              <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 16, lineHeight: 1, flexShrink: 0 }}>{open === i ? "−" : "+"}</span>
             </button>
-            {open === i && (
-              <div className="px-4 py-3" style={{ background: "rgba(0,0,0,0.3)", borderTop: `1px solid ${TEAL_DIM}` }}>
-                <p className="text-xs leading-relaxed opacity-80 text-white">{qa.answer}</p>
+            {open === i && qa.answer && (
+              <div style={{ padding: "10px 14px", background: "rgba(0,0,0,0.3)", borderTop: `1px solid ${TEAL_DIM}` }}>
+                <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, lineHeight: 1.6, margin: 0 }}>{qa.answer}</p>
               </div>
             )}
           </div>
-        )) : slide.bullets.map((b, i) => (
-          <div key={i} className="rounded-xl px-4 py-3 text-sm text-white opacity-80"
-            style={{ background: "rgba(0,188,212,0.06)", border: `1px solid ${TEAL_DIM}` }}>{b}</div>
         ))}
       </div>
     </div>
@@ -247,25 +368,24 @@ function FAQSlide({ slide, faq, current, total }: { slide: PresentationSlide; fa
 function GlossarySlide({ slide, refs, current, total }: { slide: PresentationSlide; refs?: PresentationData["refs"]; current: number; total: number }) {
   const items = refs?.length ? refs.slice(0, 10) : [];
   return (
-    <div className="flex flex-col h-full" style={{ background: NAVY2 }}>
-      <SlideHeader title={slide.t} current={current} total={total} />
-      <div className="px-5 py-3 shrink-0" style={{ borderBottom: `2px solid ${TEAL}` }}>
-        <h2 className="text-xl font-black text-white">{slide.t}</h2>
+    <div style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY2} 100%)`, height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ background: TEAL, padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE</span>
+        <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
       </div>
-      <div className="flex-1 overflow-auto px-5 py-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {items.length ? items.map((r, i) => (
-            <div key={i} className="rounded-xl p-3" style={{ background: "rgba(0,188,212,0.06)", border: `1px solid ${TEAL_DIM}` }}>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-5 h-5 rounded flex items-center justify-center text-[9px] font-black shrink-0"
-                  style={{ background: TEAL, color: "white" }}>{i + 1}</span>
-                <span className="text-xs font-bold" style={{ color: TEAL_BRT }}>{r.term}</span>
+      <div style={{ padding: "14px 24px 8px", borderBottom: `2px solid ${TEAL}`, flexShrink: 0 }}>
+        <h2 style={{ color: TEAL, fontSize: 20, fontWeight: 800, margin: 0 }}>{slide.t}</h2>
+      </div>
+      <div style={{ flex: 1, overflow: "auto", padding: "12px 24px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          {(items.length ? items : slide.bullets.map(b => ({ term: b, definition: "" }))).map((r, i) => (
+            <div key={i} style={{ borderRadius: 12, padding: 12, background: "rgba(0,188,212,0.06)", border: `1px solid ${TEAL_DIM}` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                <span style={{ width: 20, height: 20, borderRadius: 5, background: TEAL, color: "white", fontSize: 9, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{i + 1}</span>
+                <span style={{ color: TEAL_BRT, fontSize: 11, fontWeight: "bold" }}>{r.term}</span>
               </div>
-              <p className="text-[10px] leading-relaxed text-white opacity-70">{r.definition}</p>
+              {r.definition && <p style={{ color: "rgba(255,255,255,0.68)", fontSize: 10, lineHeight: 1.55, margin: 0 }}>{r.definition}</p>}
             </div>
-          )) : slide.bullets.map((b, i) => (
-            <div key={i} className="rounded-xl p-3 text-xs text-white opacity-80"
-              style={{ background: "rgba(0,188,212,0.06)", border: `1px solid ${TEAL_DIM}` }}>{b}</div>
           ))}
         </div>
       </div>
@@ -275,27 +395,32 @@ function GlossarySlide({ slide, refs, current, total }: { slide: PresentationSli
 
 function SummarySlide({ slide, current, total }: { slide: PresentationSlide; current: number; total: number }) {
   return (
-    <div className="flex flex-col h-full" style={{ background: `linear-gradient(135deg, ${NAVY} 0%, #0A1F3C 100%)` }}>
-      <SlideHeader title={slide.t} current={current} total={total} />
-      <div className="px-5 py-3 shrink-0" style={{ borderBottom: `2px solid ${TEAL}` }}>
-        <h2 className="text-xl font-black text-white">{slide.t}</h2>
+    <div style={{ background: `linear-gradient(135deg, ${NAVY} 0%, #0A1F3C 100%)`, height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ background: TEAL, padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE</span>
+        <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
       </div>
-      <div className="flex-1 flex flex-col px-6 py-5 gap-3 overflow-auto">
+      <div style={{ padding: "14px 24px 8px", borderBottom: `2px solid ${TEAL}`, flexShrink: 0 }}>
+        <h2 style={{ color: TEAL, fontSize: 20, fontWeight: 800, margin: 0 }}>{slide.t}</h2>
+      </div>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 24px", gap: 10, overflow: "auto" }}>
         {slide.bullets.slice(0, 6).map((b, i) => (
-          <div key={i} className="flex items-start gap-4 rounded-xl px-4 py-3"
-            style={{ background: "rgba(0,188,212,0.07)", border: `1px solid ${TEAL_DIM}` }}>
-            <span className="text-2xl font-black shrink-0 leading-none" style={{ color: TEAL_DIM, opacity: 0.6 }}>
-              0{i + 1}
-            </span>
-            <p className="text-sm text-white opacity-90 leading-relaxed">{b}</p>
+          <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 14, borderRadius: 12, padding: "10px 14px", background: "rgba(0,188,212,0.07)", border: `1px solid ${TEAL_DIM}` }}>
+            <span style={{ fontSize: 20, fontWeight: 900, flexShrink: 0, color: TEAL_DIM, opacity: 0.7 }}>0{i + 1}</span>
+            <p style={{ color: "white", fontSize: 13, lineHeight: 1.55, margin: 0, opacity: 0.92 }}>{b}</p>
           </div>
         ))}
-        <KeyInsightBar text={slide.ki ?? ""} />
+        {slide.ki && (
+          <div style={{ borderLeft: `4px solid ${TEAL}`, background: "rgba(0,188,212,0.10)", padding: "10px 14px", borderRadius: "0 8px 8px 0" }}>
+            <div style={{ color: TEAL, fontWeight: "bold", fontSize: 10, letterSpacing: "0.06em", marginBottom: 4 }}>⚡ KEY INSIGHT</div>
+            <p style={{ color: "#e0f7fa", fontStyle: "italic", fontSize: 12, margin: 0, lineHeight: 1.55 }}>{slide.ki}</p>
+          </div>
+        )}
       </div>
-      <div className="shrink-0 px-6 pb-4 flex items-center justify-center gap-3 opacity-40">
-        <div className="h-px flex-1" style={{ background: TEAL_DIM }} />
-        <span className="text-[9px] font-bold tracking-widest" style={{ color: TEAL }}>SYNAPSE · aethex Medical Education</span>
-        <div className="h-px flex-1" style={{ background: TEAL_DIM }} />
+      <div style={{ padding: "0 24px 16px", display: "flex", alignItems: "center", gap: 10, opacity: 0.3, flexShrink: 0 }}>
+        <div style={{ flex: 1, height: 1, background: TEAL_DIM }} />
+        <span style={{ color: TEAL, fontSize: 9, fontWeight: "bold", letterSpacing: "0.08em" }}>SYNAPSE · aethex Medical Education</span>
+        <div style={{ flex: 1, height: 1, background: TEAL_DIM }} />
       </div>
     </div>
   );
@@ -303,14 +428,13 @@ function SummarySlide({ slide, current, total }: { slide: PresentationSlide; cur
 
 function renderSlide(slide: PresentationSlide, data: PresentationData, current: number, total: number) {
   switch (slide.type) {
-    case "title": return <TitleSlide slide={slide} current={current} total={total} />;
+    case "title":     return <TitleSlide slide={slide} current={current} total={total} />;
     case "conditions": return <ConditionsSlide slide={slide} conditions={data.conditions} current={current} total={total} />;
-    case "redflags": return <RedFlagsSlide slide={slide} redflags={data.redflags} current={current} total={total} />;
-    case "mindmap": return <MindMapSlide slide={slide} current={current} total={total} />;
-    case "faq": return <FAQSlide slide={slide} faq={data.faq} current={current} total={total} />;
-    case "glossary": return <GlossarySlide slide={slide} refs={data.refs} current={current} total={total} />;
-    case "summary": return <SummarySlide slide={slide} current={current} total={total} />;
-    default: return <ContentSlide slide={slide} current={current} total={total} />;
+    case "redflags":  return <RedFlagsSlide slide={slide} redflags={data.redflags} current={current} total={total} />;
+    case "faq":       return <FAQSlide slide={slide} faq={data.faq} current={current} total={total} />;
+    case "glossary":  return <GlossarySlide slide={slide} refs={data.refs} current={current} total={total} />;
+    case "summary":   return <SummarySlide slide={slide} current={current} total={total} />;
+    default:          return <SpecSlide slide={slide} current={current} total={total} />;
   }
 }
 
@@ -332,65 +456,83 @@ export default function PresentationViewer({ data, onClose, pdfBase64, docxBase6
     return () => window.removeEventListener("keydown", handler);
   }, [prev, next, onClose]);
 
+  const pdf64 = pdfBase64 ?? data.pdfBase64;
+  const docx64 = docxBase64 ?? data.docxBase64;
+
   return (
-    <div className="fixed inset-0 z-50 flex flex-col" style={{ background: "#000" }}>
-      {/* Top bar */}
-      <div className="shrink-0 flex items-center justify-between px-4 py-2 gap-3"
-        style={{ background: "#050C1A", borderBottom: `1px solid ${TEAL_DIM}` }}>
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="w-2 h-2 rounded-full shrink-0" style={{ background: TEAL }} />
-          <span className="text-xs font-bold text-white truncate">{data.title}</span>
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", flexDirection: "column", background: "#000" }}>
+      {/* ── Outer top controls ── */}
+      <div style={{
+        flexShrink: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "6px 14px",
+        gap: 12,
+        background: "#050C1A",
+        borderBottom: `1px solid ${TEAL_DIM}`,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+          <span style={{ width: 8, height: 8, borderRadius: "50%", background: TEAL, flexShrink: 0 }} />
+          <span style={{ color: "white", fontSize: 12, fontWeight: "bold", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{data.title}</span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          {pdfBase64 && (
-            <a href={`data:application/pdf;base64,${pdfBase64}`}
-              download={`${data.title}.pdf`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white transition-colors"
-              style={{ background: TEAL_DIM }}>
-              <Download className="w-3 h-3" /> PDF
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          {pdf64 && (
+            <a href={`data:application/pdf;base64,${pdf64}`} download={`${data.title}.pdf`}
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 8, fontSize: 11, fontWeight: "bold", color: "white", background: TEAL_DIM, textDecoration: "none" }}>
+              <Download style={{ width: 12, height: 12 }} /> PDF
             </a>
           )}
-          {docxBase64 && (
-            <a href={`data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${docxBase64}`}
-              download={`${data.title}.docx`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white transition-colors"
-              style={{ background: "#1E3A5F" }}>
-              <Download className="w-3 h-3" /> DOCX
+          {docx64 && (
+            <a href={`data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${docx64}`} download={`${data.title}.docx`}
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 8, fontSize: 11, fontWeight: "bold", color: "white", background: "#1E3A5F", textDecoration: "none" }}>
+              <Download style={{ width: 12, height: 12 }} /> DOCX
             </a>
           )}
-          <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-white opacity-60 hover:opacity-100 transition-opacity"
-            style={{ background: "rgba(255,255,255,0.08)" }}>
-            <X className="w-4 h-4" />
+          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.08)", border: "none", cursor: "pointer", color: "white", opacity: 0.6 }}>
+            <X style={{ width: 16, height: 16 }} />
           </button>
         </div>
       </div>
 
-      {/* Slide area */}
-      <div className="flex-1 flex items-stretch min-h-0">
+      {/* ── Slide area ── */}
+      <div style={{ flex: 1, display: "flex", alignItems: "stretch", minHeight: 0 }}>
         <button onClick={prev} disabled={idx === 0}
-          className="shrink-0 w-10 sm:w-14 flex items-center justify-center text-white opacity-30 hover:opacity-80 disabled:opacity-10 transition-opacity"
-          style={{ background: "rgba(0,0,0,0.5)" }}>
-          <ChevronLeft className="w-6 h-6" />
+          style={{ flexShrink: 0, width: 44, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", border: "none", cursor: idx === 0 ? "default" : "pointer", color: "white", opacity: idx === 0 ? 0.1 : 0.4 }}>
+          <ChevronLeft style={{ width: 24, height: 24 }} />
         </button>
-        <div className="flex-1 min-w-0 overflow-hidden relative" style={{ background: NAVY }}>
+        <div style={{ flex: 1, minWidth: 0, overflow: "hidden", position: "relative" }}>
           {slide && renderSlide(slide, data, idx + 1, total)}
         </div>
         <button onClick={next} disabled={idx === total - 1}
-          className="shrink-0 w-10 sm:w-14 flex items-center justify-center text-white opacity-30 hover:opacity-80 disabled:opacity-10 transition-opacity"
-          style={{ background: "rgba(0,0,0,0.5)" }}>
-          <ChevronRight className="w-6 h-6" />
+          style={{ flexShrink: 0, width: 44, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", border: "none", cursor: idx === total - 1 ? "default" : "pointer", color: "white", opacity: idx === total - 1 ? 0.1 : 0.4 }}>
+          <ChevronRight style={{ width: 24, height: 24 }} />
         </button>
       </div>
 
-      {/* Bottom dot nav */}
-      <div className="shrink-0 flex items-center justify-center gap-1.5 py-3"
-        style={{ background: "#050C1A", borderTop: `1px solid ${TEAL_DIM}` }}>
+      {/* ── Dot nav ── */}
+      <div style={{
+        flexShrink: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 6,
+        padding: "10px 12px",
+        background: "#050C1A",
+        borderTop: `1px solid ${TEAL_DIM}`,
+        flexWrap: "wrap",
+      }}>
         {data.slides.map((_, i) => (
           <button key={i} onClick={() => setIdx(i)}
-            className="rounded-full transition-all duration-200"
             style={{
-              width: i === idx ? 20 : 6, height: 6,
+              borderRadius: 3,
+              height: 6,
+              width: i === idx ? 20 : 6,
               background: i === idx ? TEAL : TEAL_DIM,
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+              transition: "width 0.2s, background 0.2s",
             }} />
         ))}
       </div>

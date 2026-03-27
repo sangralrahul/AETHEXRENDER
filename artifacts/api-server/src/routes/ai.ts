@@ -209,17 +209,21 @@ Return ONLY this flat JSON (no nested arrays inside slide objects):
   "redflags": "Warning 1 (urgent sign)||Warning 2||Warning 3||Warning 4||Warning 5||Warning 6"
 }
 
-RULES:
-- "overview" slides: diag="concept", nodes = 6 clinical roles pipe-separated, edges = "0>1,0>2,0>3,0>4,0>5,0>6"
-- "anatomy"/"physiology" slides: diag="flowchart", nodes = 6 step/component names
-- "pathways"/"clinical" slides: diag="pathway", nodes = 6 pathway nodes
-- "mindmap" slide: nodes = 8 branch topics (no bullets needed), diag="none"
-- "conditions" slide: conditions field has the data (bullets can be empty)
-- "redflags" slide: redflags field has the data
-- "faq" slide: faq field has the data
-- "glossary" slide: refs field has the data
-- edges format: "src>dst" pairs comma-separated, zero-indexed from nodes array
-- All 6 bullets required on content slides (overview/anatomy/physiology/pathways/clinical/summary)
+DIAGRAM RULES — every content slide MUST have a real diagram:
+- "overview" slides:   diag="concept",   nodes=6 key concepts, edges="0>1,0>2,0>3,0>4,0>5"
+- "anatomy" slides:    diag="flowchart", nodes=6 anatomical components top-to-bottom, edges="0>1,1>2,2>3,3>4,4>5"
+- "physiology" slides: diag="flowchart", nodes=6 physiological steps in sequence, edges="0>1,1>2,2>3,3>4,4>5"
+- "pathways" slides:   diag="pathway",   nodes=6 pathway steps, edges="0>1,0>2,1>3,2>3,3>4,3>5"
+- "clinical" slides:   diag="pathway",   nodes=6 clinical steps/signs, edges="0>1,1>2,2>3,2>4,3>5,4>5"
+- "mindmap" slides:    diag="mindmap",   nodes=7 branch topics (first node = center topic), edges="0>1,0>2,0>3,0>4,0>5,0>6"
+- "conditions" slide: conditions field has data. Also set diag="concept", nodes=6 condition names
+- "redflags" slide: redflags field has data. Also set diag="flowchart", nodes=6 red flag keywords
+- "faq" slide: faq field has data. diag="none"
+- "glossary" slide: refs field has data. diag="none"
+- "summary" slide: diag="mindmap", nodes=7 summary topics
+- edges format: "src>dst" pairs comma-separated, zero-indexed
+- Node labels: 2-5 words, specific to the medical topic — NO generic names like "Step1" or "Node1"
+- All 6 bullets required on content slides
 - ASCII only throughout`,
         },
       ],

@@ -2,13 +2,18 @@ import { useState, useRef, useEffect } from "react";
 import {
   Send, User, Loader2, RefreshCcw, Activity, FlaskConical,
   Lock, Crown, Paperclip, Image, FileText, Camera, Search,
-  ImagePlus, X, ChevronUp, Microscope,
+  ImagePlus, X, ChevronUp, Microscope, Download,
 } from "lucide-react";
 import { useAiChat } from "@workspace/api-client-react";
 import { type ChatMessage, ChatMessageRole } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+
+interface ExtendedMessage extends ChatMessage {
+  imageUrl?: string;
+  isImageGeneration?: boolean;
+}
 
 type ModelId = "pulse45" | "flux36" | "nova46";
 type ChatMode = "normal" | "deep-research" | "create-image";
@@ -88,11 +93,12 @@ export default function AiAssistant() {
   const [showProModal, setShowProModal] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [conversations, setConversations] = useState<Record<ModelId, ChatMessage[]>>({
+  const [conversations, setConversations] = useState<Record<ModelId, ExtendedMessage[]>>({
     pulse45: [],
     flux36: [],
     nova46: [],
   });
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -121,37 +127,61 @@ export default function AiAssistant() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const hasContent = input.trim() || attachments.length > 0;
-    if (!hasContent || chatMutation.isPending || isProLocked) return;
+    if (!hasContent || chatMutation.isPending || isGeneratingImage || isProLocked) return;
 
-    if (chatMode === "create-image") {
-      toast({
-        title: "Image generation queued",
-        description: "SYNAPSE Image is generating your medical illustration — this feature is in active development.",
-      });
-      setInput("");
-      setAttachments([]);
-      return;
-    }
-    if (chatMode === "deep-research") {
-      toast({
-        title: "Deep Research initiated",
-        description: "SYNAPSE is scanning medical literature. Full deep research rollout coming soon.",
-      });
-    }
-
-    const userMsg = input.trim() || (attachments.length > 0 ? `[Attached: ${attachments.map((a) => a.name).join(", ")}]` : "");
+    const userMsg = input.trim() || `[Attached: ${attachments.map((a) => a.name).join(", ")}]`;
     setInput("");
     setAttachments([]);
 
     const currentHistory = conversations[activeModel];
-    const newHistory: ChatMessage[] = [
-      ...currentHistory,
-      { role: ChatMessageRole.user, content: userMsg },
-    ];
+    const userEntry: ExtendedMessage = { role: ChatMessageRole.user, content: userMsg };
+    const newHistory: ExtendedMessage[] = [...currentHistory, userEntry];
     setConversations((prev) => ({ ...prev, [activeModel]: newHistory }));
+
+    if (chatMode === "create-image") {
+      setIsGeneratingImage(true);
+      try {
+        const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+        const resp = await fetch(`${apiBase}/api/ai/generate-image`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: userMsg }),
+        });
+        const data = await resp.json();
+        if (data.imageUrl) {
+          setConversations((prev) => ({
+            ...prev,
+            [activeModel]: [
+              ...newHistory,
+              {
+                role: ChatMessageRole.assistant,
+                content: `Here is your generated medical illustration for: "${userMsg}"`,
+                imageUrl: data.imageUrl,
+                isImageGeneration: true,
+              },
+            ],
+          }));
+        } else {
+          throw new Error(data.error ?? "Generation failed");
+        }
+      } catch (err) {
+        toast({ title: "Image generation failed", description: "Please try a different prompt.", variant: "destructive" });
+        setConversations((prev) => ({ ...prev, [activeModel]: currentHistory }));
+      } finally {
+        setIsGeneratingImage(false);
+      }
+      return;
+    }
+
+    if (chatMode === "deep-research") {
+      toast({
+        title: "Deep Research initiated",
+        description: "SYNAPSE is scanning medical literature. Full rollout coming soon.",
+      });
+    }
 
     chatMutation.mutate(
       { data: { message: userMsg, conversationHistory: currentHistory, agent: activeModel } as any },
@@ -257,30 +287,52 @@ export default function AiAssistant() {
             </div>
 
             {messages.map((msg, idx) => (
-              <div key={idx} className={cn("flex gap-3 max-w-[88%]", msg.role === ChatMessageRole.user ? "self-end flex-row-reverse" : "self-start")}>
+              <div key={idx} className={cn("flex gap-3", msg.role === ChatMessageRole.user ? "self-end flex-row-reverse max-w-[88%]" : "self-start max-w-[92%]")}>
                 <div className={cn("w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1 overflow-hidden",
                   msg.role === ChatMessageRole.user ? "bg-slate-200" : "ring-2 ring-white shadow-sm")}>
                   {msg.role === ChatMessageRole.user
                     ? <User className="w-4 h-4 text-slate-600" />
                     : <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />}
                 </div>
-                <div className={cn("px-5 py-4 rounded-2xl text-[15px] leading-relaxed shadow-sm",
+                <div className={cn("rounded-2xl shadow-sm overflow-hidden",
                   msg.role === ChatMessageRole.user
                     ? "bg-primary text-white rounded-tr-sm"
                     : "bg-white border border-slate-100 text-slate-800 rounded-tl-sm")}>
-                  {msg.content}
+                  <div className="px-5 py-4 text-[15px] leading-relaxed">{msg.content}</div>
+                  {(msg as ExtendedMessage).imageUrl && (
+                    <div className="px-4 pb-4">
+                      <img
+                        src={(msg as ExtendedMessage).imageUrl}
+                        alt="SYNAPSE generated medical illustration"
+                        className="w-full rounded-xl border border-slate-100 object-contain max-h-[480px]"
+                      />
+                      <a
+                        href={(msg as ExtendedMessage).imageUrl}
+                        download="synapse-image.png"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-2 inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:underline"
+                      >
+                        <Download className="w-3.5 h-3.5" /> Download image
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
 
-            {chatMutation.isPending && (
-              <div className="flex gap-3 max-w-[88%] self-start">
+            {(chatMutation.isPending || isGeneratingImage) && (
+              <div className="flex gap-3 max-w-[92%] self-start">
                 <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm shrink-0 mt-1">
                   <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />
                 </div>
                 <div className="px-5 py-4 rounded-2xl bg-white border border-slate-100 rounded-tl-sm flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                  <span className="text-sm text-slate-500">SYNAPSE · {model.name} {model.version} is thinking...</span>
+                  <span className="text-sm text-slate-500">
+                    {isGeneratingImage
+                      ? "SYNAPSE is generating your medical illustration..."
+                      : `SYNAPSE · ${model.name} ${model.version} is thinking...`}
+                  </span>
                 </div>
               </div>
             )}
@@ -464,7 +516,7 @@ export default function AiAssistant() {
                   </div>
                   <Button type="submit"
                     size="icon"
-                    disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending}
+                    disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage}
                     className="h-8 w-8 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-30 transition-all">
                     <Send className="w-3.5 h-3.5" />
                   </Button>

@@ -118,4 +118,35 @@ router.post("/ai/chat", async (req, res) => {
   }
 });
 
+router.post("/ai/generate-image", async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    if (!prompt) {
+      res.status(400).json({ error: "prompt is required" });
+      return;
+    }
+
+    const medicalPrompt = `Medical illustration, professional clinical style: ${prompt}. High quality, accurate, educational medical artwork.`;
+
+    const response = await openai.images.generate({
+      model: "dall-e-3",
+      prompt: medicalPrompt,
+      n: 1,
+      size: "1024x1024",
+      quality: "standard",
+    });
+
+    const imageUrl = response.data[0]?.url;
+    if (!imageUrl) {
+      res.status(500).json({ error: "No image generated" });
+      return;
+    }
+
+    res.json({ imageUrl });
+  } catch (err) {
+    req.log.error({ err }, "Error generating image");
+    res.status(500).json({ error: "Image generation failed" });
+  }
+});
+
 export default router;

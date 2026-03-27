@@ -1,3 +1,24 @@
+# AETHEX - Medical Store for Indian Doctors & Students
+
+## Project Overview
+
+AETHEX is India's premier one-stop medical store for doctors and medical students. It sells scrubs, aprons, lab coats, books/study material, stethoscopes, surgical instruments, BP machines, and other medical equipment.
+
+## Artifacts
+
+- **aethex** — React + Vite frontend at `/` (port 24237)
+- **api-server** — Express 5 backend at `/api` (port 8080)
+
+## Features
+
+- Home page with hero section, categories grid, featured products, AI assistant banner
+- Products page with category filters and search
+- Product detail pages
+- Shopping cart (session-based via localStorage)
+- AI Medical Assistant chat (powered by OpenAI via Replit AI Integrations)
+- 6 product categories: Scrubs, Aprons, Books, Stethoscopes, Surgical Instruments, Equipment
+- 19 seeded products with realistic Indian pricing (₹)
+
 # Workspace
 
 ## Overview

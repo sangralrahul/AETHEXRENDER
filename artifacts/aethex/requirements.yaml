@@ -1,0 +1,21 @@
+packages:
+  "framer-motion": "For page transitions, smooth enter animations, and micro-interactions"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility to efficiently merge Tailwind CSS classes"
+  "lucide-react": "Beautiful consistent icons"
+
+images:
+  - path: "artifacts/aethex/public/images/hero-medical-bg.png"
+    description: "Abstract, clean, and modern medical technology background with soft blue and teal gradients, subtle geometric shapes, glowing data nodes, trustworthy healthcare atmosphere, high resolution"
+    aspect_ratio: "16:9"
+  - path: "artifacts/aethex/public/images/ai-doctor-avatar.png"
+    description: "Friendly, highly detailed 3D illustration of an AI medical assistant robot wearing a sleek modern stethoscope and clean white coat, glowing blue accents, plain background"
+    aspect_ratio: "1:1"
+  - path: "artifacts/aethex/public/images/empty-cart.png"
+    description: "Clean, minimalist 3D illustration of an empty medical supply cart or basket, soft lighting, soft blue and white tones"
+    aspect_ratio: "1:1"
+
+notes:
+  - Assumes @workspace/api-client-react provides ready-to-use hooks for all OpenAPI endpoints.
+  - sessionId is managed via localStorage and passed to cart endpoints.
+  - Prices are formatted in INR (₹).

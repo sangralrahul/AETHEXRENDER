@@ -1,15 +1,20 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AETHEX Medical Store API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: products
+    description: Product operations
+  - name: cart
+    description: Cart operations
+  - name: ai
+    description: AI medical assistant
 paths:
   /healthz:
     get:
@@ -24,6 +29,154 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /products:
+    get:
+      operationId: listProducts
+      tags: [products]
+      summary: List products
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductListResponse"
+
+  /products/{id}:
+    get:
+      operationId: getProduct
+      tags: [products]
+      summary: Get product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Product not found
+
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [products]
+      summary: List all categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+  /cart:
+    get:
+      operationId: getCart
+      tags: [cart]
+      summary: Get cart items
+      parameters:
+        - name: sessionId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart contents
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+    post:
+      operationId: addToCart
+      tags: [cart]
+      summary: Add item to cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddToCartRequest"
+      responses:
+        "200":
+          description: Updated cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+
+  /cart/{itemId}:
+    delete:
+      operationId: removeFromCart
+      tags: [cart]
+      summary: Remove item from cart
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: sessionId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Updated cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+
+  /ai/chat:
+    post:
+      operationId: aiChat
+      tags: [ai]
+      summary: Chat with AI medical assistant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiChatRequest"
+      responses:
+        "200":
+          description: AI response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiChatResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +187,181 @@ components:
       required:
         - status
 
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        originalPrice:
+          type: number
+        category:
+          type: string
+        categorySlug:
+          type: string
+        brand:
+          type: string
+        imageUrl:
+          type: string
+        rating:
+          type: number
+        reviewCount:
+          type: integer
+        inStock:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        featured:
+          type: boolean
+      required:
+        - id
+        - name
+        - description
+        - price
+        - category
+        - categorySlug
+        - brand
+        - imageUrl
+        - rating
+        - reviewCount
+        - inStock
+        - tags
+        - featured
+
+    ProductListResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - products
+        - total
+        - page
+        - totalPages
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        productCount:
+          type: integer
+        iconName:
+          type: string
+      required:
+        - id
+        - name
+        - slug
+        - description
+        - productCount
+        - iconName
+
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        productId:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        quantity:
+          type: integer
+      required:
+        - id
+        - productId
+        - name
+        - price
+        - imageUrl
+        - quantity
+
+    Cart:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItem"
+        total:
+          type: number
+        itemCount:
+          type: integer
+      required:
+        - items
+        - total
+        - itemCount
+
+    AddToCartRequest:
+      type: object
+      properties:
+        productId:
+          type: integer
+        quantity:
+          type: integer
+          default: 1
+        sessionId:
+          type: string
+      required:
+        - productId
+        - sessionId
+
+    AiChatRequest:
+      type: object
+      properties:
+        message:
+          type: string
+        conversationHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatMessage"
+      required:
+        - message
+
+    ChatMessage:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+      required:
+        - role
+        - content
+
+    AiChatResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        suggestions:
+          type: array
+          items:
+            type: string
+      required:
+        - message

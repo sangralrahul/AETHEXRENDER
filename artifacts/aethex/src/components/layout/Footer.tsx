@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Heart, ShieldCheck, Truck, Twitter, Linkedin, Send } from "lucide-react";
 
 function AethexLogo({ size = 40 }: { size?: number }) {
@@ -14,6 +14,8 @@ function AethexLogo({ size = 40 }: { size?: number }) {
 }
 
 export function Footer() {
+  const [location] = useLocation();
+  if (location === "/ai-assistant") return null;
   return (
     <footer className="bg-slate-900 pt-16 pb-8 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,7 +81,7 @@ export function Footer() {
           <div>
             <h3 className="font-display font-bold text-white text-lg mb-6">Support</h3>
             <ul className="space-y-4 text-sm text-slate-400">
-              <li><Link href="/ai-assistant" className="hover:text-primary transition-colors">AI Medical Assistant</Link></li>
+              <li><Link href="/ai-assistant" className="hover:text-primary transition-colors">SYNAPSE AI Agents</Link></li>
               <li><a href="#" className="hover:text-primary transition-colors">Track Order</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Return Policy</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Contact Us</a></li>

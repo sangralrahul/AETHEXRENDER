@@ -87,7 +87,7 @@ export function Navbar() {
               className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-secondary to-secondary/50 text-secondary-foreground font-semibold hover:shadow-md transition-all border border-secondary hover-lift"
             >
               <Sparkles className="w-4 h-4 text-accent" />
-              <span>Ask AI</span>
+              <span>SYNAPSE</span>
             </Link>
 
             <Link 

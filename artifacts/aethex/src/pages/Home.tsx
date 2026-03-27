@@ -283,7 +283,7 @@ export default function Home() {
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/20 text-accent font-semibold text-sm mb-6 border border-accent/30">
                   <BrainCircuit className="w-4 h-4" />
-                  AETHEX AI Assistant
+                  SYNAPSE — AETHEX AI Suite
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-display font-bold text-white mb-6 leading-tight">
                   Your smart companion for medical queries & product choices.

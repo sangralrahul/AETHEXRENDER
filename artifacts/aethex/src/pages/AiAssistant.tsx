@@ -2,17 +2,19 @@ import { useState, useRef, useEffect } from "react";
 import {
   Send, User, Loader2, RefreshCcw, Activity, FlaskConical,
   Lock, Crown, Paperclip, Image, FileText, Camera, Search,
-  ImagePlus, X, ChevronUp, Microscope, Download, Presentation,
+  ImagePlus, X, ChevronUp, Microscope, Download, Presentation, PlayCircle,
 } from "lucide-react";
 import { useAiChat } from "@workspace/api-client-react";
 import { type ChatMessage, ChatMessageRole } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import PresentationViewer, { type PresentationData } from "@/components/synapse/PresentationViewer";
 
 interface ExtendedMessage extends ChatMessage {
   imageUrl?: string;
   isImageGeneration?: boolean;
+  presentationData?: PresentationData;
   presentationPdfBase64?: string;
   presentationDocxBase64?: string;
   presentationTitle?: string;
@@ -109,6 +111,7 @@ export default function AiAssistant() {
   const [pendingPresentationPrompt, setPendingPresentationPrompt] = useState("");
   const [buildingTopic, setBuildingTopic] = useState("");
   const [buildingSlideCount, setBuildingSlideCount] = useState(10);
+  const [activePresentationData, setActivePresentationData] = useState<(PresentationData & { pdfBase64?: string; docxBase64?: string }) | null>(null);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -260,38 +263,73 @@ export default function AiAssistant() {
   const handleSlideCountSelect = async (count: number) => {
     if (isGeneratingPresentation) return;
     const currentHistory = conversations[activeModel];
+    const topic = pendingPresentationPrompt;
     const userEntry: ExtendedMessage = { role: ChatMessageRole.user, content: `${count} slides` };
     const newHistory: ExtendedMessage[] = [...currentHistory, userEntry];
     setConversations((prev) => ({ ...prev, [activeModel]: newHistory }));
-    setBuildingTopic(pendingPresentationPrompt);
+    setBuildingTopic(topic);
     setBuildingSlideCount(count);
     setIsGeneratingPresentation(true);
     try {
       const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
-      const resp = await fetch(`${apiBase}/api/ai/generate-presentation`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: pendingPresentationPrompt, slideCount: count }),
-      });
-      const data = await resp.json();
-      if (data.pdfBase64 && data.docxBase64) {
+      // Run slides + PDF/DOCX in parallel for best UX
+      const [slidesResp, pdfResp] = await Promise.allSettled([
+        fetch(`${apiBase}/api/ai/generate-slides`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: topic, slideCount: count }),
+        }).then(r => r.json()),
+        fetch(`${apiBase}/api/ai/generate-presentation`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: topic, slideCount: count }),
+        }).then(r => r.json()),
+      ]);
+
+      const slidesData = slidesResp.status === "fulfilled" ? slidesResp.value : null;
+      const pdfData = pdfResp.status === "fulfilled" ? pdfResp.value : null;
+
+      if (slidesData?.slides?.length) {
+        const merged: PresentationData & { pdfBase64?: string; docxBase64?: string } = {
+          ...slidesData,
+          pdfBase64: pdfData?.pdfBase64,
+          docxBase64: pdfData?.docxBase64,
+        };
+        setActivePresentationData(merged);
         setConversations((prev) => ({
           ...prev,
           [activeModel]: [
             ...newHistory,
             {
               role: ChatMessageRole.assistant,
-              content: `Your presentation "${data.title}" (${data.totalSlides} slides) is ready! Download it below:`,
+              content: `Your presentation "${slidesData.title}" (${count} slides) is ready!`,
               isPresentation: true,
-              presentationTitle: data.title,
-              presentationPdfBase64: data.pdfBase64,
-              presentationDocxBase64: data.docxBase64,
+              presentationData: merged,
+              presentationTitle: slidesData.title,
+              presentationPdfBase64: pdfData?.pdfBase64,
+              presentationDocxBase64: pdfData?.docxBase64,
+            },
+          ],
+        }));
+        resetPresentationState();
+      } else if (pdfData?.pdfBase64) {
+        setConversations((prev) => ({
+          ...prev,
+          [activeModel]: [
+            ...newHistory,
+            {
+              role: ChatMessageRole.assistant,
+              content: `Your presentation "${pdfData.title}" (${pdfData.totalSlides} slides) is ready! Download it below:`,
+              isPresentation: true,
+              presentationTitle: pdfData.title,
+              presentationPdfBase64: pdfData.pdfBase64,
+              presentationDocxBase64: pdfData.docxBase64,
             },
           ],
         }));
         resetPresentationState();
       } else {
-        throw new Error(data.error ?? "Generation failed");
+        throw new Error("Generation failed");
       }
     } catch {
       toast({ title: "Presentation generation failed", description: "Please try again.", variant: "destructive" });
@@ -427,20 +465,37 @@ export default function AiAssistant() {
                           {(msg as ExtendedMessage).presentationTitle}
                         </span>
                       </div>
-                      <a
-                        href={`data:application/pdf;base64,${(msg as ExtendedMessage).presentationPdfBase64}`}
-                        download={`${(msg as ExtendedMessage).presentationTitle ?? "presentation"}.pdf`}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold hover:bg-red-100 transition-colors"
-                      >
-                        <Download className="w-3.5 h-3.5" /> Download PDF
-                      </a>
-                      <a
-                        href={`data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${(msg as ExtendedMessage).presentationDocxBase64}`}
-                        download={`${(msg as ExtendedMessage).presentationTitle ?? "presentation"}.docx`}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold hover:bg-blue-100 transition-colors"
-                      >
-                        <Download className="w-3.5 h-3.5" /> Download DOCX
-                      </a>
+                      {(msg as ExtendedMessage).presentationData && (
+                        <button
+                          onClick={() => setActivePresentationData((msg as ExtendedMessage).presentationData ?? null)}
+                          className="flex items-center gap-2 px-4 py-3 rounded-xl text-white text-xs font-bold hover:opacity-90 transition-all shadow-md"
+                          style={{ background: "linear-gradient(135deg, #060D1F 0%, #0D2137 100%)", border: "1px solid #00BCD4" }}
+                        >
+                          <PlayCircle className="w-4 h-4" style={{ color: "#00BCD4" }} />
+                          <span>View Presentation</span>
+                          <span className="ml-auto text-[10px] opacity-60">
+                            {(msg as ExtendedMessage).presentationData!.slides.length} slides
+                          </span>
+                        </button>
+                      )}
+                      {(msg as ExtendedMessage).presentationPdfBase64 && (
+                        <a
+                          href={`data:application/pdf;base64,${(msg as ExtendedMessage).presentationPdfBase64}`}
+                          download={`${(msg as ExtendedMessage).presentationTitle ?? "presentation"}.pdf`}
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold hover:bg-red-100 transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5" /> Download PDF
+                        </a>
+                      )}
+                      {(msg as ExtendedMessage).presentationDocxBase64 && (
+                        <a
+                          href={`data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${(msg as ExtendedMessage).presentationDocxBase64}`}
+                          download={`${(msg as ExtendedMessage).presentationTitle ?? "presentation"}.docx`}
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold hover:bg-blue-100 transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5" /> Download DOCX
+                        </a>
+                      )}
                     </div>
                   )}
                 </div>
@@ -736,6 +791,16 @@ export default function AiAssistant() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* ── In-Browser Presentation Viewer ── */}
+      {activePresentationData && (
+        <PresentationViewer
+          data={activePresentationData}
+          pdfBase64={activePresentationData.pdfBase64}
+          docxBase64={activePresentationData.docxBase64}
+          onClose={() => setActivePresentationData(null)}
+        />
       )}
     </div>
   );

@@ -151,6 +151,157 @@ router.post("/ai/generate-image", async (req, res) => {
   }
 });
 
+// ── /api/ai/generate-slides — returns JSON slide data for in-browser viewer ──
+router.post("/ai/generate-slides", async (req, res) => {
+  try {
+    const { prompt, slideCount } = req.body;
+    if (!prompt) { res.status(400).json({ error: "prompt is required" }); return; }
+
+    const count = Math.max(5, Math.min(20, parseInt(String(slideCount ?? 12)) || 12));
+    // For 12 slides, use the full structured template; otherwise adapt
+    const useFullTemplate = count >= 10;
+
+    const slideTypesInstructions = useFullTemplate
+      ? `Generate EXACTLY ${count} slides with these types in order (adjust last few if count differs):
+title, overview, anatomy, physiology, pathways, clinical, conditions, redflags, mindmap, faq, glossary, summary
+Types: title|overview|anatomy|physiology|pathways|clinical|conditions|redflags|mindmap|faq|glossary|summary`
+      : `Generate ${count} slides. First must be type "title", last must be type "summary". Middle slides should be: overview, anatomy, physiology, clinical, faq, glossary as appropriate.`;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-5.2",
+      max_completion_tokens: 8192,
+      messages: [
+        {
+          role: "system",
+          content: "You are SYNAPSE, a medical education AI. Return ONLY valid JSON — no markdown, no fences. ASCII only (no Unicode, no Greek letters, spell them out).",
+        },
+        {
+          role: "user",
+          content: `Create a ${count}-slide medical education presentation on: "${prompt}".
+
+${slideTypesInstructions}
+
+Return ONLY this flat JSON (no nested arrays inside slide objects):
+{
+  "title": "Full topic name",
+  "subtitle": "Scope and audience",
+  "slides": [
+    {
+      "n": 1,
+      "type": "title",
+      "t": "slide title (same as topic for slide 1)",
+      "sub": "subtitle (title slide only)",
+      "b1": "point 1 (10-15 words, omit for title/mindmap slides)",
+      "b2": "point 2",
+      "b3": "point 3",
+      "b4": "point 4",
+      "b5": "point 5",
+      "b6": "point 6",
+      "ki": "key insight max 15 words (omit for title/mindmap/faq/glossary slides)",
+      "diag": "none|flowchart|concept|pathway",
+      "nodes": "Node1|Node2|Node3|Node4|Node5|Node6",
+      "edges": "0>1,1>2,2>3,0>3"
+    }
+  ],
+  "faq": "Question1::Answer1 detailed||Question2::Answer2||Question3::Answer3||Question4::Answer4||Question5::Answer5||Question6::Answer6||Question7::Answer7||Question8::Answer8",
+  "refs": "Term1::Definition1||Term2::Definition2||Term3::Definition3||Term4::Definition4||Term5::Definition5||Term6::Definition6||Term7::Definition7||Term8::Definition8",
+  "conditions": "Name1::Features description::Clinical clue||Name2::Features::Clue||Name3::Features::Clue||Name4::Features::Clue||Name5::Features::Clue||Name6::Features::Clue",
+  "redflags": "Warning 1 (urgent sign)||Warning 2||Warning 3||Warning 4||Warning 5||Warning 6"
+}
+
+RULES:
+- "overview" slides: diag="concept", nodes = 6 clinical roles pipe-separated, edges = "0>1,0>2,0>3,0>4,0>5,0>6"
+- "anatomy"/"physiology" slides: diag="flowchart", nodes = 6 step/component names
+- "pathways"/"clinical" slides: diag="pathway", nodes = 6 pathway nodes
+- "mindmap" slide: nodes = 8 branch topics (no bullets needed), diag="none"
+- "conditions" slide: conditions field has the data (bullets can be empty)
+- "redflags" slide: redflags field has the data
+- "faq" slide: faq field has the data
+- "glossary" slide: refs field has the data
+- edges format: "src>dst" pairs comma-separated, zero-indexed from nodes array
+- All 6 bullets required on content slides (overview/anatomy/physiology/pathways/clinical/summary)
+- ASCII only throughout`,
+        },
+      ],
+    });
+
+    const raw = completion.choices[0]?.message?.content ?? "";
+    let parsed: Record<string, unknown> = {};
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try { parsed = JSON.parse(jsonMatch[0]); }
+      catch (_) {
+        try { parsed = JSON.parse(jsonMatch[0].replace(/,(\s*[}\]])/g, "$1")); }
+        catch (_) {
+          try { parsed = JSON.parse(jsonrepair(jsonMatch[0])); }
+          catch (_) {
+            try {
+              const stripped = jsonMatch[0].replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "").replace(/,(\s*[}\]])/g, "$1");
+              parsed = JSON.parse(stripped);
+            } catch (_) { throw new Error("Could not parse AI response"); }
+          }
+        }
+      }
+    } else {
+      throw new Error("No JSON found in AI response");
+    }
+
+    // ── Parse flat fields → rich objects ─────────────────────────────────
+    const rawSlides = Array.isArray(parsed.slides) ? (parsed.slides as Record<string, unknown>[]) : [];
+
+    const parseEdges = (edgeStr: string): [number, number][] => {
+      if (!edgeStr) return [];
+      return edgeStr.split(",").map(e => {
+        const [a, b] = e.trim().split(">").map(Number);
+        return [isNaN(a) ? 0 : a, isNaN(b) ? 1 : b] as [number, number];
+      });
+    };
+
+    const slides = rawSlides.map((sl, idx) => ({
+      n: Number(sl.n ?? idx + 1),
+      type: String(sl.type ?? "content"),
+      t: String(sl.t ?? `Slide ${idx + 1}`),
+      sub: String(sl.sub ?? ""),
+      bullets: ["b1","b2","b3","b4","b5","b6"]
+        .map(k => String(sl[k] ?? "")).filter(Boolean),
+      ki: String(sl.ki ?? ""),
+      diag: String(sl.diag ?? "none"),
+      nodes: String(sl.nodes ?? "").split("|").map(n => n.trim()).filter(Boolean),
+      edges: parseEdges(String(sl.edges ?? "")),
+    }));
+
+    const parsePairs = (str: string, sep2: string) =>
+      String(str ?? "").split("||").map(entry => {
+        const parts = entry.split(sep2);
+        return parts.length >= 2 ? parts : null;
+      }).filter(Boolean) as string[][];
+
+    const faq = parsePairs(String(parsed.faq ?? ""), "::").map(([q, ...a]) => ({
+      question: q.trim(), answer: a.join("::").trim(),
+    }));
+    const refs = parsePairs(String(parsed.refs ?? ""), "::").map(([t, ...d]) => ({
+      term: t.trim(), definition: d.join("::").trim(),
+    }));
+    const conditions = parsePairs(String(parsed.conditions ?? ""), "::").map(([n, f, c]) => ({
+      name: (n ?? "").trim(), features: (f ?? "").trim(), clue: (c ?? "").trim(),
+    }));
+    const redflags = String(parsed.redflags ?? "").split("||").map(s => s.trim()).filter(Boolean);
+
+    res.json({
+      title: String(parsed.title ?? prompt),
+      subtitle: String(parsed.subtitle ?? ""),
+      slides,
+      faq,
+      refs,
+      conditions,
+      redflags,
+    });
+  } catch (err) {
+    req.log.error({ err }, "Error generating slides");
+    res.status(500).json({ error: "Slide generation failed" });
+  }
+});
+
 router.post("/ai/generate-presentation", async (req, res) => {
   try {
     const { prompt, slideCount } = req.body;

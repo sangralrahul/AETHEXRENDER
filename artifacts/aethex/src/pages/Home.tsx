@@ -18,7 +18,7 @@ const trustedBrands = [
 
 const testimonials = [
   {
-    quote: "AETHEX is the only place I buy my stethoscopes and books. Fast delivery, genuine products.",
+    quote: "aethex is the only place I buy my stethoscopes and books. Fast delivery, genuine products.",
     name: "Dr. Priya Sharma",
     title: "MBBS, AIIMS Delhi",
     initials: "PS",
@@ -246,7 +246,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-display font-bold text-foreground mb-4">Doctor Recommended</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">Hear what medical professionals across India have to say about AETHEX.</p>
+            <p className="text-muted-foreground max-w-2xl mx-auto">Hear what medical professionals across India have to say about aethex.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -283,7 +283,7 @@ export default function Home() {
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/20 text-accent font-semibold text-sm mb-6 border border-accent/30">
                   <BrainCircuit className="w-4 h-4" />
-                  SYNAPSE — AETHEX AI Suite
+                  SYNAPSE — aethex AI Suite
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-display font-bold text-white mb-6 leading-tight">
                   Your smart companion for medical queries & product choices.

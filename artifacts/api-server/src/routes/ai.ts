@@ -276,18 +276,9 @@ RULES:
         .replace(/\u03B4/g, "delta").replace(/\u03BC/g, "mu").replace(/\u03C9/g, "omega")
         .replace(/[^\x00-\xFF]/g, "");
 
-    // ── Colour palette ────────────────────────────────────────────────────
+    // ── Dimensions & shared constants ─────────────────────────────────────
     const W = 842, H = 595;
-    const DARK      = rgb(0.05, 0.08, 0.15);
-    const TEAL      = rgb(0.08, 0.65, 0.52);
-    const TEAL_DIM  = rgb(0.05, 0.42, 0.34);
-    const TEAL_BRT  = rgb(0.15, 0.75, 0.62);
-    const WHITE     = rgb(1, 1, 1);
-    const GREY      = rgb(0.5,  0.52, 0.55);
-    const BODY      = rgb(0.12, 0.15, 0.2);
-    const LIGHT_BG  = rgb(0.96, 0.97, 0.98);
-    const NODE_BG   = rgb(0.90, 0.97, 0.95);
-    const DIVIDER   = rgb(0.80, 0.88, 0.86);
+    const WHITE = rgb(1, 1, 1);
 
     // ── PDF setup ─────────────────────────────────────────────────────────
     const pdfDoc   = await PDFDocument.create();
@@ -295,8 +286,9 @@ RULES:
     const regFont  = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const oblFont  = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
+    // ── Text wrap ─────────────────────────────────────────────────────────
     const wrap = (text: string, font: typeof regFont, size: number, maxW: number): string[] => {
-      const words = text.split(" ");
+      const words = String(text ?? "").split(" ");
       const lines: string[] = [];
       let cur = "";
       for (const w of words) {
@@ -308,171 +300,323 @@ RULES:
       return lines;
     };
 
-    // Mind-map helper ─────────────────────────────────────────────────────
-    const drawMindMap = (page: ReturnType<typeof pdfDoc.addPage>, cx: number, cy: number, center: string, nodes: string[]) => {
+    // ── 6 rotating slide themes ───────────────────────────────────────────
+    type Theme = {
+      bg: ReturnType<typeof rgb>; header: ReturnType<typeof rgb>; headerText: ReturnType<typeof rgb>;
+      accent: ReturnType<typeof rgb>; accentDim: ReturnType<typeof rgb>; accentBrt: ReturnType<typeof rgb>;
+      bodyText: ReturnType<typeof rgb>; subText: ReturnType<typeof rgb>;
+      colDivider: ReturnType<typeof rgb>; rightBg: ReturnType<typeof rgb>;
+      nodeBg: ReturnType<typeof rgb>; nodeText: ReturnType<typeof rgb>;
+      footerBg: ReturnType<typeof rgb>; footerText: ReturnType<typeof rgb>;
+      sepLine: ReturnType<typeof rgb>;
+    };
+    const THEMES: Theme[] = [
+      { // 0 — Dark Navy + Teal
+        bg: rgb(0.05, 0.08, 0.15),        header: rgb(0.03, 0.05, 0.10),
+        headerText: WHITE,                 accent: rgb(0.08, 0.65, 0.52),
+        accentDim: rgb(0.05, 0.38, 0.30), accentBrt: rgb(0.20, 0.82, 0.66),
+        bodyText: rgb(0.82, 0.90, 0.88),  subText: rgb(0.55, 0.68, 0.65),
+        colDivider: rgb(0.14, 0.22, 0.28),rightBg: rgb(0.04, 0.10, 0.18),
+        nodeBg: rgb(0.08, 0.20, 0.18),    nodeText: rgb(0.75, 0.95, 0.88),
+        footerBg: rgb(0.04, 0.38, 0.30),  footerText: WHITE,
+        sepLine: rgb(0.12, 0.22, 0.22),
+      },
+      { // 1 — Clean White + Teal
+        bg: rgb(0.97, 0.98, 0.99),        header: rgb(0.05, 0.08, 0.15),
+        headerText: WHITE,                 accent: rgb(0.08, 0.62, 0.50),
+        accentDim: rgb(0.05, 0.42, 0.34), accentBrt: rgb(0.08, 0.62, 0.50),
+        bodyText: rgb(0.10, 0.13, 0.20),  subText: rgb(0.42, 0.46, 0.52),
+        colDivider: rgb(0.82, 0.88, 0.86),rightBg: rgb(0.92, 0.97, 0.95),
+        nodeBg: rgb(0.88, 0.97, 0.94),    nodeText: rgb(0.06, 0.30, 0.24),
+        footerBg: rgb(0.05, 0.08, 0.15),  footerText: WHITE,
+        sepLine: rgb(0.85, 0.88, 0.90),
+      },
+      { // 2 — Deep Blue + Gold
+        bg: rgb(0.06, 0.10, 0.24),        header: rgb(0.04, 0.06, 0.16),
+        headerText: WHITE,                 accent: rgb(0.94, 0.70, 0.10),
+        accentDim: rgb(0.70, 0.50, 0.06), accentBrt: rgb(1.0, 0.85, 0.30),
+        bodyText: rgb(0.85, 0.90, 0.97),  subText: rgb(0.60, 0.68, 0.82),
+        colDivider: rgb(0.14, 0.22, 0.44),rightBg: rgb(0.05, 0.09, 0.20),
+        nodeBg: rgb(0.10, 0.18, 0.38),    nodeText: rgb(1.0, 0.88, 0.40),
+        footerBg: rgb(0.70, 0.50, 0.06),  footerText: WHITE,
+        sepLine: rgb(0.12, 0.20, 0.40),
+      },
+      { // 3 — Forest Green + Lime
+        bg: rgb(0.04, 0.16, 0.13),        header: rgb(0.02, 0.10, 0.08),
+        headerText: WHITE,                 accent: rgb(0.22, 0.88, 0.62),
+        accentDim: rgb(0.10, 0.55, 0.38), accentBrt: rgb(0.35, 0.98, 0.72),
+        bodyText: rgb(0.80, 0.96, 0.88),  subText: rgb(0.50, 0.74, 0.64),
+        colDivider: rgb(0.10, 0.28, 0.22),rightBg: rgb(0.05, 0.22, 0.17),
+        nodeBg: rgb(0.06, 0.28, 0.22),    nodeText: rgb(0.70, 0.98, 0.82),
+        footerBg: rgb(0.10, 0.55, 0.38),  footerText: WHITE,
+        sepLine: rgb(0.10, 0.26, 0.20),
+      },
+      { // 4 — Charcoal + Violet
+        bg: rgb(0.10, 0.10, 0.13),        header: rgb(0.06, 0.06, 0.09),
+        headerText: WHITE,                 accent: rgb(0.60, 0.40, 0.96),
+        accentDim: rgb(0.38, 0.24, 0.70), accentBrt: rgb(0.78, 0.60, 1.0),
+        bodyText: rgb(0.86, 0.86, 0.92),  subText: rgb(0.58, 0.58, 0.68),
+        colDivider: rgb(0.20, 0.20, 0.28),rightBg: rgb(0.08, 0.08, 0.14),
+        nodeBg: rgb(0.16, 0.14, 0.26),    nodeText: rgb(0.82, 0.70, 1.0),
+        footerBg: rgb(0.38, 0.24, 0.70),  footerText: WHITE,
+        sepLine: rgb(0.20, 0.18, 0.28),
+      },
+      { // 5 — Slate Blue + Cyan
+        bg: rgb(0.93, 0.95, 0.98),        header: rgb(0.10, 0.16, 0.44),
+        headerText: WHITE,                 accent: rgb(0.10, 0.52, 0.90),
+        accentDim: rgb(0.08, 0.38, 0.72), accentBrt: rgb(0.25, 0.65, 0.98),
+        bodyText: rgb(0.08, 0.12, 0.26),  subText: rgb(0.36, 0.42, 0.58),
+        colDivider: rgb(0.76, 0.82, 0.92),rightBg: rgb(0.86, 0.91, 0.97),
+        nodeBg: rgb(0.78, 0.88, 0.98),    nodeText: rgb(0.06, 0.24, 0.58),
+        footerBg: rgb(0.10, 0.16, 0.44),  footerText: WHITE,
+        sepLine: rgb(0.80, 0.85, 0.92),
+      },
+    ];
+
+    // ── Professional Mind-Map helper ──────────────────────────────────────
+    const drawMindMap = (
+      p: ReturnType<typeof pdfDoc.addPage>,
+      cx: number, cy: number,
+      center: string, nodes: string[],
+      th: Theme,
+    ) => {
       const safeNodes = (nodes ?? []).slice(0, 6);
-      const n = safeNodes.length;
-      const RX = 95, RY = 68;
-      // Lines first (below boxes)
+      const n = safeNodes.length || 1;
+      const RX = 105, RY = 72;
+
+      // Draw connector lines with dots at endpoints
       safeNodes.forEach((_, i) => {
         const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
-        page.drawLine({ start: { x: cx, y: cy }, end: { x: cx + Math.cos(angle) * RX, y: cy + Math.sin(angle) * RY }, thickness: 1, color: DIVIDER });
+        const nx = cx + Math.cos(angle) * RX, ny = cy + Math.sin(angle) * RY;
+        p.drawLine({ start: { x: cx, y: cy }, end: { x: nx, y: ny }, thickness: 1.2, color: th.colDivider });
+        p.drawCircle({ x: nx, y: ny, size: 3, color: th.accent });
       });
-      // Center box
-      const cl = s(center).substring(0, 20);
+
+      // Center shadow + main box
+      p.drawRectangle({ x: cx - 50, y: cy - 18, width: 104, height: 34, color: th.accentDim });
+      p.drawRectangle({ x: cx - 52, y: cy - 16, width: 104, height: 34, color: th.accent });
+      const cl = s(center).substring(0, 18);
       const clW = boldFont.widthOfTextAtSize(cl, 8.5);
-      page.drawRectangle({ x: cx - 52, y: cy - 16, width: 104, height: 32, color: TEAL });
-      page.drawText(cl, { x: cx - Math.min(clW / 2, 46), y: cy - 4, size: 8.5, font: boldFont, color: WHITE });
-      // Node boxes
+      p.drawText(cl, { x: cx - Math.min(clW / 2, 46), y: cy - 3, size: 8.5, font: boldFont, color: WHITE });
+
+      // Node shadow + boxes
       safeNodes.forEach((node, i) => {
         const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
-        const nx = cx + Math.cos(angle) * RX;
-        const ny = cy + Math.sin(angle) * RY;
-        const label = s(node).substring(0, 22);
+        const nx = cx + Math.cos(angle) * RX, ny = cy + Math.sin(angle) * RY;
+        const label = s(node).substring(0, 20);
         const lW = regFont.widthOfTextAtSize(label, 7.5);
-        const boxW = Math.min(Math.max(lW + 14, 58), 82);
-        page.drawRectangle({ x: nx - boxW / 2, y: ny - 12, width: boxW, height: 24, color: NODE_BG });
-        page.drawRectangle({ x: nx - boxW / 2, y: ny + 10, width: boxW, height: 2, color: TEAL });
-        page.drawText(label, { x: nx - lW / 2, y: ny - 4, size: 7.5, font: regFont, color: BODY });
+        const bw = Math.min(Math.max(lW + 16, 60), 85);
+        // shadow
+        p.drawRectangle({ x: nx - bw / 2 + 2, y: ny - 13, width: bw, height: 24, color: th.accentDim });
+        // card
+        p.drawRectangle({ x: nx - bw / 2, y: ny - 11, width: bw, height: 24, color: th.nodeBg });
+        // top accent stripe
+        p.drawRectangle({ x: nx - bw / 2, y: ny + 11, width: bw, height: 2, color: th.accent });
+        p.drawText(label, { x: nx - lW / 2, y: ny - 3, size: 7.5, font: regFont, color: th.nodeText });
       });
     };
 
     // ── TITLE SLIDE ───────────────────────────────────────────────────────
     {
       const p = pdfDoc.addPage([W, H]);
+      const NAVY = rgb(0.04, 0.06, 0.14);
+      const TEAL = rgb(0.08, 0.65, 0.52);
+      const TEAL_D = rgb(0.04, 0.38, 0.30);
+
       // Full dark background
-      p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: DARK });
-      // Top & bottom teal strips
-      p.drawRectangle({ x: 0, y: H - 5, width: W, height: 5, color: TEAL });
-      p.drawRectangle({ x: 0, y: 0,     width: W, height: 5, color: TEAL });
-      // Left accent bar
-      p.drawRectangle({ x: 0, y: 0, width: 7, height: H, color: TEAL });
-      // Semi-dark panel behind title
-      p.drawRectangle({ x: 7, y: H / 2 - 90, width: W * 0.62, height: 180, color: rgb(0.08, 0.13, 0.22) });
-      // Title
-      const tLines = wrap(s(pres.title || prompt), boldFont, 32, W * 0.58 - 40);
-      tLines.forEach((ln, i) => p.drawText(ln, { x: 30, y: H / 2 + 52 - i * 42, size: 32, font: boldFont, color: WHITE }));
+      p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: NAVY });
+      // Diagonal decorative band (top-right corner) — stacked rotated strips
+      for (let i = 0; i < 5; i++) {
+        p.drawRectangle({ x: W - 180 + i * 28, y: H - 5, width: 20, height: H + 20,
+          color: rgb(0.07 + i * 0.01, 0.12 + i * 0.01, 0.24 + i * 0.01),
+          rotate: { type: "degrees", angle: -18 } });
+      }
+      // Accent strips
+      p.drawRectangle({ x: 0, y: 0, width: W, height: 6, color: TEAL });
+      p.drawRectangle({ x: 0, y: H - 6, width: W, height: 6, color: TEAL });
+      p.drawRectangle({ x: 0, y: 0, width: 8, height: H, color: TEAL });
+      // Title panel
+      p.drawRectangle({ x: 8, y: H / 2 - 100, width: W * 0.60, height: 200, color: rgb(0.07, 0.12, 0.22) });
+      // L-bracket corner decoration (top-left of title box)
+      p.drawRectangle({ x: 10, y: H / 2 + 88, width: 40, height: 4, color: TEAL });
+      p.drawRectangle({ x: 10, y: H / 2 + 56, width: 4, height: 36, color: TEAL });
+      // Title text
+      const tLines = wrap(s(pres.title || prompt), boldFont, 30, W * 0.55 - 30);
+      tLines.slice(0, 3).forEach((ln, i) =>
+        p.drawText(ln, { x: 30, y: H / 2 + 50 - i * 38, size: 30, font: boldFont, color: WHITE }));
       // Subtitle
-      if (pres.subtitle) p.drawText(s(pres.subtitle).substring(0, 80), { x: 30, y: H / 2 - 48, size: 13, font: oblFont, color: rgb(0.60, 0.88, 0.82) });
-      // Slide count badge
-      const badge = `${pres.slides.length} slides`;
-      p.drawRectangle({ x: 30, y: H / 2 - 80, width: boldFont.widthOfTextAtSize(badge, 10) + 16, height: 22, color: TEAL_DIM });
-      p.drawText(badge, { x: 38, y: H / 2 - 73, size: 10, font: boldFont, color: WHITE });
-      // Topic overview mini-mind-map on right
-      const overviewNodes = pres.slides.slice(0, 6).map(sl => s(sl.title).substring(0, 16));
-      const overviewCenter = s(pres.title || prompt).substring(0, 14);
-      drawMindMap(p, W * 0.81, H / 2, overviewCenter, overviewNodes);
-      // Bottom info bar
-      p.drawRectangle({ x: 0, y: 0, width: W, height: 30, color: TEAL_DIM });
-      p.drawText(`SYNAPSE - aethex  |  Medical Education Series  |  ${pres.slides.length} Slides`, { x: 20, y: 9, size: 9, font: regFont, color: rgb(0.78, 0.94, 0.90) });
+      if (pres.subtitle)
+        p.drawText(s(pres.subtitle).substring(0, 75), { x: 30, y: H / 2 - 58, size: 12, font: oblFont, color: rgb(0.60, 0.88, 0.82) });
+      // Badges
+      const badge1 = `${pres.slides.length} Slides`;
+      p.drawRectangle({ x: 30, y: H / 2 - 85, width: boldFont.widthOfTextAtSize(badge1, 9) + 18, height: 20, color: TEAL_D });
+      p.drawText(badge1, { x: 39, y: H / 2 - 79, size: 9, font: boldFont, color: WHITE });
+      p.drawRectangle({ x: 30 + boldFont.widthOfTextAtSize(badge1, 9) + 28, y: H / 2 - 85,
+        width: boldFont.widthOfTextAtSize("Medical Education", 9) + 18, height: 20, color: rgb(0.08, 0.28, 0.24) });
+      p.drawText("Medical Education", { x: 30 + boldFont.widthOfTextAtSize(badge1, 9) + 37, y: H / 2 - 79, size: 9, font: regFont, color: rgb(0.60, 0.90, 0.78) });
+      // Topic mini-map on right
+      const ovNodes = pres.slides.slice(0, 6).map(sl => s(sl.title).substring(0, 15));
+      drawMindMap(p, W * 0.80, H / 2 + 5, s(pres.title).substring(0, 13), ovNodes, THEMES[0]);
+      // Bottom bar
+      p.drawRectangle({ x: 0, y: 0, width: W, height: 32, color: TEAL_D });
+      p.drawText(`SYNAPSE - aethex  |  Medical Education Series  |  ${pres.slides.length} slides`, { x: 22, y: 10, size: 9, font: regFont, color: rgb(0.75, 0.94, 0.88) });
+      p.drawText("SYNAPSE", { x: W - 80, y: 10, size: 9, font: boldFont, color: rgb(0.30, 0.88, 0.70) });
     }
 
     // ── CONTENT SLIDES ────────────────────────────────────────────────────
-    const HEADER_H = 70;
-    const FOOTER_H = 46;
-    const LEFT_W   = 482;
-    const RIGHT_X  = LEFT_W + 16;
-    const RIGHT_W  = W - RIGHT_X - 16;
+    const HEADER_H = 74;
+    const FOOTER_H = 42;
+    const LEFT_W   = 464;
+    const RIGHT_X  = 480;
+    const RIGHT_W  = W - RIGHT_X - 12;
     const MAP_CX   = RIGHT_X + RIGHT_W / 2;
-    const MAP_CY   = FOOTER_H + (H - HEADER_H - FOOTER_H) / 2 + 8;
+    const MAP_CY   = FOOTER_H + (H - HEADER_H - FOOTER_H) / 2 + 6;
+    const totalSlides = pres.slides.length;
 
-    for (const slide of pres.slides) {
+    for (let si = 0; si < pres.slides.length; si++) {
+      const slide = pres.slides[si];
+      const th = THEMES[si % THEMES.length];
       const p = pdfDoc.addPage([W, H]);
 
-      // Background
-      p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: LIGHT_BG });
-      // Right-column background tint
-      p.drawRectangle({ x: RIGHT_X - 4, y: FOOTER_H, width: RIGHT_W + 8, height: H - HEADER_H - FOOTER_H, color: rgb(0.93, 0.97, 0.96) });
+      // ── Full background ──
+      p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: th.bg });
 
-      // ── Header ──
-      p.drawRectangle({ x: 0, y: H - HEADER_H, width: W, height: HEADER_H, color: DARK });
-      p.drawRectangle({ x: 0, y: H - HEADER_H - 3, width: W, height: 3, color: TEAL });
-      // Slide number badge
-      p.drawRectangle({ x: W - 54, y: H - HEADER_H + 10, width: 44, height: 44, color: TEAL });
-      const numStr = String(slide.slideNumber);
-      const numW = boldFont.widthOfTextAtSize(numStr, 17);
-      p.drawText(numStr, { x: W - 54 + (44 - numW) / 2, y: H - HEADER_H + 23, size: 17, font: boldFont, color: WHITE });
-      // Slide title
-      const stLines = wrap(s(slide.title || `Slide ${slide.slideNumber}`), boldFont, 19, W - 110);
-      stLines.slice(0, 2).forEach((ln, i) => p.drawText(ln, { x: 18, y: H - 42 - i * 23, size: 19, font: boldFont, color: WHITE }));
-
-      // ── Divider ──
-      p.drawRectangle({ x: LEFT_W + 6, y: FOOTER_H + 8, width: 1.5, height: H - HEADER_H - FOOTER_H - 16, color: DIVIDER });
-
-      // ── Left column: Bullets ──
-      const bullets = (slide.bullets ?? []).slice(0, 6);
-      const colH = H - HEADER_H - FOOTER_H - 20;
-      const slotH = Math.floor(colH / bullets.length);
-      let yB = H - HEADER_H - 16;
-
-      bullets.forEach((bullet, bi) => {
-        const slotTop = H - HEADER_H - 16 - bi * slotH;
-        // Number badge
-        p.drawRectangle({ x: 14, y: slotTop - 20, width: 18, height: 18, color: TEAL });
-        const biStr = String(bi + 1);
-        p.drawText(biStr, { x: 14 + (18 - boldFont.widthOfTextAtSize(biStr, 8)) / 2, y: slotTop - 16, size: 8, font: boldFont, color: WHITE });
-        // Bullet text
-        const bLines = wrap(s(bullet), regFont, 11, LEFT_W - 44);
-        bLines.slice(0, 4).forEach((bl, li) => {
-          const ty = slotTop - 16 - li * 13;
-          if (ty > FOOTER_H + 4) p.drawText(bl, { x: 38, y: ty, size: 11, font: regFont, color: BODY });
+      // ── Decorative diagonal stripe in top-right (unique per theme) ──
+      for (let d = 0; d < 4; d++) {
+        p.drawRectangle({
+          x: W - 60 - d * 22, y: H - 8, width: 14, height: H + 10,
+          color: th.accentDim,
+          rotate: { type: "degrees", angle: -(12 + d * 2) },
+          opacity: 0.18 + d * 0.04,
         });
-        // Subtle separator line between bullets
-        if (bi < bullets.length - 1) {
-          p.drawRectangle({ x: 14, y: slotTop - slotH + 4, width: LEFT_W - 24, height: 0.5, color: rgb(0.88, 0.90, 0.92) });
-        }
-      });
-
-      // ── Right column: Mind Map ──
-      p.drawText("MIND MAP", { x: RIGHT_X + 6, y: H - HEADER_H - 13, size: 7, font: boldFont, color: GREY });
-      if (slide.mindMap?.nodes?.length) {
-        drawMindMap(p, MAP_CX, MAP_CY, slide.mindMap.center, slide.mindMap.nodes);
       }
 
-      // ── Footer: Key Fact bar ──
-      p.drawRectangle({ x: 0, y: 0, width: W, height: FOOTER_H, color: TEAL_DIM });
-      p.drawText("KEY FACT", { x: 12, y: FOOTER_H - 15, size: 7.5, font: boldFont, color: TEAL_BRT });
-      p.drawRectangle({ x: 12, y: FOOTER_H - 20, width: boldFont.widthOfTextAtSize("KEY FACT", 7.5), height: 1.5, color: TEAL_BRT });
-      const kfLines = wrap(s(slide.keyFact ?? ""), regFont, 10, W - 96);
-      kfLines.slice(0, 2).forEach((kfl, i) => p.drawText(kfl, { x: 70, y: FOOTER_H - 14 - i * 13, size: 10, font: regFont, color: WHITE }));
-      p.drawText(`${slide.slideNumber} / ${pres.slides.length}`, { x: W - 46, y: 10, size: 8, font: boldFont, color: TEAL_BRT });
+      // ── Right column background ──
+      p.drawRectangle({ x: RIGHT_X - 6, y: FOOTER_H, width: RIGHT_W + 12, height: H - HEADER_H - FOOTER_H, color: th.rightBg });
+      // Right column top accent bar
+      p.drawRectangle({ x: RIGHT_X - 6, y: H - HEADER_H - 4, width: RIGHT_W + 12, height: 4, color: th.accent });
+
+      // ── Header ──
+      p.drawRectangle({ x: 0, y: H - HEADER_H, width: W, height: HEADER_H, color: th.header });
+      p.drawRectangle({ x: 0, y: H - HEADER_H - 3, width: W, height: 3, color: th.accent });
+      // Category label
+      const catLabel = "MEDICAL EDUCATION  |  SYNAPSE";
+      p.drawText(catLabel, { x: 18, y: H - 16, size: 7, font: regFont, color: th.subText });
+      // Slide title
+      const stLines = wrap(s(slide.title || `Slide ${slide.slideNumber}`), boldFont, 19, LEFT_W - 30);
+      stLines.slice(0, 2).forEach((ln, i) =>
+        p.drawText(ln, { x: 18, y: H - 40 - i * 22, size: 19, font: boldFont, color: th.headerText }));
+      // Slide number badge (accent square with shadow)
+      p.drawRectangle({ x: W - 58, y: H - HEADER_H + 6, width: 46, height: 46, color: th.accentDim });
+      p.drawRectangle({ x: W - 60, y: H - HEADER_H + 8, width: 46, height: 46, color: th.accent });
+      const numStr = String(slide.slideNumber);
+      const numW = boldFont.widthOfTextAtSize(numStr, 18);
+      p.drawText(numStr, { x: W - 60 + (46 - numW) / 2, y: H - HEADER_H + 22, size: 18, font: boldFont, color: WHITE });
+
+      // ── Column divider ──
+      p.drawRectangle({ x: RIGHT_X - 10, y: FOOTER_H + 8, width: 2, height: H - HEADER_H - FOOTER_H - 16, color: th.colDivider });
+
+      // ── LEFT COLUMN — Bullets ──
+      const bullets = (slide.bullets ?? []).slice(0, 6);
+      const colH = H - HEADER_H - FOOTER_H - 16;
+      const slotH = Math.floor(colH / Math.max(bullets.length, 1));
+
+      bullets.forEach((bullet, bi) => {
+        const slotTop = H - HEADER_H - 12 - bi * slotH;
+        const midY = slotTop - slotH / 2;
+
+        // Numbered circle badge (drawn as overlapping rects to approximate circle)
+        p.drawRectangle({ x: 12, y: midY - 10, width: 20, height: 20, color: th.accentDim });
+        p.drawRectangle({ x: 10, y: midY - 12, width: 20, height: 20, color: th.accent });
+        const biStr = String(bi + 1);
+        p.drawText(biStr, { x: 10 + (20 - boldFont.widthOfTextAtSize(biStr, 8.5)) / 2, y: midY - 7, size: 8.5, font: boldFont, color: WHITE });
+
+        // Bullet text — larger than before
+        const bLines = wrap(s(bullet), regFont, 11.5, LEFT_W - 46);
+        bLines.slice(0, 3).forEach((bl, li) => {
+          const ty = slotTop - 14 - li * 14;
+          if (ty > FOOTER_H + 4)
+            p.drawText(bl, { x: 38, y: ty, size: 11.5, font: li === 0 ? regFont : oblFont, color: th.bodyText });
+        });
+
+        // Separator between bullets
+        if (bi < bullets.length - 1)
+          p.drawRectangle({ x: 10, y: slotTop - slotH + 2, width: LEFT_W - 16, height: 0.5, color: th.sepLine });
+      });
+
+      // ── RIGHT COLUMN — Mind Map + Key Fact ──
+      // "CONCEPT MAP" label
+      p.drawText("CONCEPT MAP", { x: RIGHT_X + 4, y: H - HEADER_H - 14, size: 7, font: boldFont, color: th.accentBrt });
+
+      if (slide.mindMap?.nodes?.length) {
+        // Draw map in upper part of right column
+        drawMindMap(p, MAP_CX, FOOTER_H + (H - HEADER_H - FOOTER_H) * 0.42, slide.mindMap.center, slide.mindMap.nodes, th);
+      }
+
+      // Key Fact card at bottom of right column
+      const KF_Y = FOOTER_H + 4;
+      const KF_H = 56;
+      p.drawRectangle({ x: RIGHT_X - 4, y: KF_Y, width: RIGHT_W + 8, height: KF_H, color: th.accentDim });
+      p.drawRectangle({ x: RIGHT_X - 6, y: KF_Y + 2, width: RIGHT_W + 8, height: KF_H, color: th.header });
+      p.drawRectangle({ x: RIGHT_X - 6, y: KF_Y + KF_H - 2, width: RIGHT_W + 8, height: 3, color: th.accent });
+      p.drawText("KEY INSIGHT", { x: RIGHT_X, y: KF_Y + KF_H - 12, size: 7, font: boldFont, color: th.accentBrt });
+      const kfLines = wrap(s(slide.keyFact ?? ""), regFont, 9.5, RIGHT_W - 10);
+      kfLines.slice(0, 3).forEach((kfl, i) =>
+        p.drawText(kfl, { x: RIGHT_X, y: KF_Y + KF_H - 24 - i * 12, size: 9.5, font: regFont, color: th.footerText }));
+
+      // ── FOOTER — Progress + branding ──
+      p.drawRectangle({ x: 0, y: 0, width: W, height: FOOTER_H, color: th.footerBg });
+      // Progress dots
+      const DOT_R = 3.5, DOT_GAP = 12, DOT_START = 20;
+      for (let d = 0; d < totalSlides; d++) {
+        p.drawCircle({ x: DOT_START + d * DOT_GAP, y: FOOTER_H / 2, size: d === si ? DOT_R : 2,
+          color: d === si ? th.accentBrt : th.accentDim });
+      }
+      // Branding
+      p.drawText("SYNAPSE - aethex", { x: W / 2 - 40, y: FOOTER_H / 2 - 5, size: 8, font: boldFont, color: th.accentBrt });
+      p.drawText(`${slide.slideNumber} / ${totalSlides}`, { x: W - 44, y: FOOTER_H / 2 - 5, size: 8, font: boldFont, color: th.accentBrt });
     }
 
     // ── QUICK REFERENCE PAGE ──────────────────────────────────────────────
     if ((pres.quickReference ?? []).length) {
+      const th = THEMES[1]; // clean white for reference page
       const p = pdfDoc.addPage([W, H]);
-      p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: LIGHT_BG });
-      p.drawRectangle({ x: 0, y: H - 62, width: W, height: 62, color: DARK });
-      p.drawRectangle({ x: 0, y: H - 65, width: W, height: 3, color: TEAL });
-      p.drawText("QUICK REFERENCE GUIDE", { x: 20, y: H - 42, size: 20, font: boldFont, color: WHITE });
-      p.drawText("Key terminology for this presentation", { x: 20, y: H - 58, size: 9, font: oblFont, color: rgb(0.60, 0.82, 0.78) });
+      p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: th.bg });
+      // Header
+      p.drawRectangle({ x: 0, y: H - 68, width: W, height: 68, color: th.header });
+      p.drawRectangle({ x: 0, y: H - 71, width: W, height: 3, color: th.accent });
+      // Decorative diagonal on header right
+      for (let d = 0; d < 4; d++) {
+        p.drawRectangle({ x: W - 50 - d * 22, y: H - 5, width: 14, height: 80,
+          color: th.accentDim, rotate: { type: "degrees", angle: -15 }, opacity: 0.2 + d * 0.05 });
+      }
+      p.drawText("QUICK REFERENCE GUIDE", { x: 22, y: H - 40, size: 22, font: boldFont, color: WHITE });
+      p.drawText("Key clinical terminology  |  SYNAPSE - aethex", { x: 22, y: H - 60, size: 9, font: oblFont, color: rgb(0.60, 0.82, 0.78) });
 
       const refs = (pres.quickReference ?? []).slice(0, 10);
-      const COLS = 2;
-      const colW = (W - 48) / COLS;
-      const ROW_H = 64;
-
+      const COLS = 2, colW = (W - 52) / COLS, ROW_H = 62;
       refs.forEach((ref, i) => {
-        const col = i % COLS;
-        const row = Math.floor(i / COLS);
-        const rx = 16 + col * (colW + 16);
-        const ry = H - 80 - row * ROW_H;
-        // Card background
-        p.drawRectangle({ x: rx, y: ry - ROW_H + 10, width: colW, height: ROW_H - 4, color: WHITE });
-        // Teal top accent
-        p.drawRectangle({ x: rx, y: ry + 8, width: colW, height: 3, color: TEAL });
-        // Term
-        p.drawText(s(ref.term), { x: rx + 10, y: ry - 6, size: 11, font: boldFont, color: DARK });
-        // Definition (wrapped)
-        const defLines = wrap(s(ref.definition), regFont, 9, colW - 20);
-        defLines.slice(0, 3).forEach((dl, di) => {
-          p.drawText(dl, { x: rx + 10, y: ry - 22 - di * 11, size: 9, font: regFont, color: GREY });
-        });
+        const col = i % COLS, row = Math.floor(i / COLS);
+        const rx = 16 + col * (colW + 20), ry = H - 84 - row * ROW_H;
+        // shadow
+        p.drawRectangle({ x: rx + 3, y: ry - ROW_H + 7, width: colW, height: ROW_H - 2, color: rgb(0.82, 0.86, 0.90) });
+        // card
+        p.drawRectangle({ x: rx, y: ry - ROW_H + 9, width: colW, height: ROW_H - 2, color: WHITE });
+        // accent stripe
+        p.drawRectangle({ x: rx, y: ry + 6, width: colW, height: 4, color: th.accent });
+        // Number badge
+        p.drawRectangle({ x: rx + colW - 24, y: ry - 6, width: 18, height: 18, color: th.accent });
+        p.drawText(String(i + 1), { x: rx + colW - 20, y: ry - 1, size: 8, font: boldFont, color: WHITE });
+        // Term + definition
+        p.drawText(s(ref.term), { x: rx + 10, y: ry - 6, size: 11, font: boldFont, color: th.header });
+        const defLines = wrap(s(ref.definition), regFont, 9, colW - 22);
+        defLines.slice(0, 3).forEach((dl, di) =>
+          p.drawText(dl, { x: rx + 10, y: ry - 22 - di * 11.5, size: 9, font: regFont, color: th.subText }));
       });
 
-      // Footer branding
-      p.drawRectangle({ x: 0, y: 0, width: W, height: 28, color: TEAL_DIM });
-      p.drawText("SYNAPSE - aethex  |  Medical Education Series", { x: 20, y: 9, size: 9, font: regFont, color: rgb(0.78, 0.94, 0.90) });
+      // Footer
+      p.drawRectangle({ x: 0, y: 0, width: W, height: 30, color: th.footerBg });
+      p.drawText("SYNAPSE - aethex  |  Medical Education Series  |  All rights reserved", { x: 20, y: 9, size: 9, font: regFont, color: rgb(0.75, 0.88, 0.92) });
     }
 
     const pdfBytes = await pdfDoc.save();

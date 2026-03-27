@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import OpenAI from "openai";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
+import { jsonrepair } from "jsonrepair";
 
 const router: IRouter = Router();
 
@@ -213,9 +214,8 @@ STRICT RULES:
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error("Invalid AI response structure");
 
-    // Remove trailing commas (AI sometimes produces non-standard JSON)
-    const cleanJson = jsonMatch[0].replace(/,(\s*[}\]])/g, "$1");
-    const pres = JSON.parse(cleanJson) as {
+    // jsonrepair handles trailing commas, unescaped quotes, missing commas, etc.
+    const pres = JSON.parse(jsonrepair(jsonMatch[0])) as {
       title: string;
       subtitle: string;
       slides: Array<{

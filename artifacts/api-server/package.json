@@ -17,6 +17,7 @@
     "docx": "^9.6.1",
     "drizzle-orm": "catalog:",
     "express": "^5",
+    "jsonrepair": "^3.13.3",
     "openai": "^6.27.0",
     "pdf-lib": "^1.17.1",
     "pino": "^9",

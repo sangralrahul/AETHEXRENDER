@@ -228,9 +228,32 @@ STRICT RULES:
       quickReference: Array<{ term: string; definition: string }>;
     };
 
+    // ── Normalise AI output (AI sometimes returns numbers/arrays instead of strings) ──
+    pres.title = String(pres.title ?? "");
+    pres.subtitle = String(pres.subtitle ?? "");
+    if (!Array.isArray(pres.slides)) pres.slides = [];
+    for (const slide of pres.slides) {
+      slide.title    = String(slide.title    ?? "");
+      slide.keyFact  = String(slide.keyFact  ?? "");
+      if (!Array.isArray(slide.bullets)) slide.bullets = [];
+      slide.bullets  = slide.bullets.flatMap((b: unknown) =>
+        Array.isArray(b) ? (b as unknown[]).map(String) : [String(b)]
+      ).filter(Boolean);
+      if (slide.mindMap) {
+        slide.mindMap.center = String(slide.mindMap.center ?? "");
+        if (!Array.isArray(slide.mindMap.nodes)) slide.mindMap.nodes = [];
+        slide.mindMap.nodes  = slide.mindMap.nodes.map((n: unknown) => String(n)).filter(Boolean);
+      }
+    }
+    if (!Array.isArray(pres.quickReference)) pres.quickReference = [];
+    pres.quickReference = (pres.quickReference as unknown[]).map((r: unknown) => ({
+      term:       String((r as Record<string, unknown>)?.term       ?? ""),
+      definition: String((r as Record<string, unknown>)?.definition ?? ""),
+    }));
+
     // ── Sanitize for WinAnsi ──────────────────────────────────────────────
     const s = (str: string): string =>
-      (str ?? "")
+      String(str ?? "")
         .replace(/\u2192/g, "->").replace(/\u2190/g, "<-").replace(/\u2191/g, "^").replace(/\u2193/g, "v")
         .replace(/[\u2013\u2014]/g, "-").replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"')
         .replace(/\u2022/g, "-").replace(/\u00B7/g, "-").replace(/\u2026/g, "...").replace(/\u00D7/g, "x")

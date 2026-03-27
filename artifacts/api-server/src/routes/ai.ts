@@ -153,14 +153,10 @@ router.post("/ai/generate-image", async (req, res) => {
 router.post("/ai/generate-presentation", async (req, res) => {
   try {
     const { prompt, slideCount } = req.body;
-    if (!prompt) {
-      res.status(400).json({ error: "prompt is required" });
-      return;
-    }
+    if (!prompt) { res.status(400).json({ error: "prompt is required" }); return; }
 
     const count = Math.max(3, Math.min(30, parseInt(String(slideCount ?? 10)) || 10));
 
-    // 1 — Generate structured slide content via AI
     const completion = await openai.chat.completions.create({
       model: "gpt-5.2",
       max_completion_tokens: 8192,
@@ -168,20 +164,47 @@ router.post("/ai/generate-presentation", async (req, res) => {
         {
           role: "system",
           content:
-            "You are a medical presentation expert creating professional, clinically accurate presentations for Indian doctors and medical students. Return ONLY valid JSON, no markdown fences, no extra text. IMPORTANT: Use only plain ASCII characters in all text — no Unicode arrows, bullets, em-dashes, curly quotes, Greek letters, or any special symbols. Use plain hyphens (-), straight quotes, and spelled-out words (e.g. alpha, beta, degrees, >=) instead.",
+            "You are an expert medical educator creating comprehensive, standalone PDF presentations for Indian doctors and students. Responses must be information-dense so readers need no other source. Return ONLY valid JSON, zero markdown fences, zero extra text. CRITICAL: Use ONLY plain ASCII characters - no Unicode arrows (use ->), no em-dashes (use -), no curly quotes (use straight), no Greek letters (spell out: alpha, beta), no special symbols.",
         },
         {
           role: "user",
-          content: `Create a ${count}-slide presentation on: "${prompt}".
-Return JSON in this exact format:
+          content: `Create a comprehensive ${count}-slide medical presentation on: "${prompt}".
+
+Return ONLY this JSON structure (no extra keys, no extra text):
 {
-  "title": "Presentation title",
-  "subtitle": "Brief subtitle or tagline",
+  "title": "Full topic title",
+  "subtitle": "Targeted audience and scope",
   "slides": [
-    { "slideNumber": 1, "title": "Slide title", "bullets": ["point 1", "point 2", "point 3"] }
+    {
+      "slideNumber": 1,
+      "title": "Slide Title",
+      "bullets": [
+        "Detailed clinical point 1 with specific values or mechanism",
+        "Detailed clinical point 2 with classification or types",
+        "Detailed clinical point 3 with practical application",
+        "Detailed clinical point 4 with investigation or diagnosis",
+        "Detailed clinical point 5 with management or treatment",
+        "Detailed clinical point 6 with complications or prognosis"
+      ],
+      "keyFact": "Single high-yield fact or critical statistic (max 14 words)",
+      "mindMap": {
+        "center": "Core concept (2-3 words)",
+        "nodes": ["Node1 (2-3w)", "Node2 (2-3w)", "Node3 (2-3w)", "Node4 (2-3w)", "Node5 (2-3w)", "Node6 (2-3w)"]
+      }
+    }
+  ],
+  "quickReference": [
+    { "term": "Term", "definition": "Concise clinically accurate definition (max 18 words)" }
   ]
 }
-Include an intro slide, detailed content slides, and a conclusion slide. Keep bullets concise and medically accurate.`,
+
+STRICT RULES:
+- EXACTLY 6 bullet points per slide, each 10-18 words, clinically specific
+- keyFact: one crisp high-yield statement
+- mindMap.nodes: EXACTLY 6 items, each 2-3 words only
+- quickReference: 8-12 entries covering key terminology
+- First slide: Introduction/Overview; last slide: Summary/Key Takeaways
+- ASCII only throughout`,
         },
       ],
     });
@@ -193,156 +216,267 @@ Include an intro slide, detailed content slides, and a conclusion slide. Keep bu
     const pres = JSON.parse(jsonMatch[0]) as {
       title: string;
       subtitle: string;
-      slides: Array<{ slideNumber: number; title: string; bullets: string[] }>;
+      slides: Array<{
+        slideNumber: number;
+        title: string;
+        bullets: string[];
+        keyFact: string;
+        mindMap: { center: string; nodes: string[] };
+      }>;
+      quickReference: Array<{ term: string; definition: string }>;
     };
 
-    // Sanitize text so WinAnsi-encoded standard fonts can render it
-    const sanitize = (str: string): string =>
-      str
-        .replace(/→/g, "->").replace(/←/g, "<-").replace(/↑/g, "^").replace(/↓/g, "v")
-        .replace(/[–—]/g, "-").replace(/['']/g, "'").replace(/[""]/g, '"')
-        .replace(/•/g, "-").replace(/·/g, "-").replace(/…/g, "...").replace(/×/g, "x")
-        .replace(/≥/g, ">=").replace(/≤/g, "<=").replace(/±/g, "+/-").replace(/≠/g, "!=")
-        .replace(/°/g, " deg").replace(/µ/g, "u").replace(/α/g, "alpha")
-        .replace(/β/g, "beta").replace(/γ/g, "gamma").replace(/δ/g, "delta")
-        .replace(/[^\x00-\xFF]/g, "");   // strip any remaining non-Latin chars
+    // ── Sanitize for WinAnsi ──────────────────────────────────────────────
+    const s = (str: string): string =>
+      (str ?? "")
+        .replace(/\u2192/g, "->").replace(/\u2190/g, "<-").replace(/\u2191/g, "^").replace(/\u2193/g, "v")
+        .replace(/[\u2013\u2014]/g, "-").replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"')
+        .replace(/\u2022/g, "-").replace(/\u00B7/g, "-").replace(/\u2026/g, "...").replace(/\u00D7/g, "x")
+        .replace(/\u2265/g, ">=").replace(/\u2264/g, "<=").replace(/\u00B1/g, "+/-").replace(/\u2260/g, "!=")
+        .replace(/\u00B0/g, " deg").replace(/\u00B5/g, "u")
+        .replace(/\u03B1/g, "alpha").replace(/\u03B2/g, "beta").replace(/\u03B3/g, "gamma")
+        .replace(/\u03B4/g, "delta").replace(/\u03BC/g, "mu").replace(/\u03C9/g, "omega")
+        .replace(/[^\x00-\xFF]/g, "");
 
-    const W = 842;
-    const H = 595;
-    const DARK = rgb(0.05, 0.08, 0.15);
-    const TEAL = rgb(0.08, 0.65, 0.52);
-    const WHITE = rgb(1, 1, 1);
-    const GREY = rgb(0.35, 0.38, 0.42);
-    const BODY = rgb(0.12, 0.15, 0.2);
+    // ── Colour palette ────────────────────────────────────────────────────
+    const W = 842, H = 595;
+    const DARK      = rgb(0.05, 0.08, 0.15);
+    const TEAL      = rgb(0.08, 0.65, 0.52);
+    const TEAL_DIM  = rgb(0.05, 0.42, 0.34);
+    const TEAL_BRT  = rgb(0.15, 0.75, 0.62);
+    const WHITE     = rgb(1, 1, 1);
+    const GREY      = rgb(0.5,  0.52, 0.55);
+    const BODY      = rgb(0.12, 0.15, 0.2);
+    const LIGHT_BG  = rgb(0.96, 0.97, 0.98);
+    const NODE_BG   = rgb(0.90, 0.97, 0.95);
+    const DIVIDER   = rgb(0.80, 0.88, 0.86);
 
-    // 2 — Build PDF
-    const pdfDoc = await PDFDocument.create();
+    // ── PDF setup ─────────────────────────────────────────────────────────
+    const pdfDoc   = await PDFDocument.create();
     const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const regFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const regFont  = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const oblFont  = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
-    const wrapText = (text: string, font: typeof regFont, size: number, maxW: number): string[] => {
+    const wrap = (text: string, font: typeof regFont, size: number, maxW: number): string[] => {
       const words = text.split(" ");
       const lines: string[] = [];
       let cur = "";
       for (const w of words) {
         const test = cur ? `${cur} ${w}` : w;
-        if (font.widthOfTextAtSize(test, size) > maxW && cur) {
-          lines.push(cur);
-          cur = w;
-        } else {
-          cur = test;
-        }
+        if (font.widthOfTextAtSize(test, size) > maxW && cur) { lines.push(cur); cur = w; }
+        else cur = test;
       }
       if (cur) lines.push(cur);
       return lines;
     };
 
-    // Title slide
-    const tp = pdfDoc.addPage([W, H]);
-    tp.drawRectangle({ x: 0, y: 0, width: W, height: H, color: DARK });
-    tp.drawRectangle({ x: 0, y: 0, width: W, height: 5, color: TEAL });
-    tp.drawRectangle({ x: 60, y: H / 2 - 60, width: 4, height: 100, color: TEAL });
-    const titleLines = wrapText(sanitize(pres.title || prompt), boldFont, 32, W - 200);
-    titleLines.forEach((line, i) => {
-      tp.drawText(sanitize(line), { x: 80, y: H / 2 + 30 - i * 40, size: 32, font: boldFont, color: WHITE });
-    });
-    if (pres.subtitle) {
-      tp.drawText(sanitize(pres.subtitle), { x: 80, y: H / 2 - 30, size: 16, font: regFont, color: rgb(0.6, 0.85, 0.78) });
-    }
-    tp.drawText("Generated by SYNAPSE - aethex", { x: 80, y: 22, size: 9, font: regFont, color: GREY });
+    // Mind-map helper ─────────────────────────────────────────────────────
+    const drawMindMap = (page: ReturnType<typeof pdfDoc.addPage>, cx: number, cy: number, center: string, nodes: string[]) => {
+      const safeNodes = (nodes ?? []).slice(0, 6);
+      const n = safeNodes.length;
+      const RX = 95, RY = 68;
+      // Lines first (below boxes)
+      safeNodes.forEach((_, i) => {
+        const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
+        page.drawLine({ start: { x: cx, y: cy }, end: { x: cx + Math.cos(angle) * RX, y: cy + Math.sin(angle) * RY }, thickness: 1, color: DIVIDER });
+      });
+      // Center box
+      const cl = s(center).substring(0, 20);
+      const clW = boldFont.widthOfTextAtSize(cl, 8.5);
+      page.drawRectangle({ x: cx - 52, y: cy - 16, width: 104, height: 32, color: TEAL });
+      page.drawText(cl, { x: cx - Math.min(clW / 2, 46), y: cy - 4, size: 8.5, font: boldFont, color: WHITE });
+      // Node boxes
+      safeNodes.forEach((node, i) => {
+        const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
+        const nx = cx + Math.cos(angle) * RX;
+        const ny = cy + Math.sin(angle) * RY;
+        const label = s(node).substring(0, 22);
+        const lW = regFont.widthOfTextAtSize(label, 7.5);
+        const boxW = Math.min(Math.max(lW + 14, 58), 82);
+        page.drawRectangle({ x: nx - boxW / 2, y: ny - 12, width: boxW, height: 24, color: NODE_BG });
+        page.drawRectangle({ x: nx - boxW / 2, y: ny + 10, width: boxW, height: 2, color: TEAL });
+        page.drawText(label, { x: nx - lW / 2, y: ny - 4, size: 7.5, font: regFont, color: BODY });
+      });
+    };
 
-    // Content slides
+    // ── TITLE SLIDE ───────────────────────────────────────────────────────
+    {
+      const p = pdfDoc.addPage([W, H]);
+      // Full dark background
+      p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: DARK });
+      // Top & bottom teal strips
+      p.drawRectangle({ x: 0, y: H - 5, width: W, height: 5, color: TEAL });
+      p.drawRectangle({ x: 0, y: 0,     width: W, height: 5, color: TEAL });
+      // Left accent bar
+      p.drawRectangle({ x: 0, y: 0, width: 7, height: H, color: TEAL });
+      // Semi-dark panel behind title
+      p.drawRectangle({ x: 7, y: H / 2 - 90, width: W * 0.62, height: 180, color: rgb(0.08, 0.13, 0.22) });
+      // Title
+      const tLines = wrap(s(pres.title || prompt), boldFont, 32, W * 0.58 - 40);
+      tLines.forEach((ln, i) => p.drawText(ln, { x: 30, y: H / 2 + 52 - i * 42, size: 32, font: boldFont, color: WHITE }));
+      // Subtitle
+      if (pres.subtitle) p.drawText(s(pres.subtitle).substring(0, 80), { x: 30, y: H / 2 - 48, size: 13, font: oblFont, color: rgb(0.60, 0.88, 0.82) });
+      // Slide count badge
+      const badge = `${pres.slides.length} slides`;
+      p.drawRectangle({ x: 30, y: H / 2 - 80, width: boldFont.widthOfTextAtSize(badge, 10) + 16, height: 22, color: TEAL_DIM });
+      p.drawText(badge, { x: 38, y: H / 2 - 73, size: 10, font: boldFont, color: WHITE });
+      // Topic overview mini-mind-map on right
+      const overviewNodes = pres.slides.slice(0, 6).map(sl => s(sl.title).substring(0, 16));
+      const overviewCenter = s(pres.title || prompt).substring(0, 14);
+      drawMindMap(p, W * 0.81, H / 2, overviewCenter, overviewNodes);
+      // Bottom info bar
+      p.drawRectangle({ x: 0, y: 0, width: W, height: 30, color: TEAL_DIM });
+      p.drawText(`SYNAPSE - aethex  |  Medical Education Series  |  ${pres.slides.length} Slides`, { x: 20, y: 9, size: 9, font: regFont, color: rgb(0.78, 0.94, 0.90) });
+    }
+
+    // ── CONTENT SLIDES ────────────────────────────────────────────────────
+    const HEADER_H = 70;
+    const FOOTER_H = 46;
+    const LEFT_W   = 482;
+    const RIGHT_X  = LEFT_W + 16;
+    const RIGHT_W  = W - RIGHT_X - 16;
+    const MAP_CX   = RIGHT_X + RIGHT_W / 2;
+    const MAP_CY   = FOOTER_H + (H - HEADER_H - FOOTER_H) / 2 + 8;
+
     for (const slide of pres.slides) {
       const p = pdfDoc.addPage([W, H]);
-      p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: rgb(0.97, 0.98, 0.99) });
-      p.drawRectangle({ x: 0, y: H - 72, width: W, height: 72, color: DARK });
-      p.drawRectangle({ x: 0, y: H - 75, width: W, height: 3, color: TEAL });
 
-      const slideTitle = sanitize(slide.title || `Slide ${slide.slideNumber}`);
-      const stLines = wrapText(slideTitle, boldFont, 20, W - 120);
-      stLines.forEach((line, i) => {
-        p.drawText(sanitize(line), { x: 40, y: H - 48 - i * 24, size: 20, font: boldFont, color: WHITE });
-      });
-      p.drawText(String(slide.slideNumber), { x: W - 48, y: H - 48, size: 18, font: boldFont, color: TEAL });
+      // Background
+      p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: LIGHT_BG });
+      // Right-column background tint
+      p.drawRectangle({ x: RIGHT_X - 4, y: FOOTER_H, width: RIGHT_W + 8, height: H - HEADER_H - FOOTER_H, color: rgb(0.93, 0.97, 0.96) });
 
-      let yPos = H - 105;
-      for (const bullet of slide.bullets ?? []) {
-        if (yPos < 40) break;
-        p.drawCircle({ x: 52, y: yPos + 5, size: 4, color: TEAL });
-        const bLines = wrapText(sanitize(bullet), regFont, 13, W - 130);
-        for (const bl of bLines) {
-          if (yPos < 40) break;
-          p.drawText(sanitize(bl), { x: 66, y: yPos, size: 13, font: regFont, color: BODY });
-          yPos -= 19;
+      // ── Header ──
+      p.drawRectangle({ x: 0, y: H - HEADER_H, width: W, height: HEADER_H, color: DARK });
+      p.drawRectangle({ x: 0, y: H - HEADER_H - 3, width: W, height: 3, color: TEAL });
+      // Slide number badge
+      p.drawRectangle({ x: W - 54, y: H - HEADER_H + 10, width: 44, height: 44, color: TEAL });
+      const numStr = String(slide.slideNumber);
+      const numW = boldFont.widthOfTextAtSize(numStr, 17);
+      p.drawText(numStr, { x: W - 54 + (44 - numW) / 2, y: H - HEADER_H + 23, size: 17, font: boldFont, color: WHITE });
+      // Slide title
+      const stLines = wrap(s(slide.title || `Slide ${slide.slideNumber}`), boldFont, 19, W - 110);
+      stLines.slice(0, 2).forEach((ln, i) => p.drawText(ln, { x: 18, y: H - 42 - i * 23, size: 19, font: boldFont, color: WHITE }));
+
+      // ── Divider ──
+      p.drawRectangle({ x: LEFT_W + 6, y: FOOTER_H + 8, width: 1.5, height: H - HEADER_H - FOOTER_H - 16, color: DIVIDER });
+
+      // ── Left column: Bullets ──
+      const bullets = (slide.bullets ?? []).slice(0, 6);
+      const colH = H - HEADER_H - FOOTER_H - 20;
+      const slotH = Math.floor(colH / bullets.length);
+      let yB = H - HEADER_H - 16;
+
+      bullets.forEach((bullet, bi) => {
+        const slotTop = H - HEADER_H - 16 - bi * slotH;
+        // Number badge
+        p.drawRectangle({ x: 14, y: slotTop - 20, width: 18, height: 18, color: TEAL });
+        const biStr = String(bi + 1);
+        p.drawText(biStr, { x: 14 + (18 - boldFont.widthOfTextAtSize(biStr, 8)) / 2, y: slotTop - 16, size: 8, font: boldFont, color: WHITE });
+        // Bullet text
+        const bLines = wrap(s(bullet), regFont, 11, LEFT_W - 44);
+        bLines.slice(0, 4).forEach((bl, li) => {
+          const ty = slotTop - 16 - li * 13;
+          if (ty > FOOTER_H + 4) p.drawText(bl, { x: 38, y: ty, size: 11, font: regFont, color: BODY });
+        });
+        // Subtle separator line between bullets
+        if (bi < bullets.length - 1) {
+          p.drawRectangle({ x: 14, y: slotTop - slotH + 4, width: LEFT_W - 24, height: 0.5, color: rgb(0.88, 0.90, 0.92) });
         }
-        yPos -= 10;
+      });
+
+      // ── Right column: Mind Map ──
+      p.drawText("MIND MAP", { x: RIGHT_X + 6, y: H - HEADER_H - 13, size: 7, font: boldFont, color: GREY });
+      if (slide.mindMap?.nodes?.length) {
+        drawMindMap(p, MAP_CX, MAP_CY, slide.mindMap.center, slide.mindMap.nodes);
       }
 
-      p.drawRectangle({ x: 0, y: 0, width: W, height: 26, color: DARK });
-      p.drawText("SYNAPSE - aethex", { x: 40, y: 8, size: 8, font: regFont, color: GREY });
+      // ── Footer: Key Fact bar ──
+      p.drawRectangle({ x: 0, y: 0, width: W, height: FOOTER_H, color: TEAL_DIM });
+      p.drawText("KEY FACT", { x: 12, y: FOOTER_H - 15, size: 7.5, font: boldFont, color: TEAL_BRT });
+      p.drawRectangle({ x: 12, y: FOOTER_H - 20, width: boldFont.widthOfTextAtSize("KEY FACT", 7.5), height: 1.5, color: TEAL_BRT });
+      const kfLines = wrap(s(slide.keyFact ?? ""), regFont, 10, W - 96);
+      kfLines.slice(0, 2).forEach((kfl, i) => p.drawText(kfl, { x: 70, y: FOOTER_H - 14 - i * 13, size: 10, font: regFont, color: WHITE }));
+      p.drawText(`${slide.slideNumber} / ${pres.slides.length}`, { x: W - 46, y: 10, size: 8, font: boldFont, color: TEAL_BRT });
+    }
+
+    // ── QUICK REFERENCE PAGE ──────────────────────────────────────────────
+    if ((pres.quickReference ?? []).length) {
+      const p = pdfDoc.addPage([W, H]);
+      p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: LIGHT_BG });
+      p.drawRectangle({ x: 0, y: H - 62, width: W, height: 62, color: DARK });
+      p.drawRectangle({ x: 0, y: H - 65, width: W, height: 3, color: TEAL });
+      p.drawText("QUICK REFERENCE GUIDE", { x: 20, y: H - 42, size: 20, font: boldFont, color: WHITE });
+      p.drawText("Key terminology for this presentation", { x: 20, y: H - 58, size: 9, font: oblFont, color: rgb(0.60, 0.82, 0.78) });
+
+      const refs = (pres.quickReference ?? []).slice(0, 10);
+      const COLS = 2;
+      const colW = (W - 48) / COLS;
+      const ROW_H = 64;
+
+      refs.forEach((ref, i) => {
+        const col = i % COLS;
+        const row = Math.floor(i / COLS);
+        const rx = 16 + col * (colW + 16);
+        const ry = H - 80 - row * ROW_H;
+        // Card background
+        p.drawRectangle({ x: rx, y: ry - ROW_H + 10, width: colW, height: ROW_H - 4, color: WHITE });
+        // Teal top accent
+        p.drawRectangle({ x: rx, y: ry + 8, width: colW, height: 3, color: TEAL });
+        // Term
+        p.drawText(s(ref.term), { x: rx + 10, y: ry - 6, size: 11, font: boldFont, color: DARK });
+        // Definition (wrapped)
+        const defLines = wrap(s(ref.definition), regFont, 9, colW - 20);
+        defLines.slice(0, 3).forEach((dl, di) => {
+          p.drawText(dl, { x: rx + 10, y: ry - 22 - di * 11, size: 9, font: regFont, color: GREY });
+        });
+      });
+
+      // Footer branding
+      p.drawRectangle({ x: 0, y: 0, width: W, height: 28, color: TEAL_DIM });
+      p.drawText("SYNAPSE - aethex  |  Medical Education Series", { x: 20, y: 9, size: 9, font: regFont, color: rgb(0.78, 0.94, 0.90) });
     }
 
     const pdfBytes = await pdfDoc.save();
     const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
 
-    // 3 — Build DOCX
+    // ── DOCX ─────────────────────────────────────────────────────────────
     const children: Paragraph[] = [
-      new Paragraph({
-        children: [new TextRun({ text: pres.title || prompt, bold: true, size: 56 })],
-        heading: HeadingLevel.TITLE,
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 200 },
-      }),
+      new Paragraph({ children: [new TextRun({ text: s(pres.title || prompt), bold: true, size: 56 })], heading: HeadingLevel.TITLE, alignment: AlignmentType.CENTER, spacing: { after: 160 } }),
     ];
-
-    if (pres.subtitle) {
-      children.push(
-        new Paragraph({
-          children: [new TextRun({ text: pres.subtitle, italics: true, size: 28, color: "888888" })],
-          alignment: AlignmentType.CENTER,
-          spacing: { after: 400 },
-        })
-      );
-    }
+    if (pres.subtitle) children.push(new Paragraph({ children: [new TextRun({ text: s(pres.subtitle), italics: true, size: 26, color: "888888" })], alignment: AlignmentType.CENTER, spacing: { after: 400 } }));
 
     for (const slide of pres.slides) {
-      children.push(
-        new Paragraph({
-          children: [new TextRun({ text: `Slide ${slide.slideNumber}: ${slide.title}`, bold: true, size: 32, color: "0D7A69" })],
-          heading: HeadingLevel.HEADING_1,
-          spacing: { before: 400, after: 120 },
-        })
-      );
+      children.push(new Paragraph({ children: [new TextRun({ text: `Slide ${slide.slideNumber}: ${s(slide.title)}`, bold: true, size: 30, color: "0D7A69" })], heading: HeadingLevel.HEADING_1, spacing: { before: 400, after: 100 } }));
       for (const bullet of slide.bullets ?? []) {
-        children.push(
-          new Paragraph({
-            children: [new TextRun({ text: bullet, size: 24 })],
-            bullet: { level: 0 },
-            spacing: { after: 80 },
-          })
-        );
+        children.push(new Paragraph({ children: [new TextRun({ text: s(bullet), size: 22 })], bullet: { level: 0 }, spacing: { after: 60 } }));
+      }
+      if (slide.keyFact) {
+        children.push(new Paragraph({ children: [new TextRun({ text: "KEY FACT: ", bold: true, size: 21, color: "0D7A69" }), new TextRun({ text: s(slide.keyFact), size: 21, italics: true })], spacing: { before: 120, after: 80 } }));
+      }
+      if (slide.mindMap?.nodes?.length) {
+        children.push(new Paragraph({ children: [new TextRun({ text: `Mind Map: ${s(slide.mindMap.center)}`, bold: true, size: 20, color: "155E4E" })], spacing: { before: 80, after: 40 } }));
+        for (const node of slide.mindMap.nodes) {
+          children.push(new Paragraph({ children: [new TextRun({ text: s(node), size: 20 })], bullet: { level: 1 }, spacing: { after: 30 } }));
+        }
       }
       children.push(new Paragraph({ children: [new TextRun("")], spacing: { after: 200 } }));
     }
 
-    children.push(
-      new Paragraph({
-        children: [new TextRun({ text: "Generated by SYNAPSE · aethex", italics: true, size: 18, color: "999999" })],
-        alignment: AlignmentType.CENTER,
-        spacing: { before: 400 },
-      })
-    );
+    if ((pres.quickReference ?? []).length) {
+      children.push(new Paragraph({ children: [new TextRun({ text: "Quick Reference Guide", bold: true, size: 34, color: "0D7A69" })], heading: HeadingLevel.HEADING_1, spacing: { before: 600, after: 200 } }));
+      for (const ref of pres.quickReference ?? []) {
+        children.push(new Paragraph({ children: [new TextRun({ text: `${s(ref.term)}: `, bold: true, size: 22 }), new TextRun({ text: s(ref.definition), size: 22 })], spacing: { after: 80 } }));
+      }
+    }
+
+    children.push(new Paragraph({ children: [new TextRun({ text: "Generated by SYNAPSE - aethex", italics: true, size: 18, color: "999999" })], alignment: AlignmentType.CENTER, spacing: { before: 400 } }));
 
     const doc = new Document({ sections: [{ properties: {}, children }] });
     const docxBuffer = await Packer.toBuffer(doc);
     const docxBase64 = docxBuffer.toString("base64");
 
-    res.json({
-      pdfBase64,
-      docxBase64,
-      title: pres.title || prompt,
-      totalSlides: pres.slides.length,
-    });
+    res.json({ pdfBase64, docxBase64, title: pres.title || prompt, totalSlides: pres.slides.length });
   } catch (err) {
     req.log.error({ err }, "Error generating presentation");
     res.status(500).json({ error: "Presentation generation failed" });

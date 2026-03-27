@@ -17,6 +17,7 @@ interface ExtendedMessage extends ChatMessage {
   presentationDocxBase64?: string;
   presentationTitle?: string;
   isPresentation?: boolean;
+  slideCountOptions?: number[];
 }
 
 type ModelId = "pulse45" | "flux36" | "nova46";
@@ -184,59 +185,20 @@ export default function AiAssistant() {
     }
 
     if (chatMode === "create-presentation") {
-      if (presentationStage === "idle") {
-        // Step 1 — store the topic and ask for slide count
-        setPendingPresentationPrompt(userMsg);
-        setPresentationStage("waiting-slide-count");
-        setConversations((prev) => ({
-          ...prev,
-          [activeModel]: [
-            ...newHistory,
-            {
-              role: ChatMessageRole.assistant,
-              content: `Great! I'll create a presentation on "${userMsg}". How many slides would you like? (e.g. 8, 12, 15 — between 3 and 30)`,
-            },
-          ],
-        }));
-      } else {
-        // Step 2 — user replied with slide count, generate the presentation
-        const slideCount = parseInt(userMsg.replace(/\D/g, "")) || 10;
-        setIsGeneratingPresentation(true);
-        try {
-          const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
-          const resp = await fetch(`${apiBase}/api/ai/generate-presentation`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: pendingPresentationPrompt, slideCount }),
-          });
-          const data = await resp.json();
-          if (data.pdfBase64 && data.docxBase64) {
-            setConversations((prev) => ({
-              ...prev,
-              [activeModel]: [
-                ...newHistory,
-                {
-                  role: ChatMessageRole.assistant,
-                  content: `Your presentation "${data.title}" (${data.totalSlides} slides) is ready! Download it below:`,
-                  isPresentation: true,
-                  presentationTitle: data.title,
-                  presentationPdfBase64: data.pdfBase64,
-                  presentationDocxBase64: data.docxBase64,
-                },
-              ],
-            }));
-            resetPresentationState();
-          } else {
-            throw new Error(data.error ?? "Generation failed");
-          }
-        } catch (err) {
-          toast({ title: "Presentation generation failed", description: "Please try again.", variant: "destructive" });
-          setConversations((prev) => ({ ...prev, [activeModel]: currentHistory }));
-          resetPresentationState();
-        } finally {
-          setIsGeneratingPresentation(false);
-        }
-      }
+      // Show clickable slide-count buttons — no typing required
+      setPendingPresentationPrompt(userMsg);
+      setPresentationStage("waiting-slide-count");
+      setConversations((prev) => ({
+        ...prev,
+        [activeModel]: [
+          ...newHistory,
+          {
+            role: ChatMessageRole.assistant,
+            content: `Great! I'll create a presentation on "${userMsg}". How many slides would you like?`,
+            slideCountOptions: [5, 8, 10, 12, 15, 20],
+          },
+        ],
+      }));
       return;
     }
 
@@ -291,6 +253,49 @@ export default function AiAssistant() {
   const resetPresentationState = () => {
     setPresentationStage("idle");
     setPendingPresentationPrompt("");
+  };
+
+  const handleSlideCountSelect = async (count: number) => {
+    if (isGeneratingPresentation) return;
+    const currentHistory = conversations[activeModel];
+    const userEntry: ExtendedMessage = { role: ChatMessageRole.user, content: `${count} slides` };
+    const newHistory: ExtendedMessage[] = [...currentHistory, userEntry];
+    setConversations((prev) => ({ ...prev, [activeModel]: newHistory }));
+    setIsGeneratingPresentation(true);
+    try {
+      const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+      const resp = await fetch(`${apiBase}/api/ai/generate-presentation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: pendingPresentationPrompt, slideCount: count }),
+      });
+      const data = await resp.json();
+      if (data.pdfBase64 && data.docxBase64) {
+        setConversations((prev) => ({
+          ...prev,
+          [activeModel]: [
+            ...newHistory,
+            {
+              role: ChatMessageRole.assistant,
+              content: `Your presentation "${data.title}" (${data.totalSlides} slides) is ready! Download it below:`,
+              isPresentation: true,
+              presentationTitle: data.title,
+              presentationPdfBase64: data.pdfBase64,
+              presentationDocxBase64: data.docxBase64,
+            },
+          ],
+        }));
+        resetPresentationState();
+      } else {
+        throw new Error(data.error ?? "Generation failed");
+      }
+    } catch {
+      toast({ title: "Presentation generation failed", description: "Please try again.", variant: "destructive" });
+      setConversations((prev) => ({ ...prev, [activeModel]: currentHistory }));
+      resetPresentationState();
+    } finally {
+      setIsGeneratingPresentation(false);
+    }
   };
 
   const handleModelSelect = (m: Model) => {
@@ -391,6 +396,23 @@ export default function AiAssistant() {
                       </a>
                     </div>
                   )}
+                  {(msg as ExtendedMessage).slideCountOptions && (
+                    <div className="px-4 pb-4">
+                      <div className="flex flex-wrap gap-2">
+                        {(msg as ExtendedMessage).slideCountOptions!.map((n) => (
+                          <button
+                            key={n}
+                            type="button"
+                            onClick={() => handleSlideCountSelect(n)}
+                            disabled={isGeneratingPresentation}
+                            className="px-4 py-2 rounded-xl bg-amber-50 border border-amber-300 text-amber-800 text-sm font-semibold hover:bg-amber-100 hover:border-amber-500 disabled:opacity-40 transition-all"
+                          >
+                            {n} slides
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {(msg as ExtendedMessage).isPresentation && (
                     <div className="px-4 pb-4 flex flex-col gap-2">
                       <div className="flex items-center gap-2 mb-1">
@@ -480,7 +502,7 @@ export default function AiAssistant() {
                     ? <><Presentation className="w-3.5 h-3.5" />
                         {presentationStage === "idle"
                           ? " Presentation mode — describe the topic for your presentation"
-                          : " Presentation mode — reply with the number of slides you want"}
+                          : " Presentation mode — select the number of slides from the options above"}
                       </>
                     : <><ImagePlus className="w-3.5 h-3.5" /> Image generation mode — describe the medical image you want</>
                   }
@@ -525,12 +547,12 @@ export default function AiAssistant() {
                     : chatMode === "create-presentation" && presentationStage === "idle"
                     ? "Enter the topic for your presentation (e.g. Human Brain, Cardiac Anatomy)..."
                     : chatMode === "create-presentation" && presentationStage === "waiting-slide-count"
-                    ? "How many slides? (e.g. 10, 15, 20)..."
+                    ? "Select the number of slides using the buttons above..."
                     : `Message SYNAPSE · ${model.name} ${model.version}...`
                 }
                 rows={1}
                 className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none text-foreground placeholder:text-muted-foreground"
-                disabled={chatMutation.isPending || isGeneratingPresentation}
+                disabled={chatMutation.isPending || isGeneratingPresentation || presentationStage === "waiting-slide-count"}
                 style={{ minHeight: "52px", maxHeight: "160px" }}
               />
 
@@ -647,7 +669,7 @@ export default function AiAssistant() {
                   </div>
                   <Button type="submit"
                     size="icon"
-                    disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation}
+                    disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count"}
                     className="h-8 w-8 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-30 transition-all">
                     <Send className="w-3.5 h-3.5" />
                   </Button>

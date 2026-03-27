@@ -1,104 +1,89 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Sparkles, User, Loader2, RefreshCcw, Activity, FlaskConical, Lock, Crown } from "lucide-react";
+import { Send, Sparkles, User, Loader2, RefreshCcw, Activity, FlaskConical, Lock, Crown, ChevronDown } from "lucide-react";
 import { useAiChat } from "@workspace/api-client-react";
 import { type ChatMessage, ChatMessageRole } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-type AgentId = "synapse" | "pulse45" | "flux36" | "nova46";
+type ModelId = "pulse45" | "flux36" | "nova46";
 
-interface Agent {
-  id: AgentId;
+interface Model {
+  id: ModelId;
   name: string;
   version: string;
-  subtitle: string;
-  specialty: string;
-  iconType: "image" | "lucide";
-  icon?: React.ElementType;
-  imageSrc?: string;
-  gradient: string;
-  borderColor: string;
-  greeting: string;
-  placeholder: string;
+  description: string;
+  icon: React.ElementType;
+  color: string;
+  textColor: string;
+  badgeBg: string;
   pro?: boolean;
 }
 
-const AGENTS: Agent[] = [
-  {
-    id: "synapse",
-    name: "SYNAPSE",
-    version: "",
-    subtitle: "General Medical AI",
-    specialty: "Products · NEET-PG · Clinical Queries",
-    iconType: "image",
-    imageSrc: "",
-    gradient: "from-[#3B82F6] to-[#00C4B4]",
-    borderColor: "border-[#3B82F6]",
-    greeting:
-      "Hello! I'm SYNAPSE — your primary aethex medical assistant. I can help you find products, compare equipment, answer NEET-PG queries, or provide clinical reference. How can I assist you today?",
-    placeholder: "Ask about products, exams, or medical queries...",
-  },
+const MODELS: Model[] = [
   {
     id: "pulse45",
-    name: "PULSE",
+    name: "Pulse",
     version: "4.5",
-    subtitle: "Vitals & Emergency",
-    specialty: "Critical Care · Vitals · Emergency Medicine",
-    iconType: "lucide",
+    description: "Vitals · Emergency · Critical Care",
     icon: Activity,
-    gradient: "from-emerald-500 to-teal-400",
-    borderColor: "border-emerald-500",
-    greeting:
-      "Hello! I'm PULSE 4.5 — your emergency medicine and vitals specialist. I can help with vital sign interpretation, ACLS protocols, ICU management, monitoring equipment, and critical care guidelines. Ready to assist!",
-    placeholder: "Ask about vitals, emergency protocols, or critical care...",
+    color: "bg-emerald-500",
+    textColor: "text-emerald-700",
+    badgeBg: "bg-emerald-50 border-emerald-200 hover:border-emerald-400",
   },
   {
     id: "flux36",
-    name: "FLUX",
+    name: "Flux",
     version: "3.6",
-    subtitle: "Pharmacology & Labs",
-    specialty: "Drugs · Biochemistry · Lab Values",
-    iconType: "lucide",
+    description: "Pharmacology · Drug Interactions · Labs",
     icon: FlaskConical,
-    gradient: "from-orange-500 to-amber-400",
-    borderColor: "border-orange-500",
-    greeting:
-      "Hello! I'm FLUX 3.6 — your pharmacology and laboratory medicine specialist. I can help with drug interactions, dosage calculations, antibiotic selection, lab value interpretation, and NEET-PG pharmacology prep. How can I help?",
-    placeholder: "Ask about drugs, lab values, or pharmacology...",
+    color: "bg-orange-500",
+    textColor: "text-orange-700",
+    badgeBg: "bg-orange-50 border-orange-200 hover:border-orange-400",
   },
   {
     id: "nova46",
-    name: "NOVA",
+    name: "Nova",
     version: "4.6",
-    subtitle: "Advanced Research AI",
-    specialty: "Diagnostics · Research · Multispecialty",
-    iconType: "lucide",
+    description: "Advanced Diagnostics · Research · Multispecialty",
     icon: Crown,
-    gradient: "from-violet-600 to-purple-500",
-    borderColor: "border-violet-500",
-    greeting:
-      "Hello! I'm NOVA 4.6 — aethex's most advanced research and diagnostic AI. Upgrade to Pro to access complex differential diagnosis, rare disease identification, deep literature synthesis, and expert multispecialty reasoning.",
-    placeholder: "Upgrade to Pro to chat with NOVA 4.6...",
+    color: "bg-violet-600",
+    textColor: "text-violet-700",
+    badgeBg: "bg-violet-50 border-violet-200 hover:border-violet-400",
     pro: true,
   },
 ];
 
+const modelGreetings: Record<ModelId, string> = {
+  pulse45:
+    "Hello! I'm SYNAPSE running Pulse 4.5 — your emergency medicine and vitals specialist. I can help with vital sign interpretation, ACLS protocols, ICU management, monitoring equipment, and critical care guidelines. Ready to assist!",
+  flux36:
+    "Hello! I'm SYNAPSE running Flux 3.6 — your pharmacology and laboratory medicine specialist. I can help with drug interactions, dosage calculations, antibiotic selection, lab value interpretation, and NEET-PG pharmacology prep. How can I help?",
+  nova46:
+    "Hello! I'm SYNAPSE running Nova 4.6 — the most powerful model in the SYNAPSE suite. Upgrade to Pro to unlock complex differential diagnosis, rare disease identification, deep literature synthesis, and expert multispecialty reasoning.",
+};
+
+const quickSuggestions: Record<ModelId, string[]> = {
+  pulse45: ["Normal SpO2 range?", "ACLS for cardiac arrest?", "Best ICU pulse oximeter?"],
+  flux36: ["Warfarin drug interactions?", "Normal LFT values?", "CAP antibiotic choice?"],
+  nova46: ["Rare autoimmune mimicking SLE?", "Complex multimorbidity regimen?", "Latest ACC guidelines?"],
+};
+
 export default function AiAssistant() {
-  const [activeAgentId, setActiveAgentId] = useState<AgentId>("synapse");
+  const [activeModel, setActiveModel] = useState<ModelId>("pulse45");
   const [showProModal, setShowProModal] = useState(false);
-  const [conversations, setConversations] = useState<Record<AgentId, ChatMessage[]>>({
-    synapse: [{ role: ChatMessageRole.assistant, content: AGENTS[0].greeting }],
-    pulse45: [{ role: ChatMessageRole.assistant, content: AGENTS[1].greeting }],
-    flux36: [{ role: ChatMessageRole.assistant, content: AGENTS[2].greeting }],
-    nova46: [{ role: ChatMessageRole.assistant, content: AGENTS[3].greeting }],
+  const [conversations, setConversations] = useState<Record<ModelId, ChatMessage[]>>({
+    pulse45: [],
+    flux36: [],
+    nova46: [],
   });
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
   const chatMutation = useAiChat();
-  const activeAgent = AGENTS.find((a) => a.id === activeAgentId)!;
-  const messages = conversations[activeAgentId];
-  const isProLocked = activeAgent.pro;
+
+  const model = MODELS.find((m) => m.id === activeModel)!;
+  const messages = conversations[activeModel];
+  const hasMessages = messages.length > 0;
+  const isProLocked = model.pro;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -106,7 +91,7 @@ export default function AiAssistant() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, chatMutation.isPending, activeAgentId]);
+  }, [messages, chatMutation.isPending]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,12 +100,12 @@ export default function AiAssistant() {
     const userMsg = input.trim();
     setInput("");
 
-    const currentHistory = conversations[activeAgentId];
+    const currentHistory = conversations[activeModel];
     const newHistory: ChatMessage[] = [
       ...currentHistory,
       { role: ChatMessageRole.user, content: userMsg },
     ];
-    setConversations((prev) => ({ ...prev, [activeAgentId]: newHistory }));
+    setConversations((prev) => ({ ...prev, [activeModel]: newHistory }));
 
     chatMutation.mutate(
       {
@@ -128,14 +113,14 @@ export default function AiAssistant() {
           message: userMsg,
           conversationHistory: currentHistory,
           // @ts-ignore
-          agent: activeAgentId,
+          agent: activeModel,
         },
       },
       {
         onSuccess: (data) => {
           setConversations((prev) => ({
             ...prev,
-            [activeAgentId]: [
+            [activeModel]: [
               ...newHistory,
               { role: ChatMessageRole.assistant, content: data.message },
             ],
@@ -145,259 +130,207 @@ export default function AiAssistant() {
     );
   };
 
-  const handleClear = () => {
-    setConversations((prev) => ({
-      ...prev,
-      [activeAgentId]: [
-        { role: ChatMessageRole.assistant, content: activeAgent.greeting },
-      ],
-    }));
-  };
-
-  const handleAgentClick = (agent: Agent) => {
-    if (agent.pro) {
+  const handleModelSelect = (m: Model) => {
+    if (m.pro) {
       setShowProModal(true);
       return;
     }
-    setActiveAgentId(agent.id);
+    setActiveModel(m.id);
     setInput("");
   };
 
-  const quickSuggestions: Record<AgentId, string[]> = {
-    synapse: ["Best stethoscope for students?", "NEET-PG 2025 books?", "BP machine for clinic?"],
-    pulse45: ["Normal SpO2 range?", "ACLS for cardiac arrest?", "Best ICU pulse oximeter?"],
-    flux36: ["Warfarin drug interactions?", "Normal LFT values?", "CAP antibiotic choice?"],
-    nova46: ["Rare autoimmune mimicking SLE?", "Complex multimorbidity regimen?", "Latest ACC guidelines?"],
+  const handleClear = () => {
+    setConversations((prev) => ({ ...prev, [activeModel]: [] }));
   };
+
+  const ModelIcon = model.icon;
 
   return (
     <div className="h-screen pt-[72px] bg-slate-50 flex flex-col overflow-hidden">
-      <div className="max-w-4xl mx-auto w-full px-4 py-4 flex-1 flex flex-col min-h-0">
+      <div className="flex-1 flex flex-col min-h-0 max-w-3xl mx-auto w-full px-4">
 
-        {/* Agent Selector */}
-        <div className="mb-3 grid grid-cols-4 gap-2.5 shrink-0">
-          {AGENTS.map((agent) => {
-            const isActive = agent.id === activeAgentId && !agent.pro;
-            const Icon = agent.icon;
-            return (
-              <button
-                key={agent.id}
-                onClick={() => handleAgentClick(agent)}
+        {/* ── Brand Header (shown when no messages) ── */}
+        {!hasMessages && (
+          <div className="flex flex-col items-center justify-center flex-1 gap-6 pb-4">
+            {/* SYNAPSE logo */}
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-xl ring-4 ring-white">
+                <img
+                  src={`${import.meta.env.BASE_URL}synapse-logo.jpg`}
+                  alt="SYNAPSE"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="text-center">
+                <h1 className="font-display font-bold text-3xl text-foreground tracking-tight">SYNAPSE</h1>
+                <p className="text-muted-foreground text-sm mt-1">AI Medical Suite by aethex</p>
+              </div>
+            </div>
+
+            {/* Model picker */}
+            <ModelPicker
+              models={MODELS}
+              active={activeModel}
+              onSelect={handleModelSelect}
+            />
+
+            {/* Greeting */}
+            <p className="text-center text-muted-foreground text-base max-w-md leading-relaxed px-2">
+              {modelGreetings[activeModel]}
+            </p>
+
+            {/* Quick suggestions */}
+            <div className="flex flex-wrap gap-2 justify-center">
+              {quickSuggestions[activeModel].map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => !isProLocked && setInput(q)}
+                  disabled={isProLocked}
+                  className="text-sm bg-white border border-slate-200 hover:border-primary hover:text-primary text-slate-600 px-4 py-2 rounded-full transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Chat messages (shown when conversation exists) ── */}
+        {hasMessages && (
+          <div className="flex-1 min-h-0 overflow-y-auto py-6 flex flex-col gap-5">
+            {/* Model indicator row */}
+            <div className="flex items-center justify-between">
+              <ModelPicker models={MODELS} active={activeModel} onSelect={handleModelSelect} compact />
+              <Button variant="ghost" size="sm" onClick={handleClear} className="text-xs text-muted-foreground">
+                <RefreshCcw className="w-3 h-3 mr-1.5" /> New chat
+              </Button>
+            </div>
+
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
                 className={cn(
-                  "relative flex flex-col items-center gap-1.5 p-3 rounded-2xl border-2 transition-all text-center",
-                  agent.pro
-                    ? "border-violet-200 bg-gradient-to-b from-violet-50 to-white hover:border-violet-400 cursor-pointer"
-                    : isActive
-                    ? `${agent.borderColor} bg-white shadow-md scale-[1.02]`
-                    : "border-slate-200 bg-white/60 hover:bg-white hover:border-slate-300"
+                  "flex gap-3 max-w-[88%]",
+                  msg.role === ChatMessageRole.user ? "self-end flex-row-reverse" : "self-start"
                 )}
               >
-                {/* Pro badge */}
-                {agent.pro && (
-                  <span className="absolute -top-2 -right-1 bg-violet-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                    <Crown className="w-2.5 h-2.5" /> PRO
-                  </span>
-                )}
-
-                {/* Icon */}
                 <div className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br text-white shadow-sm overflow-hidden",
-                  agent.gradient
+                  "w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1 overflow-hidden",
+                  msg.role === ChatMessageRole.user
+                    ? "bg-slate-200"
+                    : "ring-2 ring-white shadow-sm"
                 )}>
-                  {agent.iconType === "image" ? (
+                  {msg.role === ChatMessageRole.user ? (
+                    <User className="w-4 h-4 text-slate-600" />
+                  ) : (
                     <img
                       src={`${import.meta.env.BASE_URL}synapse-logo.jpg`}
                       alt="SYNAPSE"
                       className="w-full h-full object-cover"
                     />
-                  ) : agent.pro ? (
-                    <Lock className="w-5 h-5 opacity-80" />
-                  ) : (
-                    Icon && <Icon className="w-5 h-5" />
                   )}
                 </div>
-
-                {/* Name */}
-                <div className="min-w-0 w-full">
-                  <p className={cn(
-                    "font-display font-bold text-xs leading-tight",
-                    isActive ? "text-foreground" : agent.pro ? "text-violet-700" : "text-slate-500"
-                  )}>
-                    {agent.name}
-                    {agent.version && (
-                      <span className="ml-0.5 text-[9px] font-semibold opacity-70">{agent.version}</span>
-                    )}
-                  </p>
-                  <p className="text-[9px] text-muted-foreground leading-tight truncate hidden sm:block">
-                    {agent.pro ? "Upgrade to unlock" : agent.subtitle}
-                  </p>
+                <div className={cn(
+                  "px-5 py-4 rounded-2xl text-[15px] leading-relaxed shadow-sm",
+                  msg.role === ChatMessageRole.user
+                    ? "bg-primary text-white rounded-tr-sm"
+                    : "bg-white border border-slate-100 text-slate-800 rounded-tl-sm"
+                )}>
+                  {msg.content}
                 </div>
-
-                {isActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Chat Header */}
-        <div className="bg-white rounded-t-3xl shadow-sm border border-border/50 p-4 sm:p-5 flex items-center justify-between z-10 relative shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className={cn("absolute inset-0 rounded-full animate-ping opacity-20 bg-gradient-to-br", activeAgent.gradient)} />
-              <div className={cn(
-                "w-12 h-12 rounded-full relative z-10 shadow-lg bg-gradient-to-br text-white flex items-center justify-center overflow-hidden",
-                activeAgent.gradient
-              )}>
-                {activeAgent.iconType === "image" ? (
-                  <img
-                    src={`${import.meta.env.BASE_URL}synapse-logo.jpg`}
-                    alt="SYNAPSE"
-                    className="w-full h-full object-cover"
-                  />
-                ) : activeAgent.pro ? (
-                  <Lock className="w-5 h-5" />
-                ) : (
-                  activeAgent.icon && <activeAgent.icon className="w-6 h-6" />
-                )}
               </div>
-            </div>
-            <div>
-              <h1 className="font-display font-bold text-lg text-foreground flex items-center gap-2">
-                {activeAgent.name}
-                {activeAgent.version && (
-                  <span className="text-sm font-semibold text-muted-foreground">{activeAgent.version}</span>
-                )}
-                {activeAgent.pro && (
-                  <span className="text-xs bg-violet-600 text-white px-2 py-0.5 rounded-full font-semibold">PRO</span>
-                )}
-              </h1>
-              <p className="text-xs text-muted-foreground">{activeAgent.specialty}</p>
-              {!activeAgent.pro && (
-                <p className="text-xs font-medium text-emerald-600 flex items-center gap-1 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
-                  Online & Ready
-                </p>
-              )}
-            </div>
-          </div>
-          {!activeAgent.pro && (
-            <Button variant="outline" size="sm" onClick={handleClear} className="text-xs rounded-xl">
-              <RefreshCcw className="w-3 h-3 mr-2" /> Clear Chat
-            </Button>
-          )}
-        </div>
+            ))}
 
-        {/* Chat Messages */}
-        <div className="flex-1 min-h-0 bg-white border-x border-border/50 p-4 sm:p-6 overflow-y-auto flex flex-col gap-5">
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={cn(
-                "flex gap-3 max-w-[88%]",
-                msg.role === ChatMessageRole.user ? "self-end flex-row-reverse" : "self-start"
-              )}
-            >
-              <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1 overflow-hidden",
-                msg.role === ChatMessageRole.user
-                  ? "bg-slate-200"
-                  : cn("bg-gradient-to-br text-white", activeAgent.gradient)
-              )}>
-                {msg.role === ChatMessageRole.user ? (
-                  <User className="w-4 h-4 text-slate-600" />
-                ) : activeAgent.iconType === "image" ? (
+            {chatMutation.isPending && (
+              <div className="flex gap-3 max-w-[88%] self-start">
+                <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm shrink-0 mt-1">
                   <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />
-                ) : activeAgent.icon ? (
-                  <activeAgent.icon className="w-4 h-4" />
-                ) : (
-                  <Sparkles className="w-4 h-4" />
-                )}
+                </div>
+                <div className="px-5 py-4 rounded-2xl bg-white border border-slate-100 rounded-tl-sm flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                  <span className="text-sm text-slate-500 font-medium">
+                    SYNAPSE · {model.name} {model.version} is thinking...
+                  </span>
+                </div>
               </div>
-              <div className={cn(
-                "px-5 py-4 rounded-2xl text-[15px] leading-relaxed shadow-sm",
-                msg.role === ChatMessageRole.user
-                  ? "bg-primary text-white rounded-tr-sm"
-                  : "bg-slate-50 border border-slate-100 text-slate-800 rounded-tl-sm"
-              )}>
-                {msg.content}
-              </div>
-            </div>
-          ))}
+            )}
 
-          {chatMutation.isPending && (
-            <div className="flex gap-3 max-w-[88%] self-start">
-              <div className={cn("w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1 bg-gradient-to-br text-white", activeAgent.gradient)}>
-                {activeAgent.icon && <activeAgent.icon className="w-4 h-4" />}
-              </div>
-              <div className="px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 rounded-tl-sm flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                <span className="text-sm text-slate-500 font-medium">{activeAgent.name} is thinking...</span>
-              </div>
-            </div>
-          )}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
 
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input Area */}
-        <div className="bg-white rounded-b-3xl shadow-[0_-10px_40px_rgb(0,0,0,0.04)] border border-border/50 p-4 sm:p-5 z-10 relative shrink-0">
+        {/* ── Input bar ── */}
+        <div className={cn(
+          "shrink-0 pb-4",
+          !hasMessages && "pb-6"
+        )}>
           {isProLocked ? (
-            /* Pro upgrade CTA instead of input */
-            <div className="flex flex-col items-center gap-3 py-2">
-              <p className="text-sm text-muted-foreground text-center">
-                NOVA 4.6 is available exclusively on <span className="font-bold text-violet-700">aethex Pro</span>
-              </p>
+            <div className="bg-white border-2 border-violet-200 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-violet-600 flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm text-foreground">Nova 4.6 is a Pro model</p>
+                  <p className="text-xs text-muted-foreground">Upgrade to unlock advanced diagnostics & research</p>
+                </div>
+              </div>
               <button
                 onClick={() => setShowProModal(true)}
-                className="flex items-center gap-2 bg-gradient-to-r from-violet-600 to-purple-500 text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 hover:scale-105 transition-all shadow-lg"
+                className="flex items-center gap-2 bg-gradient-to-r from-violet-600 to-purple-500 text-white font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md text-sm whitespace-nowrap"
               >
                 <Crown className="w-4 h-4" />
-                Upgrade to Pro — Unlock NOVA 4.6
+                Upgrade to Pro
               </button>
             </div>
           ) : (
-            <>
-              <form onSubmit={handleSubmit} className="relative flex items-center">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder={activeAgent.placeholder}
-                  className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-5 pr-14 py-4 text-base focus:outline-none focus:border-primary focus:bg-white transition-all"
-                  disabled={chatMutation.isPending}
-                />
+            <form
+              onSubmit={handleSubmit}
+              className="bg-white border-2 border-slate-200 focus-within:border-primary rounded-2xl shadow-sm transition-all overflow-hidden"
+            >
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e as any);
+                  }
+                }}
+                placeholder={`Message SYNAPSE · ${model.name} ${model.version}...`}
+                rows={1}
+                className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none text-foreground placeholder:text-muted-foreground"
+                disabled={chatMutation.isPending}
+                style={{ minHeight: "52px", maxHeight: "160px" }}
+              />
+              <div className="flex items-center justify-between px-4 pb-3 pt-1">
+                {/* Active model badge */}
+                <div className={cn(
+                  "flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border",
+                  model.badgeBg, model.textColor
+                )}>
+                  <ModelIcon className="w-3 h-3" />
+                  {model.name} {model.version}
+                </div>
                 <Button
                   type="submit"
                   size="icon"
                   disabled={!input.trim() || chatMutation.isPending}
-                  className={cn(
-                    "absolute right-2 top-1/2 -translate-y-1/2 rounded-xl h-10 w-10 bg-gradient-to-br text-white hover:scale-105 transition-all shadow-md border-0",
-                    activeAgent.gradient
-                  )}
+                  className="h-8 w-8 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-30 transition-all"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-3.5 h-3.5" />
                 </Button>
-              </form>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {quickSuggestions[activeAgentId].map((q) => (
-                  <button
-                    key={q}
-                    type="button"
-                    onClick={() => setInput(q)}
-                    className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-full transition-colors"
-                  >
-                    {q}
-                  </button>
-                ))}
               </div>
-            </>
+            </form>
           )}
+          <p className="text-center text-[11px] text-muted-foreground mt-2">
+            SYNAPSE can make mistakes. Verify important medical information with a qualified professional.
+          </p>
         </div>
       </div>
 
-      {/* Pro Upgrade Modal */}
+      {/* ── Pro Modal ── */}
       {showProModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
@@ -412,11 +345,11 @@ export default function AiAssistant() {
             </div>
             <h2 className="font-display font-bold text-2xl text-foreground mb-2">Upgrade to aethex Pro</h2>
             <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
-              Unlock <span className="font-bold text-violet-700">NOVA 4.6</span> — our most powerful AI agent for advanced diagnostics, rare disease identification, and deep clinical research.
+              Unlock <span className="font-bold text-violet-700">SYNAPSE Nova 4.6</span> — our most powerful model for advanced diagnostics, rare disease identification, and deep clinical research.
             </p>
             <ul className="text-left space-y-3 mb-8 text-sm text-slate-700">
               {[
-                "Full access to NOVA 4.6 advanced reasoning",
+                "Full access to Nova 4.6 advanced reasoning",
                 "Complex differential diagnosis & rare diseases",
                 "Deep literature synthesis & research summaries",
                 "Multispecialty second opinion on demand",
@@ -443,6 +376,63 @@ export default function AiAssistant() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ── Model Picker Component ── */
+function ModelPicker({
+  models,
+  active,
+  onSelect,
+  compact = false,
+}: {
+  models: Model[];
+  active: ModelId;
+  onSelect: (m: Model) => void;
+  compact?: boolean;
+}) {
+  return (
+    <div className={cn(
+      "flex items-center gap-2",
+      compact ? "flex-row" : "flex-row flex-wrap justify-center"
+    )}>
+      {models.map((m) => {
+        const isActive = m.id === active && !m.pro;
+        const Icon = m.icon;
+        return (
+          <button
+            key={m.id}
+            onClick={() => onSelect(m)}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all",
+              m.pro
+                ? "border-violet-300 bg-violet-50 text-violet-700 hover:border-violet-500"
+                : isActive
+                ? `${m.color} text-white border-transparent shadow-md`
+                : `${m.badgeBg} ${m.textColor}`
+            )}
+          >
+            {m.pro && !isActive ? (
+              <Lock className="w-3 h-3" />
+            ) : (
+              <Icon className="w-3 h-3" />
+            )}
+            {m.name}
+            <span className={cn(
+              "text-[10px] font-normal opacity-80",
+              isActive ? "text-white" : ""
+            )}>
+              {m.version}
+            </span>
+            {m.pro && (
+              <span className="ml-0.5 bg-violet-600 text-white text-[9px] font-bold px-1 py-0.5 rounded-full">
+                PRO
+              </span>
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }

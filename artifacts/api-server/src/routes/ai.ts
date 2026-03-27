@@ -158,6 +158,8 @@ router.post("/ai/generate-presentation", async (req, res) => {
 
     const count = Math.max(3, Math.min(30, parseInt(String(slideCount ?? 10)) || 10));
 
+    // ── AI call: FLAT JSON — no nested arrays, pipes as delimiters ────────
+    // Flat structure avoids all array-inside-object JSON issues that the AI produces.
     const completion = await openai.chat.completions.create({
       model: "gpt-5.2",
       max_completion_tokens: 8192,
@@ -165,91 +167,102 @@ router.post("/ai/generate-presentation", async (req, res) => {
         {
           role: "system",
           content:
-            "You are an expert medical educator creating comprehensive, standalone PDF presentations for Indian doctors and students. Responses must be information-dense so readers need no other source. Return ONLY valid JSON, zero markdown fences, zero extra text. CRITICAL: Use ONLY plain ASCII characters - no Unicode arrows (use ->), no em-dashes (use -), no curly quotes (use straight), no Greek letters (spell out: alpha, beta), no special symbols.",
+            "You are an expert medical educator. Return ONLY valid JSON — no markdown, no extra text. Use ONLY plain ASCII characters (no Unicode, no curly quotes, no em-dashes, no Greek letters — spell them out). Every string value must be properly quoted.",
         },
         {
           role: "user",
-          content: `Create a comprehensive ${count}-slide medical presentation on: "${prompt}".
+          content: `Create a ${count}-slide medical presentation on: "${prompt}".
 
-Return ONLY this JSON structure (no extra keys, no extra text):
+Return ONLY this exact JSON (no extra keys, no extra text, no arrays inside slide objects):
 {
   "title": "Full topic title",
-  "subtitle": "Targeted audience and scope",
+  "subtitle": "Brief subtitle",
   "slides": [
     {
-      "slideNumber": 1,
-      "title": "Slide Title",
-      "bullets": [
-        "Detailed clinical point 1 with specific values or mechanism",
-        "Detailed clinical point 2 with classification or types",
-        "Detailed clinical point 3 with practical application",
-        "Detailed clinical point 4 with investigation or diagnosis",
-        "Detailed clinical point 5 with management or treatment",
-        "Detailed clinical point 6 with complications or prognosis"
-      ],
-      "keyFact": "Single high-yield fact or critical statistic (max 14 words)",
-      "mindMap": {
-        "center": "Core concept (2-3 words)",
-        "nodes": ["Node1 (2-3w)", "Node2 (2-3w)", "Node3 (2-3w)", "Node4 (2-3w)", "Node5 (2-3w)", "Node6 (2-3w)"]
-      }
+      "n": 1,
+      "t": "Slide title",
+      "b1": "Detailed clinical point 1 (10-15 words)",
+      "b2": "Detailed clinical point 2 (10-15 words)",
+      "b3": "Detailed clinical point 3 (10-15 words)",
+      "b4": "Detailed clinical point 4 (10-15 words)",
+      "b5": "Detailed clinical point 5 (10-15 words)",
+      "b6": "Detailed clinical point 6 (10-15 words)",
+      "kf": "Single high-yield key fact (max 14 words)",
+      "mc": "Map center 2-3 words",
+      "mn": "Node1|Node2|Node3|Node4|Node5|Node6"
     }
   ],
-  "quickReference": [
-    { "term": "Term", "definition": "Concise clinically accurate definition (max 18 words)" }
-  ]
+  "refs": "Term1::Definition1 max 15 words||Term2::Definition2||Term3::Definition3||Term4::Definition4||Term5::Definition5||Term6::Definition6||Term7::Definition7||Term8::Definition8"
 }
 
-STRICT RULES:
-- EXACTLY 6 bullet points per slide, each 10-18 words, clinically specific
-- keyFact: one crisp high-yield statement
-- mindMap.nodes: EXACTLY 6 items, each 2-3 words only
-- quickReference: 8-12 entries covering key terminology
-- First slide: Introduction/Overview; last slide: Summary/Key Takeaways
-- ASCII only throughout`,
+RULES:
+- slides array: each slide MUST have ALL fields n,t,b1-b6,kf,mc,mn
+- mn field: exactly 6 node labels separated by pipe | character, each 2-4 words
+- refs field: 8 entries separated by double-pipe ||, each as Term::Definition
+- First slide overview, last slide summary
+- ASCII only, no nested arrays anywhere`,
         },
       ],
     });
 
     const raw = completion.choices[0]?.message?.content ?? "";
+
+    // Parse with multiple fallback layers
+    let parsed: Record<string, unknown> = {};
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("Invalid AI response structure");
-
-    // jsonrepair handles trailing commas, unescaped quotes, missing commas, etc.
-    const pres = JSON.parse(jsonrepair(jsonMatch[0])) as {
-      title: string;
-      subtitle: string;
-      slides: Array<{
-        slideNumber: number;
-        title: string;
-        bullets: string[];
-        keyFact: string;
-        mindMap: { center: string; nodes: string[] };
-      }>;
-      quickReference: Array<{ term: string; definition: string }>;
-    };
-
-    // ── Normalise AI output (AI sometimes returns numbers/arrays instead of strings) ──
-    pres.title = String(pres.title ?? "");
-    pres.subtitle = String(pres.subtitle ?? "");
-    if (!Array.isArray(pres.slides)) pres.slides = [];
-    for (const slide of pres.slides) {
-      slide.title    = String(slide.title    ?? "");
-      slide.keyFact  = String(slide.keyFact  ?? "");
-      if (!Array.isArray(slide.bullets)) slide.bullets = [];
-      slide.bullets  = slide.bullets.flatMap((b: unknown) =>
-        Array.isArray(b) ? (b as unknown[]).map(String) : [String(b)]
-      ).filter(Boolean);
-      if (slide.mindMap) {
-        slide.mindMap.center = String(slide.mindMap.center ?? "");
-        if (!Array.isArray(slide.mindMap.nodes)) slide.mindMap.nodes = [];
-        slide.mindMap.nodes  = slide.mindMap.nodes.map((n: unknown) => String(n)).filter(Boolean);
+    if (jsonMatch) {
+      // Layer 1: native parse
+      try { parsed = JSON.parse(jsonMatch[0]); }
+      catch (_) {
+        // Layer 2: manual comma cleanup then parse
+        try {
+          const cleaned = jsonMatch[0].replace(/,(\s*[}\]])/g, "$1");
+          parsed = JSON.parse(cleaned);
+        } catch (_) {
+          // Layer 3: jsonrepair
+          try { parsed = JSON.parse(jsonrepair(jsonMatch[0])); }
+          catch (_) {
+            // Layer 4: aggressive cleanup — strip everything after last valid }
+            try {
+              const stripped = jsonMatch[0]
+                .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "") // control chars
+                .replace(/,(\s*[}\]])/g, "$1");               // trailing commas
+              parsed = JSON.parse(stripped);
+            } catch (_) {
+              throw new Error("Could not parse AI response after all repair attempts");
+            }
+          }
+        }
       }
+    } else {
+      throw new Error("No JSON found in AI response");
     }
-    if (!Array.isArray(pres.quickReference)) pres.quickReference = [];
-    pres.quickReference = (pres.quickReference as unknown[]).map((r: unknown) => ({
-      term:       String((r as Record<string, unknown>)?.term       ?? ""),
-      definition: String((r as Record<string, unknown>)?.definition ?? ""),
-    }));
+
+    // ── Convert flat schema → rich structure ─────────────────────────────
+    const rawSlides = Array.isArray(parsed.slides) ? parsed.slides as Record<string, unknown>[] : [];
+
+    const pres = {
+      title:    String(parsed.title    ?? prompt),
+      subtitle: String(parsed.subtitle ?? ""),
+      slides: rawSlides.map((sl, idx) => ({
+        slideNumber: Number(sl.n ?? idx + 1),
+        title:  String(sl.t  ?? `Slide ${idx + 1}`),
+        bullets: ["b1","b2","b3","b4","b5","b6"]
+          .map(k => String(sl[k] ?? "")).filter(Boolean),
+        keyFact: String(sl.kf ?? ""),
+        mindMap: {
+          center: String(sl.mc ?? ""),
+          nodes:  String(sl.mn ?? "").split("|").map(n => n.trim()).filter(Boolean),
+        },
+      })),
+      quickReference: String(parsed.refs ?? "")
+        .split("||")
+        .map(entry => {
+          const [term, ...rest] = entry.split("::");
+          return { term: (term ?? "").trim(), definition: rest.join("::").trim() };
+        })
+        .filter(r => r.term),
+    };
 
     // ── Sanitize for WinAnsi ──────────────────────────────────────────────
     const s = (str: string): string =>

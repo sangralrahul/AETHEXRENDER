@@ -129,20 +129,19 @@ router.post("/ai/generate-image", async (req, res) => {
     const medicalPrompt = `Medical illustration, professional clinical style: ${prompt}. High quality, accurate, educational medical artwork.`;
 
     const response = await openai.images.generate({
-      model: "dall-e-3",
+      model: "gpt-image-1",
       prompt: medicalPrompt,
       n: 1,
       size: "1024x1024",
-      quality: "standard",
     });
 
-    const imageUrl = response.data[0]?.url;
-    if (!imageUrl) {
+    const b64 = response.data[0]?.b64_json;
+    if (!b64) {
       res.status(500).json({ error: "No image generated" });
       return;
     }
 
-    res.json({ imageUrl });
+    res.json({ imageUrl: `data:image/png;base64,${b64}` });
   } catch (err) {
     req.log.error({ err }, "Error generating image");
     res.status(500).json({ error: "Image generation failed" });

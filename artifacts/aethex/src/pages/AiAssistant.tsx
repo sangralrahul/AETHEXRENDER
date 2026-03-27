@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import {
   Send, User, Loader2, RefreshCcw, Activity, FlaskConical,
   Lock, Crown, Paperclip, Image, FileText, Camera, Search,
-  ImagePlus, X, ChevronUp, Microscope, Download,
+  ImagePlus, X, ChevronUp, Microscope, Download, Presentation,
 } from "lucide-react";
 import { useAiChat } from "@workspace/api-client-react";
 import { type ChatMessage, ChatMessageRole } from "@workspace/api-client-react";
@@ -13,10 +13,14 @@ import { cn } from "@/lib/utils";
 interface ExtendedMessage extends ChatMessage {
   imageUrl?: string;
   isImageGeneration?: boolean;
+  presentationPdfBase64?: string;
+  presentationDocxBase64?: string;
+  presentationTitle?: string;
+  isPresentation?: boolean;
 }
 
 type ModelId = "pulse45" | "flux36" | "nova46";
-type ChatMode = "normal" | "deep-research" | "create-image";
+type ChatMode = "normal" | "deep-research" | "create-image" | "create-presentation";
 
 interface Model {
   id: ModelId;
@@ -99,6 +103,9 @@ export default function AiAssistant() {
     nova46: [],
   });
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [isGeneratingPresentation, setIsGeneratingPresentation] = useState(false);
+  const [presentationStage, setPresentationStage] = useState<"idle" | "waiting-slide-count">("idle");
+  const [pendingPresentationPrompt, setPendingPresentationPrompt] = useState("");
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -176,6 +183,63 @@ export default function AiAssistant() {
       return;
     }
 
+    if (chatMode === "create-presentation") {
+      if (presentationStage === "idle") {
+        // Step 1 — store the topic and ask for slide count
+        setPendingPresentationPrompt(userMsg);
+        setPresentationStage("waiting-slide-count");
+        setConversations((prev) => ({
+          ...prev,
+          [activeModel]: [
+            ...newHistory,
+            {
+              role: ChatMessageRole.assistant,
+              content: `Great! I'll create a presentation on "${userMsg}". How many slides would you like? (e.g. 8, 12, 15 — between 3 and 30)`,
+            },
+          ],
+        }));
+      } else {
+        // Step 2 — user replied with slide count, generate the presentation
+        const slideCount = parseInt(userMsg.replace(/\D/g, "")) || 10;
+        setIsGeneratingPresentation(true);
+        try {
+          const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+          const resp = await fetch(`${apiBase}/api/ai/generate-presentation`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt: pendingPresentationPrompt, slideCount }),
+          });
+          const data = await resp.json();
+          if (data.pdfBase64 && data.docxBase64) {
+            setConversations((prev) => ({
+              ...prev,
+              [activeModel]: [
+                ...newHistory,
+                {
+                  role: ChatMessageRole.assistant,
+                  content: `Your presentation "${data.title}" (${data.totalSlides} slides) is ready! Download it below:`,
+                  isPresentation: true,
+                  presentationTitle: data.title,
+                  presentationPdfBase64: data.pdfBase64,
+                  presentationDocxBase64: data.docxBase64,
+                },
+              ],
+            }));
+            resetPresentationState();
+          } else {
+            throw new Error(data.error ?? "Generation failed");
+          }
+        } catch (err) {
+          toast({ title: "Presentation generation failed", description: "Please try again.", variant: "destructive" });
+          setConversations((prev) => ({ ...prev, [activeModel]: currentHistory }));
+          resetPresentationState();
+        } finally {
+          setIsGeneratingPresentation(false);
+        }
+      }
+      return;
+    }
+
     if (chatMode === "deep-research") {
       toast({
         title: "Deep Research initiated",
@@ -224,15 +288,25 @@ export default function AiAssistant() {
     setAttachments((prev) => prev.filter((a) => a.id !== id));
   };
 
+  const resetPresentationState = () => {
+    setPresentationStage("idle");
+    setPendingPresentationPrompt("");
+  };
+
   const handleModelSelect = (m: Model) => {
     if (m.pro) { setShowProModal(true); return; }
     setActiveModel(m.id);
     setInput("");
     setChatMode("normal");
+    resetPresentationState();
   };
 
   const toggleMode = (mode: ChatMode) => {
-    setChatMode((prev) => (prev === mode ? "normal" : mode));
+    setChatMode((prev) => {
+      if (prev === mode) { resetPresentationState(); return "normal"; }
+      resetPresentationState();
+      return mode;
+    });
   };
 
   const ModelIcon = model.icon;
@@ -280,7 +354,7 @@ export default function AiAssistant() {
           <div className="flex-1 min-h-0 overflow-y-auto py-4 flex flex-col gap-5">
             <div className="flex items-center justify-between">
               <ModelPicker models={MODELS} active={activeModel} onSelect={handleModelSelect} compact />
-              <Button variant="ghost" size="sm" onClick={() => { setConversations((p) => ({ ...p, [activeModel]: [] })); setChatMode("normal"); setAttachments([]); }}
+              <Button variant="ghost" size="sm" onClick={() => { setConversations((p) => ({ ...p, [activeModel]: [] })); setChatMode("normal"); setAttachments([]); resetPresentationState(); }}
                 className="text-xs text-muted-foreground">
                 <RefreshCcw className="w-3 h-3 mr-1.5" /> New chat
               </Button>
@@ -317,11 +391,37 @@ export default function AiAssistant() {
                       </a>
                     </div>
                   )}
+                  {(msg as ExtendedMessage).isPresentation && (
+                    <div className="px-4 pb-4 flex flex-col gap-2">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                          <Presentation className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <span className="text-xs font-semibold text-slate-700 truncate">
+                          {(msg as ExtendedMessage).presentationTitle}
+                        </span>
+                      </div>
+                      <a
+                        href={`data:application/pdf;base64,${(msg as ExtendedMessage).presentationPdfBase64}`}
+                        download={`${(msg as ExtendedMessage).presentationTitle ?? "presentation"}.pdf`}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold hover:bg-red-100 transition-colors"
+                      >
+                        <Download className="w-3.5 h-3.5" /> Download PDF
+                      </a>
+                      <a
+                        href={`data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${(msg as ExtendedMessage).presentationDocxBase64}`}
+                        download={`${(msg as ExtendedMessage).presentationTitle ?? "presentation"}.docx`}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold hover:bg-blue-100 transition-colors"
+                      >
+                        <Download className="w-3.5 h-3.5" /> Download DOCX
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
 
-            {(chatMutation.isPending || isGeneratingImage) && (
+            {(chatMutation.isPending || isGeneratingImage || isGeneratingPresentation) && (
               <div className="flex gap-3 max-w-[92%] self-start">
                 <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm shrink-0 mt-1">
                   <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />
@@ -331,6 +431,8 @@ export default function AiAssistant() {
                   <span className="text-sm text-slate-500">
                     {isGeneratingImage
                       ? "SYNAPSE is generating your medical illustration..."
+                      : isGeneratingPresentation
+                      ? "SYNAPSE is building your presentation — this may take a moment..."
                       : `SYNAPSE · ${model.name} ${model.version} is thinking...`}
                   </span>
                 </div>
@@ -366,13 +468,23 @@ export default function AiAssistant() {
               {chatMode !== "normal" && (
                 <div className={cn(
                   "flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold",
-                  chatMode === "deep-research" ? "bg-blue-50 border-blue-100 text-blue-700" : "bg-purple-50 border-purple-100 text-purple-700"
+                  chatMode === "deep-research"
+                    ? "bg-blue-50 border-blue-100 text-blue-700"
+                    : chatMode === "create-presentation"
+                    ? "bg-amber-50 border-amber-100 text-amber-700"
+                    : "bg-purple-50 border-purple-100 text-purple-700"
                 )}>
                   {chatMode === "deep-research"
                     ? <><Microscope className="w-3.5 h-3.5" /> Deep Research mode — SYNAPSE will scan medical literature</>
+                    : chatMode === "create-presentation"
+                    ? <><Presentation className="w-3.5 h-3.5" />
+                        {presentationStage === "idle"
+                          ? " Presentation mode — describe the topic for your presentation"
+                          : " Presentation mode — reply with the number of slides you want"}
+                      </>
                     : <><ImagePlus className="w-3.5 h-3.5" /> Image generation mode — describe the medical image you want</>
                   }
-                  <button type="button" onClick={() => setChatMode("normal")} className="ml-auto hover:opacity-70">
+                  <button type="button" onClick={() => toggleMode(chatMode)} className="ml-auto hover:opacity-70">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -410,11 +522,15 @@ export default function AiAssistant() {
                     ? "Describe the medical image or illustration you want to create..."
                     : chatMode === "deep-research"
                     ? "What topic should SYNAPSE research deeply?"
+                    : chatMode === "create-presentation" && presentationStage === "idle"
+                    ? "Enter the topic for your presentation (e.g. Human Brain, Cardiac Anatomy)..."
+                    : chatMode === "create-presentation" && presentationStage === "waiting-slide-count"
+                    ? "How many slides? (e.g. 10, 15, 20)..."
                     : `Message SYNAPSE · ${model.name} ${model.version}...`
                 }
                 rows={1}
                 className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none text-foreground placeholder:text-muted-foreground"
-                disabled={chatMutation.isPending}
+                disabled={chatMutation.isPending || isGeneratingPresentation}
                 style={{ minHeight: "52px", maxHeight: "160px" }}
               />
 
@@ -503,6 +619,21 @@ export default function AiAssistant() {
                     <ImagePlus className="w-4 h-4" />
                     <span className="hidden sm:inline">Create Image</span>
                   </button>
+
+                  {/* Create Presentation */}
+                  <button type="button"
+                    onClick={() => toggleMode("create-presentation")}
+                    className={cn(
+                      "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border",
+                      chatMode === "create-presentation"
+                        ? "bg-amber-500 text-white border-amber-500 shadow-sm"
+                        : "text-slate-500 hover:bg-slate-100 border-transparent"
+                    )}
+                    title="Create Presentation"
+                  >
+                    <Presentation className="w-4 h-4" />
+                    <span className="hidden sm:inline">Create Presentation</span>
+                  </button>
                 </div>
 
                 {/* Right: model badge + send */}
@@ -516,7 +647,7 @@ export default function AiAssistant() {
                   </div>
                   <Button type="submit"
                     size="icon"
-                    disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage}
+                    disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation}
                     className="h-8 w-8 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-30 transition-all">
                     <Send className="w-3.5 h-3.5" />
                   </Button>

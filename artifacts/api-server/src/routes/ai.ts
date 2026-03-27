@@ -213,7 +213,9 @@ STRICT RULES:
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error("Invalid AI response structure");
 
-    const pres = JSON.parse(jsonMatch[0]) as {
+    // Remove trailing commas (AI sometimes produces non-standard JSON)
+    const cleanJson = jsonMatch[0].replace(/,(\s*[}\]])/g, "$1");
+    const pres = JSON.parse(cleanJson) as {
       title: string;
       subtitle: string;
       slides: Array<{

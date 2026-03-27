@@ -107,6 +107,8 @@ export default function AiAssistant() {
   const [isGeneratingPresentation, setIsGeneratingPresentation] = useState(false);
   const [presentationStage, setPresentationStage] = useState<"idle" | "waiting-slide-count">("idle");
   const [pendingPresentationPrompt, setPendingPresentationPrompt] = useState("");
+  const [buildingTopic, setBuildingTopic] = useState("");
+  const [buildingSlideCount, setBuildingSlideCount] = useState(10);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -261,6 +263,8 @@ export default function AiAssistant() {
     const userEntry: ExtendedMessage = { role: ChatMessageRole.user, content: `${count} slides` };
     const newHistory: ExtendedMessage[] = [...currentHistory, userEntry];
     setConversations((prev) => ({ ...prev, [activeModel]: newHistory }));
+    setBuildingTopic(pendingPresentationPrompt);
+    setBuildingSlideCount(count);
     setIsGeneratingPresentation(true);
     try {
       const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -443,7 +447,7 @@ export default function AiAssistant() {
               </div>
             ))}
 
-            {(chatMutation.isPending || isGeneratingImage || isGeneratingPresentation) && (
+            {(chatMutation.isPending || isGeneratingImage) && (
               <div className="flex gap-3 max-w-[92%] self-start">
                 <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm shrink-0 mt-1">
                   <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />
@@ -453,10 +457,23 @@ export default function AiAssistant() {
                   <span className="text-sm text-slate-500">
                     {isGeneratingImage
                       ? "SYNAPSE is generating your medical illustration..."
-                      : isGeneratingPresentation
-                      ? "SYNAPSE is building your presentation — this may take a moment..."
                       : `SYNAPSE · ${model.name} ${model.version} is thinking...`}
                   </span>
+                </div>
+              </div>
+            )}
+
+            {isGeneratingPresentation && (
+              <div className="flex gap-3 max-w-[95%] self-start w-full">
+                <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm shrink-0 mt-1">
+                  <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden bg-white border border-slate-100 shadow-sm">
+                  <div className="px-4 pt-3 pb-2 text-xs text-slate-500 font-medium flex items-center gap-2">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-500" />
+                    SYNAPSE is composing your {buildingSlideCount}-slide presentation...
+                  </div>
+                  <PresentationBuildingAnimation topic={buildingTopic} slideCount={buildingSlideCount} />
                 </div>
               </div>
             )}
@@ -720,6 +737,103 @@ export default function AiAssistant() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function PresentationBuildingAnimation({ topic, slideCount }: { topic: string; slideCount: number }) {
+  const [lines, setLines] = useState<string[]>([]);
+  const topicShort = topic.substring(0, 36);
+
+  useEffect(() => {
+    const phases = [
+      `> analyzing topic: "${topicShort}"`,
+      `> initializing ${slideCount}-slide structure...`,
+      `{`,
+      `  "title": "${topicShort}",`,
+      `  "subtitle": "Comprehensive Medical Guide",`,
+      `  "slides": [`,
+      `    {`,
+      `      "slideNumber": 1, "title": "Introduction",`,
+      `      "bullets": ["Definition and overview...", "Epidemiology...",`,
+      `                  "Etiology and risk factors...", "Classification..."],`,
+      `      "keyFact": "High-yield clinical statistic...",`,
+      `      "mindMap": { "center": "${topic.substring(0, 14)}", "nodes": [...] }`,
+      `    },`,
+      `    {`,
+      `      "slideNumber": 2, "title": "Anatomy & Physiology",`,
+      `      "bullets": ["Gross anatomy...", "Histology...", "Blood supply...",`,
+      `                  "Nerve supply...", "Lymphatics...", "Variations..."],`,
+      `      "keyFact": "Anatomical landmark...",`,
+      `    },`,
+      `    {`,
+      `      "slideNumber": 3, "title": "Pathophysiology",`,
+      `      "bullets": ["Molecular mechanism...", "Cellular changes...",`,
+      `                  "Cascade of events...", "Structural impact..."],`,
+      `    },`,
+      `    ... composing ${Math.max(slideCount - 3, 1)} more slides ...`,
+      `  ],`,
+      `  "quickReference": [`,
+      `    { "term": "Pathology", "definition": "..." },`,
+      `    { "term": "Etiology", "definition": "..." }`,
+      `  ]`,
+      `}`,
+      `> drawing ${slideCount} mind-map diagrams...`,
+      `> rendering slide layouts (${slideCount} pages)...`,
+      `> embedding fonts: HelveticaBold, Helvetica...`,
+      `> compiling PDF with pdf-lib...`,
+      `> encoding DOCX document...`,
+      `> finalizing download package...`,
+    ];
+
+    let i = 0;
+    const interval = setInterval(() => {
+      setLines((prev) => {
+        const next = [...prev, phases[i % phases.length]];
+        return next.slice(-16);
+      });
+      i++;
+      if (i >= phases.length) i = Math.max(phases.length - 10, 6);
+    }, 155);
+    return () => clearInterval(interval);
+  }, [topicShort, topic, slideCount]);
+
+  return (
+    <div className="font-mono text-xs overflow-hidden bg-[#0d1117] border-t border-slate-700">
+      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#161b22] border-b border-slate-700/60">
+        <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+        <span className="ml-1.5 text-[10px] text-slate-400 font-sans">synapse_presentation_builder.json</span>
+      </div>
+      <div className="px-4 py-3 space-y-0.5 min-h-[160px] max-h-[220px] overflow-hidden">
+        {lines.map((line, i) => (
+          <div
+            key={i}
+            className={cn(
+              "leading-[18px] whitespace-pre",
+              line.startsWith(">")
+                ? "text-emerald-400"
+                : line.includes('"title"') || line.includes('"subtitle"')
+                ? "text-amber-300"
+                : line.includes('"bullets"') || line.includes('"mindMap"') || line.includes('"quickReference"')
+                ? "text-sky-300"
+                : line.includes('"keyFact"') || line.includes('"term"')
+                ? "text-violet-300"
+                : line.startsWith("    ...") || line.startsWith("  //")
+                ? "text-slate-500 italic"
+                : line === "{" || line === "}" || line === "  ],"
+                ? "text-slate-400"
+                : "text-slate-300"
+            )}
+          >
+            {line}
+            {i === lines.length - 1 && (
+              <span className="animate-pulse text-emerald-400 ml-0.5">█</span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

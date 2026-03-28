@@ -107,6 +107,11 @@
   }
 }
 
+/* ── SYNAPSE page dark textarea placeholder ───────────────────────────────── */
+.synapse-textarea::placeholder {
+  color: rgba(100, 170, 220, 0.45);
+}
+
 /* ── SYNAPSE Animated Logo keyframes ─────────────────────────────────────── */
 @keyframes synapse-orbit-cw {
   from { transform: rotate(0deg); }

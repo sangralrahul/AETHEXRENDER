@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import PresentationViewer, { type PresentationData } from "@/components/synapse/PresentationViewer";
 import SynapseLogo from "@/components/synapse/SynapseLogo";
+import DNABackground from "@/components/synapse/DNABackground";
 
 interface ResearchSource {
   title: string;
@@ -560,13 +561,16 @@ export default function AiAssistant() {
   const ModelIcon = model.icon;
 
   return (
-    <div className="h-screen pt-[72px] bg-slate-50 flex flex-col overflow-hidden">
+    <div className="h-screen pt-[72px] flex flex-col overflow-hidden relative" style={{ background: "#040B1A" }}>
+      {/* ── Live DNA canvas background ── */}
+      <DNABackground />
+
       {/* Hidden file inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFileSelect(e, "image")} />
       <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.csv,.xlsx" multiple className="hidden" onChange={(e) => handleFileSelect(e, "file")} />
       <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => handleFileSelect(e, "image")} />
 
-      <div className="flex-1 flex flex-col min-h-0 max-w-3xl mx-auto w-full px-4">
+      <div className="flex-1 flex flex-col min-h-0 max-w-3xl mx-auto w-full px-4 relative z-10">
 
         {/* ── Brand / Empty state ── */}
         {!hasMessages && (
@@ -576,19 +580,20 @@ export default function AiAssistant() {
                 <SynapseLogo size="lg" thinking={false} baseUrl={import.meta.env.BASE_URL} />
               </div>
               <div className="text-center">
-                <h1 className="font-display font-bold text-3xl text-foreground tracking-tight">SYNAPSE</h1>
-                <p className="text-muted-foreground text-sm mt-1">AI Medical Suite by aethex</p>
+                <h1 className="font-display font-bold text-3xl tracking-tight" style={{ color: "#00E5FF", textShadow: "0 0 20px rgba(0,229,255,0.5)" }}>SYNAPSE</h1>
+                <p className="text-sm mt-1" style={{ color: "rgba(150,220,255,0.7)" }}>AI Medical Suite by aethex</p>
               </div>
             </div>
             <ModelPicker models={MODELS} active={activeModel} onSelect={handleModelSelect} />
-            <p className="text-center text-muted-foreground text-base max-w-md leading-relaxed px-2">
+            <p className="text-center text-base max-w-md leading-relaxed px-2" style={{ color: "rgba(150,210,255,0.75)" }}>
               {modelGreetings[activeModel]}
             </p>
             {!isProLocked && (
               <div className="flex flex-wrap gap-2 justify-center">
                 {quickSuggestions[activeModel].map((q) => (
                   <button key={q} type="button" onClick={() => setInput(q)}
-                    className="text-sm bg-white border border-slate-200 hover:border-primary hover:text-primary text-slate-600 px-4 py-2 rounded-full transition-colors shadow-sm">
+                    className="text-sm px-4 py-2 rounded-full transition-colors"
+                    style={{ background: "rgba(0,188,212,0.1)", border: "1px solid rgba(0,188,212,0.35)", color: "rgba(0,229,255,0.9)" }}>
                     {q}
                   </button>
                 ))}
@@ -603,7 +608,7 @@ export default function AiAssistant() {
             <div className="flex items-center justify-between">
               <ModelPicker models={MODELS} active={activeModel} onSelect={handleModelSelect} compact />
               <Button variant="ghost" size="sm" onClick={() => { setConversations((p) => ({ ...p, [activeModel]: [] })); setChatMode("normal"); setAttachments([]); resetPresentationState(); }}
-                className="text-xs text-muted-foreground">
+                className="text-xs" style={{ color: "rgba(100,180,220,0.7)" }}>
                 <RefreshCcw className="w-3 h-3 mr-1.5" /> New chat
               </Button>
             </div>
@@ -619,7 +624,13 @@ export default function AiAssistant() {
                 <div className={cn("rounded-2xl shadow-sm overflow-hidden",
                   msg.role === ChatMessageRole.user
                     ? "bg-primary text-white rounded-tr-sm"
-                    : "bg-white border border-slate-100 text-slate-800 rounded-tl-sm")}>
+                    : "rounded-tl-sm")}
+                  style={msg.role !== ChatMessageRole.user ? {
+                    background: "rgba(5,18,48,0.85)",
+                    backdropFilter: "blur(12px)",
+                    border: "1px solid rgba(0,188,212,0.2)",
+                    color: "rgba(200,235,255,0.92)",
+                  } : undefined}>
                   {!(msg as ExtendedMessage).isDeepResearch && !(msg as ExtendedMessage).isPresentation && !(msg as ExtendedMessage).slideCountOptions && !(msg as ExtendedMessage).imageUrl && msg.content && (
                     <div className="px-5 py-4 text-[15px] leading-relaxed">{msg.content}</div>
                   )}
@@ -756,9 +767,10 @@ export default function AiAssistant() {
                 <div className="shrink-0 mt-1">
                   <SynapseLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                 </div>
-                <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden bg-white border border-slate-100 shadow-sm">
-                  <div className="px-4 pt-3 pb-2 text-xs text-slate-500 font-medium flex items-center gap-2">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-500" />
+                <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden"
+                  style={{ background: "rgba(5,18,48,0.85)", backdropFilter: "blur(12px)", border: "1px solid rgba(0,188,212,0.2)" }}>
+                  <div className="px-4 pt-3 pb-2 text-xs font-medium flex items-center gap-2" style={{ color: "rgba(100,200,255,0.8)" }}>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
                     SYNAPSE is composing your {buildingSlideCount}-slide presentation...
                   </div>
                   <PresentationBuildingAnimation topic={buildingTopic} slideCount={buildingSlideCount} />
@@ -789,18 +801,17 @@ export default function AiAssistant() {
             </div>
           ) : (
             <form onSubmit={handleSubmit}
-              className="bg-white border-2 border-slate-200 focus-within:border-primary rounded-2xl shadow-sm transition-all overflow-hidden">
+              className="rounded-2xl transition-all overflow-hidden"
+              style={{ background: "rgba(5,15,40,0.82)", backdropFilter: "blur(16px)", border: "1px solid rgba(0,188,212,0.3)", boxShadow: "0 4px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(0,229,255,0.08)" }}>
 
               {/* Active mode banner */}
               {chatMode !== "normal" && (
-                <div className={cn(
-                  "flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold",
-                  chatMode === "deep-research"
-                    ? "bg-blue-50 border-blue-100 text-blue-700"
-                    : chatMode === "create-presentation"
-                    ? "bg-amber-50 border-amber-100 text-amber-700"
-                    : "bg-purple-50 border-purple-100 text-purple-700"
-                )}>
+                <div className="flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold"
+                  style={{
+                    background: chatMode === "deep-research" ? "rgba(2,119,189,0.18)" : chatMode === "create-presentation" ? "rgba(180,120,0,0.15)" : "rgba(100,50,180,0.18)",
+                    borderColor: chatMode === "deep-research" ? "rgba(2,119,189,0.35)" : chatMode === "create-presentation" ? "rgba(180,120,0,0.3)" : "rgba(100,50,180,0.35)",
+                    color: chatMode === "deep-research" ? "#4FC3F7" : chatMode === "create-presentation" ? "#FFD54F" : "#CE93D8",
+                  }}>
                   {chatMode === "deep-research"
                     ? <><Microscope className="w-3.5 h-3.5" /> Deep Research mode — SYNAPSE will scan medical literature</>
                     : chatMode === "create-presentation"
@@ -856,9 +867,9 @@ export default function AiAssistant() {
                     : `Message SYNAPSE · ${model.name} ${model.version}...`
                 }
                 rows={1}
-                className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none text-foreground placeholder:text-muted-foreground"
+                className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none synapse-textarea"
+                style={{ color: "rgba(200,235,255,0.95)", caretColor: "#00E5FF", minHeight: "52px", maxHeight: "160px" }}
                 disabled={chatMutation.isPending || isGeneratingPresentation || presentationStage === "waiting-slide-count"}
-                style={{ minHeight: "52px", maxHeight: "160px" }}
               />
 
               {/* Toolbar */}
@@ -870,10 +881,8 @@ export default function AiAssistant() {
                   <div className="relative" ref={attachMenuRef}>
                     <button type="button"
                       onClick={() => setShowAttachMenu((v) => !v)}
-                      className={cn(
-                        "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all",
-                        showAttachMenu ? "bg-slate-200 text-slate-800" : "text-slate-500 hover:bg-slate-100"
-                      )}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                      style={{ color: showAttachMenu ? "#00E5FF" : "rgba(100,180,220,0.7)" }}
                       title="Attach files"
                     >
                       <Paperclip className="w-4 h-4" />
@@ -881,36 +890,40 @@ export default function AiAssistant() {
                     </button>
 
                     {showAttachMenu && (
-                      <div className="absolute bottom-full left-0 mb-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden w-52 z-30">
-                        <div className="px-3 pt-2 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Attach</div>
+                      <div className="absolute bottom-full left-0 mb-2 rounded-2xl shadow-xl overflow-hidden w-52 z-30"
+                        style={{ background: "rgba(4,12,35,0.95)", backdropFilter: "blur(16px)", border: "1px solid rgba(0,188,212,0.3)" }}>
+                        <div className="px-3 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgba(0,229,255,0.5)" }}>Attach</div>
                         <button type="button" onClick={() => { imageInputRef.current?.click(); }}
-                          className="flex items-center gap-3 w-full px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
-                          <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center">
-                            <Image className="w-4 h-4 text-blue-600" />
+                          className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-white/5"
+                          style={{ color: "rgba(180,225,255,0.9)" }}>
+                          <div className="w-8 h-8 rounded-xl bg-blue-900/60 flex items-center justify-center">
+                            <Image className="w-4 h-4 text-blue-300" />
                           </div>
                           <div className="text-left">
                             <p className="font-semibold leading-tight">Upload Image</p>
-                            <p className="text-xs text-muted-foreground">JPG, PNG, WEBP</p>
+                            <p className="text-xs" style={{ color: "rgba(100,170,220,0.55)" }}>JPG, PNG, WEBP</p>
                           </div>
                         </button>
                         <button type="button" onClick={() => { fileInputRef.current?.click(); }}
-                          className="flex items-center gap-3 w-full px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
-                          <div className="w-8 h-8 rounded-xl bg-orange-100 flex items-center justify-center">
-                            <FileText className="w-4 h-4 text-orange-600" />
+                          className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-white/5"
+                          style={{ color: "rgba(180,225,255,0.9)" }}>
+                          <div className="w-8 h-8 rounded-xl bg-orange-900/40 flex items-center justify-center">
+                            <FileText className="w-4 h-4 text-orange-300" />
                           </div>
                           <div className="text-left">
                             <p className="font-semibold leading-tight">Upload Document</p>
-                            <p className="text-xs text-muted-foreground">PDF, DOCX, TXT, CSV</p>
+                            <p className="text-xs" style={{ color: "rgba(100,170,220,0.55)" }}>PDF, DOCX, TXT, CSV</p>
                           </div>
                         </button>
                         <button type="button" onClick={() => { cameraInputRef.current?.click(); }}
-                          className="flex items-center gap-3 w-full px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
-                          <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center">
-                            <Camera className="w-4 h-4 text-emerald-600" />
+                          className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-white/5"
+                          style={{ color: "rgba(180,225,255,0.9)" }}>
+                          <div className="w-8 h-8 rounded-xl bg-emerald-900/40 flex items-center justify-center">
+                            <Camera className="w-4 h-4 text-emerald-300" />
                           </div>
                           <div className="text-left">
                             <p className="font-semibold leading-tight">Take Photo</p>
-                            <p className="text-xs text-muted-foreground">Use camera</p>
+                            <p className="text-xs" style={{ color: "rgba(100,170,220,0.55)" }}>Use camera</p>
                           </div>
                         </button>
                       </div>
@@ -920,12 +933,10 @@ export default function AiAssistant() {
                   {/* Deep Research */}
                   <button type="button"
                     onClick={() => toggleMode("deep-research")}
-                    className={cn(
-                      "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border",
-                      chatMode === "deep-research"
-                        ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                        : "text-slate-500 hover:bg-slate-100 border-transparent"
-                    )}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border"
+                    style={chatMode === "deep-research"
+                      ? { background: "rgba(2,119,189,0.4)", color: "#4FC3F7", borderColor: "rgba(2,119,189,0.6)" }
+                      : { color: "rgba(100,180,220,0.7)", borderColor: "transparent" }}
                     title="Deep Research"
                   >
                     <Search className="w-4 h-4" />
@@ -935,12 +946,10 @@ export default function AiAssistant() {
                   {/* Create Image */}
                   <button type="button"
                     onClick={() => toggleMode("create-image")}
-                    className={cn(
-                      "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border",
-                      chatMode === "create-image"
-                        ? "bg-purple-600 text-white border-purple-600 shadow-sm"
-                        : "text-slate-500 hover:bg-slate-100 border-transparent"
-                    )}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border"
+                    style={chatMode === "create-image"
+                      ? { background: "rgba(100,50,180,0.4)", color: "#CE93D8", borderColor: "rgba(100,50,180,0.6)" }
+                      : { color: "rgba(100,180,220,0.7)", borderColor: "transparent" }}
                     title="Create Image"
                   >
                     <ImagePlus className="w-4 h-4" />
@@ -950,12 +959,10 @@ export default function AiAssistant() {
                   {/* Create Presentation */}
                   <button type="button"
                     onClick={() => toggleMode("create-presentation")}
-                    className={cn(
-                      "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border",
-                      chatMode === "create-presentation"
-                        ? "bg-amber-500 text-white border-amber-500 shadow-sm"
-                        : "text-slate-500 hover:bg-slate-100 border-transparent"
-                    )}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border"
+                    style={chatMode === "create-presentation"
+                      ? { background: "rgba(180,100,0,0.35)", color: "#FFD54F", borderColor: "rgba(180,100,0,0.55)" }
+                      : { color: "rgba(100,180,220,0.7)", borderColor: "transparent" }}
                     title="Create Presentation"
                   >
                     <Presentation className="w-4 h-4" />

@@ -1100,8 +1100,18 @@ export default function AiAssistant() {
                   </div>
                 ))}
 
+                {/* Image generating animation */}
+                {isGeneratingImage && (
+                  <div className="flex gap-3 self-start max-w-[92%]">
+                    <div className="w-8 h-8 shrink-0 mt-1">
+                      <SynapseLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
+                    </div>
+                    <ImageGeneratingAnimation prompt={pendingImagePrompt} />
+                  </div>
+                )}
+
                 {/* Thinking indicator */}
-                {(chatMutation.isPending || isGeneratingImage || isGeneratingResearch) && (
+                {(chatMutation.isPending || isGeneratingResearch) && (
                   <div className="flex gap-3 self-start max-w-[92%]">
                     <div className="w-8 h-8 shrink-0 mt-1">
                       <SynapseLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
@@ -1110,7 +1120,7 @@ export default function AiAssistant() {
                       style={{ background: "rgba(4,14,38,0.82)", border: "1px solid rgba(0,188,212,0.18)", backdropFilter: "blur(12px)" }}>
                       <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#00E5FF" }} />
                       <span className="text-sm" style={{ color: "rgba(140,200,255,0.7)" }}>
-                        {isGeneratingImage ? tr.generatingImage : isGeneratingResearch ? tr.researching : tr.thinking}
+                        {isGeneratingResearch ? tr.researching : tr.thinking}
                       </span>
                     </div>
                   </div>
@@ -1403,6 +1413,147 @@ export default function AiAssistant() {
           onClose={() => setShowCamera(false)}
         />
       )}
+    </div>
+  );
+}
+
+function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
+  const [phase, setPhase] = useState(0);
+  const phases = [
+    "Analyzing prompt…",
+    "Composing scene…",
+    "Rendering details…",
+    "Adding highlights…",
+    "Finalizing image…",
+  ];
+  useEffect(() => {
+    const t = setInterval(() => setPhase(p => (p + 1) % phases.length), 2400);
+    return () => clearInterval(t);
+  }, []);
+
+  const particles = [
+    { x: 20, y: 18, delay: "0s",   dur: "2.2s" },
+    { x: 78, y: 12, delay: "0.4s", dur: "2.8s" },
+    { x: 55, y: 82, delay: "0.8s", dur: "2.0s" },
+    { x: 12, y: 65, delay: "1.2s", dur: "3.0s" },
+    { x: 85, y: 58, delay: "0.6s", dur: "2.5s" },
+    { x: 40, y: 92, delay: "1.6s", dur: "1.8s" },
+    { x: 92, y: 30, delay: "1.0s", dur: "2.6s" },
+  ];
+
+  return (
+    <div style={{
+      background: "linear-gradient(160deg, rgba(2,8,28,0.95) 0%, rgba(4,14,40,0.95) 100%)",
+      border: "1px solid rgba(0,188,212,0.2)",
+      borderRadius: "16px",
+      padding: "20px 24px",
+      backdropFilter: "blur(16px)",
+      minWidth: "260px",
+    }}>
+      {/* Orb canvas */}
+      <div style={{ position: "relative", height: "130px", marginBottom: "14px", overflow: "hidden", borderRadius: "12px" }}>
+        {/* Particles */}
+        {particles.map((p, i) => (
+          <div key={i} style={{
+            position: "absolute", left: `${p.x}%`, top: `${p.y}%`,
+            width: "3px", height: "3px", borderRadius: "50%",
+            background: i % 2 === 0 ? "#00E5FF" : "#7C3AED",
+            animation: `img-gen-particle ${p.dur} ${p.delay} ease-in-out infinite`,
+            opacity: 0.7,
+          }} />
+        ))}
+
+        {/* Scan line */}
+        <div style={{
+          position: "absolute", left: 0, right: 0, height: "2px",
+          background: "linear-gradient(90deg, transparent 0%, rgba(0,229,255,0.6) 30%, rgba(0,229,255,0.9) 50%, rgba(0,229,255,0.6) 70%, transparent 100%)",
+          animation: "img-gen-scan 2.4s ease-in-out infinite",
+          boxShadow: "0 0 8px 2px rgba(0,229,255,0.4)",
+        }} />
+
+        {/* Center orb */}
+        <div style={{
+          position: "absolute",
+          left: "50%", top: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "52px", height: "52px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle at 35% 35%, #00E5FF 0%, #0097A7 55%, #00416A 100%)",
+          animation: "img-gen-orb 2.4s ease-in-out infinite",
+          zIndex: 2,
+        }}>
+          {/* Inner highlight */}
+          <div style={{
+            position: "absolute", left: "25%", top: "20%",
+            width: "22px", height: "14px",
+            background: "rgba(255,255,255,0.3)",
+            borderRadius: "50%",
+            filter: "blur(4px)",
+          }} />
+        </div>
+
+        {/* Concentric rings */}
+        {[0, 1, 2].map(i => (
+          <div key={i} style={{
+            position: "absolute",
+            left: "50%", top: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "52px", height: "52px",
+            borderRadius: "50%",
+            border: `1.5px solid ${i === 0 ? "rgba(0,229,255,0.7)" : i === 1 ? "rgba(0,188,212,0.5)" : "rgba(124,58,237,0.4)"}`,
+            animation: `img-gen-ring ${1.8 + i * 0.5}s ${i * 0.4}s ease-out infinite`,
+            zIndex: 1,
+          }} />
+        ))}
+      </div>
+
+      {/* Prompt preview */}
+      <div style={{
+        fontSize: "11px",
+        color: "rgba(100,200,255,0.5)",
+        marginBottom: "8px",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        letterSpacing: "0.03em",
+      }}>
+        "{prompt.length > 42 ? prompt.substring(0, 42) + "…" : prompt}"
+      </div>
+
+      {/* Shimmer heading */}
+      <div style={{
+        fontSize: "13px",
+        fontWeight: 700,
+        background: "linear-gradient(90deg, #00BCD4, #7C3AED, #00E5FF, #0097A7, #7C3AED, #00BCD4)",
+        backgroundSize: "300% auto",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        backgroundClip: "text",
+        animation: "img-gen-shimmer 2.4s linear infinite",
+        marginBottom: "4px",
+        letterSpacing: "0.04em",
+      }}>
+        Generating your image
+      </div>
+
+      {/* Phase text */}
+      <div key={phase} style={{
+        fontSize: "12px",
+        color: "rgba(100,200,255,0.65)",
+        animation: "img-gen-text-in 0.35s ease-out",
+        display: "flex",
+        alignItems: "center",
+        gap: "6px",
+      }}>
+        <div style={{
+          width: "6px", height: "6px", borderRadius: "50%",
+          background: "#00E5FF",
+          boxShadow: "0 0 6px 2px rgba(0,229,255,0.5)",
+          flexShrink: 0,
+          animation: "img-gen-orb 1.2s ease-in-out infinite",
+        }} />
+        {phases[phase]}
+      </div>
     </div>
   );
 }

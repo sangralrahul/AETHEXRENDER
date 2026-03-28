@@ -276,9 +276,13 @@ router.post("/ai/generate-image", async (req, res) => {
     }
 
     res.json({ imageUrl: `data:image/png;base64,${b64}` });
-  } catch (err) {
+  } catch (err: any) {
     req.log.error({ err }, "Error generating image");
-    res.status(500).json({ error: "Image generation failed" });
+    if (err?.code === "moderation_blocked" || err?.status === 400) {
+      res.status(400).json({ error: "Your prompt was flagged by the content safety system. Please rephrase it and try again." });
+      return;
+    }
+    res.status(500).json({ error: "Image generation failed. Please try again." });
   }
 });
 

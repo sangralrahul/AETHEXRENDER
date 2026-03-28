@@ -617,15 +617,17 @@ export default function AiAssistant() {
         body: JSON.stringify({ prompt, labeled }),
       });
       const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error ?? "Image generation failed. Please try again.");
       if (data.imageUrl) {
         updateSession(sessionId, [...newMsgs, {
           role: ChatMessageRole.assistant,
           content: `Here is your generated ${labeled ? "labeled diagram" : "medical illustration"} for: "${prompt}"`,
           imageUrl: data.imageUrl, isImageGeneration: true,
         }]);
-      } else throw new Error(data.error ?? "Generation failed");
-    } catch {
-      toast({ title: "Image generation failed", description: "Please try a different prompt.", variant: "destructive" });
+      } else throw new Error(data.error ?? "No image was returned.");
+    } catch (err: any) {
+      const description = err?.message ?? "Please try a different prompt.";
+      toast({ title: "Image generation failed", description, variant: "destructive" });
       updateSession(sessionId, currentMsgs);
     } finally { setIsGeneratingImage(false); }
   };

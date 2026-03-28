@@ -84,6 +84,122 @@ You provide expert-level, deeply reasoned responses that go far beyond standard 
   },
 };
 
+// ── DEEP RESEARCH ────────────────────────────────────────────────────────────
+router.post("/ai/deep-research", async (req, res) => {
+  try {
+    const { query, agent = "synapse" } = req.body;
+    if (!query) { res.status(400).json({ error: "query is required" }); return; }
+
+    const GOOGLE_API_KEY = process.env.GOOGLE_CSE_KEY;
+    const GOOGLE_CSE_ID  = process.env.GOOGLE_CSE_ID;
+    const hasGoogleSearch = !!(GOOGLE_API_KEY && GOOGLE_CSE_ID);
+
+    // Step 1 — generate focused search sub-queries
+    const queryGen = await openai.chat.completions.create({
+      model: "gpt-5.2",
+      messages: [
+        {
+          role: "system",
+          content: `You are a medical research query generator. Generate 4 targeted Google search queries to comprehensively research the given medical topic from multiple angles (pathophysiology, clinical, guidelines, Indian context). Return ONLY a JSON array of strings, no other text. Example: ["query1","query2","query3","query4"]`,
+        },
+        { role: "user", content: query },
+      ],
+      max_completion_tokens: 300,
+    });
+
+    let searchQueries: string[] = [];
+    try {
+      const parsed = JSON.parse(jsonrepair(queryGen.choices[0]?.message?.content ?? "[]"));
+      searchQueries = Array.isArray(parsed) ? parsed.map(String) : [];
+    } catch { /* fall through */ }
+    if (!searchQueries.length) {
+      searchQueries = [
+        query,
+        `${query} clinical guidelines India 2024`,
+        `${query} pathophysiology mechanism`,
+        `${query} management treatment protocol`,
+      ];
+    }
+
+    // Step 2 — Google Custom Search (if keys are set)
+    interface Src { title: string; url: string; snippet: string; domain: string; }
+    const sources: Src[] = [];
+
+    if (hasGoogleSearch) {
+      await Promise.allSettled(
+        searchQueries.slice(0, 4).map(async (q) => {
+          try {
+            const url = new URL("https://www.googleapis.com/customsearch/v1");
+            url.searchParams.set("key", GOOGLE_API_KEY!);
+            url.searchParams.set("cx",  GOOGLE_CSE_ID!);
+            url.searchParams.set("q",   q);
+            url.searchParams.set("num", "4");
+            const resp = await fetch(url.toString());
+            if (!resp.ok) return;
+            const data: any = await resp.json();
+            for (const item of (data.items ?? []).slice(0, 4)) {
+              try {
+                sources.push({
+                  title:   String(item.title   ?? ""),
+                  url:     String(item.link    ?? ""),
+                  snippet: String(item.snippet ?? ""),
+                  domain:  new URL(item.link).hostname.replace(/^www\./, ""),
+                });
+              } catch { /* skip malformed items */ }
+            }
+          } catch { /* skip failed queries */ }
+        }),
+      );
+    }
+
+    // Step 3 — AI synthesis with source grounding
+    const agentKey    = String(agent).toLowerCase().replace(/[\s.]/g, "");
+    const agentConfig = agentPrompts[agentKey] ?? agentPrompts.synapse;
+
+    const sourceBlock = sources.length
+      ? `\n\n---\nLIVE SEARCH RESULTS (from Google):\n${
+          sources.map((s, i) => `[${i + 1}] ${s.title}\n${s.snippet}\nSource: ${s.url}`).join("\n\n")
+        }\n---`
+      : "";
+
+    const synthesis = await openai.chat.completions.create({
+      model: "gpt-5.2",
+      messages: [
+        {
+          role: "system",
+          content: `${agentConfig.systemPrompt}
+
+You are now in DEEP RESEARCH mode. Produce a comprehensive, evidence-based medical research report for Indian doctors and medical students.${sources.length ? " Cite the provided Google search results using [1], [2], etc. where relevant." : ""}
+
+Use these EXACT section headers (markdown ##):
+## Executive Summary
+## Epidemiology & Indian Burden
+## Pathophysiology
+## Clinical Presentation
+## Diagnosis
+## Management & Treatment
+## Key Guidelines & Evidence
+## Clinical Pearls
+
+Be thorough, accurate, and practically useful. Use **bold** for key terms. End each section with a concise takeaway.`,
+        },
+        {
+          role: "user",
+          content: `Deep research request: ${query}${sourceBlock}`,
+        },
+      ],
+      max_completion_tokens: 4096,
+    });
+
+    const report = synthesis.choices[0]?.message?.content ?? "Unable to generate research report.";
+
+    res.json({ report, sources: sources.slice(0, 12), searchQueries, hasGoogleSearch });
+  } catch (err) {
+    req.log.error({ err }, "Deep research error");
+    res.status(500).json({ error: "Deep research service failed" });
+  }
+});
+
 router.post("/ai/chat", async (req, res) => {
   try {
     const { message, conversationHistory = [], agent = "synapse" } = req.body;

@@ -11,6 +11,13 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import PresentationViewer, { type PresentationData } from "@/components/synapse/PresentationViewer";
 
+interface ResearchSource {
+  title: string;
+  url: string;
+  snippet: string;
+  domain: string;
+}
+
 interface ExtendedMessage extends ChatMessage {
   imageUrl?: string;
   isImageGeneration?: boolean;
@@ -20,6 +27,11 @@ interface ExtendedMessage extends ChatMessage {
   presentationTitle?: string;
   isPresentation?: boolean;
   slideCountOptions?: number[];
+  isDeepResearch?: boolean;
+  researchReport?: string;
+  researchSources?: ResearchSource[];
+  researchQueries?: string[];
+  hasGoogleSearch?: boolean;
 }
 
 type ModelId = "pulse45" | "flux36" | "nova46";
@@ -94,6 +106,162 @@ interface Attachment {
   size: string;
 }
 
+function renderMarkdownText(text: string): React.ReactNode[] {
+  return text.split(/(\*\*[^*]+\*\*)/).map((chunk, i) => {
+    if (chunk.startsWith("**") && chunk.endsWith("**")) {
+      return <strong key={i} className="font-semibold text-slate-900">{chunk.slice(2, -2)}</strong>;
+    }
+    return <span key={i}>{chunk}</span>;
+  });
+}
+
+function ResearchReportCard({
+  report,
+  sources,
+  queries,
+  hasGoogleSearch,
+}: {
+  report: string;
+  sources: ResearchSource[];
+  queries: string[];
+  hasGoogleSearch: boolean;
+}) {
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([0, 1]));
+  const [showAllSources, setShowAllSources] = useState(false);
+
+  const sections = report
+    .split(/\n## /)
+    .map((s) => s.replace(/^## /, ""))
+    .filter(Boolean)
+    .map((s) => {
+      const nlIdx = s.indexOf("\n");
+      const title = nlIdx >= 0 ? s.slice(0, nlIdx).trim() : s.trim();
+      const body  = nlIdx >= 0 ? s.slice(nlIdx + 1).trim() : "";
+      return { title, body };
+    });
+
+  const toggleSection = (i: number) =>
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
+
+  const visibleSources = showAllSources ? sources : sources.slice(0, 4);
+
+  const sectionIcons: Record<string, string> = {
+    "Executive Summary": "📋",
+    "Epidemiology & Indian Burden": "🇮🇳",
+    "Pathophysiology": "🔬",
+    "Clinical Presentation": "🩺",
+    "Diagnosis": "🧪",
+    "Management & Treatment": "💊",
+    "Key Guidelines & Evidence": "📚",
+    "Clinical Pearls": "💡",
+  };
+
+  return (
+    <div className="w-full max-w-2xl">
+      {/* Header bar */}
+      <div className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-700 to-indigo-700 rounded-t-2xl">
+        <Microscope className="w-4 h-4 text-white shrink-0" />
+        <span className="text-sm font-bold text-white">SYNAPSE Deep Research</span>
+        {hasGoogleSearch && (
+          <span className="ml-auto flex items-center gap-1 text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full">
+            <Search className="w-2.5 h-2.5" /> Google Search
+          </span>
+        )}
+      </div>
+
+      {/* Queries strip */}
+      {queries.length > 0 && (
+        <div className="px-4 py-2 bg-blue-50 border-x border-blue-100 flex flex-wrap gap-1.5">
+          {queries.map((q, i) => (
+            <span key={i} className="text-[10px] bg-white border border-blue-200 text-blue-700 px-2 py-0.5 rounded-full truncate max-w-[200px]" title={q}>
+              🔍 {q}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Report sections */}
+      <div className="border-x border-b border-slate-100 rounded-b-2xl overflow-hidden divide-y divide-slate-100">
+        {sections.map((sec, i) => (
+          <div key={i} className="bg-white">
+            <button
+              type="button"
+              className="w-full flex items-center gap-2 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
+              onClick={() => toggleSection(i)}
+            >
+              <span className="text-base">{sectionIcons[sec.title] ?? "📌"}</span>
+              <span className="text-[13px] font-semibold text-slate-800 flex-1">{sec.title}</span>
+              <span className="text-slate-400 text-xs">{expandedSections.has(i) ? "▲" : "▼"}</span>
+            </button>
+            {expandedSections.has(i) && sec.body && (
+              <div className="px-4 pb-4 text-[13px] leading-relaxed text-slate-700 space-y-1.5">
+                {sec.body.split("\n").filter(Boolean).map((line, li) => {
+                  const isBullet = line.startsWith("- ") || line.startsWith("* ");
+                  const clean = isBullet ? line.slice(2) : line;
+                  return isBullet ? (
+                    <div key={li} className="flex gap-2">
+                      <span className="text-blue-400 mt-0.5 shrink-0">•</span>
+                      <span>{renderMarkdownText(clean)}</span>
+                    </div>
+                  ) : (
+                    <p key={li}>{renderMarkdownText(line)}</p>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* Sources */}
+        {sources.length > 0 && (
+          <div className="bg-slate-50 px-4 py-3">
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide mb-2">
+              Sources ({sources.length})
+            </p>
+            <div className="space-y-2">
+              {visibleSources.map((src, i) => (
+                <a
+                  key={i}
+                  href={src.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-start gap-2 group"
+                >
+                  <div className="w-5 h-5 rounded bg-white border border-slate-200 flex items-center justify-center shrink-0 mt-0.5">
+                    <img
+                      src={`https://www.google.com/s2/favicons?domain=${src.domain}&sz=16`}
+                      alt=""
+                      className="w-3 h-3"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-medium text-blue-700 group-hover:underline truncate">{src.title}</p>
+                    <p className="text-[10px] text-slate-400">{src.domain}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+            {sources.length > 4 && (
+              <button
+                type="button"
+                onClick={() => setShowAllSources((v) => !v)}
+                className="mt-2 text-[11px] text-blue-600 hover:underline"
+              >
+                {showAllSources ? "Show fewer" : `Show ${sources.length - 4} more sources`}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function AiAssistant() {
   const [activeModel, setActiveModel] = useState<ModelId>("pulse45");
   const [chatMode, setChatMode] = useState<ChatMode>("normal");
@@ -106,6 +274,7 @@ export default function AiAssistant() {
     nova46: [],
   });
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [isGeneratingResearch, setIsGeneratingResearch] = useState(false);
   const [isGeneratingPresentation, setIsGeneratingPresentation] = useState(false);
   const [presentationStage, setPresentationStage] = useState<"idle" | "waiting-slide-count">("idle");
   const [pendingPresentationPrompt, setPendingPresentationPrompt] = useState("");
@@ -143,7 +312,7 @@ export default function AiAssistant() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const hasContent = input.trim() || attachments.length > 0;
-    if (!hasContent || chatMutation.isPending || isGeneratingImage || isProLocked) return;
+    if (!hasContent || chatMutation.isPending || isGeneratingImage || isGeneratingResearch || isGeneratingPresentation || isProLocked) return;
 
     const userMsg = input.trim() || `[Attached: ${attachments.map((a) => a.name).join(", ")}]`;
     setInput("");
@@ -208,10 +377,41 @@ export default function AiAssistant() {
     }
 
     if (chatMode === "deep-research") {
-      toast({
-        title: "Deep Research initiated",
-        description: "SYNAPSE is scanning medical literature. Full rollout coming soon.",
-      });
+      setIsGeneratingResearch(true);
+      try {
+        const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+        const resp = await fetch(`${apiBase}/api/ai/deep-research`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: userMsg, agent: activeModel }),
+        });
+        const data = await resp.json();
+        if (data.report) {
+          setConversations((prev) => ({
+            ...prev,
+            [activeModel]: [
+              ...newHistory,
+              {
+                role: ChatMessageRole.assistant,
+                content: "",
+                isDeepResearch: true,
+                researchReport: data.report,
+                researchSources: data.sources ?? [],
+                researchQueries: data.searchQueries ?? [],
+                hasGoogleSearch: data.hasGoogleSearch ?? false,
+              },
+            ],
+          }));
+        } else {
+          throw new Error(data.error ?? "Research failed");
+        }
+      } catch {
+        toast({ title: "Deep Research failed", description: "Please try again.", variant: "destructive" });
+        setConversations((prev) => ({ ...prev, [activeModel]: currentHistory }));
+      } finally {
+        setIsGeneratingResearch(false);
+      }
+      return;
     }
 
     chatMutation.mutate(
@@ -419,7 +619,17 @@ export default function AiAssistant() {
                   msg.role === ChatMessageRole.user
                     ? "bg-primary text-white rounded-tr-sm"
                     : "bg-white border border-slate-100 text-slate-800 rounded-tl-sm")}>
-                  <div className="px-5 py-4 text-[15px] leading-relaxed">{msg.content}</div>
+                  {!(msg as ExtendedMessage).isDeepResearch && !(msg as ExtendedMessage).isPresentation && !(msg as ExtendedMessage).slideCountOptions && !(msg as ExtendedMessage).imageUrl && msg.content && (
+                    <div className="px-5 py-4 text-[15px] leading-relaxed">{msg.content}</div>
+                  )}
+                  {(msg as ExtendedMessage).isDeepResearch && (msg as ExtendedMessage).researchReport && (
+                    <ResearchReportCard
+                      report={(msg as ExtendedMessage).researchReport!}
+                      sources={(msg as ExtendedMessage).researchSources ?? []}
+                      queries={(msg as ExtendedMessage).researchQueries ?? []}
+                      hasGoogleSearch={(msg as ExtendedMessage).hasGoogleSearch ?? false}
+                    />
+                  )}
                   {(msg as ExtendedMessage).imageUrl && (
                     <div className="px-4 pb-4">
                       <img
@@ -514,6 +724,28 @@ export default function AiAssistant() {
                       ? "SYNAPSE is generating your medical illustration..."
                       : `SYNAPSE · ${model.name} ${model.version} is thinking...`}
                   </span>
+                </div>
+              </div>
+            )}
+
+            {isGeneratingResearch && (
+              <div className="flex gap-3 max-w-[96%] self-start w-full">
+                <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm shrink-0 mt-1">
+                  <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-sm p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                    <span className="text-sm font-semibold text-blue-800">SYNAPSE Deep Research in progress…</span>
+                  </div>
+                  <div className="flex flex-col gap-1.5 text-xs text-blue-700">
+                    {["Generating targeted search queries", "Searching Google for medical sources", "Analysing & cross-referencing findings", "Synthesising comprehensive report"].map((step, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" style={{ animationDelay: `${i * 0.3}s` }} />
+                        {step}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}

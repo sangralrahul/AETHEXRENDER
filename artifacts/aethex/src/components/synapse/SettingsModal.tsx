@@ -6,6 +6,7 @@ import {
   Globe, BellRing, Volume2, RotateCcw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getTranslation } from "@/lib/translations";
 
 /* ── Types ──────────────────────────────────────────────────────────────── */
 export interface SynapseSettings {
@@ -64,13 +65,16 @@ interface SettingsModalProps {
 
 type SectionId = "general" | "appearance" | "ai" | "data" | "about";
 
-const NAV: { id: SectionId; label: string; icon: React.ElementType; badge?: string }[] = [
-  { id: "general",    label: "General",      icon: Settings },
-  { id: "appearance", label: "Appearance",   icon: Palette },
-  { id: "ai",         label: "AI Behavior",  icon: Brain },
-  { id: "data",       label: "Data Controls",icon: Shield },
-  { id: "about",      label: "About",        icon: Info },
-];
+type NavItem = { id: SectionId; label: string; icon: React.ElementType; badge?: string };
+function buildNav(tr: ReturnType<typeof getTranslation>): NavItem[] {
+  return [
+    { id: "general",    label: tr.sectionGeneral,    icon: Settings },
+    { id: "appearance", label: tr.sectionAppearance, icon: Palette },
+    { id: "ai",         label: tr.sectionAI,         icon: Brain },
+    { id: "data",       label: tr.sectionData,       icon: Shield },
+    { id: "about",      label: tr.sectionAbout,      icon: Info },
+  ];
+}
 
 /* ── Sub-components ─────────────────────────────────────────────────────── */
 
@@ -226,10 +230,10 @@ function ActionButton({ label, desc, icon: Icon, onClick }: {
 
 /* ── Sections ───────────────────────────────────────────────────────────── */
 
-function SectionGeneral({ s, set }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void }) {
+function SectionGeneral({ s, set, tr }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void; tr: ReturnType<typeof getTranslation> }) {
   return (
     <div className="space-y-1">
-      <Row label="Language" desc="Interface language">
+      <Row label={tr.languageLabel} desc={tr.languageDesc}>
         <Select value={s.language} onChange={(v) => set("language", v)}
           options={[
             { value: "en",  label: "English" },
@@ -476,6 +480,8 @@ export default function SettingsModal({
   settings, onSettingsChange, onClearAllChats, onClearCurrentChat, onExportChats, onClose,
 }: SettingsModalProps) {
   const [activeSection, setActiveSection] = useState<SectionId>("general");
+  const tr = getTranslation(settings.language);
+  const NAV = buildNav(tr);
 
   const set = (key: keyof SynapseSettings, value: any) => {
     const next = { ...settings, [key]: value };
@@ -512,7 +518,7 @@ export default function SettingsModal({
           {/* Modal title */}
           <div className="px-5 pb-4 mb-1" style={{ borderBottom: "1px solid rgba(0,188,212,0.08)" }}>
             <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "rgba(0,200,255,0.45)" }}>
-              Settings
+              {tr.settings}
             </p>
           </div>
 
@@ -573,7 +579,7 @@ export default function SettingsModal({
 
           {/* Scrollable section body */}
           <div className="flex-1 overflow-y-auto px-6 py-4">
-            {activeSection === "general"    && <SectionGeneral    s={settings} set={set} />}
+            {activeSection === "general"    && <SectionGeneral    s={settings} set={set} tr={tr} />}
             {activeSection === "appearance" && <SectionAppearance s={settings} set={set} />}
             {activeSection === "ai"         && <SectionAI         s={settings} set={set} />}
             {activeSection === "data"       && (

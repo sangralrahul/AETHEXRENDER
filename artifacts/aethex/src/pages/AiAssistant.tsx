@@ -1431,14 +1431,25 @@ function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
     return () => clearInterval(t);
   }, []);
 
-  const particles = [
-    { x: 20, y: 18, delay: "0s",   dur: "2.2s" },
-    { x: 78, y: 12, delay: "0.4s", dur: "2.8s" },
-    { x: 55, y: 82, delay: "0.8s", dur: "2.0s" },
-    { x: 12, y: 65, delay: "1.2s", dur: "3.0s" },
-    { x: 85, y: 58, delay: "0.6s", dur: "2.5s" },
-    { x: 40, y: 92, delay: "1.6s", dur: "1.8s" },
-    { x: 92, y: 30, delay: "1.0s", dur: "2.6s" },
+  const bars = [
+    { dur: "0.70s", delay: "0.00s", h: 62,  c: "#00E5FF" },
+    { dur: "0.90s", delay: "0.06s", h: 88,  c: "#00DCEA" },
+    { dur: "0.60s", delay: "0.12s", h: 48,  c: "#00D3D8" },
+    { dur: "1.00s", delay: "0.04s", h: 94,  c: "#00CAC8" },
+    { dur: "0.75s", delay: "0.18s", h: 72,  c: "#00BFBA" },
+    { dur: "0.85s", delay: "0.08s", h: 100, c: "#00B4AC" },
+    { dur: "0.65s", delay: "0.22s", h: 58,  c: "#009EA0" },
+    { dur: "1.05s", delay: "0.02s", h: 80,  c: "#0088A0" },
+    { dur: "0.80s", delay: "0.16s", h: 92,  c: "#3870B8" },
+    { dur: "0.70s", delay: "0.10s", h: 54,  c: "#5A5CC0" },
+    { dur: "0.90s", delay: "0.20s", h: 78,  c: "#7044C8" },
+    { dur: "0.60s", delay: "0.14s", h: 86,  c: "#8230D0" },
+    { dur: "1.00s", delay: "0.06s", h: 52,  c: "#9022D8" },
+    { dur: "0.75s", delay: "0.24s", h: 74,  c: "#9C14E0" },
+    { dur: "0.85s", delay: "0.10s", h: 64,  c: "#A43AED" },
+    { dur: "0.65s", delay: "0.18s", h: 82,  c: "#AF5CF5" },
+    { dur: "1.05s", delay: "0.04s", h: 44,  c: "#BA7CF8" },
+    { dur: "0.80s", delay: "0.22s", h: 68,  c: "#C49EFA" },
   ];
 
   return (
@@ -1446,78 +1457,66 @@ function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
       background: "linear-gradient(160deg, rgba(2,8,28,0.95) 0%, rgba(4,14,40,0.95) 100%)",
       border: "1px solid rgba(0,188,212,0.2)",
       borderRadius: "16px",
-      padding: "20px 24px",
+      padding: "18px 20px",
       backdropFilter: "blur(16px)",
-      minWidth: "260px",
+      minWidth: "270px",
     }}>
-      {/* Orb canvas */}
-      <div style={{ position: "relative", height: "130px", marginBottom: "14px", overflow: "hidden", borderRadius: "12px" }}>
-        {/* Particles */}
-        {particles.map((p, i) => (
-          <div key={i} style={{
-            position: "absolute", left: `${p.x}%`, top: `${p.y}%`,
-            width: "3px", height: "3px", borderRadius: "50%",
-            background: i % 2 === 0 ? "#00E5FF" : "#7C3AED",
-            animation: `img-gen-particle ${p.dur} ${p.delay} ease-in-out infinite`,
-            opacity: 0.7,
+      {/* Equalizer canvas */}
+      <div style={{
+        position: "relative",
+        height: "108px",
+        marginBottom: "14px",
+        overflow: "hidden",
+        borderRadius: "10px",
+        background: "rgba(0,6,22,0.6)",
+        display: "flex",
+        alignItems: "flex-end",
+        padding: "0 10px 0",
+        gap: "3px",
+      }}>
+        {/* Grid lines */}
+        {[30, 55, 78].map(pct => (
+          <div key={pct} style={{
+            position: "absolute", left: 0, right: 0,
+            top: `${100 - pct}%`, height: "1px",
+            background: "rgba(0,188,212,0.07)",
+            pointerEvents: "none",
           }} />
         ))}
 
-        {/* Scan line */}
+        {/* Bars */}
+        {bars.map((b, i) => (
+          <div key={i} style={{
+            flex: 1,
+            height: `${b.h}%`,
+            borderRadius: "3px 3px 0 0",
+            background: `linear-gradient(to top, ${b.c}DD 0%, ${b.c}55 70%, ${b.c}11 100%)`,
+            boxShadow: `0 0 8px 1px ${b.c}55`,
+            animation: `img-gen-bar ${b.dur} ${b.delay} ease-in-out infinite`,
+            transformOrigin: "bottom",
+          }} />
+        ))}
+
+        {/* Bottom glow floor */}
         <div style={{
-          position: "absolute", left: 0, right: 0, height: "2px",
-          background: "linear-gradient(90deg, transparent 0%, rgba(0,229,255,0.6) 30%, rgba(0,229,255,0.9) 50%, rgba(0,229,255,0.6) 70%, transparent 100%)",
-          animation: "img-gen-scan 2.4s ease-in-out infinite",
-          boxShadow: "0 0 8px 2px rgba(0,229,255,0.4)",
+          position: "absolute", left: 0, right: 0, bottom: 0, height: "3px",
+          background: "linear-gradient(90deg, #00E5FF44, #7C3AED44, #00E5FF44)",
+          animation: "img-gen-shimmer 3s linear infinite",
+          backgroundSize: "300% auto",
         }} />
-
-        {/* Center orb */}
-        <div style={{
-          position: "absolute",
-          left: "50%", top: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "52px", height: "52px",
-          borderRadius: "50%",
-          background: "radial-gradient(circle at 35% 35%, #00E5FF 0%, #0097A7 55%, #00416A 100%)",
-          animation: "img-gen-orb 2.4s ease-in-out infinite",
-          zIndex: 2,
-        }}>
-          {/* Inner highlight */}
-          <div style={{
-            position: "absolute", left: "25%", top: "20%",
-            width: "22px", height: "14px",
-            background: "rgba(255,255,255,0.3)",
-            borderRadius: "50%",
-            filter: "blur(4px)",
-          }} />
-        </div>
-
-        {/* Concentric rings */}
-        {[0, 1, 2].map(i => (
-          <div key={i} style={{
-            position: "absolute",
-            left: "50%", top: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "52px", height: "52px",
-            borderRadius: "50%",
-            border: `1.5px solid ${i === 0 ? "rgba(0,229,255,0.7)" : i === 1 ? "rgba(0,188,212,0.5)" : "rgba(124,58,237,0.4)"}`,
-            animation: `img-gen-ring ${1.8 + i * 0.5}s ${i * 0.4}s ease-out infinite`,
-            zIndex: 1,
-          }} />
-        ))}
       </div>
 
       {/* Prompt preview */}
       <div style={{
         fontSize: "11px",
-        color: "rgba(100,200,255,0.5)",
-        marginBottom: "8px",
+        color: "rgba(100,200,255,0.45)",
+        marginBottom: "7px",
         overflow: "hidden",
         textOverflow: "ellipsis",
         whiteSpace: "nowrap",
-        letterSpacing: "0.03em",
+        letterSpacing: "0.02em",
       }}>
-        "{prompt.length > 42 ? prompt.substring(0, 42) + "…" : prompt}"
+        "{prompt.length > 40 ? prompt.substring(0, 40) + "…" : prompt}"
       </div>
 
       {/* Shimmer heading */}

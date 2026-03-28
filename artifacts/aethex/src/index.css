@@ -181,3 +181,11 @@
   0%   { opacity: 0; transform: translateY(6px); }
   100% { opacity: 1; transform: translateY(0); }
 }
+@keyframes img-gen-bar {
+  0%, 100% { transform: scaleY(0.18); opacity: 0.55; }
+  50%       { transform: scaleY(1);    opacity: 1;    }
+}
+@keyframes img-gen-glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.85; }
+}

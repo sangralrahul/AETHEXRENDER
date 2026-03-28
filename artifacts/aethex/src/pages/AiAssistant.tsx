@@ -593,17 +593,41 @@ export default function AiAssistant() {
               <button
                 key={m.id}
                 onClick={() => handleModelSelect(m)}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all mb-1"
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all mb-1.5"
                 style={
                   isActive
-                    ? { ...m.activeStyle, background: m.activeStyle.background }
-                    : { color: "rgba(130,185,230,0.65)" }
+                    ? {
+                        ...m.activeStyle,
+                        borderRadius: 12,
+                        boxShadow: `0 0 16px ${m.activeStyle.borderColor ?? "rgba(0,188,212,0.2)"}`,
+                      }
+                    : {
+                        color: "rgba(120,175,220,0.6)",
+                        background: "rgba(255,255,255,0.02)",
+                        border: "1px solid rgba(255,255,255,0.05)",
+                      }
                 }
               >
-                <MI className="w-3.5 h-3.5 shrink-0" />
-                <span className="flex-1 text-left">{m.name} <span className="opacity-70 font-normal">{m.version}</span></span>
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                  style={
+                    isActive
+                      ? { background: "rgba(255,255,255,0.15)" }
+                      : { background: "rgba(255,255,255,0.05)" }
+                  }
+                >
+                  {m.pro && !isActive
+                    ? <Lock className="w-4 h-4" style={{ color: "rgba(167,139,250,0.7)" }} />
+                    : <MI className="w-4 h-4" />}
+                </div>
+                <div className="flex-1 text-left">
+                  <div className="text-[13px] font-semibold leading-tight">
+                    {m.name} <span className="font-normal opacity-60">{m.version}</span>
+                  </div>
+                  <div className="text-[10px] mt-0.5 opacity-50 truncate">{m.description}</div>
+                </div>
                 {m.pro && (
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
                     style={{ background: "rgba(109,40,217,0.4)", color: "#c4b5fd", border: "1px solid rgba(167,139,250,0.3)" }}>
                     PRO
                   </span>
@@ -689,12 +713,12 @@ export default function AiAssistant() {
       ══════════════════════════════════════════════════════════════ */}
       <div className="flex-1 flex flex-col min-h-0 relative z-10">
 
-        {/* ── Top bar: sidebar toggle + model tabs ── */}
+        {/* ── Top bar: sidebar toggle + active model + new chat ── */}
         <div
           className="shrink-0 flex items-center gap-2 px-3 py-2"
           style={{
-            background: "rgba(2,8,22,0.75)",
-            backdropFilter: "blur(16px)",
+            background: "rgba(2,8,22,0.8)",
+            backdropFilter: "blur(20px)",
             borderBottom: "1px solid rgba(0,188,212,0.1)",
           }}
         >
@@ -710,34 +734,22 @@ export default function AiAssistant() {
 
           <div className="w-px h-5 mx-1" style={{ background: "rgba(0,188,212,0.15)" }} />
 
-          {/* Model tabs */}
-          <div className="flex items-center gap-1 flex-1">
-            {MODELS.map((m) => {
-              const MI = m.icon;
-              const isActive = m.id === activeModel;
-              return (
-                <button
-                  key={m.id}
-                  onClick={() => handleModelSelect(m)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
-                  style={
-                    isActive
-                      ? m.activeStyle
-                      : { color: "rgba(130,185,230,0.55)", border: "1px solid transparent" }
-                  }
-                >
-                  {m.pro && !isActive ? <Lock className="w-3.5 h-3.5" /> : <MI className="w-3.5 h-3.5" />}
-                  {m.name}
-                  <span className={isActive ? "opacity-75" : "opacity-50"}>{m.version}</span>
-                  {m.pro && (
-                    <span className="text-[9px] font-bold px-1 py-0.5 rounded"
-                      style={{ background: "rgba(109,40,217,0.35)", color: "#c4b5fd" }}>
-                      PRO
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+          {/* Active model pill */}
+          <div className="flex items-center gap-2 flex-1">
+            <div
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold"
+              style={model.activeStyle}
+            >
+              <ModelIcon className="w-3.5 h-3.5" />
+              <span>{model.name}</span>
+              <span className="opacity-70">{model.version}</span>
+              {model.pro && (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                  style={{ background: "rgba(109,40,217,0.4)", color: "#c4b5fd" }}>
+                  PRO
+                </span>
+              )}
+            </div>
           </div>
 
           {/* New chat (right side of top bar) */}
@@ -774,17 +786,8 @@ export default function AiAssistant() {
                     >
                       SYNAPSE
                     </h1>
-                    <p className="text-sm mt-1.5" style={{ color: "rgba(140,210,255,0.6)" }}>
-                      {model.description}
-                    </p>
                   </div>
                 </div>
-
-                {!isProLocked && (
-                  <p className="text-center text-base max-w-lg leading-relaxed px-2" style={{ color: "rgba(150,210,255,0.7)" }}>
-                    {modelGreetings[activeModel]}
-                  </p>
-                )}
 
                 {/* Quick suggestions grid */}
                 {!isProLocked && (

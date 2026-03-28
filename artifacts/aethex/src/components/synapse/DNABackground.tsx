@@ -1,177 +1,46 @@
 import { useEffect, useRef } from "react";
 
-interface HelixConfig {
-  yFrac: number;
-  amplitude: number;
-  period: number;
-  speed: number;
+interface Particle {
+  x: number; y: number;
+  vx: number; vy: number;
+  r: number;
+  baseR: number;
+  pulseSpeed: number;
+  pulsePhase: number;
+  color: string;
   opacity: number;
-  strandW: number;
-  glowBlur: number;
-  color1: string;
-  color2: string;
-  glow: string;
-  phaseOffset: number;
-  nodeR: number;
 }
 
-const HELICES: HelixConfig[] = [
-  // Far background — faint, slow, small
-  {
-    yFrac: 0.18, amplitude: 28, period: 220, speed: 0.18, opacity: 0.18,
-    strandW: 1.2, glowBlur: 6, color1: "#1A3A7A", color2: "#0D2457",
-    glow: "#2979FF", phaseOffset: 0, nodeR: 1.4,
-  },
-  // Mid-background right area
-  {
-    yFrac: 0.82, amplitude: 35, period: 240, speed: 0.22, opacity: 0.2,
-    strandW: 1.4, glowBlur: 7, color1: "#1A3A7A", color2: "#0D2457",
-    glow: "#2979FF", phaseOffset: Math.PI * 0.7, nodeR: 1.6,
-  },
-  // Mid layer
-  {
-    yFrac: 0.42, amplitude: 55, period: 270, speed: 0.38, opacity: 0.45,
-    strandW: 2.2, glowBlur: 14, color1: "#1565C0", color2: "#0D47A1",
-    glow: "#29B6F6", phaseOffset: Math.PI * 0.3, nodeR: 2.5,
-  },
-  // Second mid layer (bottom half)
-  {
-    yFrac: 0.68, amplitude: 62, period: 290, speed: 0.32, opacity: 0.38,
-    strandW: 2, glowBlur: 12, color1: "#0277BD", color2: "#01579B",
-    glow: "#40C4FF", phaseOffset: Math.PI * 1.1, nodeR: 2.2,
-  },
-  // Foreground primary — main glowing helix
-  {
-    yFrac: 0.56, amplitude: 105, period: 340, speed: 0.65, opacity: 1,
-    strandW: 3.8, glowBlur: 22, color1: "#00BCD4", color2: "#0097A7",
-    glow: "#00E5FF", phaseOffset: Math.PI, nodeR: 4.5,
-  },
+const PALETTE = [
+  "#00BCD4", "#00E5FF", "#22D3EE",   // cyan family
+  "#7C3AED", "#A855F7",              // violet family
+  "#3B82F6", "#60A5FA",              // blue family
+  "#0EA5E9",                         // sky blue
 ];
 
-// Pre-build a circuit board tile (drawn once, tiled as static backdrop)
-function buildCircuitTile(w: number, h: number): HTMLCanvasElement {
-  const cv = document.createElement("canvas");
-  cv.width = w; cv.height = h;
-  const cx = cv.getContext("2d")!;
-  cx.strokeStyle = "rgba(30,90,200,0.1)";
-  cx.lineWidth = 0.7;
-
-  const rng = (min: number, max: number) => min + Math.random() * (max - min);
-
-  // Horizontal traces with T-junctions
-  for (let y = 20; y < h; y += rng(30, 55)) {
-    let x = 0;
-    while (x < w) {
-      const len = rng(25, 80);
-      cx.beginPath(); cx.moveTo(x, y); cx.lineTo(x + len, y); cx.stroke();
-      // Occasional vertical branch
-      if (Math.random() > 0.55) {
-        const bLen = rng(12, 35) * (Math.random() > 0.5 ? 1 : -1);
-        cx.beginPath(); cx.moveTo(x + len, y); cx.lineTo(x + len, y + bLen); cx.stroke();
-      }
-      // Junction dot
-      if (Math.random() > 0.4) {
-        cx.beginPath();
-        cx.arc(x + len, y, 1.8, 0, Math.PI * 2);
-        cx.fillStyle = "rgba(41,182,246,0.18)";
-        cx.fill();
-      }
-      x += len + rng(8, 22);
-    }
-  }
-  return cv;
+function randPalette() {
+  return PALETTE[Math.floor(Math.random() * PALETTE.length)];
 }
 
-function drawHelix(
-  ctx: CanvasRenderingContext2D,
-  w: number,
-  h: number,
-  cfg: HelixConfig,
-  t: number,
-  forkX: number,
-) {
-  const { yFrac, amplitude, period, speed, opacity, strandW, glowBlur, color1, color2, glow, phaseOffset, nodeR } = cfg;
-  const cy = yFrac * h;
-  const step = 2;
-  const rungEvery = period / 8;   // ~8 base pairs per period
-
-  const pts1: [number, number][] = [];
-  const pts2: [number, number][] = [];
-
-  for (let x = -period * 0.5; x <= w + period * 0.5; x += step) {
-    const phase = (x / period) * Math.PI * 2 - t * speed + phaseOffset;
-
-    // Replication fork: near forkX the strands gradually diverge by extra separation
-    const dist = Math.abs(x - forkX);
-    const forkEffect = Math.max(0, 1 - dist / (period * 0.6)); // 0..1 near fork
-    const extraSep = forkEffect * amplitude * 0.7;             // extra separation at fork
-
-    const y1 = cy + Math.sin(phase) * amplitude + extraSep * 0.5;
-    const y2 = cy + Math.sin(phase + Math.PI) * amplitude - extraSep * 0.5;
-    pts1.push([x, y1]);
-    pts2.push([x, y2]);
-  }
-
-  ctx.save();
-  ctx.globalAlpha = opacity;
-
-  // ── Base pairs (rungs) ──────────────────────────────────────────────────
-  const n = pts1.length;
-  for (let i = 0; i < n; i++) {
-    const [x, y1] = pts1[i];
-    const [, y2]  = pts2[i];
-    const xMod = ((x + period * 0.5) % rungEvery);
-    if (xMod > step * 1.5) continue;
-
-    const phase = (x / period) * Math.PI * 2 - t * speed + phaseOffset;
-    const sinAbs = Math.abs(Math.sin(phase));
-    if (sinAbs < 0.08) continue; // skip at crossing points (overlap area)
-
-    const rungAlpha = (0.3 + sinAbs * 0.7);
-
-    ctx.save();
-    ctx.globalAlpha = opacity * rungAlpha * 0.8;
-    ctx.shadowColor = glow; ctx.shadowBlur = glowBlur * 0.5;
-    ctx.strokeStyle = color2; ctx.lineWidth = strandW * 0.55;
-    ctx.beginPath(); ctx.moveTo(x, y1); ctx.lineTo(x, y2); ctx.stroke();
-    ctx.restore();
-
-    // Glowing nucleotide nodes at both ends of each rung
-    for (const [nx, ny] of [[x, y1], [x, y2]] as [number, number][]) {
-      ctx.save();
-      ctx.globalAlpha = opacity * rungAlpha;
-      ctx.shadowColor = glow; ctx.shadowBlur = glowBlur * 1.2;
-      ctx.fillStyle = glow;
-      ctx.beginPath(); ctx.arc(nx, ny, nodeR, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
-    }
-  }
-
-  // Helper: draw a strand path
-  const drawStrand = (pts: [number, number][], col: string) => {
-    ctx.save();
-    ctx.shadowColor = glow; ctx.shadowBlur = glowBlur;
-    ctx.strokeStyle = col; ctx.lineWidth = strandW;
-    ctx.lineCap = "round"; ctx.lineJoin = "round";
-    ctx.beginPath();
-    pts.forEach(([x, y], i) => { i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
-    ctx.stroke();
-    // Second pass: brighter core
-    ctx.shadowBlur = glowBlur * 0.4;
-    ctx.globalAlpha = opacity * 0.4;
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = strandW * 0.3;
-    ctx.beginPath();
-    pts.forEach(([x, y], i) => { i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
-    ctx.stroke();
-    ctx.restore();
+function makeParticle(w: number, h: number): Particle {
+  const speed = 0.15 + Math.random() * 0.35;
+  const angle = Math.random() * Math.PI * 2;
+  return {
+    x: Math.random() * w,
+    y: Math.random() * h,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    baseR: 1.2 + Math.random() * 2.2,
+    r: 0,
+    pulseSpeed: 0.6 + Math.random() * 1.4,
+    pulsePhase: Math.random() * Math.PI * 2,
+    color: randPalette(),
+    opacity: 0.35 + Math.random() * 0.55,
   };
-
-  drawStrand(pts1, color1);
-  drawStrand(pts2, color2);
-
-  ctx.restore();
 }
+
+const MAX_DIST = 140;
+const PARTICLE_COUNT = 130;
 
 export default function DNABackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -184,67 +53,152 @@ export default function DNABackground() {
 
     let raf = 0;
     let t = 0;
-    let circuitTile: HTMLCanvasElement | null = null;
-    let tileW = 0, tileH = 0;
+    let particles: Particle[] = [];
+    let W = 0, H = 0;
 
     const resize = () => {
-      canvas.width  = canvas.offsetWidth  * (window.devicePixelRatio || 1);
-      canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
-      ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
-      tileW = 0; // force rebuild
+      const dpr = window.devicePixelRatio || 1;
+      W = canvas.offsetWidth;
+      H = canvas.offsetHeight;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.scale(dpr, dpr);
+      // Reinitialise particles on resize
+      particles = Array.from({ length: PARTICLE_COUNT }, () => makeParticle(W, H));
     };
 
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
+    // ── Slow moving "aurora" blobs ─────────────────────────────────────────
+    const AURORA = [
+      { cx: 0.15, cy: 0.25, rx: 0.38, ry: 0.32, col: "rgba(0,188,212,0.055)", phase: 0 },
+      { cx: 0.80, cy: 0.65, rx: 0.40, ry: 0.35, col: "rgba(109,40,217,0.05)",  phase: 1.2 },
+      { cx: 0.50, cy: 0.80, rx: 0.50, ry: 0.30, col: "rgba(59,130,246,0.04)",  phase: 2.4 },
+      { cx: 0.70, cy: 0.20, rx: 0.35, ry: 0.28, col: "rgba(0,229,255,0.04)",   phase: 3.6 },
+    ];
+
+    const drawAuroras = () => {
+      for (const a of AURORA) {
+        const drift = Math.sin(t * 0.25 + a.phase) * 0.06;
+        const driftY = Math.cos(t * 0.18 + a.phase) * 0.04;
+        const cx = (a.cx + drift) * W;
+        const cy = (a.cy + driftY) * H;
+        const rx = a.rx * W;
+        const ry = a.ry * H;
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(rx, ry));
+        grad.addColorStop(0, a.col);
+        grad.addColorStop(1, "transparent");
+        ctx.save();
+        ctx.scale(rx / Math.max(rx, ry), ry / Math.max(rx, ry));
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx / (rx / Math.max(rx, ry)), cy / (ry / Math.max(rx, ry)), Math.max(rx, ry), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    };
+
+    // ── Scanline pulse (horizontal sweep every ~8s) ────────────────────────
+    const drawScanline = () => {
+      const cycle = 8;
+      const progress = (t * 0.012) % cycle / cycle;  // 0→1
+      const y = progress * H;
+      const alpha = Math.sin(progress * Math.PI) * 0.03;
+      if (alpha < 0.002) return;
+      const g = ctx.createLinearGradient(0, y - 60, 0, y + 60);
+      g.addColorStop(0, "transparent");
+      g.addColorStop(0.5, `rgba(0,229,255,${alpha})`);
+      g.addColorStop(1, "transparent");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, y - 60, W, 120);
+    };
+
     const animate = () => {
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
-      if (w === 0 || h === 0) { raf = requestAnimationFrame(animate); return; }
+      if (W === 0 || H === 0) { raf = requestAnimationFrame(animate); return; }
 
-      // Rebuild circuit tile if needed
-      if (!circuitTile || tileW !== w || tileH !== h) {
-        tileW = w; tileH = h;
-        circuitTile = buildCircuitTile(w, h);
+      // ── Background ────────────────────────────────────────────────────────
+      ctx.clearRect(0, 0, W, H);
+      const bg = ctx.createRadialGradient(W * 0.5, H * 0.3, 0, W * 0.5, H * 0.6, W * 0.9);
+      bg.addColorStop(0,   "#060E22");
+      bg.addColorStop(0.5, "#040B1A");
+      bg.addColorStop(1,   "#020710");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // ── Aurora blobs ─────────────────────────────────────────────────────
+      drawAuroras();
+
+      // ── Scanline ─────────────────────────────────────────────────────────
+      drawScanline();
+
+      // ── Update + draw particles & connections ─────────────────────────────
+      for (const p of particles) {
+        // Move
+        p.x += p.vx;
+        p.y += p.vy;
+        // Wrap
+        if (p.x < -10) p.x = W + 10;
+        if (p.x > W + 10) p.x = -10;
+        if (p.y < -10) p.y = H + 10;
+        if (p.y > H + 10) p.y = -10;
+        // Pulse radius
+        p.r = p.baseR + Math.sin(t * p.pulseSpeed + p.pulsePhase) * (p.baseR * 0.4);
       }
 
-      // ── Background gradient ──────────────────────────────────────────────
-      const grad = ctx.createRadialGradient(w * 0.5, h * 0.38, 0, w * 0.5, h * 0.5, w * 0.8);
-      grad.addColorStop(0, "#071028");
-      grad.addColorStop(0.5, "#040B1A");
-      grad.addColorStop(1, "#020710");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
+      // Connections
+      ctx.save();
+      for (let i = 0; i < particles.length; i++) {
+        const a = particles[i];
+        for (let j = i + 1; j < particles.length; j++) {
+          const b = particles[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist > MAX_DIST) continue;
 
-      // Subtle secondary glow in the top-center (like the reference image)
-      const glowGrad = ctx.createRadialGradient(w * 0.5, h * 0.1, 0, w * 0.5, h * 0.3, w * 0.45);
-      glowGrad.addColorStop(0, "rgba(20,50,180,0.18)");
-      glowGrad.addColorStop(1, "rgba(20,50,180,0)");
-      ctx.fillStyle = glowGrad;
-      ctx.fillRect(0, 0, w, h);
+          const alpha = (1 - dist / MAX_DIST) * 0.18;
+          // Pick color blend between two particle colors
+          ctx.beginPath();
+          const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+          grad.addColorStop(0, a.color + Math.round(alpha * 255).toString(16).padStart(2, "0"));
+          grad.addColorStop(1, b.color + Math.round(alpha * 255).toString(16).padStart(2, "0"));
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 0.6 + (1 - dist / MAX_DIST) * 0.6;
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
 
-      // ── Circuit board overlay ─────────────────────────────────────────────
-      ctx.drawImage(circuitTile, 0, 0);
+      // Particles (draw on top of connections)
+      for (const p of particles) {
+        // Outer glow halo
+        ctx.save();
+        ctx.globalAlpha = p.opacity * 0.3;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = p.r * 10;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
 
-      // ── Replication fork position (sweeps across every ~12 s) ────────────
-      const forkSpeed = 0.012;
-      const forkX = ((t * forkSpeed) % 1.5 - 0.25) * w;  // -0.25w → 1.25w
-
-      // ── Draw helices back→front ──────────────────────────────────────────
-      HELICES.forEach((cfg) => drawHelix(ctx, w, h, cfg, t, forkX));
-
-      // ── Moving replication fork indicator ────────────────────────────────
-      if (forkX > 0 && forkX < w) {
-        const forkGrad = ctx.createLinearGradient(forkX - 30, 0, forkX + 30, 0);
-        forkGrad.addColorStop(0, "rgba(0,229,255,0)");
-        forkGrad.addColorStop(0.5, "rgba(0,229,255,0.12)");
-        forkGrad.addColorStop(1, "rgba(0,229,255,0)");
-        ctx.fillStyle = forkGrad;
-        ctx.fillRect(forkX - 30, 0, 60, h);
+        // Core dot
+        ctx.save();
+        ctx.globalAlpha = p.opacity;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = p.r * 5;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
 
-      t += 0.012;
+      t += 1;
       raf = requestAnimationFrame(animate);
     };
 

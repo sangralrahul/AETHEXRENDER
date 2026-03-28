@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import PresentationViewer, { type PresentationData } from "@/components/synapse/PresentationViewer";
 import SynapseLogo from "@/components/synapse/SynapseLogo";
 import DNABackground from "@/components/synapse/DNABackground";
+import CameraModal from "@/components/synapse/CameraModal";
 
 interface ResearchSource {
   title: string;
@@ -261,6 +262,7 @@ export default function AiAssistant() {
   const [chatMode, setChatMode] = useState<ChatMode>("normal");
   const [showProModal, setShowProModal] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isGeneratingResearch, setIsGeneratingResearch] = useState(false);
@@ -276,7 +278,6 @@ export default function AiAssistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
   const attachMenuRef = useRef<HTMLDivElement>(null);
   const chatMutation = useAiChat();
   const { toast } = useToast();
@@ -519,6 +520,12 @@ export default function AiAssistant() {
   };
 
   const removeAttachment = (id: string) => setAttachments((prev) => prev.filter((a) => a.id !== id));
+
+  const handleCameraCapture = (file: File) => {
+    const previewUrl = URL.createObjectURL(file);
+    const id = `cam-${Date.now()}`;
+    setAttachments((prev) => [...prev, { id, type: "image", file, previewUrl, name: file.name }]);
+  };
   const ModelIcon = model.icon;
 
   // Group sessions by today / yesterday / older
@@ -535,7 +542,6 @@ export default function AiAssistant() {
       {/* Hidden inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFileSelect(e, "image")} />
       <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.csv,.xlsx" multiple className="hidden" onChange={(e) => handleFileSelect(e, "file")} />
-      <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => handleFileSelect(e, "image")} />
 
       {/* ═══════════════════════════════════════════════════════════
           LEFT SIDEBAR
@@ -1099,7 +1105,7 @@ export default function AiAssistant() {
                           {[
                             { label: "Upload Image", sub: "JPG, PNG, WEBP", icon: Image, color: "rgba(30,58,138,0.7)", iconColor: "text-blue-300", action: () => imageInputRef.current?.click() },
                             { label: "Upload Document", sub: "PDF, DOCX, TXT, CSV", icon: FileText, color: "rgba(120,50,20,0.5)", iconColor: "text-orange-300", action: () => fileInputRef.current?.click() },
-                            { label: "Take Photo", sub: "Use camera", icon: Camera, color: "rgba(20,80,50,0.5)", iconColor: "text-emerald-300", action: () => cameraInputRef.current?.click() },
+                            { label: "Take Photo", sub: "Use camera", icon: Camera, color: "rgba(20,80,50,0.5)", iconColor: "text-emerald-300", action: () => { setShowAttachMenu(false); setShowCamera(true); } },
                           ].map(({ label, sub, icon: Icon, color, iconColor, action }) => (
                             <button key={label} type="button" onClick={action}
                               className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-white/5"
@@ -1264,6 +1270,14 @@ export default function AiAssistant() {
           pdfBase64={activePresentationData.pdfBase64}
           docxBase64={activePresentationData.docxBase64}
           onClose={() => setActivePresentationData(null)}
+        />
+      )}
+
+      {/* ── Camera Modal ── */}
+      {showCamera && (
+        <CameraModal
+          onCapture={handleCameraCapture}
+          onClose={() => setShowCamera(false)}
         />
       )}
     </div>

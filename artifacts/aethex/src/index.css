@@ -112,9 +112,9 @@
   font-family: 'Orbitron', 'Exo 2', monospace;
 }
 
-/* ── SYNAPSE page dark textarea placeholder ───────────────────────────────── */
+/* ── SYNAPSE page textarea placeholder (themed via CSS var) ──────────────── */
 .synapse-textarea::placeholder {
-  color: rgba(100, 170, 220, 0.45);
+  color: var(--sp-placeholder-color, rgba(100, 170, 220, 0.45));
 }
 
 /* ── SYNAPSE Animated Logo keyframes ─────────────────────────────────────── */

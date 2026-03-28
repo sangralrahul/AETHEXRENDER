@@ -17,6 +17,88 @@ import CameraModal from "@/components/synapse/CameraModal";
 import SettingsModal, { loadSettings, saveSettings, DEFAULT_SETTINGS, type SynapseSettings } from "@/components/synapse/SettingsModal";
 import { getTranslation } from "@/lib/translations";
 
+/* ── Synapse theme CSS custom-property tokens ─────────────────────────── */
+function getThemeVars(theme: "dark" | "auto" | "light"): React.CSSProperties {
+  if (theme === "light") return {
+    "--sp-root-bg":                  "#edf4fb",
+    "--sp-sidebar-bg":               "rgba(255,255,255,0.98)",
+    "--sp-sidebar-border":           "rgba(0,150,190,0.22)",
+    "--sp-topbar-bg":                "rgba(240,248,255,0.97)",
+    "--sp-topbar-border":            "rgba(0,150,190,0.18)",
+    "--sp-divider":                  "rgba(0,120,170,0.12)",
+    "--sp-label":                    "rgba(0,120,170,0.65)",
+    "--sp-text-primary":             "rgba(8,30,70,0.95)",
+    "--sp-text-muted":               "rgba(25,65,130,0.7)",
+    "--sp-text-dim":                 "rgba(25,80,145,0.55)",
+    "--sp-text-faint":               "rgba(25,80,145,0.4)",
+    "--sp-text-footer":              "rgba(25,80,145,0.72)",
+    "--sp-model-inactive-color":     "rgba(25,65,130,0.65)",
+    "--sp-model-inactive-bg":        "rgba(0,0,0,0.03)",
+    "--sp-model-inactive-border":    "rgba(0,0,0,0.08)",
+    "--sp-model-icon-inactive":      "rgba(0,0,0,0.06)",
+    "--sp-session-active-bg":        "rgba(0,188,212,0.12)",
+    "--sp-session-active-border":    "rgba(0,188,212,0.28)",
+    "--sp-session-active-text":      "rgba(0,50,110,0.95)",
+    "--sp-session-inactive-text":    "rgba(25,75,145,0.72)",
+    "--sp-session-meta":             "rgba(0,110,170,0.5)",
+    "--sp-ai-bubble-bg":             "rgba(255,255,255,0.98)",
+    "--sp-ai-bubble-border":         "rgba(0,150,190,0.2)",
+    "--sp-ai-text":                  "rgba(8,30,70,0.92)",
+    "--sp-user-bubble-bg":           "linear-gradient(135deg,rgba(0,188,212,0.18),rgba(0,150,200,0.1))",
+    "--sp-user-bubble-border":       "rgba(0,188,212,0.38)",
+    "--sp-user-text":                "rgba(0,40,90,0.95)",
+    "--sp-input-bg":                 "rgba(255,255,255,0.97)",
+    "--sp-input-border":             "rgba(0,150,190,0.3)",
+    "--sp-textarea-color":           "rgba(8,30,70,0.95)",
+    "--sp-placeholder-color":        "rgba(0,120,170,0.38)",
+    "--sp-new-chat-bg":              "rgba(0,188,212,0.1)",
+    "--sp-new-chat-border":          "rgba(0,188,212,0.3)",
+    "--sp-new-chat-color":           "#007fa3",
+    "--sp-toggle-color":             "rgba(0,140,190,0.7)",
+    "--sp-caret-color":              "#0099bb",
+  } as React.CSSProperties;
+
+  /* dark + auto → same deep-space palette */
+  return {
+    "--sp-root-bg":                  "#040B1A",
+    "--sp-sidebar-bg":               "rgba(2,8,22,0.92)",
+    "--sp-sidebar-border":           "rgba(0,188,212,0.13)",
+    "--sp-topbar-bg":                "rgba(2,8,22,0.8)",
+    "--sp-topbar-border":            "rgba(0,188,212,0.1)",
+    "--sp-divider":                  "rgba(0,188,212,0.1)",
+    "--sp-label":                    "rgba(0,200,255,0.35)",
+    "--sp-text-primary":             "rgba(200,235,255,0.95)",
+    "--sp-text-muted":               "rgba(120,175,220,0.6)",
+    "--sp-text-dim":                 "rgba(100,160,220,0.5)",
+    "--sp-text-faint":               "rgba(100,160,220,0.35)",
+    "--sp-text-footer":              "rgba(130,185,230,0.65)",
+    "--sp-model-inactive-color":     "rgba(120,175,220,0.6)",
+    "--sp-model-inactive-bg":        "rgba(255,255,255,0.02)",
+    "--sp-model-inactive-border":    "rgba(255,255,255,0.05)",
+    "--sp-model-icon-inactive":      "rgba(255,255,255,0.05)",
+    "--sp-session-active-bg":        "rgba(0,188,212,0.12)",
+    "--sp-session-active-border":    "rgba(0,188,212,0.2)",
+    "--sp-session-active-text":      "rgba(200,240,255,0.95)",
+    "--sp-session-inactive-text":    "rgba(130,180,220,0.65)",
+    "--sp-session-meta":             "rgba(0,180,220,0.35)",
+    "--sp-ai-bubble-bg":             "rgba(4,14,38,0.82)",
+    "--sp-ai-bubble-border":         "rgba(0,188,212,0.18)",
+    "--sp-ai-text":                  "rgba(190,225,255,0.9)",
+    "--sp-user-bubble-bg":           "linear-gradient(135deg,rgba(0,188,212,0.35),rgba(0,150,200,0.25))",
+    "--sp-user-bubble-border":       "rgba(0,229,255,0.3)",
+    "--sp-user-text":                "rgba(220,245,255,0.95)",
+    "--sp-input-bg":                 "rgba(4,14,38,0.88)",
+    "--sp-input-border":             "rgba(0,188,212,0.28)",
+    "--sp-textarea-color":           "rgba(200,235,255,0.95)",
+    "--sp-placeholder-color":        "rgba(100,170,220,0.45)",
+    "--sp-new-chat-bg":              "rgba(0,188,212,0.12)",
+    "--sp-new-chat-border":          "rgba(0,188,212,0.28)",
+    "--sp-new-chat-color":           "#00E5FF",
+    "--sp-toggle-color":             "rgba(0,229,255,0.55)",
+    "--sp-caret-color":              "#00E5FF",
+  } as React.CSSProperties;
+}
+
 interface ResearchSource {
   title: string;
   url: string;
@@ -267,6 +349,7 @@ export default function AiAssistant() {
   const [showCamera, setShowCamera] = useState(false);
   const [settings, setSettings] = useState<SynapseSettings>(loadSettings);
   const tr = getTranslation(settings.language);
+  const themeVars = getThemeVars(settings.theme);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isGeneratingResearch, setIsGeneratingResearch] = useState(false);
@@ -554,9 +637,9 @@ export default function AiAssistant() {
   const olderSessions = sessions.filter((s) => now - s.createdAt >= 172800000);
 
   return (
-    <div className="h-screen pt-[72px] flex overflow-hidden relative" style={{ background: "#040B1A" }}>
-      {/* ── Live DNA Background ── */}
-      <DNABackground />
+    <div className="h-screen pt-[72px] flex overflow-hidden relative" style={{ background: "var(--sp-root-bg)", ...themeVars }}>
+      {/* ── Live DNA Background (hidden in light mode) ── */}
+      {settings.theme !== "light" && <DNABackground />}
 
       {/* Hidden inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFileSelect(e, "image")} />
@@ -571,9 +654,9 @@ export default function AiAssistant() {
           sidebarOpen ? "w-[260px]" : "w-0"
         )}
         style={{
-          background: "rgba(2,8,22,0.92)",
+          background: "var(--sp-sidebar-bg)",
           backdropFilter: "blur(20px)",
-          borderRight: "1px solid rgba(0,188,212,0.13)",
+          borderRight: "1px solid var(--sp-sidebar-border)",
         }}
       >
         {/* Sidebar header */}
@@ -596,9 +679,9 @@ export default function AiAssistant() {
             onClick={handleNewChat}
             className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
             style={{
-              background: "rgba(0,188,212,0.12)",
-              border: "1px solid rgba(0,188,212,0.28)",
-              color: "#00E5FF",
+              background: "var(--sp-new-chat-bg)",
+              border: "1px solid var(--sp-new-chat-border)",
+              color: "var(--sp-new-chat-color)",
             }}
           >
             <Plus className="w-4 h-4" />
@@ -608,7 +691,7 @@ export default function AiAssistant() {
 
         {/* Model selector */}
         <div className="px-3 mb-1">
-          <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-2" style={{ color: "rgba(0,200,255,0.35)" }}>
+          <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-2" style={{ color: "var(--sp-label)" }}>
             {tr.aiAgents}
           </p>
           {MODELS.map((m) => {
@@ -627,9 +710,9 @@ export default function AiAssistant() {
                         boxShadow: `0 0 16px ${m.activeStyle.borderColor ?? "rgba(0,188,212,0.2)"}`,
                       }
                     : {
-                        color: "rgba(120,175,220,0.6)",
-                        background: "rgba(255,255,255,0.02)",
-                        border: "1px solid rgba(255,255,255,0.05)",
+                        color: "var(--sp-model-inactive-color)",
+                        background: "var(--sp-model-inactive-bg)",
+                        border: "1px solid var(--sp-model-inactive-border)",
                       }
                 }
               >
@@ -638,7 +721,7 @@ export default function AiAssistant() {
                   style={
                     isActive
                       ? { background: "rgba(255,255,255,0.15)" }
-                      : { background: "rgba(255,255,255,0.05)" }
+                      : { background: "var(--sp-model-icon-inactive)" }
                   }
                 >
                   {m.pro && !isActive
@@ -663,7 +746,7 @@ export default function AiAssistant() {
         </div>
 
         {/* Divider */}
-        <div className="mx-4 my-2" style={{ borderTop: "1px solid rgba(0,188,212,0.1)" }} />
+        <div className="mx-4 my-2" style={{ borderTop: "1px solid var(--sp-divider)" }} />
 
         {/* Chat history */}
         <div className="flex-1 overflow-y-auto px-3 min-h-0">
@@ -674,7 +757,7 @@ export default function AiAssistant() {
           ].map(({ label, list }) =>
             list.length > 0 ? (
               <div key={label} className="mb-2">
-                <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-1" style={{ color: "rgba(0,200,255,0.35)" }}>
+                <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-1" style={{ color: "var(--sp-label)" }}>
                   {label}
                 </p>
                 {list.map((sess) => {
@@ -691,17 +774,17 @@ export default function AiAssistant() {
                       className="group w-full flex items-start gap-2 px-3 py-2 rounded-xl text-left transition-all mb-0.5 cursor-pointer"
                       style={
                         isActive
-                          ? { background: "rgba(0,188,212,0.12)", border: "1px solid rgba(0,188,212,0.2)" }
+                          ? { background: "var(--sp-session-active-bg)", border: "1px solid var(--sp-session-active-border)" }
                           : { border: "1px solid transparent" }
                       }
                     >
-                      <SMIcon className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: isActive ? "#00E5FF" : "rgba(100,160,220,0.5)" }} />
+                      <SMIcon className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: isActive ? "#00E5FF" : "var(--sp-text-dim)" }} />
                       <div className="flex-1 min-w-0">
                         <p className="text-[12px] truncate leading-tight"
-                          style={{ color: isActive ? "rgba(200,240,255,0.95)" : "rgba(130,180,220,0.65)" }}>
+                          style={{ color: isActive ? "var(--sp-session-active-text)" : "var(--sp-session-inactive-text)" }}>
                           {sess.title}
                         </p>
-                        <p className="text-[10px] mt-0.5" style={{ color: "rgba(0,180,220,0.35)" }}>
+                        <p className="text-[10px] mt-0.5" style={{ color: "var(--sp-session-meta)" }}>
                           {sm.name} {sm.version}
                         </p>
                       </div>
@@ -719,16 +802,16 @@ export default function AiAssistant() {
             ) : null
           )}
           {todaySessions.length === 0 && yesterdaySessions.length === 0 && olderSessions.length === 0 && (
-            <p className="text-xs text-center px-2 py-4" style={{ color: "rgba(100,160,220,0.35)" }}>{tr.noChatsYet}</p>
+            <p className="text-xs text-center px-2 py-4" style={{ color: "var(--sp-text-faint)" }}>{tr.noChatsYet}</p>
           )}
         </div>
 
         {/* Sidebar footer — settings */}
-        <div className="px-3 pb-4 pt-2" style={{ borderTop: "1px solid rgba(0,188,212,0.1)" }}>
+        <div className="px-3 pb-4 pt-2" style={{ borderTop: "1px solid var(--sp-divider)" }}>
           <button
             onClick={() => setShowSettings(true)}
             className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all"
-            style={{ color: "rgba(130,185,230,0.65)" }}
+            style={{ color: "var(--sp-text-footer)" }}
           >
             <Settings className="w-4 h-4" />
             {tr.settings}
@@ -745,16 +828,16 @@ export default function AiAssistant() {
         <div
           className="shrink-0 flex items-center gap-2 px-3 py-2"
           style={{
-            background: "rgba(2,8,22,0.8)",
+            background: "var(--sp-topbar-bg)",
             backdropFilter: "blur(20px)",
-            borderBottom: "1px solid rgba(0,188,212,0.1)",
+            borderBottom: "1px solid var(--sp-topbar-border)",
           }}
         >
           {/* Sidebar toggle */}
           <button
             onClick={() => setSidebarOpen((v) => !v)}
             className="p-1.5 rounded-lg transition-colors"
-            style={{ color: "rgba(0,229,255,0.55)" }}
+            style={{ color: "var(--sp-toggle-color)" }}
             title={sidebarOpen ? "Close sidebar" : "Open sidebar"}
           >
             <PanelLeft className="w-5 h-5" />
@@ -784,7 +867,7 @@ export default function AiAssistant() {
           <button
             onClick={handleNewChat}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
-            style={{ color: "rgba(0,229,255,0.6)", border: "1px solid rgba(0,188,212,0.2)" }}
+            style={{ color: "var(--sp-new-chat-color)", border: "1px solid var(--sp-new-chat-border)" }}
           >
             <Plus className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{tr.newChat}</span>
@@ -827,9 +910,9 @@ export default function AiAssistant() {
                         onClick={() => setInput(q)}
                         className="text-sm px-4 py-3 rounded-2xl text-left transition-all"
                         style={{
-                          background: "rgba(0,188,212,0.08)",
-                          border: "1px solid rgba(0,188,212,0.25)",
-                          color: "rgba(0,229,255,0.85)",
+                          background: "var(--sp-new-chat-bg)",
+                          border: "1px solid var(--sp-input-border)",
+                          color: "var(--sp-new-chat-color)",
                           backdropFilter: "blur(8px)",
                         }}
                       >
@@ -896,8 +979,8 @@ export default function AiAssistant() {
                         msg.role === ChatMessageRole.user ? "rounded-tr-sm" : "rounded-tl-sm"
                       )}
                       style={msg.role === ChatMessageRole.user
-                        ? { background: "linear-gradient(135deg, rgba(0,188,212,0.35), rgba(0,150,200,0.25))", border: "1px solid rgba(0,229,255,0.3)", color: "rgba(220,245,255,0.95)", backdropFilter: "blur(12px)" }
-                        : { background: "rgba(4,14,38,0.82)", border: "1px solid rgba(0,188,212,0.18)", color: "rgba(190,225,255,0.9)", backdropFilter: "blur(12px)" }
+                        ? { background: "var(--sp-user-bubble-bg)", border: "1px solid var(--sp-user-bubble-border)", color: "var(--sp-user-text)", backdropFilter: "blur(12px)" }
+                        : { background: "var(--sp-ai-bubble-bg)", border: "1px solid var(--sp-ai-bubble-border)", color: "var(--sp-ai-text)", backdropFilter: "blur(12px)" }
                       }
                     >
                       {!(msg as ExtendedMessage).isDeepResearch && !(msg as ExtendedMessage).isPresentation && !(msg as ExtendedMessage).slideCountOptions && !(msg as ExtendedMessage).imageUrl && msg.content && (
@@ -1038,10 +1121,10 @@ export default function AiAssistant() {
               <form onSubmit={handleSubmit}
                 className="rounded-2xl transition-all overflow-visible"
                 style={{
-                  background: "rgba(4,14,38,0.88)",
+                  background: "var(--sp-input-bg)",
                   backdropFilter: "blur(20px)",
-                  border: "1px solid rgba(0,188,212,0.28)",
-                  boxShadow: "0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(0,229,255,0.06)",
+                  border: "1px solid var(--sp-input-border)",
+                  boxShadow: "0 8px 40px rgba(0,0,0,0.18), inset 0 1px 0 rgba(0,229,255,0.06)",
                 }}
               >
                 {/* Active mode banner */}
@@ -1104,7 +1187,7 @@ export default function AiAssistant() {
                   }
                   rows={1}
                   className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none synapse-textarea"
-                  style={{ color: "rgba(200,235,255,0.95)", caretColor: "#00E5FF", minHeight: "52px", maxHeight: "160px" }}
+                  style={{ color: "var(--sp-textarea-color)", caretColor: "var(--sp-caret-color)", minHeight: "52px", maxHeight: "160px" }}
                   disabled={chatMutation.isPending || isGeneratingPresentation || presentationStage === "waiting-slide-count"}
                 />
 

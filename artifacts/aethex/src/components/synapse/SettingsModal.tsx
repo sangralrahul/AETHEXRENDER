@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   X, Settings, Palette, Brain, Shield, Info, ChevronRight,
-  Moon, Sun, Type, Clock, MessageSquare, Zap, Database,
+  Moon, Sun, Monitor, Type, Clock, MessageSquare, Zap, Database,
   Download, Trash2, Activity, CheckCircle, Lock,
   Globe, BellRing, Volume2, RotateCcw,
 } from "lucide-react";
@@ -10,7 +10,7 @@ import { getTranslation } from "@/lib/translations";
 
 /* ── Types ──────────────────────────────────────────────────────────────── */
 export interface SynapseSettings {
-  theme: "dark" | "auto";
+  theme: "dark" | "auto" | "light";
   fontSize: "sm" | "md" | "lg";
   compactMode: boolean;
   showTimestamps: boolean;
@@ -285,10 +285,11 @@ function SectionAppearance({ s, set }: { s: SynapseSettings; set: (k: keyof Syna
     <div className="space-y-4">
       <div>
         <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "rgba(0,200,255,0.4)" }}>Theme</p>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           {[
-            { value: "dark",  label: "Dark",  icon: Moon,  desc: "SYNAPSE dark" },
-            { value: "auto",  label: "System",icon: Sun,   desc: "Match device" },
+            { value: "dark",  label: "Dark",   icon: Moon,    desc: "SYNAPSE dark" },
+            { value: "light", label: "Light",  icon: Sun,     desc: "Clean & bright" },
+            { value: "auto",  label: "System", icon: Monitor, desc: "Match device" },
           ].map((t) => (
             <button key={t.value} type="button" onClick={() => set("theme", t.value)}
               className="flex flex-col items-center gap-2 px-4 py-3 rounded-xl transition-all"

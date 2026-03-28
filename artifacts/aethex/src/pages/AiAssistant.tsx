@@ -718,6 +718,9 @@ export default function AiAssistant() {
               </div>
             ) : null
           )}
+          {todaySessions.length === 0 && yesterdaySessions.length === 0 && olderSessions.length === 0 && (
+            <p className="text-xs text-center px-2 py-4" style={{ color: "rgba(100,160,220,0.35)" }}>{tr.noChatsYet}</p>
+          )}
         </div>
 
         {/* Sidebar footer — settings */}
@@ -728,7 +731,7 @@ export default function AiAssistant() {
             style={{ color: "rgba(130,185,230,0.65)" }}
           >
             <Settings className="w-4 h-4" />
-            Settings
+            {tr.settings}
           </button>
         </div>
       </aside>
@@ -850,7 +853,7 @@ export default function AiAssistant() {
                       className="mt-4 flex items-center gap-2 mx-auto px-6 py-2.5 rounded-xl font-bold text-sm transition-all"
                       style={{ background: "linear-gradient(to right, #7c3aed, #9333ea)", color: "white" }}
                     >
-                      <Crown className="w-4 h-4" /> Upgrade to Pro
+                      <Crown className="w-4 h-4" /> {tr.upgradePro}
                     </button>
                   </div>
                 )}
@@ -917,7 +920,7 @@ export default function AiAssistant() {
                           <a href={(msg as ExtendedMessage).imageUrl} download="synapse-image.png" target="_blank" rel="noreferrer"
                             className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold hover:underline"
                             style={{ color: "#00E5FF" }}>
-                            <Download className="w-3.5 h-3.5" /> Download image
+                            <Download className="w-3.5 h-3.5" /> {tr.downloadImage}
                           </a>
                         </div>
                       )}
@@ -930,7 +933,7 @@ export default function AiAssistant() {
                                 disabled={isGeneratingPresentation}
                                 className="px-4 py-2 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
                                 style={{ background: "rgba(180,120,0,0.25)", border: "1px solid rgba(251,191,36,0.4)", color: "#fcd34d" }}>
-                                {n} slides
+                                {n} {tr.slides}
                               </button>
                             ))}
                           </div>
@@ -945,7 +948,7 @@ export default function AiAssistant() {
                                 onClick={() => setActivePresentationData((msg as ExtendedMessage).presentationData as any)}
                                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all"
                                 style={{ background: "rgba(16,185,129,0.25)", border: "1px solid rgba(52,211,153,0.4)", color: "#34d399" }}>
-                                <PlayCircle className="w-4 h-4" /> Open Presentation
+                                <PlayCircle className="w-4 h-4" /> {tr.openPresentation}
                               </button>
                             )}
                             {(msg as ExtendedMessage).presentationPdfBase64 && (
@@ -981,7 +984,7 @@ export default function AiAssistant() {
                       style={{ background: "rgba(4,14,38,0.82)", border: "1px solid rgba(0,188,212,0.18)", backdropFilter: "blur(12px)" }}>
                       <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#00E5FF" }} />
                       <span className="text-sm" style={{ color: "rgba(140,200,255,0.7)" }}>
-                        {isGeneratingImage ? "Generating image..." : isGeneratingResearch ? "Researching..." : tr.thinking}
+                        {isGeneratingImage ? tr.generatingImage : isGeneratingResearch ? tr.researching : tr.thinking}
                       </span>
                     </div>
                   </div>
@@ -997,7 +1000,7 @@ export default function AiAssistant() {
                       style={{ background: "rgba(5,18,48,0.85)", backdropFilter: "blur(12px)", border: "1px solid rgba(0,188,212,0.2)" }}>
                       <div className="px-4 pt-3 pb-2 text-xs font-medium flex items-center gap-2" style={{ color: "rgba(100,200,255,0.8)" }}>
                         <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
-                        SYNAPSE is composing your {buildingSlideCount}-slide presentation...
+                        {tr.buildingPresentation.replace("{n}", String(buildingSlideCount))}
                       </div>
                       <PresentationBuildingAnimation topic={buildingTopic} slideCount={buildingSlideCount} />
                     </div>
@@ -1050,10 +1053,10 @@ export default function AiAssistant() {
                       color: chatMode === "deep-research" ? "#4FC3F7" : chatMode === "create-presentation" ? "#FFD54F" : "#CE93D8",
                     }}>
                     {chatMode === "deep-research"
-                      ? <><Microscope className="w-3.5 h-3.5" /> Deep Research mode</>
+                      ? <><Microscope className="w-3.5 h-3.5" /> {tr.deepResearchMode}</>
                       : chatMode === "create-presentation"
-                      ? <><Presentation className="w-3.5 h-3.5" /> {presentationStage === "idle" ? "Presentation mode" : "Select slide count above"}</>
-                      : <><ImagePlus className="w-3.5 h-3.5" /> Image generation mode</>}
+                      ? <><Presentation className="w-3.5 h-3.5" /> {presentationStage === "idle" ? tr.presentationMode : tr.selectSlideCountAbove}</>
+                      : <><ImagePlus className="w-3.5 h-3.5" /> {tr.imageMode}</>}
                     <button type="button" onClick={() => toggleMode(chatMode)} className="ml-auto hover:opacity-70">
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -1090,13 +1093,13 @@ export default function AiAssistant() {
                   onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit(e as any); } }}
                   placeholder={
                     chatMode === "create-image"
-                      ? "Describe the medical image or illustration you want to create..."
+                      ? tr.describeImagePlaceholder
                       : chatMode === "deep-research"
-                      ? "What topic should SYNAPSE research deeply?"
+                      ? tr.researchTopicPlaceholder
                       : chatMode === "create-presentation" && presentationStage === "idle"
-                      ? "Enter the topic for your presentation (e.g. Human Brain, Cardiac Anatomy)..."
+                      ? tr.presentationTopicPlaceholder
                       : chatMode === "create-presentation" && presentationStage === "waiting-slide-count"
-                      ? "Select the number of slides using the buttons above..."
+                      ? tr.selectSlidesPlaceholder
                       : `${tr.messagePlaceholder} · ${model.name} ${model.version}...`
                   }
                   rows={1}
@@ -1122,9 +1125,9 @@ export default function AiAssistant() {
                           style={{ background: "rgba(4,12,35,0.97)", backdropFilter: "blur(20px)", border: "1px solid rgba(0,188,212,0.3)" }}>
                           <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(0,229,255,0.45)" }}>{tr.attach}</div>
                           {[
-                            { label: "Upload Image", sub: "JPG, PNG, WEBP", icon: Image, color: "rgba(30,58,138,0.7)", iconColor: "text-blue-300", action: () => imageInputRef.current?.click() },
-                            { label: "Upload Document", sub: "PDF, DOCX, TXT, CSV", icon: FileText, color: "rgba(120,50,20,0.5)", iconColor: "text-orange-300", action: () => fileInputRef.current?.click() },
-                            { label: "Take Photo", sub: "Use camera", icon: Camera, color: "rgba(20,80,50,0.5)", iconColor: "text-emerald-300", action: () => { setShowAttachMenu(false); setShowCamera(true); } },
+                            { label: tr.uploadImage, sub: tr.uploadImageFormats, icon: Image, color: "rgba(30,58,138,0.7)", iconColor: "text-blue-300", action: () => imageInputRef.current?.click() },
+                            { label: tr.uploadDocument, sub: tr.uploadDocumentFormats, icon: FileText, color: "rgba(120,50,20,0.5)", iconColor: "text-orange-300", action: () => fileInputRef.current?.click() },
+                            { label: tr.takePhoto, sub: tr.useCamera, icon: Camera, color: "rgba(20,80,50,0.5)", iconColor: "text-emerald-300", action: () => { setShowAttachMenu(false); setShowCamera(true); } },
                           ].map(({ label, sub, icon: Icon, color, iconColor, action }) => (
                             <button key={label} type="button" onClick={action}
                               className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-white/5"
@@ -1209,7 +1212,7 @@ export default function AiAssistant() {
               style={{ background: "linear-gradient(135deg, #7c3aed, #9333ea)" }}>
               <Crown className="w-8 h-8 text-white" />
             </div>
-            <h2 className="font-display font-bold text-2xl mb-2" style={{ color: "rgba(220,235,255,0.95)" }}>Upgrade to aethex Pro</h2>
+            <h2 className="font-display font-bold text-2xl mb-2" style={{ color: "rgba(220,235,255,0.95)" }}>{tr.upgradeTitle}</h2>
             <p className="mb-6 text-sm leading-relaxed" style={{ color: "rgba(150,190,250,0.7)" }}>
               Unlock <span className="font-bold" style={{ color: "#a78bfa" }}>SYNAPSE Nova 4.6</span> — our most powerful model for advanced diagnostics, rare disease identification, and deep clinical research.
             </p>
@@ -1235,7 +1238,7 @@ export default function AiAssistant() {
               <Crown className="w-5 h-5" /> {tr.upgradePro}
             </button>
             <button onClick={() => setShowProModal(false)} className="text-sm" style={{ color: "rgba(150,180,240,0.5)" }}>
-              Maybe later
+              {tr.maybeLater}
             </button>
           </div>
         </div>

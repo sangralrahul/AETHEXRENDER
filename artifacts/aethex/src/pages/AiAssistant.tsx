@@ -14,6 +14,7 @@ import PresentationViewer, { type PresentationData } from "@/components/synapse/
 import SynapseLogo from "@/components/synapse/SynapseLogo";
 import DNABackground from "@/components/synapse/DNABackground";
 import CameraModal from "@/components/synapse/CameraModal";
+import SettingsModal, { loadSettings, saveSettings, DEFAULT_SETTINGS, type SynapseSettings } from "@/components/synapse/SettingsModal";
 
 interface ResearchSource {
   title: string;
@@ -263,6 +264,7 @@ export default function AiAssistant() {
   const [showProModal, setShowProModal] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
+  const [settings, setSettings] = useState<SynapseSettings>(loadSettings);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isGeneratingResearch, setIsGeneratingResearch] = useState(false);
@@ -525,6 +527,21 @@ export default function AiAssistant() {
     const previewUrl = URL.createObjectURL(file);
     const id = `cam-${Date.now()}`;
     setAttachments((prev) => [...prev, { id, type: "image", file, previewUrl, name: file.name }]);
+  };
+
+  const handleClearCurrentChat = () => {
+    const fresh = makeSession(activeModel);
+    setSessions((prev) => prev.map((s) => s.id === activeSessionId ? fresh : s));
+    setActiveSessionId(fresh.id);
+  };
+
+  const handleExportChats = () => {
+    const data = JSON.stringify(sessions, null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `synapse-chats-${Date.now()}.json`; a.click();
+    URL.revokeObjectURL(url);
   };
   const ModelIcon = model.icon;
 
@@ -1224,43 +1241,18 @@ export default function AiAssistant() {
 
       {/* ── Settings Modal ── */}
       {showSettings && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-          onClick={() => setShowSettings(false)}>
-          <div className="rounded-3xl shadow-2xl max-w-sm w-full p-6"
-            style={{ background: "rgba(5,15,40,0.97)", border: "1px solid rgba(0,188,212,0.25)", backdropFilter: "blur(20px)" }}
-            onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-bold text-lg" style={{ color: "rgba(200,235,255,0.95)" }}>Settings</h2>
-              <button onClick={() => setShowSettings(false)} style={{ color: "rgba(100,180,220,0.6)" }}>
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              {[
-                { label: "Clear all chats", desc: "Remove all chat history", danger: true, action: () => {
-                  const fresh = makeSession("pulse45");
-                  setSessions([fresh]);
-                  setActiveSessionId(fresh.id);
-                  setShowSettings(false);
-                }},
-              ].map(({ label, desc, danger, action }) => (
-                <button key={label} onClick={action}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all"
-                  style={danger
-                    ? { background: "rgba(200,30,30,0.15)", border: "1px solid rgba(248,113,113,0.25)", color: "#f87171" }
-                    : { background: "rgba(0,188,212,0.1)", border: "1px solid rgba(0,188,212,0.2)", color: "rgba(180,225,255,0.9)" }}>
-                  <span>{label}</span>
-                  <span className="text-xs opacity-60">{desc}</span>
-                </button>
-              ))}
-              <div className="pt-2 border-t" style={{ borderColor: "rgba(0,188,212,0.1)" }}>
-                <p className="text-center text-xs" style={{ color: "rgba(100,160,220,0.4)" }}>
-                  SYNAPSE · aethex Medical Suite · v3.0
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SettingsModal
+          settings={settings}
+          onSettingsChange={setSettings}
+          onClearAllChats={() => {
+            const fresh = makeSession("pulse45");
+            setSessions([fresh]);
+            setActiveSessionId(fresh.id);
+          }}
+          onClearCurrentChat={handleClearCurrentChat}
+          onExportChats={handleExportChats}
+          onClose={() => setShowSettings(false)}
+        />
       )}
 
       {/* ── In-Browser Presentation Viewer ── */}

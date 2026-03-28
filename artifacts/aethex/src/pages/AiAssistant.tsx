@@ -1431,26 +1431,16 @@ function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
     return () => clearInterval(t);
   }, []);
 
-  const bars = [
-    { dur: "0.70s", delay: "0.00s", h: 62,  c: "#00E5FF" },
-    { dur: "0.90s", delay: "0.06s", h: 88,  c: "#00DCEA" },
-    { dur: "0.60s", delay: "0.12s", h: 48,  c: "#00D3D8" },
-    { dur: "1.00s", delay: "0.04s", h: 94,  c: "#00CAC8" },
-    { dur: "0.75s", delay: "0.18s", h: 72,  c: "#00BFBA" },
-    { dur: "0.85s", delay: "0.08s", h: 100, c: "#00B4AC" },
-    { dur: "0.65s", delay: "0.22s", h: 58,  c: "#009EA0" },
-    { dur: "1.05s", delay: "0.02s", h: 80,  c: "#0088A0" },
-    { dur: "0.80s", delay: "0.16s", h: 92,  c: "#3870B8" },
-    { dur: "0.70s", delay: "0.10s", h: 54,  c: "#5A5CC0" },
-    { dur: "0.90s", delay: "0.20s", h: 78,  c: "#7044C8" },
-    { dur: "0.60s", delay: "0.14s", h: 86,  c: "#8230D0" },
-    { dur: "1.00s", delay: "0.06s", h: 52,  c: "#9022D8" },
-    { dur: "0.75s", delay: "0.24s", h: 74,  c: "#9C14E0" },
-    { dur: "0.85s", delay: "0.10s", h: 64,  c: "#A43AED" },
-    { dur: "0.65s", delay: "0.18s", h: 82,  c: "#AF5CF5" },
-    { dur: "1.05s", delay: "0.04s", h: 44,  c: "#BA7CF8" },
-    { dur: "0.80s", delay: "0.22s", h: 68,  c: "#C49EFA" },
-  ];
+  // One ECG heartbeat cycle: flat → P wave → flat → Q dip → R spike → S dip → flat → T wave → flat
+  // viewBox: 0 0 280 90  baseline at y=55
+  const ecgCycle =
+    "M 0,55 L 22,55 " +
+    "Q 28,46 34,55 " +
+    "L 50,55 " +
+    "L 55,62 L 62,6 L 68,64 " +
+    "L 80,55 " +
+    "Q 95,36 106,55 " +
+    "L 280,55";
 
   return (
     <div style={{
@@ -1461,49 +1451,93 @@ function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
       backdropFilter: "blur(16px)",
       minWidth: "270px",
     }}>
-      {/* Equalizer canvas */}
+      {/* ECG monitor */}
       <div style={{
         position: "relative",
         height: "108px",
         marginBottom: "14px",
         overflow: "hidden",
         borderRadius: "10px",
-        background: "rgba(0,6,22,0.6)",
-        display: "flex",
-        alignItems: "flex-end",
-        padding: "0 10px 0",
-        gap: "3px",
+        background: "rgba(0,8,18,0.85)",
       }}>
-        {/* Grid lines */}
-        {[30, 55, 78].map(pct => (
-          <div key={pct} style={{
+        {/* Graph-paper grid */}
+        {[25, 50, 75].map(pct => (
+          <div key={`h${pct}`} style={{
             position: "absolute", left: 0, right: 0,
-            top: `${100 - pct}%`, height: "1px",
-            background: "rgba(0,188,212,0.07)",
+            top: `${pct}%`, height: "1px",
+            background: "rgba(0,200,180,0.07)",
+            pointerEvents: "none",
+          }} />
+        ))}
+        {[20, 40, 60, 80].map(pct => (
+          <div key={`v${pct}`} style={{
+            position: "absolute", top: 0, bottom: 0,
+            left: `${pct}%`, width: "1px",
+            background: "rgba(0,200,180,0.07)",
             pointerEvents: "none",
           }} />
         ))}
 
-        {/* Bars */}
-        {bars.map((b, i) => (
-          <div key={i} style={{
-            flex: 1,
-            height: `${b.h}%`,
-            borderRadius: "3px 3px 0 0",
-            background: `linear-gradient(to top, ${b.c}DD 0%, ${b.c}55 70%, ${b.c}11 100%)`,
-            boxShadow: `0 0 8px 1px ${b.c}55`,
-            animation: `img-gen-bar ${b.dur} ${b.delay} ease-in-out infinite`,
-            transformOrigin: "bottom",
-          }} />
-        ))}
-
-        {/* Bottom glow floor */}
+        {/* Scrolling ECG strip — 3 tiled copies so the loop is seamless */}
         <div style={{
-          position: "absolute", left: 0, right: 0, bottom: 0, height: "3px",
-          background: "linear-gradient(90deg, #00E5FF44, #7C3AED44, #00E5FF44)",
-          animation: "img-gen-shimmer 3s linear infinite",
-          backgroundSize: "300% auto",
+          position: "absolute",
+          top: 0, left: 0,
+          display: "flex",
+          animation: "img-gen-ecg-scroll 2s linear infinite",
+          willChange: "transform",
+        }}>
+          {[0, 1, 2].map(idx => (
+            <svg key={idx} width="280" height="90" viewBox="0 0 280 90" fill="none" style={{ display: "block", flexShrink: 0 }}>
+              {/* Glow layer (wider, blurred) */}
+              <path d={ecgCycle} stroke="#00E5FF" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
+                style={{ filter: "blur(4px)", opacity: 0.35 }} />
+              {/* Main line */}
+              <path d={ecgCycle} stroke="#00E5FF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          ))}
+        </div>
+
+        {/* Fade masks on left and right edges */}
+        <div style={{
+          position: "absolute", top: 0, left: 0, bottom: 0, width: "28px",
+          background: "linear-gradient(to right, rgba(0,8,18,1), transparent)",
+          pointerEvents: "none", zIndex: 3,
         }} />
+        <div style={{
+          position: "absolute", top: 0, right: 0, bottom: 0, width: "28px",
+          background: "linear-gradient(to left, rgba(0,8,18,1), transparent)",
+          pointerEvents: "none", zIndex: 3,
+        }} />
+
+        {/* BPM readout */}
+        <div style={{
+          position: "absolute", top: "9px", right: "14px",
+          color: "#00E5FF",
+          fontSize: "12px", fontWeight: 700,
+          fontFamily: "monospace",
+          letterSpacing: "0.06em",
+          animation: "img-gen-bpm-pulse 2s ease-in-out infinite",
+          zIndex: 4,
+        }}>
+          72 BPM
+        </div>
+
+        {/* Bottom status dot */}
+        <div style={{
+          position: "absolute", bottom: "10px", left: "14px",
+          display: "flex", alignItems: "center", gap: "5px",
+          zIndex: 4,
+        }}>
+          <div style={{
+            width: "5px", height: "5px", borderRadius: "50%",
+            background: "#00E5FF",
+            boxShadow: "0 0 6px 3px rgba(0,229,255,0.6)",
+            animation: "img-gen-bpm-pulse 2s ease-in-out infinite",
+          }} />
+          <span style={{ fontSize: "10px", color: "rgba(0,229,255,0.5)", fontFamily: "monospace", letterSpacing: "0.04em" }}>
+            LIVE
+          </span>
+        </div>
       </div>
 
       {/* Prompt preview */}

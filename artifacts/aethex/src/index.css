@@ -181,11 +181,11 @@
   0%   { opacity: 0; transform: translateY(6px); }
   100% { opacity: 1; transform: translateY(0); }
 }
-@keyframes img-gen-bar {
-  0%, 100% { transform: scaleY(0.18); opacity: 0.55; }
-  50%       { transform: scaleY(1);    opacity: 1;    }
+@keyframes img-gen-ecg-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-280px); }
 }
-@keyframes img-gen-glow-pulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 0.85; }
+@keyframes img-gen-bpm-pulse {
+  0%, 100% { opacity: 0.6; text-shadow: 0 0 6px #00E5FF; }
+  50%       { opacity: 1;   text-shadow: 0 0 14px #00E5FF, 0 0 24px #00BCD4; }
 }

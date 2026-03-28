@@ -554,7 +554,15 @@ export default function AiAssistant() {
         {/* Sidebar header */}
         <div className="flex items-center gap-2.5 px-4 pt-4 pb-3">
           <SynapseLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
-          <span className="font-bold text-base tracking-wide" style={{ color: "#00E5FF" }}>SYNAPSE</span>
+          <span
+            className="font-bold text-base"
+            style={{
+              fontFamily: "'Orbitron', 'Exo 2', monospace",
+              letterSpacing: "0.14em",
+              color: "#00E5FF",
+              textShadow: "0 0 12px rgba(0,229,255,0.45)",
+            }}
+          >SYNAPSE</span>
         </div>
 
         {/* New Chat button */}
@@ -756,8 +764,13 @@ export default function AiAssistant() {
                   </div>
                   <div className="text-center">
                     <h1
-                      className="font-display font-bold text-4xl tracking-tight"
-                      style={{ color: "#00E5FF", textShadow: "0 0 30px rgba(0,229,255,0.5)" }}
+                      className="font-bold text-4xl"
+                      style={{
+                        fontFamily: "'Orbitron', 'Exo 2', monospace",
+                        letterSpacing: "0.18em",
+                        color: "#00E5FF",
+                        textShadow: "0 0 24px rgba(0,229,255,0.6), 0 0 60px rgba(0,188,212,0.25)",
+                      }}
                     >
                       SYNAPSE
                     </h1>

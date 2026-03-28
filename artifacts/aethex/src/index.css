@@ -107,6 +107,11 @@
   }
 }
 
+/* ── Orbitron for SYNAPSE brand title ─────────────────────────────────────── */
+.font-orbitron {
+  font-family: 'Orbitron', 'Exo 2', monospace;
+}
+
 /* ── SYNAPSE page dark textarea placeholder ───────────────────────────────── */
 .synapse-textarea::placeholder {
   color: rgba(100, 170, 220, 0.45);
@@ -142,4 +147,8 @@
   33%  { stroke: #7C3AED; }
   66%  { stroke: #10B981; }
   100% { stroke: #00BCD4; }
+}
+@keyframes synapse-neural-pulse {
+  0%, 100% { opacity: 0.7; r: 1; }
+  50%       { opacity: 1;   r: 1.4; }
 }

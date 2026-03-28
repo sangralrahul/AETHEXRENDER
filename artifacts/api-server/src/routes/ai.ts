@@ -252,13 +252,15 @@ router.post("/ai/chat", async (req, res) => {
 
 router.post("/ai/generate-image", async (req, res) => {
   try {
-    const { prompt } = req.body;
+    const { prompt, labeled } = req.body;
     if (!prompt) {
       res.status(400).json({ error: "prompt is required" });
       return;
     }
 
-    const medicalPrompt = `Medical illustration, professional clinical style: ${prompt}. High quality, accurate, educational medical artwork.`;
+    const medicalPrompt = labeled
+      ? `Medical educational diagram of: ${prompt}. Draw a clean, professional anatomical or clinical illustration with clearly visible text labels and callout lines pointing to all key structures and components. Include a title, annotation arrows, and a legend if applicable. Style: medical textbook diagram with white background and labeled annotations.`
+      : `Medical illustration, professional clinical style: ${prompt}. High quality, accurate, educational medical artwork.`;
 
     const response = await openai.images.generate({
       model: "gpt-image-1",

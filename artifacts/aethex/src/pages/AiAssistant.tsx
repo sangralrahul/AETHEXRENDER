@@ -3,7 +3,7 @@ import {
   Send, User, Loader2, Activity, FlaskConical,
   Lock, Crown, Paperclip, Image, FileText, Camera, Search,
   ImagePlus, X, Microscope, Download, Presentation, PlayCircle,
-  Plus, PanelLeft, Settings, MessageSquare,
+  Plus, PanelLeft, Settings, MessageSquare, Tag,
 } from "lucide-react";
 import { useAiChat } from "@workspace/api-client-react";
 import { type ChatMessage, ChatMessageRole } from "@workspace/api-client-react";
@@ -109,6 +109,7 @@ interface ResearchSource {
 interface ExtendedMessage extends ChatMessage {
   imageUrl?: string;
   isImageGeneration?: boolean;
+  isImageTypeSelection?: boolean;
   presentationData?: PresentationData;
   presentationPdfBase64?: string;
   presentationDocxBase64?: string;
@@ -356,6 +357,8 @@ export default function AiAssistant() {
   const [isGeneratingPresentation, setIsGeneratingPresentation] = useState(false);
   const [presentationStage, setPresentationStage] = useState<"idle" | "waiting-slide-count">("idle");
   const [pendingPresentationPrompt, setPendingPresentationPrompt] = useState("");
+  const [imageStage, setImageStage] = useState<"idle" | "waiting-type">("idle");
+  const [pendingImagePrompt, setPendingImagePrompt] = useState("");
   const [buildingTopic, setBuildingTopic] = useState("");
   const [buildingSlideCount, setBuildingSlideCount] = useState(10);
   const [activePresentationData, setActivePresentationData] = useState<(PresentationData & { pdfBase64?: string; docxBase64?: string }) | null>(null);
@@ -430,6 +433,8 @@ export default function AiAssistant() {
   const resetPresentationState = () => {
     setPresentationStage("idle");
     setPendingPresentationPrompt("");
+    setImageStage("idle");
+    setPendingImagePrompt("");
   };
 
   const handleModelSelect = (m: Model) => {
@@ -471,25 +476,13 @@ export default function AiAssistant() {
     updateSession(sessionId, newMsgs);
 
     if (chatMode === "create-image") {
-      setIsGeneratingImage(true);
-      try {
-        const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
-        const resp = await fetch(`${apiBase}/api/ai/generate-image`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt: userMsg }),
-        });
-        const data = await resp.json();
-        if (data.imageUrl) {
-          updateSession(sessionId, [...newMsgs, {
-            role: ChatMessageRole.assistant,
-            content: `Here is your generated medical illustration for: "${userMsg}"`,
-            imageUrl: data.imageUrl, isImageGeneration: true,
-          }]);
-        } else throw new Error(data.error ?? "Generation failed");
-      } catch {
-        toast({ title: "Image generation failed", description: "Please try a different prompt.", variant: "destructive" });
-        updateSession(sessionId, currentMsgs);
-      } finally { setIsGeneratingImage(false); }
+      setPendingImagePrompt(userMsg);
+      setImageStage("waiting-type");
+      updateSession(sessionId, [...newMsgs, {
+        role: ChatMessageRole.assistant,
+        content: tr.imageTypeQuestion,
+        isImageTypeSelection: true,
+      }]);
       return;
     }
 
@@ -604,6 +597,37 @@ export default function AiAssistant() {
       updateSession(sessionId, currentMsgs);
       resetPresentationState();
     } finally { setIsGeneratingPresentation(false); }
+  };
+
+  const handleImageTypeSelect = async (labeled: boolean) => {
+    if (isGeneratingImage) return;
+    const currentMsgs = activeSession.messages;
+    const sessionId = activeSession.id;
+    const prompt = pendingImagePrompt;
+    const typeLabel = labeled ? tr.labeledDiagram : tr.simpleImage;
+    const userEntry: ExtendedMessage = { role: ChatMessageRole.user, content: typeLabel };
+    const newMsgs = [...currentMsgs, userEntry];
+    updateSession(sessionId, newMsgs);
+    setImageStage("idle");
+    setIsGeneratingImage(true);
+    try {
+      const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+      const resp = await fetch(`${apiBase}/api/ai/generate-image`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, labeled }),
+      });
+      const data = await resp.json();
+      if (data.imageUrl) {
+        updateSession(sessionId, [...newMsgs, {
+          role: ChatMessageRole.assistant,
+          content: `Here is your generated ${labeled ? "labeled diagram" : "medical illustration"} for: "${prompt}"`,
+          imageUrl: data.imageUrl, isImageGeneration: true,
+        }]);
+      } else throw new Error(data.error ?? "Generation failed");
+    } catch {
+      toast({ title: "Image generation failed", description: "Please try a different prompt.", variant: "destructive" });
+      updateSession(sessionId, currentMsgs);
+    } finally { setIsGeneratingImage(false); }
   };
 
   const removeAttachment = (id: string) => setAttachments((prev) => prev.filter((a) => a.id !== id));
@@ -1007,6 +1031,25 @@ export default function AiAssistant() {
                           </a>
                         </div>
                       )}
+                      {(msg as ExtendedMessage).isImageTypeSelection && (
+                        <div className="px-4 pb-4 pt-2">
+                          {msg.content && <div className="px-1 pb-3 text-[14px]">{msg.content}</div>}
+                          <div className="flex flex-wrap gap-3">
+                            <button type="button" onClick={() => handleImageTypeSelect(false)}
+                              disabled={isGeneratingImage}
+                              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
+                              style={{ background: "rgba(0,180,220,0.18)", border: "1px solid rgba(0,229,255,0.4)", color: "#00e5ff" }}>
+                              <ImagePlus className="w-4 h-4" /> {tr.simpleImage}
+                            </button>
+                            <button type="button" onClick={() => handleImageTypeSelect(true)}
+                              disabled={isGeneratingImage}
+                              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
+                              style={{ background: "rgba(130,0,220,0.18)", border: "1px solid rgba(168,85,247,0.5)", color: "#c084fc" }}>
+                              <Tag className="w-4 h-4" /> {tr.labeledDiagram}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                       {(msg as ExtendedMessage).slideCountOptions && (
                         <div className="px-4 pb-4 pt-2">
                           {msg.content && <div className="px-1 pb-3 text-[14px]">{msg.content}</div>}
@@ -1139,7 +1182,7 @@ export default function AiAssistant() {
                       ? <><Microscope className="w-3.5 h-3.5" /> {tr.deepResearchMode}</>
                       : chatMode === "create-presentation"
                       ? <><Presentation className="w-3.5 h-3.5" /> {presentationStage === "idle" ? tr.presentationMode : tr.selectSlideCountAbove}</>
-                      : <><ImagePlus className="w-3.5 h-3.5" /> {tr.imageMode}</>}
+                      : <><ImagePlus className="w-3.5 h-3.5" /> {imageStage === "waiting-type" ? tr.selectSlideCountAbove : tr.imageMode}</>}
                     <button type="button" onClick={() => toggleMode(chatMode)} className="ml-auto hover:opacity-70">
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -1267,7 +1310,7 @@ export default function AiAssistant() {
                       {model.name} {model.version}
                     </div>
                     <button type="submit"
-                      disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count"}
+                      disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
                       className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
                       style={{ background: "linear-gradient(135deg, #00BCD4, #0097A7)" }}>
                       <Send className="w-3.5 h-3.5 text-white" />

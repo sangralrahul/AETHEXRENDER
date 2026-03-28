@@ -232,10 +232,29 @@ function SectionGeneral({ s, set }: { s: SynapseSettings; set: (k: keyof Synapse
       <Row label="Language" desc="Interface language">
         <Select value={s.language} onChange={(v) => set("language", v)}
           options={[
-            { value: "en", label: "English" },
-            { value: "hi", label: "हिंदी (Hindi)" },
-            { value: "bn", label: "বাংলা (Bengali)" },
-            { value: "ta", label: "தமிழ் (Tamil)" },
+            { value: "en",  label: "English" },
+            { value: "hi",  label: "हिन्दी (Hindi)" },
+            { value: "as",  label: "অসমীয়া (Assamese)" },
+            { value: "bn",  label: "বাংলা (Bengali)" },
+            { value: "brx", label: "बड़ो (Bodo)" },
+            { value: "doi", label: "डोगरी (Dogri)" },
+            { value: "gu",  label: "ગુજરાતી (Gujarati)" },
+            { value: "kn",  label: "ಕನ್ನಡ (Kannada)" },
+            { value: "ks",  label: "کٲشُر (Kashmiri)" },
+            { value: "kok", label: "कोंकणी (Konkani)" },
+            { value: "mai", label: "मैथिली (Maithili)" },
+            { value: "ml",  label: "മലയാളം (Malayalam)" },
+            { value: "mni", label: "মৈতৈলোন্ (Manipuri)" },
+            { value: "mr",  label: "मराठी (Marathi)" },
+            { value: "ne",  label: "नेपाली (Nepali)" },
+            { value: "or",  label: "ଓଡ଼ିଆ (Odia)" },
+            { value: "pa",  label: "ਪੰਜਾਬੀ (Punjabi)" },
+            { value: "sa",  label: "संस्कृतम् (Sanskrit)" },
+            { value: "sat", label: "ᱥᱟᱱᱛᱟᱲᱤ (Santali)" },
+            { value: "sd",  label: "سنڌي / सिन्धी (Sindhi)" },
+            { value: "ta",  label: "தமிழ் (Tamil)" },
+            { value: "te",  label: "తెలుగు (Telugu)" },
+            { value: "ur",  label: "اردو (Urdu)" },
           ]} />
       </Row>
       <Row label="Auto-title chats" desc="Generate title from first message">

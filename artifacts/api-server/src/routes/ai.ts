@@ -200,9 +200,17 @@ Be thorough, accurate, and practically useful. Use **bold** for key terms. End e
   }
 });
 
+const LANG_NAMES: Record<string, string> = {
+  en: "English", hi: "Hindi", as: "Assamese", bn: "Bengali", brx: "Bodo",
+  doi: "Dogri", gu: "Gujarati", kn: "Kannada", ks: "Kashmiri", kok: "Konkani",
+  mai: "Maithili", ml: "Malayalam", mni: "Manipuri (Meitei)", mr: "Marathi",
+  ne: "Nepali", or: "Odia", pa: "Punjabi", sa: "Sanskrit", sat: "Santali",
+  sd: "Sindhi", ta: "Tamil", te: "Telugu", ur: "Urdu",
+};
+
 router.post("/ai/chat", async (req, res) => {
   try {
-    const { message, conversationHistory = [], agent = "synapse" } = req.body;
+    const { message, conversationHistory = [], agent = "synapse", language = "en" } = req.body;
 
     if (!message) {
       res.status(400).json({ error: "message is required" });
@@ -212,8 +220,13 @@ router.post("/ai/chat", async (req, res) => {
     const agentKey = String(agent).toLowerCase().replace(/[\s.]/g, "");
     const agentConfig = agentPrompts[agentKey] ?? agentPrompts.synapse;
 
+    const langName = LANG_NAMES[String(language)] ?? "English";
+    const langInstruction = langName !== "English"
+      ? `\n\nIMPORTANT: The user has set their language to ${langName}. You MUST respond entirely in ${langName} (${language}) for every reply. Do not switch to English unless the user explicitly writes in English.`
+      : "";
+
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-      { role: "system", content: agentConfig.systemPrompt },
+      { role: "system", content: agentConfig.systemPrompt + langInstruction },
       ...conversationHistory.map((msg: { role: string; content: string }) => ({
         role: msg.role as "user" | "assistant",
         content: msg.content,

@@ -15,6 +15,7 @@ import SynapseLogo from "@/components/synapse/SynapseLogo";
 import DNABackground from "@/components/synapse/DNABackground";
 import CameraModal from "@/components/synapse/CameraModal";
 import SettingsModal, { loadSettings, saveSettings, DEFAULT_SETTINGS, type SynapseSettings } from "@/components/synapse/SettingsModal";
+import { getTranslation } from "@/lib/translations";
 
 interface ResearchSource {
   title: string;
@@ -265,6 +266,7 @@ export default function AiAssistant() {
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   const [settings, setSettings] = useState<SynapseSettings>(loadSettings);
+  const tr = getTranslation(settings.language);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isGeneratingResearch, setIsGeneratingResearch] = useState(false);
@@ -444,7 +446,7 @@ export default function AiAssistant() {
     }
 
     chatMutation.mutate(
-      { data: { message: userMsg, conversationHistory: currentMsgs, agent: activeModel } as any },
+      { data: { message: userMsg, conversationHistory: currentMsgs, agent: activeModel, language: settings.language } as any },
       {
         onSuccess: (data) => {
           updateSession(sessionId, [...newMsgs, { role: ChatMessageRole.assistant, content: data.message }]);
@@ -600,14 +602,14 @@ export default function AiAssistant() {
             }}
           >
             <Plus className="w-4 h-4" />
-            New chat
+            {tr.newChat}
           </button>
         </div>
 
         {/* Model selector */}
         <div className="px-3 mb-1">
           <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-2" style={{ color: "rgba(0,200,255,0.35)" }}>
-            AI Agents
+            {tr.aiAgents}
           </p>
           {MODELS.map((m) => {
             const MI = m.icon;
@@ -666,9 +668,9 @@ export default function AiAssistant() {
         {/* Chat history */}
         <div className="flex-1 overflow-y-auto px-3 min-h-0">
           {[
-            { label: "Today", list: todaySessions },
-            { label: "Yesterday", list: yesterdaySessions },
-            { label: "Older", list: olderSessions },
+            { label: tr.today, list: todaySessions },
+            { label: tr.yesterday, list: yesterdaySessions },
+            { label: tr.older, list: olderSessions },
           ].map(({ label, list }) =>
             list.length > 0 ? (
               <div key={label} className="mb-2">
@@ -782,7 +784,7 @@ export default function AiAssistant() {
             style={{ color: "rgba(0,229,255,0.6)", border: "1px solid rgba(0,188,212,0.2)" }}
           >
             <Plus className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">New chat</span>
+            <span className="hidden sm:inline">{tr.newChat}</span>
           </button>
         </div>
 
@@ -979,7 +981,7 @@ export default function AiAssistant() {
                       style={{ background: "rgba(4,14,38,0.82)", border: "1px solid rgba(0,188,212,0.18)", backdropFilter: "blur(12px)" }}>
                       <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#00E5FF" }} />
                       <span className="text-sm" style={{ color: "rgba(140,200,255,0.7)" }}>
-                        {isGeneratingImage ? "Generating image..." : isGeneratingResearch ? "Researching..." : "Thinking..."}
+                        {isGeneratingImage ? "Generating image..." : isGeneratingResearch ? "Researching..." : tr.thinking}
                       </span>
                     </div>
                   </div>
@@ -1019,14 +1021,14 @@ export default function AiAssistant() {
                     <Lock className="w-4 h-4" style={{ color: "#a78bfa" }} />
                   </div>
                   <div>
-                    <p className="font-semibold text-sm" style={{ color: "rgba(200,220,255,0.9)" }}>Nova 4.6 is a Pro model</p>
-                    <p className="text-xs" style={{ color: "rgba(150,180,240,0.6)" }}>Upgrade to unlock advanced diagnostics & research</p>
+                    <p className="font-semibold text-sm" style={{ color: "rgba(200,220,255,0.9)" }}>{tr.proRequired}</p>
+                    <p className="text-xs" style={{ color: "rgba(150,180,240,0.6)" }}>{tr.proGatedMsg}</p>
                   </div>
                 </div>
                 <button onClick={() => setShowProModal(true)}
                   className="flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-all"
                   style={{ background: "linear-gradient(to right, #7c3aed, #9333ea)", color: "white" }}>
-                  <Crown className="w-4 h-4" /> Upgrade to Pro
+                  <Crown className="w-4 h-4" /> {tr.upgradePro}
                 </button>
               </div>
             ) : (
@@ -1095,7 +1097,7 @@ export default function AiAssistant() {
                       ? "Enter the topic for your presentation (e.g. Human Brain, Cardiac Anatomy)..."
                       : chatMode === "create-presentation" && presentationStage === "waiting-slide-count"
                       ? "Select the number of slides using the buttons above..."
-                      : `Message SYNAPSE · ${model.name} ${model.version}...`
+                      : `${tr.messagePlaceholder} · ${model.name} ${model.version}...`
                   }
                   rows={1}
                   className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none synapse-textarea"
@@ -1113,12 +1115,12 @@ export default function AiAssistant() {
                         className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
                         style={{ color: showAttachMenu ? "#00E5FF" : "rgba(100,180,220,0.6)" }}>
                         <Paperclip className="w-4 h-4" />
-                        <span className="hidden sm:inline">Attach</span>
+                        <span className="hidden sm:inline">{tr.attach}</span>
                       </button>
                       {showAttachMenu && (
                         <div className="absolute bottom-full left-0 mb-2 rounded-2xl shadow-xl overflow-hidden w-52 z-30"
                           style={{ background: "rgba(4,12,35,0.97)", backdropFilter: "blur(20px)", border: "1px solid rgba(0,188,212,0.3)" }}>
-                          <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(0,229,255,0.45)" }}>Attach</div>
+                          <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(0,229,255,0.45)" }}>{tr.attach}</div>
                           {[
                             { label: "Upload Image", sub: "JPG, PNG, WEBP", icon: Image, color: "rgba(30,58,138,0.7)", iconColor: "text-blue-300", action: () => imageInputRef.current?.click() },
                             { label: "Upload Document", sub: "PDF, DOCX, TXT, CSV", icon: FileText, color: "rgba(120,50,20,0.5)", iconColor: "text-orange-300", action: () => fileInputRef.current?.click() },
@@ -1147,7 +1149,7 @@ export default function AiAssistant() {
                         ? { background: "rgba(2,119,189,0.35)", color: "#4FC3F7", borderColor: "rgba(2,119,189,0.55)" }
                         : { color: "rgba(100,180,220,0.6)", borderColor: "transparent" }}>
                       <Search className="w-4 h-4" />
-                      <span className="hidden sm:inline">Deep Research</span>
+                      <span className="hidden sm:inline">{tr.deepResearch}</span>
                     </button>
 
                     {/* Create Image */}
@@ -1157,7 +1159,7 @@ export default function AiAssistant() {
                         ? { background: "rgba(100,50,180,0.35)", color: "#CE93D8", borderColor: "rgba(100,50,180,0.55)" }
                         : { color: "rgba(100,180,220,0.6)", borderColor: "transparent" }}>
                       <ImagePlus className="w-4 h-4" />
-                      <span className="hidden sm:inline">Create Image</span>
+                      <span className="hidden sm:inline">{tr.createImage}</span>
                     </button>
 
                     {/* Create Presentation */}
@@ -1167,7 +1169,7 @@ export default function AiAssistant() {
                         ? { background: "rgba(180,100,0,0.3)", color: "#FFD54F", borderColor: "rgba(180,100,0,0.5)" }
                         : { color: "rgba(100,180,220,0.6)", borderColor: "transparent" }}>
                       <Presentation className="w-4 h-4" />
-                      <span className="hidden sm:inline">Presentation</span>
+                      <span className="hidden sm:inline">{tr.presentation}</span>
                     </button>
                   </div>
 
@@ -1190,7 +1192,7 @@ export default function AiAssistant() {
             )}
 
             <p className="text-center text-[11px] mt-2" style={{ color: "rgba(100,160,220,0.4)" }}>
-              SYNAPSE can make mistakes. Verify important medical information with a qualified professional.
+              {tr.disclaimer}
             </p>
           </div>
         </div>
@@ -1230,7 +1232,7 @@ export default function AiAssistant() {
             </ul>
             <button className="w-full font-bold py-4 rounded-2xl transition-all shadow-lg mb-3 flex items-center justify-center gap-2 text-base"
               style={{ background: "linear-gradient(to right, #7c3aed, #9333ea)", color: "white" }}>
-              <Crown className="w-5 h-5" /> Upgrade to Pro
+              <Crown className="w-5 h-5" /> {tr.upgradePro}
             </button>
             <button onClick={() => setShowProModal(false)} className="text-sm" style={{ color: "rgba(150,180,240,0.5)" }}>
               Maybe later

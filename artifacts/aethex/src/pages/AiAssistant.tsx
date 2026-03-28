@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import PresentationViewer, { type PresentationData } from "@/components/synapse/PresentationViewer";
+import SynapseLogo from "@/components/synapse/SynapseLogo";
 
 interface ResearchSource {
   title: string;
@@ -571,8 +572,8 @@ export default function AiAssistant() {
         {!hasMessages && (
           <div className="flex flex-col items-center justify-center flex-1 gap-5 pb-4">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-xl ring-4 ring-white">
-                <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="SYNAPSE" className="w-full h-full object-cover" />
+              <div className="shadow-xl ring-4 ring-white rounded-full">
+                <SynapseLogo size="lg" thinking={false} baseUrl={import.meta.env.BASE_URL} />
               </div>
               <div className="text-center">
                 <h1 className="font-display font-bold text-3xl text-foreground tracking-tight">SYNAPSE</h1>
@@ -613,7 +614,7 @@ export default function AiAssistant() {
                   msg.role === ChatMessageRole.user ? "bg-slate-200" : "ring-2 ring-white shadow-sm")}>
                   {msg.role === ChatMessageRole.user
                     ? <User className="w-4 h-4 text-slate-600" />
-                    : <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />}
+                    : <SynapseLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />}
                 </div>
                 <div className={cn("rounded-2xl shadow-sm overflow-hidden",
                   msg.role === ChatMessageRole.user
@@ -714,8 +715,8 @@ export default function AiAssistant() {
 
             {(chatMutation.isPending || isGeneratingImage) && (
               <div className="flex gap-3 max-w-[92%] self-start">
-                <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm shrink-0 mt-1">
-                  <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />
+                <div className="shrink-0 mt-1">
+                  <SynapseLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                 </div>
                 <div className="px-5 py-4 rounded-2xl bg-white border border-slate-100 rounded-tl-sm flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin text-primary" />
@@ -730,8 +731,8 @@ export default function AiAssistant() {
 
             {isGeneratingResearch && (
               <div className="flex gap-3 max-w-[96%] self-start w-full">
-                <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm shrink-0 mt-1">
-                  <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />
+                <div className="shrink-0 mt-1">
+                  <SynapseLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                 </div>
                 <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-sm p-4">
                   <div className="flex items-center gap-2 mb-3">
@@ -752,8 +753,8 @@ export default function AiAssistant() {
 
             {isGeneratingPresentation && (
               <div className="flex gap-3 max-w-[95%] self-start w-full">
-                <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm shrink-0 mt-1">
-                  <img src={`${import.meta.env.BASE_URL}synapse-logo.jpg`} alt="" className="w-full h-full object-cover" />
+                <div className="shrink-0 mt-1">
+                  <SynapseLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                 </div>
                 <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden bg-white border border-slate-100 shadow-sm">
                   <div className="px-4 pt-3 pb-2 text-xs text-slate-500 font-medium flex items-center gap-2">

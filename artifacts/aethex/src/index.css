@@ -106,3 +106,35 @@
     @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10;
   }
 }
+
+/* ── SYNAPSE Animated Logo keyframes ─────────────────────────────────────── */
+@keyframes synapse-orbit-cw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes synapse-orbit-ccw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes synapse-pulse-glow {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%       { opacity: 1;    transform: scale(1.06); }
+}
+@keyframes synapse-breathe {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+@keyframes synapse-glow-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,188,212,0); }
+  50%       { box-shadow: 0 0 18px 6px rgba(0,188,212,0.35); }
+}
+@keyframes synapse-dash {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -502; }
+}
+@keyframes synapse-color-shift {
+  0%   { stroke: #00BCD4; }
+  33%  { stroke: #7C3AED; }
+  66%  { stroke: #10B981; }
+  100% { stroke: #00BCD4; }
+}

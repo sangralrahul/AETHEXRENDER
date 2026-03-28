@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
-  X, Settings, Palette, Brain, Shield, Info, ChevronRight,
-  Moon, Sun, Monitor, Type, Clock, MessageSquare, Zap, Database,
-  Download, Trash2, Activity, CheckCircle, Lock,
-  Globe, BellRing, Volume2, RotateCcw,
+  X, Settings, Monitor, Brain, MessageSquare, User, Info,
+  Moon, Sun, ChevronDown, ChevronUp, ChevronRight,
+  Download, Upload, Archive, Trash2, Lock,
+  UserCheck, Pencil, Key, Cookie,
+  Activity, CheckCircle, Zap, RotateCcw, Volume2,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { getTranslation } from "@/lib/translations";
 
 /* ── Types ──────────────────────────────────────────────────────────────── */
@@ -23,6 +23,10 @@ export interface SynapseSettings {
   soundEnabled: boolean;
   notificationsEnabled: boolean;
   language: string;
+  autoCopyResponse: boolean;
+  pasteLargeTextAsFile: boolean;
+  referenceSavedMemories: boolean;
+  referenceChatHistory: boolean;
 }
 
 export const DEFAULT_SETTINGS: SynapseSettings = {
@@ -39,6 +43,10 @@ export const DEFAULT_SETTINGS: SynapseSettings = {
   soundEnabled: false,
   notificationsEnabled: false,
   language: "en",
+  autoCopyResponse: false,
+  pasteLargeTextAsFile: true,
+  referenceSavedMemories: true,
+  referenceChatHistory: true,
 };
 
 const LS_KEY = "synapse-settings-v1";
@@ -63,20 +71,9 @@ interface SettingsModalProps {
   onClose: () => void;
 }
 
-type SectionId = "general" | "appearance" | "ai" | "data" | "about";
+type SectionId = "general" | "interface" | "models" | "chats" | "personalization" | "account" | "about";
 
-type NavItem = { id: SectionId; label: string; icon: React.ElementType; badge?: string };
-function buildNav(tr: ReturnType<typeof getTranslation>): NavItem[] {
-  return [
-    { id: "general",    label: tr.sectionGeneral,    icon: Settings },
-    { id: "appearance", label: tr.sectionAppearance, icon: Palette },
-    { id: "ai",         label: tr.sectionAI,         icon: Brain },
-    { id: "data",       label: tr.sectionData,       icon: Shield },
-    { id: "about",      label: tr.sectionAbout,      icon: Info },
-  ];
-}
-
-/* ── Sub-components ─────────────────────────────────────────────────────── */
+/* ── Shared sub-components ──────────────────────────────────────────────── */
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -105,80 +102,24 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
   );
 }
 
-function Row({
-  label, desc, children,
-}: { label: string; desc?: string; children: React.ReactNode }) {
+function Row({ label, desc, children, last }: { label: string; desc?: string; children: React.ReactNode; last?: boolean }) {
   return (
     <div className="flex items-center justify-between gap-4 py-3.5"
-      style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+      style={{ borderBottom: last ? "none" : "1px solid rgba(255,255,255,0.05)" }}>
       <div className="min-w-0">
         <p className="text-sm font-medium" style={{ color: "rgba(200,230,255,0.9)" }}>{label}</p>
-        {desc && <p className="text-xs mt-0.5" style={{ color: "rgba(120,170,220,0.5)" }}>{desc}</p>}
+        {desc && <p className="text-xs mt-0.5" style={{ color: "rgba(120,170,220,0.45)" }}>{desc}</p>}
       </div>
       <div className="shrink-0">{children}</div>
     </div>
   );
 }
 
-function Select<T extends string>({
-  value, options, onChange,
-}: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void }) {
+function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value as T)}
-      className="text-sm px-3 py-1.5 rounded-lg outline-none cursor-pointer"
-      style={{
-        background: "rgba(0,188,212,0.08)",
-        border: "1px solid rgba(0,188,212,0.2)",
-        color: "rgba(180,225,255,0.9)",
-        minWidth: 120,
-      }}
-    >
-      {options.map((o) => (
-        <option key={o.value} value={o.value} style={{ background: "#071030" }}>{o.label}</option>
-      ))}
-    </select>
-  );
-}
-
-function RadioGroup<T extends string>({
-  value, options, onChange,
-}: { value: T; options: { value: T; label: string; desc?: string }[]; onChange: (v: T) => void }) {
-  return (
-    <div className="flex flex-col gap-2 w-full">
-      {options.map((o) => (
-        <button
-          key={o.value}
-          type="button"
-          onClick={() => onChange(o.value)}
-          className="flex items-start gap-3 px-3 py-2.5 rounded-xl text-left transition-all"
-          style={
-            value === o.value
-              ? { background: "rgba(0,188,212,0.12)", border: "1px solid rgba(0,229,255,0.3)" }
-              : { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }
-          }
-        >
-          <div
-            className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center"
-            style={{
-              border: value === o.value ? "2px solid #00E5FF" : "2px solid rgba(100,150,200,0.4)",
-              background: value === o.value ? "rgba(0,229,255,0.15)" : "transparent",
-            }}
-          >
-            {value === o.value && (
-              <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#00E5FF" }} />
-            )}
-          </div>
-          <div>
-            <p className="text-sm font-medium" style={{ color: value === o.value ? "rgba(200,240,255,0.95)" : "rgba(140,185,230,0.7)" }}>
-              {o.label}
-            </p>
-            {o.desc && <p className="text-xs mt-0.5" style={{ color: "rgba(100,150,200,0.5)" }}>{o.desc}</p>}
-          </div>
-        </button>
-      ))}
-    </div>
+    <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "rgba(0,200,255,0.4)" }}>
+      {children}
+    </p>
   );
 }
 
@@ -208,35 +149,48 @@ function DangerButton({ label, desc, icon: Icon, onClick }: {
   );
 }
 
-function ActionButton({ label, desc, icon: Icon, onClick }: {
-  label: string; desc?: string; icon: React.ElementType; onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left"
-      style={{ background: "rgba(0,188,212,0.07)", border: "1px solid rgba(0,188,212,0.15)" }}
-    >
-      <Icon className="w-4 h-4 shrink-0" style={{ color: "#00BCD4" }} />
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium" style={{ color: "rgba(180,225,255,0.9)" }}>{label}</p>
-        {desc && <p className="text-xs mt-0.5" style={{ color: "rgba(100,160,210,0.5)" }}>{desc}</p>}
-      </div>
-      <ChevronRight className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(0,200,255,0.3)" }} />
-    </button>
-  );
-}
-
-/* ── Sections ───────────────────────────────────────────────────────────── */
-
+/* ── Section: General ───────────────────────────────────────────────────── */
 function SectionGeneral({ s, set, tr }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void; tr: ReturnType<typeof getTranslation> }) {
   return (
-    <div className="space-y-1">
-      <Row label={tr.languageLabel} desc={tr.languageDesc}>
-        <Select value={s.language} onChange={(v) => set("language", v)}
-          options={[
-            { value: "en",  label: "English" },
+    <div className="space-y-6">
+      {/* Theme */}
+      <Row label="Theme">
+        <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid rgba(0,188,212,0.2)", background: "rgba(0,10,30,0.5)" }}>
+          {([
+            { value: "auto",  label: "System" },
+            { value: "light", label: "Light" },
+            { value: "dark",  label: "Dark" },
+          ] as const).map((t) => (
+            <button
+              key={t.value}
+              type="button"
+              onClick={() => set("theme", t.value)}
+              className="px-3 py-1.5 text-xs font-medium transition-all"
+              style={s.theme === t.value
+                ? { background: "rgba(0,188,212,0.25)", color: "#00E5FF" }
+                : { color: "rgba(120,170,220,0.55)" }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </Row>
+
+      {/* Language */}
+      <Row label="Language">
+        <select
+          value={s.language}
+          onChange={(e) => set("language", e.target.value)}
+          className="text-sm px-3 py-1.5 rounded-lg outline-none cursor-pointer"
+          style={{
+            background: "rgba(0,188,212,0.08)",
+            border: "1px solid rgba(0,188,212,0.2)",
+            color: "rgba(180,225,255,0.9)",
+            minWidth: 140,
+          }}
+        >
+          {[
+            { value: "en",  label: "English (US)" },
             { value: "hi",  label: "हिन्दी (Hindi)" },
             { value: "as",  label: "অসমীয়া (Assamese)" },
             { value: "bn",  label: "বাংলা (Bengali)" },
@@ -259,157 +213,330 @@ function SectionGeneral({ s, set, tr }: { s: SynapseSettings; set: (k: keyof Syn
             { value: "ta",  label: "தமிழ் (Tamil)" },
             { value: "te",  label: "తెలుగు (Telugu)" },
             { value: "ur",  label: "اردو (Urdu)" },
-          ]} />
+          ].map((o) => (
+            <option key={o.value} value={o.value} style={{ background: "#071030" }}>{o.label}</option>
+          ))}
+        </select>
       </Row>
-      <Row label="Auto-title chats" desc="Generate title from first message">
-        <Toggle checked={s.autoTitleChats} onChange={(v) => set("autoTitleChats", v)} />
-      </Row>
-      <Row label="Show thinking animation" desc="Animated loader while AI is thinking">
-        <Toggle checked={s.showThinking} onChange={(v) => set("showThinking", v)} />
-      </Row>
-      <Row label="Streaming responses" desc="Show response as it generates">
-        <Toggle checked={s.streamResponses} onChange={(v) => set("streamResponses", v)} />
-      </Row>
-      <Row label="Show timestamps" desc="Display time on each message">
-        <Toggle checked={s.showTimestamps} onChange={(v) => set("showTimestamps", v)} />
-      </Row>
-      <Row label="Sound effects" desc="Play subtle sounds for actions">
-        <Toggle checked={s.soundEnabled} onChange={(v) => set("soundEnabled", v)} />
-      </Row>
+
+      {/* Voice */}
+      <button
+        type="button"
+        className="w-full flex items-center gap-3 py-3.5"
+        style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+      >
+        <Volume2 className="w-4 h-4 shrink-0" style={{ color: "rgba(0,188,212,0.6)" }} />
+        <span className="flex-1 text-sm text-left" style={{ color: "rgba(200,230,255,0.9)" }}>Voice</span>
+        <ChevronRight className="w-4 h-4" style={{ color: "rgba(120,170,220,0.35)" }} />
+      </button>
     </div>
   );
 }
 
-function SectionAppearance({ s, set }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void }) {
+/* ── Section: Interface ─────────────────────────────────────────────────── */
+function SectionInterface({ s, set }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void }) {
   return (
-    <div className="space-y-4">
+    <div>
+      <SectionTitle>Chat</SectionTitle>
       <div>
-        <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "rgba(0,200,255,0.4)" }}>Theme</p>
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { value: "dark",  label: "Dark",   icon: Moon,    desc: "SYNAPSE dark" },
-            { value: "light", label: "Light",  icon: Sun,     desc: "Clean & bright" },
-            { value: "auto",  label: "System", icon: Monitor, desc: "Match device" },
-          ].map((t) => (
-            <button key={t.value} type="button" onClick={() => set("theme", t.value)}
-              className="flex flex-col items-center gap-2 px-4 py-3 rounded-xl transition-all"
-              style={s.theme === t.value
-                ? { background: "rgba(0,188,212,0.15)", border: "1px solid rgba(0,229,255,0.4)" }
-                : { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-              <t.icon className="w-5 h-5" style={{ color: s.theme === t.value ? "#00E5FF" : "rgba(120,170,220,0.5)" }} />
-              <div>
-                <p className="text-sm font-medium" style={{ color: s.theme === t.value ? "rgba(200,240,255,0.95)" : "rgba(120,170,220,0.6)" }}>{t.label}</p>
-                <p className="text-[10px]" style={{ color: "rgba(100,150,200,0.45)" }}>{t.desc}</p>
-              </div>
-            </button>
-          ))}
-        </div>
+        <Row label="Title Auto-Generation" desc="Generate chat title from first message">
+          <Toggle checked={s.autoTitleChats} onChange={(v) => set("autoTitleChats", v)} />
+        </Row>
+        <Row label="Auto-Copy Response to Clipboard" desc="Automatically copy each reply">
+          <Toggle checked={s.autoCopyResponse} onChange={(v) => set("autoCopyResponse", v)} />
+        </Row>
+        <Row label="Paste Large Text as File" desc="Treat pastes over 2 KB as file attachments" last>
+          <Toggle checked={s.pasteLargeTextAsFile} onChange={(v) => set("pasteLargeTextAsFile", v)} />
+        </Row>
       </div>
 
-      <div>
-        <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "rgba(0,200,255,0.4)" }}>Font Size</p>
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { value: "sm", label: "Small",  sample: "Aa" },
-            { value: "md", label: "Medium", sample: "Aa" },
-            { value: "lg", label: "Large",  sample: "Aa" },
-          ].map((f) => (
-            <button key={f.value} type="button" onClick={() => set("fontSize", f.value)}
-              className="flex flex-col items-center gap-1.5 py-3 rounded-xl transition-all"
-              style={s.fontSize === f.value
-                ? { background: "rgba(0,188,212,0.15)", border: "1px solid rgba(0,229,255,0.35)" }
-                : { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <span style={{
-                fontSize: f.value === "sm" ? 14 : f.value === "md" ? 18 : 24,
-                color: s.fontSize === f.value ? "#00E5FF" : "rgba(120,170,220,0.55)",
-                fontWeight: 600,
-              }}>{f.sample}</span>
-              <span className="text-[10px]" style={{ color: s.fontSize === f.value ? "rgba(180,225,255,0.8)" : "rgba(100,150,200,0.5)" }}>
-                {f.label}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 12 }}>
+      <div className="mt-6">
+        <SectionTitle>Display</SectionTitle>
+        <Row label="Show timestamps" desc="Display time on each message">
+          <Toggle checked={s.showTimestamps} onChange={(v) => set("showTimestamps", v)} />
+        </Row>
         <Row label="Compact mode" desc="Reduce spacing between messages">
           <Toggle checked={s.compactMode} onChange={(v) => set("compactMode", v)} />
         </Row>
-      </div>
-    </div>
-  );
-}
-
-function SectionAI({ s, set }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void }) {
-  return (
-    <div className="space-y-5">
-      <div>
-        <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "rgba(0,200,255,0.4)" }}>Default Model</p>
-        <RadioGroup value={s.defaultModel} onChange={(v) => set("defaultModel", v)}
-          options={[
-            { value: "pulse45", label: "Pulse 4.5", desc: "Vitals · Emergency · Critical Care" },
-            { value: "flux36",  label: "Flux 3.6",  desc: "Pharmacology · Drug Interactions · Labs" },
-            { value: "nova46",  label: "Nova 4.6 PRO", desc: "Advanced Diagnostics · Research · Multimodal" },
-          ]} />
-      </div>
-
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 8 }}>
-        <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "rgba(0,200,255,0.4)" }}>Response Style</p>
-        <RadioGroup value={s.responseStyle} onChange={(v) => set("responseStyle", v)}
-          options={[
-            { value: "concise",  label: "Concise",  desc: "Short, direct answers" },
-            { value: "balanced", label: "Balanced", desc: "Thorough but not overwhelming" },
-            { value: "detailed", label: "Detailed", desc: "Comprehensive with full context" },
-          ]} />
-      </div>
-
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 8 }}>
-        <Row label="Deep Research sources" desc="Number of web sources to pull">
-          <Select value={String(s.researchSources) as any}
-            onChange={(v) => set("researchSources", Number(v))}
-            options={[
-              { value: "5",  label: "5 sources" },
-              { value: "10", label: "10 sources" },
-              { value: "15", label: "15 sources" },
-            ]} />
+        <Row label="Sound effects" desc="Play subtle sounds for actions" last>
+          <Toggle checked={s.soundEnabled} onChange={(v) => set("soundEnabled", v)} />
         </Row>
       </div>
     </div>
   );
 }
 
-function SectionData({
-  onClearAll, onClearCurrent, onExport, onClose,
-}: { onClearAll: () => void; onClearCurrent: () => void; onExport: () => void; onClose: () => void }) {
-  return (
-    <div className="space-y-3">
-      <ActionButton label="Export chat history" desc="Download all chats as JSON"
-        icon={Download} onClick={onExport} />
+/* ── Section: Models ────────────────────────────────────────────────────── */
+const MODEL_DATA = [
+  {
+    id: "pulse45" as const,
+    name: "Pulse 4.5",
+    color: "#10B981",
+    desc: "Vitals, Emergency & Critical Care. Optimised for fast, accurate clinical triage.",
+    context: "512,000 tokens",
+    summary: "8,192 tokens",
+    modality: "text, image",
+  },
+  {
+    id: "flux36" as const,
+    name: "Flux 3.6",
+    color: "#F59E0B",
+    desc: "Pharmacology, Drug Interactions & Lab Analysis. Deep biomedical knowledge base.",
+    context: "256,000 tokens",
+    summary: "4,096 tokens",
+    modality: "text",
+  },
+  {
+    id: "nova46" as const,
+    name: "Nova 4.6 PRO",
+    color: "#A855F7",
+    desc: "Advanced Diagnostics, Research & Multimodal. State-of-the-art reasoning for complex cases.",
+    context: "1,000,000 tokens",
+    summary: "65,536 tokens",
+    modality: "text, image, video",
+  },
+];
 
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 12 }}>
-        <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "rgba(248,113,113,0.5)" }}>
-          Danger Zone
-        </p>
-        <div className="space-y-2">
-          <DangerButton label="Clear current chat" desc="Remove messages from active session"
-            icon={RotateCcw} onClick={onClearCurrent} />
-          <DangerButton label="Clear all chats" desc="Permanently delete all conversation history"
-            icon={Trash2} onClick={onClearAll} />
-          <DangerButton label="Delete account" desc="This action cannot be undone"
-            icon={Lock} onClick={() => {}} />
+function SectionModels({ s, set }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void }) {
+  const [expanded, setExpanded] = useState<string | null>(s.defaultModel);
+  return (
+    <div className="space-y-2">
+      {MODEL_DATA.map((m) => {
+        const isOpen = expanded === m.id;
+        const isSelected = s.defaultModel === m.id;
+        return (
+          <div key={m.id} className="rounded-xl overflow-hidden" style={{
+            border: isSelected ? `1px solid ${m.color}44` : "1px solid rgba(255,255,255,0.07)",
+            background: isSelected ? `${m.color}08` : "rgba(255,255,255,0.02)",
+          }}>
+            <button
+              type="button"
+              className="w-full flex items-center gap-3 px-4 py-3 text-left"
+              onClick={() => { set("defaultModel", m.id); setExpanded(isOpen ? null : m.id); }}
+            >
+              <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: m.color, boxShadow: `0 0 8px ${m.color}80` }} />
+              <span className="flex-1 text-sm font-medium" style={{ color: isSelected ? "rgba(210,240,255,0.95)" : "rgba(160,205,245,0.7)" }}>
+                {m.name}
+              </span>
+              {isSelected && <CheckCircle className="w-3.5 h-3.5 shrink-0" style={{ color: m.color }} />}
+              {isOpen
+                ? <ChevronUp className="w-4 h-4 shrink-0" style={{ color: "rgba(120,170,220,0.4)" }} />
+                : <ChevronDown className="w-4 h-4 shrink-0" style={{ color: "rgba(120,170,220,0.4)" }} />}
+            </button>
+            {isOpen && (
+              <div className="px-4 pb-4 space-y-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                <p className="text-xs mt-3 leading-relaxed" style={{ color: "rgba(130,180,230,0.6)" }}>{m.desc}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="rounded-lg px-3 py-2.5" style={{ background: "rgba(0,10,30,0.5)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: "rgba(0,200,255,0.35)" }}>Max context length</p>
+                    <p className="text-sm font-semibold" style={{ color: "rgba(200,235,255,0.9)" }}>{m.context}</p>
+                  </div>
+                  <div className="rounded-lg px-3 py-2.5" style={{ background: "rgba(0,10,30,0.5)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: "rgba(0,200,255,0.35)" }}>Max summary length</p>
+                    <p className="text-sm font-semibold" style={{ color: "rgba(200,235,255,0.9)" }}>{m.summary}</p>
+                  </div>
+                </div>
+                <div className="rounded-lg px-3 py-2.5" style={{ background: "rgba(0,10,30,0.5)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: "rgba(0,200,255,0.35)" }}>Modality</p>
+                  <p className="text-sm font-semibold" style={{ color: "rgba(200,235,255,0.9)" }}>{m.modality}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ── Section: Chats ─────────────────────────────────────────────────────── */
+function SectionChatsClean({ onClearAll, onClearCurrent, onExport, onClose }: {
+  onClearAll: () => void; onClearCurrent: () => void; onExport: () => void; onClose: () => void;
+}) {
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+
+  const rows: { label: string; icon: React.ElementType; right: React.ReactNode }[] = [
+    {
+      label: "Import Chats",
+      icon: Upload,
+      right: <span className="text-sm" style={{ color: "rgba(120,170,220,0.6)" }}>Import Chats</span>,
+    },
+    {
+      label: "Export Chats",
+      icon: Download,
+      right: (
+        <button type="button" onClick={() => { onExport(); onClose(); }}
+          className="text-sm" style={{ color: "rgba(120,170,220,0.6)" }}>
+          Export Chats
+        </button>
+      ),
+    },
+    {
+      label: "Archive All Chats",
+      icon: Archive,
+      right: <span className="text-sm" style={{ color: "rgba(120,170,220,0.6)" }}>Archive All Chats</span>,
+    },
+    {
+      label: "Delete All Chats",
+      icon: Trash2,
+      right: deleteConfirm ? (
+        <button type="button" onClick={() => { onClearAll(); setDeleteConfirm(false); onClose(); }}
+          className="text-xs font-bold px-2 py-1 rounded-lg"
+          style={{ background: "rgba(239,68,68,0.15)", color: "#F87171", border: "1px solid rgba(248,113,113,0.3)" }}>
+          Confirm
+        </button>
+      ) : (
+        <button type="button" onClick={() => setDeleteConfirm(true)}
+          className="text-sm px-2 py-1 rounded-lg"
+          style={{ background: "rgba(239,68,68,0.1)", color: "#F87171", border: "1px solid rgba(248,113,113,0.25)" }}>
+          Delete Chat
+        </button>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      {rows.map((r, i) => {
+        const Icon = r.icon;
+        const isLast = i === rows.length - 1;
+        const isDanger = r.label === "Delete All Chats";
+        return (
+          <div key={r.label} className="flex items-center gap-3 py-3.5"
+            style={{ borderBottom: isLast ? "none" : "1px solid rgba(255,255,255,0.05)" }}>
+            <Icon className="w-4 h-4 shrink-0" style={{ color: isDanger ? "#F87171" : "rgba(0,188,212,0.6)" }} />
+            <span className="flex-1 text-sm" style={{ color: isDanger ? "rgba(248,180,180,0.85)" : "rgba(200,230,255,0.85)" }}>
+              {r.label}
+            </span>
+            {r.right}
+          </div>
+        );
+      })}
+
+      <div className="mt-6 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <SectionTitle>Current Session</SectionTitle>
+        <DangerButton label="Clear current chat" desc="Remove messages from active session"
+          icon={RotateCcw} onClick={onClearCurrent} />
+      </div>
+    </div>
+  );
+}
+
+/* ── Section: Personalization ───────────────────────────────────────────── */
+function SectionPersonalization({ s, set }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void }) {
+  return (
+    <div className="space-y-6">
+      {/* Memory */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <SectionTitle>Memory</SectionTitle>
+          <button type="button" className="flex items-center gap-1.5 text-xs" style={{ color: "rgba(0,200,255,0.5)" }}>
+            <Archive className="w-3 h-3" />
+            Manage
+          </button>
+        </div>
+        <Row label="Reference saved memories" desc="Synapse will save and reference memories when generating replies">
+          <Toggle checked={s.referenceSavedMemories} onChange={(v) => set("referenceSavedMemories", v)} />
+        </Row>
+        <Row label="Reference the chat history" desc="Synapse will reference saved memory when generating responses" last>
+          <Toggle checked={s.referenceChatHistory} onChange={(v) => set("referenceChatHistory", v)} />
+        </Row>
+      </div>
+
+      {/* Customize */}
+      <div className="pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <SectionTitle>Customize Synapse</SectionTitle>
+        <button type="button" className="w-full flex items-center gap-3 py-3.5"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+          <Pencil className="w-4 h-4 shrink-0" style={{ color: "rgba(0,188,212,0.6)" }} />
+          <span className="flex-1 text-sm text-left" style={{ color: "rgba(200,230,255,0.85)" }}>Customize Synapse</span>
+          <div className="flex items-center gap-1.5 text-xs" style={{ color: "rgba(0,200,255,0.5)" }}>
+            <Archive className="w-3 h-3" />
+            Settings
+          </div>
+        </button>
+      </div>
+
+      {/* Cookies */}
+      <div>
+        <SectionTitle>Manage Cookies</SectionTitle>
+        <button type="button" className="w-full flex items-center gap-3 py-3.5">
+          <Cookie className="w-4 h-4 shrink-0" style={{ color: "rgba(0,188,212,0.6)" }} />
+          <span className="flex-1 text-sm text-left" style={{ color: "rgba(200,230,255,0.85)" }}>Manage Cookies</span>
+          <div className="flex items-center gap-1.5 text-xs" style={{ color: "rgba(0,200,255,0.5)" }}>
+            <Archive className="w-3 h-3" />
+            Manage
+          </div>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ── Section: Account ───────────────────────────────────────────────────── */
+function SectionAccount() {
+  return (
+    <div className="space-y-5">
+      {/* Profile card */}
+      <div className="flex items-center gap-4 px-4 py-4 rounded-xl"
+        style={{ background: "rgba(0,188,212,0.05)", border: "1px solid rgba(0,188,212,0.12)" }}>
+        <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+          style={{ background: "linear-gradient(135deg, #00BCD4, #7C3AED)", boxShadow: "0 0 16px rgba(0,188,212,0.3)" }}>
+          <User className="w-6 h-6 text-white" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-sm" style={{ color: "rgba(210,240,255,0.95)" }}>Synapse User</p>
+          <p className="text-xs mt-0.5" style={{ color: "rgba(120,170,220,0.5)" }}>user@aethex.in</p>
+        </div>
+        <button type="button" className="text-sm px-3 py-1.5 rounded-lg"
+          style={{ color: "rgba(0,200,255,0.7)", border: "1px solid rgba(0,188,212,0.2)" }}>
+          Edit account
+        </button>
+      </div>
+
+      {/* Password */}
+      <div style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+        <div className="flex items-center gap-3 py-3.5">
+          <Key className="w-4 h-4 shrink-0" style={{ color: "rgba(0,188,212,0.6)" }} />
+          <span className="flex-1 text-sm" style={{ color: "rgba(200,230,255,0.85)" }}>Password management</span>
+          <button type="button" className="text-sm" style={{ color: "rgba(120,170,220,0.55)" }}>
+            Change password
+          </button>
+        </div>
+      </div>
+
+      {/* Account management */}
+      <div>
+        <div className="flex items-center gap-3 py-3.5">
+          <Lock className="w-4 h-4 shrink-0 text-red-400" />
+          <span className="flex-1 text-sm" style={{ color: "rgba(200,230,255,0.85)" }}>Account Management</span>
+          <AccountDeleteButton />
         </div>
       </div>
     </div>
   );
 }
 
+function AccountDeleteButton() {
+  const [confirming, setConfirming] = useState(false);
+  return confirming ? (
+    <button type="button"
+      onBlur={() => setTimeout(() => setConfirming(false), 300)}
+      className="text-xs font-bold px-2 py-1 rounded-lg"
+      style={{ background: "rgba(239,68,68,0.15)", color: "#F87171", border: "1px solid rgba(248,113,113,0.3)" }}>
+      Confirm?
+    </button>
+  ) : (
+    <button type="button" onClick={() => setConfirming(true)}
+      className="text-sm px-2 py-1 rounded-lg"
+      style={{ background: "rgba(239,68,68,0.1)", color: "#F87171", border: "1px solid rgba(248,113,113,0.25)" }}>
+      Delete Account
+    </button>
+  );
+}
+
+/* ── Section: About ─────────────────────────────────────────────────────── */
 function SectionAbout() {
-  const models = [
-    { name: "Pulse 4.5",    color: "#10B981", desc: "Emergency & Critical Care" },
-    { name: "Flux 3.6",     color: "#F59E0B", desc: "Pharmacology & Lab Analysis" },
-    { name: "Nova 4.6 PRO", color: "#A855F7", desc: "Advanced Diagnostics & Research" },
-  ];
   return (
     <div className="space-y-5">
       {/* Version card */}
@@ -425,29 +552,25 @@ function SectionAbout() {
           </div>
         </div>
         <p className="text-xs leading-relaxed" style={{ color: "rgba(120,175,220,0.6)" }}>
-          A product of nexrya technologies pvt ltd. Designed for Indian doctors and medical students. All medical information should be verified with qualified professionals.
+          Synapse is dedicated to pursuing next-generation medical AI, focused on building specialist models for Indian doctors and medical students. Our mission is to create safe, responsible, and intelligent tools that make quality clinical decision support accessible to every healthcare professional.
         </p>
       </div>
 
-      {/* Models */}
-      <div>
-        <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "rgba(0,200,255,0.4)" }}>Available Models</p>
-        <div className="space-y-2">
-          {models.map((m) => (
-            <div key={m.name} className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-              <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: m.color, boxShadow: `0 0 8px ${m.color}80` }} />
-              <div className="flex-1">
-                <p className="text-sm font-medium" style={{ color: "rgba(180,225,255,0.85)" }}>{m.name}</p>
-                <p className="text-xs" style={{ color: "rgba(100,155,210,0.5)" }}>{m.desc}</p>
-              </div>
-              <CheckCircle className="w-3.5 h-3.5" style={{ color: m.color + "99" }} />
-            </div>
-          ))}
-        </div>
+      {/* About section */}
+      <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
+        <p className="text-sm font-semibold mb-2" style={{ color: "rgba(200,235,255,0.9)" }}>About</p>
+        <p className="text-xs leading-relaxed" style={{ color: "rgba(120,170,220,0.55)" }}>
+          A product of nexrya technologies pvt ltd. Synapse provides AI-powered clinical assistance including diagnostic support, drug interaction checking, and medical image generation. All outputs must be verified by qualified medical professionals before clinical use.
+        </p>
       </div>
 
-      {/* System status */}
+      {/* Feedback */}
+      <div>
+        <p className="text-xs font-semibold mb-1" style={{ color: "rgba(180,215,255,0.7)" }}>Feedback email</p>
+        <p className="text-xs" style={{ color: "rgba(0,200,255,0.55)" }}>support@nexrya.in</p>
+      </div>
+
+      {/* Status */}
       <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
         style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)" }}>
         <Activity className="w-4 h-4 text-emerald-400" />
@@ -458,10 +581,10 @@ function SectionAbout() {
       {/* Links */}
       <div className="grid grid-cols-2 gap-2">
         {[
-          { label: "Privacy Policy", href: "#" },
           { label: "Terms of Service", href: "#" },
+          { label: "Privacy Policy", href: "#" },
+          { label: "Cookie Notice", href: "#" },
           { label: "aethex Store", href: "/" },
-          { label: "nexrya technologies", href: "#" },
         ].map((l) => (
           <a key={l.label} href={l.href}
             className="flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors"
@@ -475,20 +598,31 @@ function SectionAbout() {
   );
 }
 
-/* ── Main Modal ─────────────────────────────────────────────────────────── */
+/* ── Nav config ─────────────────────────────────────────────────────────── */
+const NAV: { id: SectionId; label: string; icon: React.ElementType }[] = [
+  { id: "general",         label: "General",         icon: Settings },
+  { id: "interface",       label: "Interface",        icon: Monitor },
+  { id: "models",          label: "Models",           icon: Brain },
+  { id: "chats",           label: "Chats",            icon: MessageSquare },
+  { id: "personalization", label: "Personalization",  icon: UserCheck },
+  { id: "account",         label: "Account",          icon: User },
+  { id: "about",           label: "About",            icon: Info },
+];
 
+/* ── Main Modal ─────────────────────────────────────────────────────────── */
 export default function SettingsModal({
   settings, onSettingsChange, onClearAllChats, onClearCurrentChat, onExportChats, onClose,
 }: SettingsModalProps) {
   const [activeSection, setActiveSection] = useState<SectionId>("general");
   const tr = getTranslation(settings.language);
-  const NAV = buildNav(tr);
 
   const set = (key: keyof SynapseSettings, value: any) => {
     const next = { ...settings, [key]: value };
     onSettingsChange(next);
     saveSettings(next);
   };
+
+  const activeNav = NAV.find((x) => x.id === activeSection)!;
 
   return (
     <div
@@ -499,8 +633,8 @@ export default function SettingsModal({
       <div
         className="flex overflow-hidden w-full"
         style={{
-          maxWidth: 780,
-          height: "min(85vh, 600px)",
+          maxWidth: 800,
+          height: "min(88vh, 620px)",
           background: "rgba(3,9,24,0.97)",
           border: "1px solid rgba(0,188,212,0.2)",
           borderRadius: 20,
@@ -516,7 +650,6 @@ export default function SettingsModal({
             borderRight: "1px solid rgba(0,188,212,0.1)",
           }}
         >
-          {/* Modal title */}
           <div className="px-5 pb-4 mb-1" style={{ borderBottom: "1px solid rgba(0,188,212,0.08)" }}>
             <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "rgba(0,200,255,0.45)" }}>
               {tr.settings}
@@ -532,15 +665,8 @@ export default function SettingsModal({
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
                 style={
                   activeSection === id
-                    ? {
-                        background: "rgba(0,188,212,0.12)",
-                        border: "1px solid rgba(0,229,255,0.2)",
-                        color: "#00E5FF",
-                      }
-                    : {
-                        border: "1px solid transparent",
-                        color: "rgba(120,175,220,0.6)",
-                      }
+                    ? { background: "rgba(0,188,212,0.12)", border: "1px solid rgba(0,229,255,0.2)", color: "#00E5FF" }
+                    : { border: "1px solid transparent", color: "rgba(120,175,220,0.6)" }
                 }
               >
                 <Icon className="w-4 h-4 shrink-0" />
@@ -549,7 +675,6 @@ export default function SettingsModal({
             ))}
           </nav>
 
-          {/* Version tag */}
           <div className="px-4 pt-3 mt-2" style={{ borderTop: "1px solid rgba(0,188,212,0.08)" }}>
             <p className="text-[10px]" style={{ color: "rgba(0,200,255,0.25)" }}>SYNAPSE · v3.0.0</p>
           </div>
@@ -558,40 +683,33 @@ export default function SettingsModal({
         {/* ── Right content ── */}
         <div className="flex flex-col flex-1 min-w-0">
           {/* Content header */}
-          <div
-            className="flex items-center justify-between px-6 py-4 shrink-0"
-            style={{ borderBottom: "1px solid rgba(0,188,212,0.1)" }}
-          >
-            <div className="flex items-center gap-2.5">
-              {(() => { const n = NAV.find((x) => x.id === activeSection)!; return <n.icon className="w-4 h-4" style={{ color: "#00E5FF" }} />; })()}
-              <h2 className="font-semibold text-base" style={{ color: "rgba(200,235,255,0.95)" }}>
-                {NAV.find((x) => x.id === activeSection)?.label}
-              </h2>
-            </div>
-            <button
-              type="button"
-              onClick={onClose}
-              className="p-1.5 rounded-lg transition-colors"
-              style={{ color: "rgba(100,170,220,0.5)" }}
-            >
+          <div className="flex items-center justify-between px-6 py-4 shrink-0"
+            style={{ borderBottom: "1px solid rgba(0,188,212,0.1)" }}>
+            <h2 className="font-semibold text-base" style={{ color: "rgba(200,235,255,0.95)" }}>
+              {activeNav.label}
+            </h2>
+            <button type="button" onClick={onClose} className="p-1.5 rounded-lg transition-colors"
+              style={{ color: "rgba(100,170,220,0.5)" }}>
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Scrollable section body */}
-          <div className="flex-1 overflow-y-auto px-6 py-4">
-            {activeSection === "general"    && <SectionGeneral    s={settings} set={set} tr={tr} />}
-            {activeSection === "appearance" && <SectionAppearance s={settings} set={set} />}
-            {activeSection === "ai"         && <SectionAI         s={settings} set={set} />}
-            {activeSection === "data"       && (
-              <SectionData
-                onClearAll={() => { onClearAllChats(); onClose(); }}
-                onClearCurrent={() => { onClearCurrentChat(); onClose(); }}
+          {/* Scrollable content */}
+          <div className="flex-1 overflow-y-auto px-6 py-5">
+            {activeSection === "general" && <SectionGeneral s={settings} set={set} tr={tr} />}
+            {activeSection === "interface" && <SectionInterface s={settings} set={set} />}
+            {activeSection === "models" && <SectionModels s={settings} set={set} />}
+            {activeSection === "chats" && (
+              <SectionChatsClean
+                onClearAll={onClearAllChats}
+                onClearCurrent={onClearCurrentChat}
                 onExport={onExportChats}
                 onClose={onClose}
               />
             )}
-            {activeSection === "about"      && <SectionAbout />}
+            {activeSection === "personalization" && <SectionPersonalization s={settings} set={set} />}
+            {activeSection === "account" && <SectionAccount />}
+            {activeSection === "about" && <SectionAbout />}
           </div>
         </div>
       </div>

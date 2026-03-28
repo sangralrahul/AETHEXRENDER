@@ -58,44 +58,44 @@ function getThemeVars(theme: "dark" | "auto" | "light"): React.CSSProperties {
     "--sp-caret-color":              "#0099bb",
   } as React.CSSProperties;
 
-  /* dark + auto → same deep-space palette */
+  /* dark + auto → clean Replit-style monochrome */
   return {
-    "--sp-root-bg":                  "#040B1A",
-    "--sp-sidebar-bg":               "rgba(2,8,22,0.92)",
-    "--sp-sidebar-border":           "rgba(0,188,212,0.13)",
-    "--sp-topbar-bg":                "rgba(2,8,22,0.8)",
-    "--sp-topbar-border":            "rgba(0,188,212,0.1)",
-    "--sp-divider":                  "rgba(0,188,212,0.1)",
-    "--sp-label":                    "rgba(0,200,255,0.35)",
-    "--sp-text-primary":             "rgba(200,235,255,0.95)",
-    "--sp-text-muted":               "rgba(120,175,220,0.6)",
-    "--sp-text-dim":                 "rgba(100,160,220,0.5)",
-    "--sp-text-faint":               "rgba(100,160,220,0.35)",
-    "--sp-text-footer":              "rgba(130,185,230,0.65)",
-    "--sp-model-inactive-color":     "rgba(120,175,220,0.6)",
-    "--sp-model-inactive-bg":        "rgba(255,255,255,0.02)",
-    "--sp-model-inactive-border":    "rgba(255,255,255,0.05)",
+    "--sp-root-bg":                  "#111111",
+    "--sp-sidebar-bg":               "#0C0C0C",
+    "--sp-sidebar-border":           "rgba(255,255,255,0.06)",
+    "--sp-topbar-bg":                "rgba(17,17,17,0.97)",
+    "--sp-topbar-border":            "rgba(255,255,255,0.07)",
+    "--sp-divider":                  "rgba(255,255,255,0.07)",
+    "--sp-label":                    "rgba(255,255,255,0.28)",
+    "--sp-text-primary":             "rgba(255,255,255,0.9)",
+    "--sp-text-muted":               "rgba(255,255,255,0.45)",
+    "--sp-text-dim":                 "rgba(255,255,255,0.32)",
+    "--sp-text-faint":               "rgba(255,255,255,0.2)",
+    "--sp-text-footer":              "rgba(255,255,255,0.38)",
+    "--sp-model-inactive-color":     "rgba(255,255,255,0.55)",
+    "--sp-model-inactive-bg":        "rgba(255,255,255,0.03)",
+    "--sp-model-inactive-border":    "rgba(255,255,255,0.07)",
     "--sp-model-icon-inactive":      "rgba(255,255,255,0.05)",
-    "--sp-session-active-bg":        "rgba(0,188,212,0.12)",
-    "--sp-session-active-border":    "rgba(0,188,212,0.2)",
-    "--sp-session-active-text":      "rgba(200,240,255,0.95)",
-    "--sp-session-inactive-text":    "rgba(130,180,220,0.65)",
-    "--sp-session-meta":             "rgba(0,180,220,0.35)",
-    "--sp-ai-bubble-bg":             "rgba(4,14,38,0.82)",
-    "--sp-ai-bubble-border":         "rgba(0,188,212,0.18)",
-    "--sp-ai-text":                  "rgba(190,225,255,0.9)",
-    "--sp-user-bubble-bg":           "linear-gradient(135deg,rgba(0,188,212,0.35),rgba(0,150,200,0.25))",
-    "--sp-user-bubble-border":       "rgba(0,229,255,0.3)",
-    "--sp-user-text":                "rgba(220,245,255,0.95)",
-    "--sp-input-bg":                 "rgba(4,14,38,0.88)",
-    "--sp-input-border":             "rgba(0,188,212,0.28)",
-    "--sp-textarea-color":           "rgba(200,235,255,0.95)",
-    "--sp-placeholder-color":        "rgba(100,170,220,0.45)",
-    "--sp-new-chat-bg":              "rgba(0,188,212,0.12)",
-    "--sp-new-chat-border":          "rgba(0,188,212,0.28)",
-    "--sp-new-chat-color":           "#00E5FF",
-    "--sp-toggle-color":             "rgba(0,229,255,0.55)",
-    "--sp-caret-color":              "#00E5FF",
+    "--sp-session-active-bg":        "rgba(255,255,255,0.07)",
+    "--sp-session-active-border":    "rgba(255,255,255,0.1)",
+    "--sp-session-active-text":      "rgba(255,255,255,0.92)",
+    "--sp-session-inactive-text":    "rgba(255,255,255,0.45)",
+    "--sp-session-meta":             "rgba(255,255,255,0.22)",
+    "--sp-ai-bubble-bg":             "#1A1A1A",
+    "--sp-ai-bubble-border":         "rgba(255,255,255,0.08)",
+    "--sp-ai-text":                  "rgba(255,255,255,0.88)",
+    "--sp-user-bubble-bg":           "#2A2A2A",
+    "--sp-user-bubble-border":       "rgba(255,255,255,0.12)",
+    "--sp-user-text":                "rgba(255,255,255,0.92)",
+    "--sp-input-bg":                 "#1C1C1C",
+    "--sp-input-border":             "rgba(255,255,255,0.12)",
+    "--sp-textarea-color":           "rgba(255,255,255,0.88)",
+    "--sp-placeholder-color":        "rgba(255,255,255,0.28)",
+    "--sp-new-chat-bg":              "rgba(255,255,255,0.05)",
+    "--sp-new-chat-border":          "rgba(255,255,255,0.1)",
+    "--sp-new-chat-color":           "rgba(255,255,255,0.72)",
+    "--sp-toggle-color":             "rgba(255,255,255,0.4)",
+    "--sp-caret-color":              "#FFFFFF",
   } as React.CSSProperties;
 }
 
@@ -665,7 +665,6 @@ export default function AiAssistant() {
   return (
     <div className="h-screen pt-[72px] flex overflow-hidden relative" style={{ background: "var(--sp-root-bg)", ...themeVars }}>
       {/* ── Live DNA Background (hidden in light mode) ── */}
-      {settings.theme !== "light" && <DNABackground />}
 
       {/* Hidden inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFileSelect(e, "image")} />
@@ -689,13 +688,8 @@ export default function AiAssistant() {
         <div className="flex items-center gap-2.5 px-4 pt-4 pb-3">
           <SynapseLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
           <span
-            className="font-bold text-base"
-            style={{
-              fontFamily: "'Orbitron', 'Exo 2', monospace",
-              letterSpacing: "0.14em",
-              color: "#00E5FF",
-              textShadow: "0 0 12px rgba(0,229,255,0.45)",
-            }}
+            className="font-bold text-base tracking-widest"
+            style={{ color: "rgba(255,255,255,0.9)", letterSpacing: "0.14em" }}
           >SYNAPSE</span>
         </div>
 
@@ -850,16 +844,14 @@ export default function AiAssistant() {
       ══════════════════════════════════════════════════════════════ */}
       <div className="flex-1 flex flex-col min-h-0 relative z-10">
 
-        {/* ── Top bar: sidebar toggle + active model + new chat ── */}
+        {/* ── Top bar ── */}
         <div
           className="shrink-0 flex items-center gap-2 px-3 py-2"
           style={{
             background: "var(--sp-topbar-bg)",
-            backdropFilter: "blur(20px)",
             borderBottom: "1px solid var(--sp-topbar-border)",
           }}
         >
-          {/* Sidebar toggle */}
           <button
             onClick={() => setSidebarOpen((v) => !v)}
             className="p-1.5 rounded-lg transition-colors"
@@ -869,27 +861,21 @@ export default function AiAssistant() {
             <PanelLeft className="w-5 h-5" />
           </button>
 
-          <div className="w-px h-5 mx-1" style={{ background: "rgba(0,188,212,0.15)" }} />
+          <div className="w-px h-5 mx-1" style={{ background: "rgba(255,255,255,0.08)" }} />
 
-          {/* Active model pill */}
-          <div className="flex items-center gap-2 flex-1">
-            <div
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold"
-              style={model.activeStyle}
-            >
-              <ModelIcon className="w-3.5 h-3.5" />
-              <span>{model.name}</span>
-              <span className="opacity-70">{model.version}</span>
-              {model.pro && (
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded"
-                  style={{ background: "rgba(109,40,217,0.4)", color: "#c4b5fd" }}>
-                  PRO
-                </span>
-              )}
-            </div>
+          <div className="flex items-center gap-1.5 flex-1">
+            <ModelIcon className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.45)" }} />
+            <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>
+              {model.name} {model.version}
+            </span>
+            {model.pro && (
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.12)" }}>
+                PRO
+              </span>
+            )}
           </div>
 
-          {/* New chat (right side of top bar) */}
           <button
             onClick={handleNewChat}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
@@ -900,78 +886,212 @@ export default function AiAssistant() {
           </button>
         </div>
 
-        {/* ── Messages / Empty state ── */}
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col gap-5 min-h-full">
+        {/* ── HOME VIEW (empty state — centered like Replit) ── */}
+        {!hasMessages && (
+          <div className="flex-1 flex flex-col items-center justify-center px-4 pb-6 gap-6 overflow-y-auto">
 
-            {/* Empty state */}
-            {!hasMessages && (
-              <div className="flex flex-col items-center justify-center flex-1 gap-6 py-8">
-                <div className="flex flex-col items-center gap-3">
-                  <div style={{ filter: "drop-shadow(0 0 24px rgba(0,229,255,0.4))" }}>
-                    <SynapseLogo size="lg" thinking={false} baseUrl={import.meta.env.BASE_URL} />
-                  </div>
-                  <div className="text-center">
-                    <h1
-                      className="font-bold text-4xl"
-                      style={{
-                        fontFamily: "'Orbitron', 'Exo 2', monospace",
-                        letterSpacing: "0.18em",
-                        color: "#00E5FF",
-                        textShadow: "0 0 24px rgba(0,229,255,0.6), 0 0 60px rgba(0,188,212,0.25)",
-                      }}
-                    >
-                      SYNAPSE
-                    </h1>
-                  </div>
-                </div>
+            {/* Greeting */}
+            <div className="text-center w-full max-w-2xl">
+              <p className="text-sm font-medium mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>
+                @Synapse User
+              </p>
+              <h1 className="text-3xl font-semibold" style={{ color: "rgba(255,255,255,0.9)" }}>
+                {tr.greeting ?? "Hi, what can I help you with today?"}
+              </h1>
+            </div>
 
-                {/* Quick suggestions grid */}
-                {!isProLocked && (
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full max-w-xl">
-                    {quickSuggestions[activeModel].map((q) => (
-                      <button
-                        key={q}
-                        type="button"
-                        onClick={() => setInput(q)}
-                        className="text-sm px-4 py-3 rounded-2xl text-left transition-all"
-                        style={{
-                          background: "var(--sp-new-chat-bg)",
-                          border: "1px solid var(--sp-input-border)",
-                          color: "var(--sp-new-chat-color)",
-                          backdropFilter: "blur(8px)",
-                        }}
-                      >
-                        {q}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {isProLocked && (
-                  <div className="max-w-md text-center px-4">
-                    <div className="w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-                      style={{ background: "rgba(109,40,217,0.3)", border: "1px solid rgba(167,139,250,0.3)" }}>
-                      <Crown className="w-6 h-6" style={{ color: "#a78bfa" }} />
+            {/* ── INPUT FORM centered ── */}
+            <div className="w-full max-w-2xl">
+              {isProLocked ? (
+                <div className="rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                      style={{ background: "rgba(255,255,255,0.07)" }}>
+                      <Lock className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
                     </div>
-                    <p className="text-base leading-relaxed" style={{ color: "rgba(150,210,255,0.75)" }}>
-                      {modelGreetings.nova46}
-                    </p>
-                    <button
-                      onClick={() => setShowProModal(true)}
-                      className="mt-4 flex items-center gap-2 mx-auto px-6 py-2.5 rounded-xl font-bold text-sm transition-all"
-                      style={{ background: "linear-gradient(to right, #7c3aed, #9333ea)", color: "white" }}
-                    >
-                      <Crown className="w-4 h-4" /> {tr.upgradePro}
-                    </button>
+                    <div>
+                      <p className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>{tr.proRequired}</p>
+                      <p className="text-xs" style={{ color: "rgba(255,255,255,0.38)" }}>{tr.proGatedMsg}</p>
+                    </div>
                   </div>
-                )}
+                  <button onClick={() => setShowProModal(true)}
+                    className="flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm whitespace-nowrap"
+                    style={{ background: "rgba(255,255,255,0.9)", color: "#111" }}>
+                    <Crown className="w-4 h-4" /> {tr.upgradePro}
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="rounded-2xl overflow-visible"
+                  style={{
+                    background: "var(--sp-input-bg)",
+                    border: "1px solid var(--sp-input-border)",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.25)",
+                  }}
+                >
+                  {chatMode !== "normal" && (
+                    <div className="flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold"
+                      style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.03)" }}>
+                      {chatMode === "deep-research" ? <><Microscope className="w-3.5 h-3.5" /> {tr.deepResearchMode}</>
+                        : chatMode === "create-presentation" ? <><Presentation className="w-3.5 h-3.5" /> {presentationStage === "idle" ? tr.presentationMode : tr.selectSlideCountAbove}</>
+                        : <><ImagePlus className="w-3.5 h-3.5" /> {imageStage === "waiting-type" ? tr.selectSlideCountAbove : tr.imageMode}</>}
+                      <button type="button" onClick={() => toggleMode(chatMode)} className="ml-auto hover:opacity-70">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+                  {attachments.length > 0 && (
+                    <div className="flex gap-2 px-4 pt-3 flex-wrap">
+                      {attachments.map((a) => (
+                        <div key={a.id} className="relative group flex items-center gap-2 rounded-xl px-3 py-2 text-xs max-w-[160px]"
+                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.75)" }}>
+                          {a.type === "image" && a.previewUrl
+                            ? <img src={a.previewUrl} alt={a.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                            : <FileText className="w-5 h-5 shrink-0" style={{ color: "rgba(255,255,255,0.5)" }} />}
+                          <div className="min-w-0">
+                            <p className="truncate font-medium leading-tight">{a.name}</p>
+                            <p style={{ color: "rgba(255,255,255,0.3)" }}>{a.size}</p>
+                          </div>
+                          <button type="button" onClick={() => removeAttachment(a.id)}
+                            className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full items-center justify-center hidden group-hover:flex"
+                            style={{ background: "rgba(200,50,50,0.8)", color: "white" }}>
+                            <X className="w-2.5 h-2.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <textarea
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit(e as any); } }}
+                    placeholder={
+                      chatMode === "create-image" ? tr.describeImagePlaceholder
+                        : chatMode === "deep-research" ? tr.researchTopicPlaceholder
+                        : chatMode === "create-presentation" && presentationStage === "idle" ? tr.presentationTopicPlaceholder
+                        : chatMode === "create-presentation" && presentationStage === "waiting-slide-count" ? tr.selectSlidesPlaceholder
+                        : `${tr.messagePlaceholder} · ${model.name} ${model.version}...`
+                    }
+                    rows={1}
+                    className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none synapse-textarea"
+                    style={{ color: "var(--sp-textarea-color)", caretColor: "var(--sp-caret-color)", minHeight: "52px", maxHeight: "160px" }}
+                    disabled={chatMutation.isPending || isGeneratingPresentation || presentationStage === "waiting-slide-count"}
+                  />
+                  <div className="flex items-center justify-between px-3 pb-3 pt-1 gap-2">
+                    <div className="flex items-center gap-1">
+                      <div className="relative" ref={attachMenuRef}>
+                        <button type="button" onClick={() => setShowAttachMenu((v) => !v)}
+                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                          style={{ color: showAttachMenu ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)" }}>
+                          <Paperclip className="w-4 h-4" />
+                          <span className="hidden sm:inline">{tr.attach}</span>
+                        </button>
+                        {showAttachMenu && (
+                          <div className="absolute bottom-full left-0 mb-2 rounded-xl shadow-xl overflow-hidden w-52 z-30"
+                            style={{ background: "#1E1E1E", border: "1px solid rgba(255,255,255,0.1)" }}>
+                            <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.28)" }}>{tr.attach}</div>
+                            {[
+                              { label: tr.uploadImage, sub: tr.uploadImageFormats, icon: Image, action: () => imageInputRef.current?.click() },
+                              { label: tr.uploadDocument, sub: tr.uploadDocumentFormats, icon: FileText, action: () => fileInputRef.current?.click() },
+                              { label: tr.takePhoto, sub: tr.useCamera, icon: Camera, action: () => { setShowAttachMenu(false); setShowCamera(true); } },
+                            ].map(({ label, sub, icon: Icon, action }) => (
+                              <button key={label} type="button" onClick={action}
+                                className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-white/5"
+                                style={{ color: "rgba(255,255,255,0.75)" }}>
+                                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.06)" }}>
+                                  <Icon className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                                </div>
+                                <div className="text-left">
+                                  <p className="font-semibold leading-tight">{label}</p>
+                                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{sub}</p>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <button type="button" onClick={() => toggleMode("deep-research")}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                        style={chatMode === "deep-research"
+                          ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
+                          : { color: "rgba(255,255,255,0.4)" }}>
+                        <Search className="w-4 h-4" />
+                        <span className="hidden sm:inline">{tr.deepResearch}</span>
+                      </button>
+                      <button type="button" onClick={() => toggleMode("create-image")}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                        style={chatMode === "create-image"
+                          ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
+                          : { color: "rgba(255,255,255,0.4)" }}>
+                        <ImagePlus className="w-4 h-4" />
+                        <span className="hidden sm:inline">{tr.createImage}</span>
+                      </button>
+                      <button type="button" onClick={() => toggleMode("create-presentation")}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                        style={chatMode === "create-presentation"
+                          ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
+                          : { color: "rgba(255,255,255,0.4)" }}>
+                        <Presentation className="w-4 h-4" />
+                        <span className="hidden sm:inline">{tr.presentation}</span>
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="hidden sm:inline text-xs font-medium" style={{ color: "rgba(255,255,255,0.3)" }}>
+                        {model.name}
+                      </span>
+                      <button type="submit"
+                        disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
+                        className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
+                        style={{ background: "rgba(255,255,255,0.9)" }}>
+                        <Send className="w-3.5 h-3.5 text-black" />
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              )}
+              <p className="text-center text-[11px] mt-2" style={{ color: "rgba(255,255,255,0.18)" }}>
+                {tr.disclaimer}
+              </p>
+            </div>
+
+            {/* Quick suggestions */}
+            {!isProLocked && (
+              <div className="flex flex-wrap gap-2 justify-center w-full max-w-2xl">
+                {quickSuggestions[activeModel].map((q) => (
+                  <button key={q} type="button" onClick={() => setInput(q)}
+                    className="text-sm px-4 py-2 rounded-full transition-all"
+                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.5)" }}>
+                    {q}
+                  </button>
+                ))}
               </div>
             )}
 
-            {/* Messages */}
-            {hasMessages && (
-              <>
+            {isProLocked && (
+              <div className="max-w-md text-center px-4">
+                <div className="w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  <Crown className="w-6 h-6" style={{ color: "rgba(255,255,255,0.6)" }} />
+                </div>
+                <p className="text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
+                  {modelGreetings.nova46}
+                </p>
+                <button onClick={() => setShowProModal(true)}
+                  className="mt-4 flex items-center gap-2 mx-auto px-6 py-2.5 rounded-xl font-bold text-sm transition-all"
+                  style={{ background: "rgba(255,255,255,0.9)", color: "#111" }}>
+                  <Crown className="w-4 h-4" /> {tr.upgradePro}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── CHAT VIEW (has messages) ── */}
+        {hasMessages && (
+          <>
+            <div className="flex-1 min-h-0 overflow-y-auto">
+              <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col gap-5 min-h-full">
+
                 {messages.map((msg, idx) => (
                   <div
                     key={idx}
@@ -990,11 +1110,11 @@ export default function AiAssistant() {
                         : "overflow-hidden"
                     )}
                       style={msg.role === ChatMessageRole.user
-                        ? { background: "rgba(0,188,212,0.2)", border: "1px solid rgba(0,229,255,0.25)" }
+                        ? { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }
                         : undefined}
                     >
                       {msg.role === ChatMessageRole.user
-                        ? <User className="w-4 h-4" style={{ color: "#00E5FF" }} />
+                        ? <User className="w-4 h-4" style={{ color: "rgba(255,255,255,0.75)" }} />
                         : <SynapseLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
                       }
                     </div>
@@ -1119,9 +1239,9 @@ export default function AiAssistant() {
                       <SynapseLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                     </div>
                     <div className="rounded-2xl rounded-tl-sm px-5 py-4 flex items-center gap-3"
-                      style={{ background: "rgba(4,14,38,0.82)", border: "1px solid rgba(0,188,212,0.18)", backdropFilter: "blur(12px)" }}>
-                      <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#00E5FF" }} />
-                      <span className="text-sm" style={{ color: "rgba(140,200,255,0.7)" }}>
+                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                      <Loader2 className="w-4 h-4 animate-spin" style={{ color: "rgba(255,255,255,0.5)" }} />
+                      <span className="text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
                         {isGeneratingResearch ? tr.researching : tr.thinking}
                       </span>
                     </div>
@@ -1135,9 +1255,9 @@ export default function AiAssistant() {
                       <SynapseLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                     </div>
                     <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden"
-                      style={{ background: "rgba(5,18,48,0.85)", backdropFilter: "blur(12px)", border: "1px solid rgba(0,188,212,0.2)" }}>
-                      <div className="px-4 pt-3 pb-2 text-xs font-medium flex items-center gap-2" style={{ color: "rgba(100,200,255,0.8)" }}>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                      <div className="px-4 pt-3 pb-2 text-xs font-medium flex items-center gap-2" style={{ color: "rgba(255,255,255,0.5)" }}>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "rgba(255,255,255,0.4)" }} />
                         {tr.buildingPresentation.replace("{n}", String(buildingSlideCount))}
                       </div>
                       <PresentationBuildingAnimation topic={buildingTopic} slideCount={buildingSlideCount} />
@@ -1145,198 +1265,162 @@ export default function AiAssistant() {
                   </div>
                 )}
                 <div ref={messagesEndRef} />
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* ── Input area ── */}
-        <div className="shrink-0 px-4 pb-4 pt-2">
-          <div className="max-w-3xl mx-auto">
-            {isProLocked ? (
-              <div className="rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
-                style={{ background: "rgba(109,40,217,0.15)", border: "2px solid rgba(167,139,250,0.3)", backdropFilter: "blur(16px)" }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-                    style={{ background: "rgba(109,40,217,0.4)" }}>
-                    <Lock className="w-4 h-4" style={{ color: "#a78bfa" }} />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm" style={{ color: "rgba(200,220,255,0.9)" }}>{tr.proRequired}</p>
-                    <p className="text-xs" style={{ color: "rgba(150,180,240,0.6)" }}>{tr.proGatedMsg}</p>
-                  </div>
-                </div>
-                <button onClick={() => setShowProModal(true)}
-                  className="flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-all"
-                  style={{ background: "linear-gradient(to right, #7c3aed, #9333ea)", color: "white" }}>
-                  <Crown className="w-4 h-4" /> {tr.upgradePro}
-                </button>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit}
-                className="rounded-2xl transition-all overflow-visible"
-                style={{
-                  background: "var(--sp-input-bg)",
-                  backdropFilter: "blur(20px)",
-                  border: "1px solid var(--sp-input-border)",
-                  boxShadow: "0 8px 40px rgba(0,0,0,0.18), inset 0 1px 0 rgba(0,229,255,0.06)",
-                }}
-              >
-                {/* Active mode banner */}
-                {chatMode !== "normal" && (
-                  <div className="flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold"
-                    style={{
-                      background: chatMode === "deep-research" ? "rgba(2,119,189,0.18)" : chatMode === "create-presentation" ? "rgba(180,120,0,0.15)" : "rgba(100,50,180,0.18)",
-                      borderColor: chatMode === "deep-research" ? "rgba(2,119,189,0.35)" : chatMode === "create-presentation" ? "rgba(180,120,0,0.3)" : "rgba(100,50,180,0.35)",
-                      color: chatMode === "deep-research" ? "#4FC3F7" : chatMode === "create-presentation" ? "#FFD54F" : "#CE93D8",
-                    }}>
-                    {chatMode === "deep-research"
-                      ? <><Microscope className="w-3.5 h-3.5" /> {tr.deepResearchMode}</>
-                      : chatMode === "create-presentation"
-                      ? <><Presentation className="w-3.5 h-3.5" /> {presentationStage === "idle" ? tr.presentationMode : tr.selectSlideCountAbove}</>
-                      : <><ImagePlus className="w-3.5 h-3.5" /> {imageStage === "waiting-type" ? tr.selectSlideCountAbove : tr.imageMode}</>}
-                    <button type="button" onClick={() => toggleMode(chatMode)} className="ml-auto hover:opacity-70">
-                      <X className="w-3.5 h-3.5" />
+            </div>
+
+            {/* ── Bottom input (chat view) ── */}
+            <div className="shrink-0 px-4 pb-4 pt-2">
+              <div className="max-w-3xl mx-auto">
+                {isProLocked ? (
+                  <div className="rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
+                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.07)" }}>
+                        <Lock className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>{tr.proRequired}</p>
+                        <p className="text-xs" style={{ color: "rgba(255,255,255,0.38)" }}>{tr.proGatedMsg}</p>
+                      </div>
+                    </div>
+                    <button onClick={() => setShowProModal(true)}
+                      className="flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm whitespace-nowrap"
+                      style={{ background: "rgba(255,255,255,0.9)", color: "#111" }}>
+                      <Crown className="w-4 h-4" /> {tr.upgradePro}
                     </button>
                   </div>
-                )}
-
-                {/* Attachment previews */}
-                {attachments.length > 0 && (
-                  <div className="flex gap-2 px-4 pt-3 flex-wrap">
-                    {attachments.map((a) => (
-                      <div key={a.id} className="relative group flex items-center gap-2 rounded-xl px-3 py-2 text-xs max-w-[160px]"
-                        style={{ background: "rgba(0,188,212,0.1)", border: "1px solid rgba(0,188,212,0.2)", color: "rgba(180,225,255,0.8)" }}>
-                        {a.type === "image" && a.previewUrl
-                          ? <img src={a.previewUrl} alt={a.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
-                          : <FileText className="w-5 h-5 shrink-0" style={{ color: "rgba(0,188,212,0.7)" }} />}
-                        <div className="min-w-0">
-                          <p className="truncate font-medium leading-tight">{a.name}</p>
-                          <p style={{ color: "rgba(100,170,220,0.5)" }}>{a.size}</p>
-                        </div>
-                        <button type="button" onClick={() => removeAttachment(a.id)}
-                          className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full items-center justify-center hidden group-hover:flex"
-                          style={{ background: "rgba(200,50,50,0.8)", color: "white" }}>
-                          <X className="w-2.5 h-2.5" />
+                ) : (
+                  <form onSubmit={handleSubmit} className="rounded-2xl overflow-visible"
+                    style={{ background: "var(--sp-input-bg)", border: "1px solid var(--sp-input-border)", boxShadow: "0 4px 24px rgba(0,0,0,0.25)" }}
+                  >
+                    {chatMode !== "normal" && (
+                      <div className="flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold"
+                        style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.03)" }}>
+                        {chatMode === "deep-research" ? <><Microscope className="w-3.5 h-3.5" /> {tr.deepResearchMode}</>
+                          : chatMode === "create-presentation" ? <><Presentation className="w-3.5 h-3.5" /> {presentationStage === "idle" ? tr.presentationMode : tr.selectSlideCountAbove}</>
+                          : <><ImagePlus className="w-3.5 h-3.5" /> {imageStage === "waiting-type" ? tr.selectSlideCountAbove : tr.imageMode}</>}
+                        <button type="button" onClick={() => toggleMode(chatMode)} className="ml-auto hover:opacity-70">
+                          <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Textarea */}
-                <textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit(e as any); } }}
-                  placeholder={
-                    chatMode === "create-image"
-                      ? tr.describeImagePlaceholder
-                      : chatMode === "deep-research"
-                      ? tr.researchTopicPlaceholder
-                      : chatMode === "create-presentation" && presentationStage === "idle"
-                      ? tr.presentationTopicPlaceholder
-                      : chatMode === "create-presentation" && presentationStage === "waiting-slide-count"
-                      ? tr.selectSlidesPlaceholder
-                      : `${tr.messagePlaceholder} · ${model.name} ${model.version}...`
-                  }
-                  rows={1}
-                  className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none synapse-textarea"
-                  style={{ color: "var(--sp-textarea-color)", caretColor: "var(--sp-caret-color)", minHeight: "52px", maxHeight: "160px" }}
-                  disabled={chatMutation.isPending || isGeneratingPresentation || presentationStage === "waiting-slide-count"}
-                />
-
-                {/* Toolbar */}
-                <div className="flex items-center justify-between px-3 pb-3 pt-1 gap-2">
-                  <div className="flex items-center gap-1">
-
-                    {/* Attach */}
-                    <div className="relative" ref={attachMenuRef}>
-                      <button type="button" onClick={() => setShowAttachMenu((v) => !v)}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-                        style={{ color: showAttachMenu ? "#00E5FF" : "rgba(100,180,220,0.6)" }}>
-                        <Paperclip className="w-4 h-4" />
-                        <span className="hidden sm:inline">{tr.attach}</span>
-                      </button>
-                      {showAttachMenu && (
-                        <div className="absolute bottom-full left-0 mb-2 rounded-2xl shadow-xl overflow-hidden w-52 z-30"
-                          style={{ background: "rgba(4,12,35,0.97)", backdropFilter: "blur(20px)", border: "1px solid rgba(0,188,212,0.3)" }}>
-                          <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(0,229,255,0.45)" }}>{tr.attach}</div>
-                          {[
-                            { label: tr.uploadImage, sub: tr.uploadImageFormats, icon: Image, color: "rgba(30,58,138,0.7)", iconColor: "text-blue-300", action: () => imageInputRef.current?.click() },
-                            { label: tr.uploadDocument, sub: tr.uploadDocumentFormats, icon: FileText, color: "rgba(120,50,20,0.5)", iconColor: "text-orange-300", action: () => fileInputRef.current?.click() },
-                            { label: tr.takePhoto, sub: tr.useCamera, icon: Camera, color: "rgba(20,80,50,0.5)", iconColor: "text-emerald-300", action: () => { setShowAttachMenu(false); setShowCamera(true); } },
-                          ].map(({ label, sub, icon: Icon, color, iconColor, action }) => (
-                            <button key={label} type="button" onClick={action}
-                              className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-white/5"
-                              style={{ color: "rgba(180,225,255,0.9)" }}>
-                              <div className={`w-8 h-8 rounded-xl flex items-center justify-center`} style={{ background: color }}>
-                                <Icon className={`w-4 h-4 ${iconColor}`} />
-                              </div>
-                              <div className="text-left">
-                                <p className="font-semibold leading-tight">{label}</p>
-                                <p className="text-xs" style={{ color: "rgba(100,170,220,0.5)" }}>{sub}</p>
-                              </div>
+                    )}
+                    {attachments.length > 0 && (
+                      <div className="flex gap-2 px-4 pt-3 flex-wrap">
+                        {attachments.map((a) => (
+                          <div key={a.id} className="relative group flex items-center gap-2 rounded-xl px-3 py-2 text-xs max-w-[160px]"
+                            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.75)" }}>
+                            {a.type === "image" && a.previewUrl
+                              ? <img src={a.previewUrl} alt={a.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                              : <FileText className="w-5 h-5 shrink-0" style={{ color: "rgba(255,255,255,0.5)" }} />}
+                            <div className="min-w-0">
+                              <p className="truncate font-medium leading-tight">{a.name}</p>
+                              <p style={{ color: "rgba(255,255,255,0.3)" }}>{a.size}</p>
+                            </div>
+                            <button type="button" onClick={() => removeAttachment(a.id)}
+                              className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full items-center justify-center hidden group-hover:flex"
+                              style={{ background: "rgba(200,50,50,0.8)", color: "white" }}>
+                              <X className="w-2.5 h-2.5" />
                             </button>
-                          ))}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <textarea
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit(e as any); } }}
+                      placeholder={
+                        chatMode === "create-image" ? tr.describeImagePlaceholder
+                          : chatMode === "deep-research" ? tr.researchTopicPlaceholder
+                          : chatMode === "create-presentation" && presentationStage === "idle" ? tr.presentationTopicPlaceholder
+                          : chatMode === "create-presentation" && presentationStage === "waiting-slide-count" ? tr.selectSlidesPlaceholder
+                          : `${tr.messagePlaceholder} · ${model.name} ${model.version}...`
+                      }
+                      rows={1}
+                      className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none synapse-textarea"
+                      style={{ color: "var(--sp-textarea-color)", caretColor: "var(--sp-caret-color)", minHeight: "52px", maxHeight: "160px" }}
+                      disabled={chatMutation.isPending || isGeneratingPresentation || presentationStage === "waiting-slide-count"}
+                    />
+                    <div className="flex items-center justify-between px-3 pb-3 pt-1 gap-2">
+                      <div className="flex items-center gap-1">
+                        <div className="relative" ref={attachMenuRef}>
+                          <button type="button" onClick={() => setShowAttachMenu((v) => !v)}
+                            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                            style={{ color: showAttachMenu ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)" }}>
+                            <Paperclip className="w-4 h-4" />
+                            <span className="hidden sm:inline">{tr.attach}</span>
+                          </button>
+                          {showAttachMenu && (
+                            <div className="absolute bottom-full left-0 mb-2 rounded-xl shadow-xl overflow-hidden w-52 z-30"
+                              style={{ background: "#1E1E1E", border: "1px solid rgba(255,255,255,0.1)" }}>
+                              <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.28)" }}>{tr.attach}</div>
+                              {[
+                                { label: tr.uploadImage, sub: tr.uploadImageFormats, icon: Image, action: () => imageInputRef.current?.click() },
+                                { label: tr.uploadDocument, sub: tr.uploadDocumentFormats, icon: FileText, action: () => fileInputRef.current?.click() },
+                                { label: tr.takePhoto, sub: tr.useCamera, icon: Camera, action: () => { setShowAttachMenu(false); setShowCamera(true); } },
+                              ].map(({ label, sub, icon: Icon, action }) => (
+                                <button key={label} type="button" onClick={action}
+                                  className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-white/5"
+                                  style={{ color: "rgba(255,255,255,0.75)" }}>
+                                  <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.06)" }}>
+                                    <Icon className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                                  </div>
+                                  <div className="text-left">
+                                    <p className="font-semibold leading-tight">{label}</p>
+                                    <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{sub}</p>
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      )}
+                        <button type="button" onClick={() => toggleMode("deep-research")}
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                          style={chatMode === "deep-research"
+                            ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
+                            : { color: "rgba(255,255,255,0.4)" }}>
+                          <Search className="w-4 h-4" />
+                          <span className="hidden sm:inline">{tr.deepResearch}</span>
+                        </button>
+                        <button type="button" onClick={() => toggleMode("create-image")}
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                          style={chatMode === "create-image"
+                            ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
+                            : { color: "rgba(255,255,255,0.4)" }}>
+                          <ImagePlus className="w-4 h-4" />
+                          <span className="hidden sm:inline">{tr.createImage}</span>
+                        </button>
+                        <button type="button" onClick={() => toggleMode("create-presentation")}
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                          style={chatMode === "create-presentation"
+                            ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
+                            : { color: "rgba(255,255,255,0.4)" }}>
+                          <Presentation className="w-4 h-4" />
+                          <span className="hidden sm:inline">{tr.presentation}</span>
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="hidden sm:inline text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                          {model.name}
+                        </span>
+                        <button type="submit"
+                          disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
+                          className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
+                          style={{ background: "rgba(255,255,255,0.9)" }}>
+                          <Send className="w-3.5 h-3.5 text-black" />
+                        </button>
+                      </div>
                     </div>
-
-                    {/* Deep Research */}
-                    <button type="button" onClick={() => toggleMode("deep-research")}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border"
-                      style={chatMode === "deep-research"
-                        ? { background: "rgba(2,119,189,0.35)", color: "#4FC3F7", borderColor: "rgba(2,119,189,0.55)" }
-                        : { color: "rgba(100,180,220,0.6)", borderColor: "transparent" }}>
-                      <Search className="w-4 h-4" />
-                      <span className="hidden sm:inline">{tr.deepResearch}</span>
-                    </button>
-
-                    {/* Create Image */}
-                    <button type="button" onClick={() => toggleMode("create-image")}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border"
-                      style={chatMode === "create-image"
-                        ? { background: "rgba(100,50,180,0.35)", color: "#CE93D8", borderColor: "rgba(100,50,180,0.55)" }
-                        : { color: "rgba(100,180,220,0.6)", borderColor: "transparent" }}>
-                      <ImagePlus className="w-4 h-4" />
-                      <span className="hidden sm:inline">{tr.createImage}</span>
-                    </button>
-
-                    {/* Create Presentation */}
-                    <button type="button" onClick={() => toggleMode("create-presentation")}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border"
-                      style={chatMode === "create-presentation"
-                        ? { background: "rgba(180,100,0,0.3)", color: "#FFD54F", borderColor: "rgba(180,100,0,0.5)" }
-                        : { color: "rgba(100,180,220,0.6)", borderColor: "transparent" }}>
-                      <Presentation className="w-4 h-4" />
-                      <span className="hidden sm:inline">{tr.presentation}</span>
-                    </button>
-                  </div>
-
-                  {/* Right: model badge + send */}
-                  <div className="flex items-center gap-2">
-                    <div className="hidden sm:flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
-                      style={model.activeStyle}>
-                      <ModelIcon className="w-3 h-3" />
-                      {model.name} {model.version}
-                    </div>
-                    <button type="submit"
-                      disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
-                      className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
-                      style={{ background: "linear-gradient(135deg, #00BCD4, #0097A7)" }}>
-                      <Send className="w-3.5 h-3.5 text-white" />
-                    </button>
-                  </div>
-                </div>
-              </form>
-            )}
-
-            <p className="text-center text-[11px] mt-2" style={{ color: "rgba(100,160,220,0.4)" }}>
-              {tr.disclaimer}
-            </p>
-          </div>
-        </div>
+                  </form>
+                )}
+                <p className="text-center text-[11px] mt-2" style={{ color: "rgba(255,255,255,0.18)" }}>
+                  {tr.disclaimer}
+                </p>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* ── Pro Modal ── */}

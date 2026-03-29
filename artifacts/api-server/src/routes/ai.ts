@@ -259,8 +259,8 @@ router.post("/ai/generate-image", async (req, res) => {
     }
 
     const medicalPrompt = labeled
-      ? `Medical educational diagram of: ${prompt}. Draw a clean, professional anatomical or clinical illustration with clearly visible text labels and callout lines pointing to all key structures and components. Include a title, annotation arrows, and a legend if applicable. Style: medical textbook diagram with white background and labeled annotations.`
-      : `Medical illustration, professional clinical style: ${prompt}. High quality, accurate, educational medical artwork.`;
+      ? `3D medical educational illustration, clinical textbook style, for healthcare professionals and medical students. Subject: ${prompt}. Render as a clean, detailed 3D anatomical model with clearly visible text labels and callout lines pointing to all key structures. Style: cross-section 3D render, no photorealism, pastel color-coded regions, white background, labeled annotations with arrows, like a Netter or Gray's Anatomy diagram. Educational, scientific, and professional.`
+      : `3D anatomical medical illustration for clinical education. Subject: ${prompt}. Render as a detailed, color-coded 3D anatomical model, non-photographic, stylized like a medical textbook or interactive anatomy atlas. Clean background, scientifically accurate structures, professional medical illustration style. Educational use only.`;
 
     const response = await openai.images.generate({
       model: "gpt-image-1",

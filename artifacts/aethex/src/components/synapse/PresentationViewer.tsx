@@ -5,10 +5,17 @@ import MermaidDiagram from "./MermaidDiagram";
 export interface PresentationSlide {
   n: number;
   type: string;
+  layout?: string;
   t: string;
   sub?: string;
   bullets: string[];
   ki?: string;
+  caption?: string;
+  stats?: { value: string; label: string; desc: string }[];
+  cards?: { heading: string; body: string }[];
+  leftHeading?: string;
+  leftBody?: string;
+  rightPoints?: string[];
   diag?: string;
   nodes?: string[];
   edges?: [number, number][];
@@ -220,96 +227,292 @@ function SlideImagePanel({ imageUrl, diag, nodes, edges }: {
   );
 }
 
-function SpecSlide({ slide, current, total }: { slide: PresentationSlide; current: number; total: number }) {
-  const diag = slide.diag ?? "none";
-  const nodes = slide.nodes ?? [];
-  const edges = slide.edges ?? [];
-
+// ── Shared slide frame (header + footer) for content slides ──────────────
+function ContentFrame({ slide, current, total, children }: {
+  slide: PresentationSlide; current: number; total: number; children: React.ReactNode;
+}) {
   return (
     <div style={{
-      background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY2} 100%)`,
+      background: "#F7FAFB",
       height: "100%",
       display: "flex",
       flexDirection: "column",
       fontFamily: "'Inter', 'DM Sans', sans-serif",
       overflow: "hidden",
     }}>
-      {/* ── TOP BAR (teal) ── */}
+      {/* Header — dark navy */}
       <div style={{
-        background: TEAL,
-        padding: "8px 24px",
+        background: NAVY,
+        padding: "10px 24px 10px 18px",
         display: "flex",
-        justifyContent: "space-between",
         alignItems: "center",
+        justifyContent: "space-between",
         flexShrink: 0,
-      }}>
-        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>
-          MEDICAL EDUCATION | SYNAPSE
-        </span>
-        <span style={{ color: "white", fontSize: 12 }}>
-          Slide {current} / {total}
-        </span>
-      </div>
-
-      {/* ── MAIN CONTENT: 1fr 1fr ── */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        flex: 1,
-        gap: 20,
-        padding: "20px 28px",
-        minHeight: 0,
+        borderLeft: `6px solid ${TEAL}`,
+        position: "relative",
         overflow: "hidden",
       }}>
-        {/* LEFT PANEL */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 0, overflow: "hidden" }}>
-          <h2 style={{
-            color: TEAL,
-            fontSize: 20,
-            fontWeight: 800,
-            margin: "0 0 12px",
-            lineHeight: 1.2,
-            fontFamily: "'Space Grotesk', 'Inter', sans-serif",
-          }}>
+        {/* Decorative diagonal strips */}
+        {[0,1,2,3,4].map(d => (
+          <div key={d} style={{
+            position: "absolute", right: 80 + d * 22, top: 0, width: 13, height: "100%",
+            background: `rgba(${6 + d},${10 + d},${38 + d * 3},0.9)`,
+            transform: "skewX(-10deg)", opacity: 0.4,
+          }} />
+        ))}
+        <div style={{ display: "flex", flexDirection: "column", gap: 1, minWidth: 0, flex: 1 }}>
+          <span style={{ color: "rgba(0,188,212,0.6)", fontSize: 9, fontWeight: "bold", letterSpacing: "0.07em", textTransform: "uppercase" }}>
+            MEDICAL EDUCATION | SYNAPSE
+          </span>
+          <span style={{ color: "white", fontSize: 18, fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.01em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {slide.t}
-          </h2>
-
-          <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column", gap: 8 }}>
-            {slide.bullets.slice(0, 6).map((b, i) => (
-              <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                <span style={{ color: TEAL, fontWeight: "bold", fontSize: 14, flexShrink: 0, marginTop: 1 }}>&#9658;</span>
-                <p style={{ color: "white", fontSize: 13, lineHeight: 1.55, margin: 0, opacity: 0.92 }}>{b}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* KEY INSIGHT */}
-          {slide.ki && (
-            <div style={{
-              borderLeft: `4px solid ${TEAL}`,
-              background: "rgba(0,188,212,0.10)",
-              padding: "10px 14px",
-              marginTop: 12,
-              borderRadius: "0 8px 8px 0",
-              flexShrink: 0,
-            }}>
-              <div style={{ color: TEAL, fontWeight: "bold", fontSize: 10, letterSpacing: "0.06em", marginBottom: 4 }}>
-                ⚡ KEY INSIGHT
-              </div>
-              <p style={{ color: "#e0f7fa", fontStyle: "italic", fontSize: 12, margin: 0, lineHeight: 1.55 }}>
-                {slide.ki}
-              </p>
-            </div>
-          )}
+          </span>
         </div>
-
-        {/* RIGHT PANEL — AI IMAGE or DIAGRAM */}
-        <SlideImagePanel imageUrl={slide.imageUrl} diag={diag} nodes={nodes} edges={edges} />
+        <div style={{
+          flexShrink: 0, width: 38, height: 38, background: TEAL,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          borderRadius: 4, marginLeft: 14, zIndex: 1,
+        }}>
+          <span style={{ color: "white", fontWeight: 900, fontSize: 15 }}>{current}</span>
+        </div>
       </div>
 
-      {/* ── BOTTOM CONCEPT STRIP ── */}
-      <ConceptStrip nodes={nodes} />
+      {/* Body */}
+      <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+        {children}
+      </div>
+
+      {/* Footer */}
+      <div style={{
+        background: NAVY, flexShrink: 0, padding: "5px 24px",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        borderTop: `3px solid ${TEAL}`,
+      }}>
+        {/* Progress bar */}
+        <div style={{ flex: 1, height: 3, background: "rgba(0,188,212,0.15)", borderRadius: 2, marginRight: 16 }}>
+          <div style={{ width: `${(current / total) * 100}%`, height: "100%", background: TEAL, borderRadius: 2, transition: "width 0.3s" }} />
+        </div>
+        <span style={{ color: TEAL_BRT, fontSize: 10, fontWeight: "bold", whiteSpace: "nowrap" }}>
+          SYNAPSE · aethex &nbsp;·&nbsp; {current} / {total}
+        </span>
+      </div>
     </div>
+  );
+}
+
+// ── STATS layout — 3 giant numbers ───────────────────────────────────────
+function StatsLayout({ slide }: { slide: PresentationSlide }) {
+  const stats = (slide.stats ?? []).slice(0, 3);
+  if (!stats.length) return <ListLayout slide={slide} />;
+  const nCols = stats.length;
+  return (
+    <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+      {/* Numbers area — white, takes most space */}
+      <div style={{ flex: 1, display: "grid", gridTemplateColumns: `repeat(${nCols}, 1fr)`, minHeight: 0 }}>
+        {stats.map((st, ci) => (
+          <div key={ci} style={{
+            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+            padding: "12px 20px",
+            borderRight: ci < nCols - 1 ? "1px solid rgba(0,188,212,0.18)" : "none",
+            position: "relative",
+          }}>
+            {/* Accent line above number */}
+            <div style={{ width: 48, height: 4, background: TEAL, borderRadius: 2, marginBottom: 10 }} />
+            {/* Giant number */}
+            <span style={{
+              fontSize: "clamp(52px, 9vw, 88px)",
+              fontWeight: 900,
+              color: TEAL,
+              lineHeight: 1,
+              letterSpacing: "-0.03em",
+              textAlign: "center",
+            }}>{st.value}</span>
+          </div>
+        ))}
+      </div>
+      {/* Bottom band — light gray with labels */}
+      <div style={{
+        background: "#EBF3F5",
+        borderTop: "1px solid rgba(0,188,212,0.18)",
+        display: "grid",
+        gridTemplateColumns: `repeat(${nCols}, 1fr)`,
+        padding: "10px 0 8px",
+        flexShrink: 0,
+      }}>
+        {stats.map((st, ci) => (
+          <div key={ci} style={{
+            display: "flex", flexDirection: "column", alignItems: "center",
+            padding: "0 14px",
+            borderRight: ci < nCols - 1 ? "1px solid rgba(0,188,212,0.15)" : "none",
+          }}>
+            <span style={{ color: "#0D1A36", fontSize: 13, fontWeight: 700, marginBottom: 3, textAlign: "center" }}>{st.label}</span>
+            <span style={{ color: "#5A6A80", fontSize: 10, lineHeight: 1.4, textAlign: "center" }}>{st.desc}</span>
+          </div>
+        ))}
+      </div>
+      {slide.caption && (
+        <div style={{ padding: "6px 28px", textAlign: "center", flexShrink: 0 }}>
+          <span style={{ color: "#7A8EA8", fontSize: 10, fontStyle: "italic" }}>{slide.caption}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── CARDS layout — 3-column card grid ────────────────────────────────────
+function CardsLayout({ slide }: { slide: PresentationSlide }) {
+  const cards = (slide.cards ?? []).slice(0, 3);
+  if (!cards.length) return <ListLayout slide={slide} />;
+  return (
+    <div style={{
+      height: "100%", display: "grid",
+      gridTemplateColumns: `repeat(${cards.length}, 1fr)`,
+      gap: 12, padding: "12px 16px 12px",
+    }}>
+      {cards.map((card, ci) => (
+        <div key={ci} style={{
+          background: "white",
+          borderRadius: 8,
+          boxShadow: "0 4px 14px rgba(0,0,0,0.10)",
+          display: "flex", flexDirection: "column",
+          overflow: "hidden",
+          position: "relative",
+        }}>
+          {/* Top accent stripe */}
+          <div style={{ height: 7, background: TEAL, flexShrink: 0 }} />
+          <div style={{ padding: "12px 16px 14px", flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
+            {/* Card number */}
+            <span style={{ fontSize: 20, fontWeight: 900, color: "rgba(0,188,212,0.20)", lineHeight: 1 }}>
+              {String(ci + 1).padStart(2, "0")}
+            </span>
+            {/* Heading */}
+            <h3 style={{ color: "#0D1A36", fontSize: 13, fontWeight: 700, margin: 0, lineHeight: 1.25 }}>
+              {card.heading}
+            </h3>
+            {/* Separator */}
+            <div style={{ height: 1.5, background: "rgba(0,188,212,0.22)", borderRadius: 1 }} />
+            {/* Body */}
+            <p style={{ color: "#4A5A72", fontSize: 11, lineHeight: 1.65, margin: 0, flex: 1 }}>
+              {card.body}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── TWOCOL layout — paragraph left, bullet list right ────────────────────
+function TwoColLayout({ slide }: { slide: PresentationSlide }) {
+  const rightPoints = slide.rightPoints ?? [];
+  return (
+    <div style={{ height: "100%", display: "grid", gridTemplateColumns: "55% 45%", minHeight: 0 }}>
+      {/* LEFT */}
+      <div style={{ padding: "20px 28px 20px 24px", display: "flex", flexDirection: "column", gap: 10, overflow: "hidden", borderRight: "1px solid rgba(0,188,212,0.18)" }}>
+        {slide.leftHeading && (
+          <h2 style={{ color: "#0D1A36", fontSize: 19, fontWeight: 800, margin: 0, lineHeight: 1.2 }}>
+            {slide.leftHeading}
+          </h2>
+        )}
+        <div style={{ width: 52, height: 4, background: TEAL, borderRadius: 2, flexShrink: 0 }} />
+        <p style={{ color: "#2D3A50", fontSize: 12.5, lineHeight: 1.75, margin: 0, flex: 1 }}>
+          {slide.leftBody}
+        </p>
+        {/* Decorative large quote mark */}
+        <div style={{ alignSelf: "flex-end", fontSize: 80, fontWeight: 900, color: "rgba(0,188,212,0.10)", lineHeight: 0.8, flexShrink: 0 }}>
+          &rdquo;
+        </div>
+      </div>
+
+      {/* RIGHT */}
+      <div style={{ background: "#EBF3F5", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 0, overflow: "hidden" }}>
+        <div style={{ height: 4, background: TEAL, borderRadius: 2, marginBottom: 14, flexShrink: 0 }} />
+        {rightPoints.map((rp, ri) => (
+          <React.Fragment key={ri}>
+            <div style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "9px 0" }}>
+              <div style={{ width: 10, height: 10, background: TEAL, flexShrink: 0, marginTop: 3 }} />
+              <p style={{ color: "#1A2A40", fontSize: 12, lineHeight: 1.55, margin: 0, fontWeight: ri === 0 ? 600 : 400 }}>
+                {rp}
+              </p>
+            </div>
+            {ri < rightPoints.length - 1 && (
+              <div style={{ height: 0.5, background: "rgba(0,188,212,0.20)" }} />
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── LIST layout — spacious numbered list ──────────────────────────────────
+function ListLayout({ slide }: { slide: PresentationSlide }) {
+  const bullets = slide.bullets.slice(0, 5);
+  const ki = slide.ki;
+  return (
+    <div style={{ height: "100%", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      {/* Vertical teal accent left border */}
+      <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
+        <div style={{ width: 5, background: TEAL, flexShrink: 0 }} />
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+          {bullets.map((bullet, bi) => (
+            <div key={bi} style={{
+              display: "flex", alignItems: "center", gap: 0,
+              flex: 1,
+              background: bi % 2 === 0 ? "rgba(0,188,212,0.05)" : "transparent",
+              borderBottom: bi < bullets.length - 1 ? "1px solid rgba(0,188,212,0.12)" : "none",
+              minHeight: 0,
+            }}>
+              {/* Number badge */}
+              <div style={{
+                width: 34, height: 34, background: TEAL, flexShrink: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                margin: "0 16px 0 12px",
+                borderRadius: 3,
+              }}>
+                <span style={{ color: "white", fontWeight: 900, fontSize: 13 }}>{bi + 1}</span>
+              </div>
+              <p style={{ color: "#1A2A40", fontSize: 13.5, lineHeight: 1.55, margin: 0, flex: 1, paddingRight: 20, fontWeight: bi === 0 ? 600 : 400 }}>
+                {bullet}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* KEY INSIGHT */}
+      {ki && (
+        <div style={{
+          background: NAVY, flexShrink: 0, padding: "10px 20px",
+          display: "flex", flexDirection: "column", gap: 3,
+          borderTop: `4px solid ${TEAL}`,
+        }}>
+          <span style={{ color: TEAL_BRT, fontSize: 8, fontWeight: 900, letterSpacing: "0.08em" }}>KEY INSIGHT</span>
+          <p style={{ color: "white", fontSize: 12, lineHeight: 1.5, margin: 0 }}>{ki}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── ContentSlide — dispatches to the correct layout ───────────────────────
+function ContentSlide({ slide, current, total }: { slide: PresentationSlide; current: number; total: number }) {
+  const layout = slide.layout ?? "list";
+  let body: React.ReactNode;
+
+  if (layout === "stats" && (slide.stats?.length ?? 0) >= 2) {
+    body = <StatsLayout slide={slide} />;
+  } else if (layout === "cards" && (slide.cards?.length ?? 0) >= 2) {
+    body = <CardsLayout slide={slide} />;
+  } else if (layout === "twocol" && slide.leftBody) {
+    body = <TwoColLayout slide={slide} />;
+  } else {
+    body = <ListLayout slide={slide} />;
+  }
+
+  return (
+    <ContentFrame slide={slide} current={current} total={total}>
+      {body}
+    </ContentFrame>
   );
 }
 
@@ -489,13 +692,13 @@ function SummarySlide({ slide, current, total }: { slide: PresentationSlide; cur
 
 function renderSlide(slide: PresentationSlide, data: PresentationData, current: number, total: number) {
   switch (slide.type) {
-    case "title":     return <TitleSlide slide={slide} current={current} total={total} />;
+    case "title":      return <TitleSlide slide={slide} current={current} total={total} />;
     case "conditions": return <ConditionsSlide slide={slide} conditions={data.conditions} current={current} total={total} />;
-    case "redflags":  return <RedFlagsSlide slide={slide} redflags={data.redflags} current={current} total={total} />;
-    case "faq":       return <FAQSlide slide={slide} faq={data.faq} current={current} total={total} />;
-    case "glossary":  return <GlossarySlide slide={slide} refs={data.refs} current={current} total={total} />;
-    case "summary":   return <SummarySlide slide={slide} current={current} total={total} />;
-    default:          return <SpecSlide slide={slide} current={current} total={total} />;
+    case "redflags":   return <RedFlagsSlide slide={slide} redflags={data.redflags} current={current} total={total} />;
+    case "faq":        return <FAQSlide slide={slide} faq={data.faq} current={current} total={total} />;
+    case "glossary":   return <GlossarySlide slide={slide} refs={data.refs} current={current} total={total} />;
+    case "summary":    return <ContentSlide slide={slide} current={current} total={total} />;
+    default:           return <ContentSlide slide={slide} current={current} total={total} />;
   }
 }
 

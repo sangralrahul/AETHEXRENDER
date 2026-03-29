@@ -303,15 +303,14 @@ router.post("/ai/generate-slides", async (req, res) => {
     const useFullTemplate = count >= 10;
 
     const slideTypesInstructions = useFullTemplate
-      ? `Generate EXACTLY ${count} slides with these types in order (adjust last few if count differs):
-title, overview, anatomy, physiology, pathways, clinical, conditions, redflags, mindmap, faq, glossary, summary
-Types: title|overview|anatomy|physiology|pathways|clinical|conditions|redflags|mindmap|faq|glossary|summary`
-      : `Generate ${count} slides. First must be type "title", last must be type "summary". Middle slides should be: overview, anatomy, physiology, clinical, faq, glossary as appropriate.`;
+      ? `Generate EXACTLY ${count} slides with these types in order:
+title, overview, anatomy, physiology, pathways, clinical, conditions, redflags, mindmap, faq, glossary, summary`
+      : `Generate ${count} slides. First slide type "title", last type "summary". Middle slides: overview, anatomy, physiology, clinical, faq, glossary.`;
 
     const claudeMsg = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 8192,
-      system: "You are SYNAPSE, a medical education AI built on Claude. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out: alpha, beta, etc.).",
+      system: "You are SYNAPSE, a medical education AI built on Claude. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out).",
       messages: [
         {
           role: "user",
@@ -319,7 +318,27 @@ Types: title|overview|anatomy|physiology|pathways|clinical|conditions|redflags|m
 
 ${slideTypesInstructions}
 
-Return ONLY this flat JSON (no nested arrays inside slide objects):
+LAYOUT SYSTEM — every content slide gets a "layout" field and matching data:
+- layout "stats": 3 giant clinical numbers. Fields: s1v (value e.g. "86B"), s1l (label), s1d (description 8-12 words), s2v, s2l, s2d, s3v, s3l, s3d, caption (1 sentence summarizing the numbers)
+- layout "cards": 3 topic columns. Fields: c1h (heading 3-5 words), c1b (body 50-60 words of complete sentences), c2h, c2b, c3h, c3b
+- layout "twocol": paragraph left + bullets right. Fields: lh (subheading 4-6 words), lb (body paragraph 40-55 words), r1/r2/r3/r4 (bullet points 12-16 words each)
+- layout "list": numbered bullets. Fields: b1/b2/b3/b4/b5 (12-18 words each), ki (key insight 12-18 words)
+
+LAYOUT ASSIGNMENT per slide type (use these exactly):
+- title: no layout needed. Fields: sub (subtitle)
+- overview: layout "cards" — c1h/c1b/c2h/c2b/c3h/c3b covering main categories
+- anatomy: layout "twocol" — lh=structure name, lb=anatomical description, r1-r4=labeled components
+- physiology: layout "stats" — 3 key quantitative physiological facts (use real numbers)
+- pathways: layout "list" — b1-b5 as sequential pathway steps with ki
+- clinical: layout "twocol" — lh=clinical context, lb=presentation/diagnosis paragraph, r1-r4=key clinical points
+- mindmap: layout "cards" — c1h/c1b/c2h/c2b/c3h/c3b covering 3 main branches
+- summary: layout "cards" — c1h/c1b/c2h/c2b/c3h/c3b for 3 key takeaway themes
+- conditions: no layout. b1-b6 = condition names
+- redflags: no layout. b1-b6 = warning signs
+- faq: no layout. faq field has data
+- glossary: no layout. refs field has data
+
+Return ONLY this flat JSON:
 {
   "title": "Full topic name",
   "subtitle": "Scope and audience",
@@ -327,41 +346,26 @@ Return ONLY this flat JSON (no nested arrays inside slide objects):
     {
       "n": 1,
       "type": "title",
-      "t": "slide title (same as topic for slide 1)",
+      "t": "slide title",
       "sub": "subtitle (title slide only)",
-      "b1": "point 1 (10-15 words, omit for title/mindmap slides)",
-      "b2": "point 2",
-      "b3": "point 3",
-      "b4": "point 4",
-      "b5": "point 5",
-      "b6": "point 6",
-      "ki": "key insight max 15 words (omit for title/mindmap/faq/glossary slides)",
-      "diag": "none|flowchart|concept|pathway",
-      "nodes": "Node1|Node2|Node3|Node4|Node5|Node6",
-      "edges": "0>1,1>2,2>3,0>3"
+      "layout": "list",
+      "b1": "", "b2": "", "b3": "", "b4": "", "b5": "", "b6": "", "ki": "",
+      "s1v": "", "s1l": "", "s1d": "", "s2v": "", "s2l": "", "s2d": "", "s3v": "", "s3l": "", "s3d": "", "caption": "",
+      "c1h": "", "c1b": "", "c2h": "", "c2b": "", "c3h": "", "c3b": "",
+      "lh": "", "lb": "", "r1": "", "r2": "", "r3": "", "r4": ""
     }
   ],
-  "faq": "Question1::Answer1 detailed||Question2::Answer2||Question3::Answer3||Question4::Answer4||Question5::Answer5||Question6::Answer6||Question7::Answer7||Question8::Answer8",
-  "refs": "Term1::Definition1||Term2::Definition2||Term3::Definition3||Term4::Definition4||Term5::Definition5||Term6::Definition6||Term7::Definition7||Term8::Definition8",
-  "conditions": "Name1::Features description::Clinical clue||Name2::Features::Clue||Name3::Features::Clue||Name4::Features::Clue||Name5::Features::Clue||Name6::Features::Clue",
+  "faq": "Question1::Answer1 detailed||Question2::Answer2||Question3::Answer3||Question4::Answer4||Question5::Answer5||Question6::Answer6",
+  "refs": "Term1::Definition1||Term2::Definition2||Term3::Definition3||Term4::Definition4||Term5::Definition5||Term6::Definition6",
+  "conditions": "Name1::Features description::Clinical clue||Name2::Features::Clue||Name3::Features::Clue||Name4::Features::Clue||Name5::Features::Clue",
   "redflags": "Warning 1 (urgent sign)||Warning 2||Warning 3||Warning 4||Warning 5||Warning 6"
 }
 
-DIAGRAM RULES — every content slide MUST have a real diagram:
-- "overview" slides:   diag="concept",   nodes=6 key concepts, edges="0>1,0>2,0>3,0>4,0>5"
-- "anatomy" slides:    diag="flowchart", nodes=6 anatomical components top-to-bottom, edges="0>1,1>2,2>3,3>4,4>5"
-- "physiology" slides: diag="flowchart", nodes=6 physiological steps in sequence, edges="0>1,1>2,2>3,3>4,4>5"
-- "pathways" slides:   diag="pathway",   nodes=6 pathway steps, edges="0>1,0>2,1>3,2>3,3>4,3>5"
-- "clinical" slides:   diag="pathway",   nodes=6 clinical steps/signs, edges="0>1,1>2,2>3,2>4,3>5,4>5"
-- "mindmap" slides:    diag="mindmap",   nodes=7 branch topics (first node = center topic), edges="0>1,0>2,0>3,0>4,0>5,0>6"
-- "conditions" slide: conditions field has data. Also set diag="concept", nodes=6 condition names
-- "redflags" slide: redflags field has data. Also set diag="flowchart", nodes=6 red flag keywords
-- "faq" slide: faq field has data. diag="none"
-- "glossary" slide: refs field has data. diag="none"
-- "summary" slide: diag="mindmap", nodes=7 summary topics
-- edges format: "src>dst" pairs comma-separated, zero-indexed
-- Node labels: 2-5 words, specific to the medical topic — NO generic names like "Step1" or "Node1"
-- All 6 bullets required on content slides
+RULES:
+- Stat values (s1v, s2v, s3v) must be real clinically accurate numbers/units (e.g. "120M", "43D", "0.5mm")
+- Card body text (c1b, c2b, c3b): 50-60 words each, complete sentences
+- Left body (lb): 40-55 words substantive paragraph
+- All fields present on every slide (empty string if not used for that layout)
 - ASCII only throughout`,
         },
       ],
@@ -402,11 +406,26 @@ DIAGRAM RULES — every content slide MUST have a real diagram:
     const slides = rawSlides.map((sl, idx) => ({
       n: Number(sl.n ?? idx + 1),
       type: String(sl.type ?? "content"),
+      layout: String(sl.layout ?? "list"),
       t: String(sl.t ?? `Slide ${idx + 1}`),
       sub: String(sl.sub ?? ""),
       bullets: ["b1","b2","b3","b4","b5","b6"]
         .map(k => String(sl[k] ?? "")).filter(Boolean),
       ki: String(sl.ki ?? ""),
+      caption: String(sl.caption ?? ""),
+      stats: [
+        { value: String(sl.s1v ?? ""), label: String(sl.s1l ?? ""), desc: String(sl.s1d ?? "") },
+        { value: String(sl.s2v ?? ""), label: String(sl.s2l ?? ""), desc: String(sl.s2d ?? "") },
+        { value: String(sl.s3v ?? ""), label: String(sl.s3l ?? ""), desc: String(sl.s3d ?? "") },
+      ].filter(st => st.value),
+      cards: [
+        { heading: String(sl.c1h ?? ""), body: String(sl.c1b ?? "") },
+        { heading: String(sl.c2h ?? ""), body: String(sl.c2b ?? "") },
+        { heading: String(sl.c3h ?? ""), body: String(sl.c3b ?? "") },
+      ].filter(c => c.heading),
+      leftHeading: String(sl.lh ?? ""),
+      leftBody: String(sl.lb ?? ""),
+      rightPoints: ["r1","r2","r3","r4"].map(k => String(sl[k] ?? "")).filter(Boolean),
       diag: String(sl.diag ?? "none"),
       nodes: String(sl.nodes ?? "").split("|").map(n => n.trim()).filter(Boolean),
       edges: parseEdges(String(sl.edges ?? "")),

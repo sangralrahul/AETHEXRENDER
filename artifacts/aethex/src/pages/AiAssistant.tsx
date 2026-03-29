@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import ringAnimImg from "@assets/photo_2026-03-29_15-00-52_1774776666332.jpg";
 import neuralNetImg from "@assets/photo_2026-03-29_15-00-48_1774776666333.jpg";
+import neuralNetBg from "@assets/photo_2026-03-29_15-00-48_1774779103993.jpg";
 import PresentationViewer, { type PresentationData } from "@/components/synapse/PresentationViewer";
 import SynapseLogo from "@/components/synapse/SynapseLogo";
 import DNABackground from "@/components/synapse/DNABackground";
@@ -1655,34 +1656,54 @@ export default function AiAssistant() {
 function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
   return (
     <div style={{ width: "320px" }}>
-      {/* Shimmer placeholder — Perplexity style */}
+      {/* Main placeholder square */}
       <div style={{
         position: "relative",
         width: "100%",
         paddingBottom: "100%",
-        borderRadius: "12px",
+        borderRadius: "14px",
         overflow: "hidden",
-        background: "#1a1a1a",
+        background: "#0a0f2c",
       }}>
-        {/* Base shimmer sweep */}
+        {/* Neural network background image — pulsing slowly */}
         <div style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(105deg, #1a1a1a 0%, #1a1a1a 35%, #2a2a2a 50%, #1a1a1a 65%, #1a1a1a 100%)",
+          backgroundImage: `url(${neuralNetBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center right",
+          animation: "synapse-img-bg-pulse 3.5s ease-in-out infinite",
+          opacity: 0.65,
+        }} />
+
+        {/* Dark overlay for depth */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(135deg, rgba(4,7,24,0.72) 0%, rgba(4,7,24,0.45) 60%, rgba(0,188,212,0.08) 100%)",
+        }} />
+
+        {/* Perplexity-style shimmer sweep — kept from original */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(105deg, transparent 0%, transparent 30%, rgba(0,188,212,0.07) 50%, transparent 70%, transparent 100%)",
           backgroundSize: "200% 100%",
           animation: "plx-shimmer 1.6s ease-in-out infinite",
         }} />
-        {/* Subtle inner structure lines — like a placeholder image grid */}
+
+        {/* Subtle teal grid lines */}
         <div style={{
           position: "absolute",
           inset: 0,
           background: `
-            linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)
+            linear-gradient(rgba(0,188,212,0.07) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,188,212,0.07) 1px, transparent 1px)
           `,
           backgroundSize: "40px 40px",
         }} />
-        {/* Center icon placeholder */}
+
+        {/* Center content */}
         <div style={{
           position: "absolute",
           inset: 0,
@@ -1690,46 +1711,70 @@ function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: "10px",
+          gap: "12px",
         }}>
-          <div style={{
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.06)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            animation: "plx-pulse 2s ease-in-out infinite",
-          }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <path d="m21 15-5-5L5 21" />
-            </svg>
+          {/* Spinning ring */}
+          <div style={{ position: "relative", width: "56px", height: "56px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "50%",
+              border: "2px solid rgba(0,188,212,0.15)",
+              borderTop: "2px solid #00BCD4",
+              animation: "spin 1.2s linear infinite",
+            }} />
+            <div style={{
+              position: "absolute",
+              inset: "8px",
+              borderRadius: "50%",
+              border: "1.5px solid rgba(0,188,212,0.08)",
+              borderBottom: "1.5px solid rgba(0,188,212,0.5)",
+              animation: "spin 2s linear infinite reverse",
+            }} />
+            {/* Inner icon */}
+            <div style={{
+              width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center",
+              animation: "plx-pulse 2s ease-in-out infinite",
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(0,188,212,0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <path d="m21 15-5-5L5 21" />
+              </svg>
+            </div>
           </div>
-          <span style={{
-            fontSize: "11px",
-            color: "rgba(255,255,255,0.2)",
-            letterSpacing: "0.04em",
-            fontWeight: 500,
-          }}>
-            Generating image…
-          </span>
+
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
+            <span style={{ fontSize: "12px", color: "rgba(0,188,212,0.85)", fontWeight: 600, letterSpacing: "0.06em" }}>
+              GENERATING IMAGE
+            </span>
+            <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", letterSpacing: "0.04em" }}>
+              SYNAPSE AI · DALL-E 3
+            </span>
+          </div>
         </div>
+
+        {/* Bottom gradient fade */}
+        <div style={{
+          position: "absolute",
+          bottom: 0, left: 0, right: 0,
+          height: "60px",
+          background: "linear-gradient(transparent, rgba(4,7,24,0.7))",
+        }} />
       </div>
 
       {/* Prompt text below */}
       <div style={{
         marginTop: "10px",
-        fontSize: "12px",
-        color: "rgba(255,255,255,0.3)",
+        fontSize: "11px",
+        color: "rgba(0,188,212,0.45)",
         overflow: "hidden",
         textOverflow: "ellipsis",
         whiteSpace: "nowrap",
-        letterSpacing: "0.01em",
+        letterSpacing: "0.02em",
+        fontWeight: 500,
       }}>
-        {prompt.length > 50 ? prompt.substring(0, 50) + "…" : prompt}
+        {prompt.length > 55 ? prompt.substring(0, 55) + "…" : prompt}
       </div>
     </div>
   );

@@ -1653,180 +1653,83 @@ export default function AiAssistant() {
 }
 
 function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
-  const [phase, setPhase] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const phases = [
-    "Initializing neural network…",
-    "Processing visual tokens…",
-    "Synthesizing anatomy…",
-    "Rendering fine details…",
-    "Applying clinical clarity…",
-    "Finalizing medical image…",
-  ];
-  useEffect(() => {
-    const t = setInterval(() => setPhase(p => (p + 1) % phases.length), 2200);
-    return () => clearInterval(t);
-  }, []);
-  useEffect(() => {
-    setProgress(0);
-    const t = setInterval(() => setProgress(p => {
-      if (p >= 95) return p;
-      return p + (Math.random() * 3.5);
-    }), 180);
-    return () => clearInterval(t);
-  }, []);
-
   return (
-    <div style={{
-      background: "transparent",
-      borderRadius: "18px",
-      overflow: "hidden",
-      minWidth: "280px",
-      maxWidth: "340px",
-    }}>
-      {/* Main visual — neural net bg + rotating ring overlay */}
-      <div style={{ position: "relative", height: "190px", overflow: "hidden" }}>
-        {/* Neural network background */}
-        <img src={neuralNetImg} alt=""
-          style={{
-            position: "absolute", inset: 0,
-            width: "100%", height: "100%",
-            objectFit: "cover",
-            opacity: 0.55,
-            animation: "synapse-img-bg-pulse 3s ease-in-out infinite",
-          }} />
-        {/* Dark vignette overlay */}
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "radial-gradient(ellipse at center, transparent 30%, rgba(2,6,20,0.75) 100%)",
-          pointerEvents: "none",
-        }} />
-        {/* Blue ring — spinning */}
-        <div style={{
-          position: "absolute", inset: 0,
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}>
-          <img src={ringAnimImg} alt=""
-            style={{
-              width: "140px", height: "140px",
-              objectFit: "contain",
-              animation: "synapse-ring-spin 3.5s linear infinite",
-              filter: "drop-shadow(0 0 18px rgba(0,180,255,0.7)) drop-shadow(0 0 36px rgba(0,120,220,0.4))",
-            }} />
-        </div>
-        {/* Inner glow pulse */}
-        <div style={{
-          position: "absolute", inset: 0,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          pointerEvents: "none",
-        }}>
-          <div style={{
-            width: "72px", height: "72px",
-            borderRadius: "50%",
-            background: "rgba(0,180,255,0.08)",
-            animation: "synapse-core-pulse 1.6s ease-in-out infinite",
-            boxShadow: "0 0 30px 10px rgba(0,150,255,0.12)",
-          }} />
-        </div>
-        {/* LIVE badge */}
-        <div style={{
-          position: "absolute", top: "10px", right: "12px",
-          display: "flex", alignItems: "center", gap: "5px",
-          background: "rgba(0,0,0,0.5)",
-          backdropFilter: "blur(8px)",
-          border: "1px solid rgba(0,220,255,0.2)",
-          borderRadius: "20px",
-          padding: "3px 8px",
-        }}>
-          <div style={{
-            width: "5px", height: "5px", borderRadius: "50%",
-            background: "#00e5ff",
-            boxShadow: "0 0 6px 3px rgba(0,229,255,0.6)",
-            animation: "synapse-dot-blink 1s ease-in-out infinite",
-          }} />
-          <span style={{ fontSize: "9px", fontWeight: 700, color: "#00e5ff", letterSpacing: "0.08em", fontFamily: "monospace" }}>
-            LIVE
-          </span>
-        </div>
-        {/* Particle dots */}
-        {[...Array(6)].map((_, i) => (
-          <div key={i} style={{
-            position: "absolute",
-            width: `${3 + (i % 3)}px`, height: `${3 + (i % 3)}px`,
-            borderRadius: "50%",
-            background: "rgba(0,200,255,0.7)",
-            left: `${15 + i * 14}%`,
-            top: `${20 + (i % 2) * 50}%`,
-            animation: `synapse-particle 2s ease-in-out ${i * 0.35}s infinite`,
-            boxShadow: "0 0 6px rgba(0,200,255,0.6)",
-          }} />
-        ))}
-      </div>
-
-      {/* Progress bar + info — glass backdrop */}
+    <div style={{ width: "320px" }}>
+      {/* Shimmer placeholder — Perplexity style */}
       <div style={{
-        background: "rgba(2,6,20,0.72)",
-        backdropFilter: "blur(12px)",
-        borderBottomLeftRadius: "18px",
-        borderBottomRightRadius: "18px",
-        border: "1px solid rgba(0,150,212,0.18)",
-        borderTop: "none",
+        position: "relative",
+        width: "100%",
+        paddingBottom: "100%",
+        borderRadius: "12px",
+        overflow: "hidden",
+        background: "#1a1a1a",
       }}>
-      <div style={{ padding: "10px 14px 0" }}>
-        <div style={{ height: "2px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", overflow: "hidden" }}>
+        {/* Base shimmer sweep */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(105deg, #1a1a1a 0%, #1a1a1a 35%, #2a2a2a 50%, #1a1a1a 65%, #1a1a1a 100%)",
+          backgroundSize: "200% 100%",
+          animation: "plx-shimmer 1.6s ease-in-out infinite",
+        }} />
+        {/* Subtle inner structure lines — like a placeholder image grid */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: `
+            linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)
+          `,
+          backgroundSize: "40px 40px",
+        }} />
+        {/* Center icon placeholder */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "10px",
+        }}>
           <div style={{
-            height: "100%",
-            width: `${Math.min(progress, 95)}%`,
-            background: "linear-gradient(to right, #0070f3, #00e5ff)",
-            borderRadius: "2px",
-            transition: "width 0.18s ease-out",
-            boxShadow: "0 0 8px rgba(0,180,255,0.6)",
-          }} />
-        </div>
-      </div>
-
-      {/* Info row */}
-      <div style={{ padding: "8px 14px 12px" }}>
-        {/* Prompt preview */}
-        <div style={{
-          fontSize: "10px", color: "rgba(100,180,255,0.4)",
-          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-          marginBottom: "5px", letterSpacing: "0.02em",
-        }}>
-          "{prompt.length > 42 ? prompt.substring(0, 42) + "…" : prompt}"
-        </div>
-        {/* Shimmer heading */}
-        <div style={{
-          fontSize: "13px", fontWeight: 700,
-          background: "linear-gradient(90deg, #00cfff, #7c5cfc, #00e5ff, #00cfff)",
-          backgroundSize: "250% auto",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
-          animation: "img-gen-shimmer 2.4s linear infinite",
-          marginBottom: "5px",
-        }}>
-          Generating medical image
-        </div>
-        {/* Phase + progress % */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div key={phase} style={{
-            fontSize: "11px", color: "rgba(100,200,255,0.65)",
-            animation: "img-gen-text-in 0.3s ease-out",
-            display: "flex", alignItems: "center", gap: "5px",
+            width: "36px",
+            height: "36px",
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.06)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            animation: "plx-pulse 2s ease-in-out infinite",
           }}>
-            <div style={{
-              width: "5px", height: "5px", borderRadius: "50%",
-              background: "#00cfff", boxShadow: "0 0 5px rgba(0,200,255,0.6)",
-              animation: "synapse-dot-blink 1s ease-in-out infinite",
-            }} />
-            {phases[phase]}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <path d="m21 15-5-5L5 21" />
+            </svg>
           </div>
-          <span style={{ fontSize: "11px", fontFamily: "monospace", color: "rgba(0,200,255,0.5)", fontWeight: 600 }}>
-            {Math.round(Math.min(progress, 95))}%
+          <span style={{
+            fontSize: "11px",
+            color: "rgba(255,255,255,0.2)",
+            letterSpacing: "0.04em",
+            fontWeight: 500,
+          }}>
+            Generating image…
           </span>
         </div>
       </div>
+
+      {/* Prompt text below */}
+      <div style={{
+        marginTop: "10px",
+        fontSize: "12px",
+        color: "rgba(255,255,255,0.3)",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        letterSpacing: "0.01em",
+      }}>
+        {prompt.length > 50 ? prompt.substring(0, 50) + "…" : prompt}
       </div>
     </div>
   );

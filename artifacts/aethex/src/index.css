@@ -190,6 +190,16 @@
   50%       { opacity: 1;   text-shadow: 0 0 14px #00E5FF, 0 0 24px #00BCD4; }
 }
 
+/* Perplexity-style image generation shimmer */
+@keyframes plx-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes plx-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.06); }
+}
+
 /* Synapse image generation animation */
 @keyframes synapse-ring-spin {
   0%   { transform: rotate(0deg); }

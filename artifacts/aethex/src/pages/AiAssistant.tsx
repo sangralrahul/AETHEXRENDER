@@ -1678,13 +1678,11 @@ function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
 
   return (
     <div style={{
-      background: "linear-gradient(160deg, rgba(2,6,20,0.98) 0%, rgba(3,12,35,0.98) 100%)",
-      border: "1px solid rgba(0,150,212,0.25)",
+      background: "transparent",
       borderRadius: "18px",
       overflow: "hidden",
       minWidth: "280px",
       maxWidth: "340px",
-      boxShadow: "0 0 40px rgba(0,120,200,0.15)",
     }}>
       {/* Main visual — neural net bg + rotating ring overlay */}
       <div style={{ position: "relative", height: "190px", overflow: "hidden" }}>
@@ -1765,8 +1763,16 @@ function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
         ))}
       </div>
 
-      {/* Progress bar */}
-      <div style={{ padding: "0 14px", marginTop: "-2px" }}>
+      {/* Progress bar + info — glass backdrop */}
+      <div style={{
+        background: "rgba(2,6,20,0.72)",
+        backdropFilter: "blur(12px)",
+        borderBottomLeftRadius: "18px",
+        borderBottomRightRadius: "18px",
+        border: "1px solid rgba(0,150,212,0.18)",
+        borderTop: "none",
+      }}>
+      <div style={{ padding: "10px 14px 0" }}>
         <div style={{ height: "2px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", overflow: "hidden" }}>
           <div style={{
             height: "100%",
@@ -1780,7 +1786,7 @@ function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
       </div>
 
       {/* Info row */}
-      <div style={{ padding: "10px 14px 14px" }}>
+      <div style={{ padding: "8px 14px 12px" }}>
         {/* Prompt preview */}
         <div style={{
           fontSize: "10px", color: "rgba(100,180,255,0.4)",
@@ -1820,6 +1826,7 @@ function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
             {Math.round(Math.min(progress, 95))}%
           </span>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ export interface PresentationSlide {
   diag?: string;
   nodes?: string[];
   edges?: [number, number][];
+  imageUrl?: string;
 }
 
 export interface PresentationData {
@@ -136,12 +137,93 @@ function ConceptStrip({ nodes }: { nodes: string[] }) {
   );
 }
 
+function SlideImagePanel({ imageUrl, diag, nodes, edges }: {
+  imageUrl?: string;
+  diag: string;
+  nodes: string[];
+  edges: [number, number][];
+}) {
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const hasDiag = diag !== "none" && nodes.length > 0;
+  const chart = hasDiag ? nodesToMermaid(diag, nodes, edges) : "";
+
+  if (imageUrl && !imgError) {
+    return (
+      <div style={{
+        background: "rgba(0,0,0,0.6)",
+        borderRadius: 14,
+        border: `1px solid rgba(0,188,212,0.35)`,
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}>
+        {!imgLoaded && (
+          <div style={{
+            position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center", gap: 10,
+            background: "#0A0F2C",
+          }}>
+            <div style={{ width: 48, height: 48, border: `3px solid rgba(0,188,212,0.2)`, borderTop: `3px solid ${TEAL}`, borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+            <span style={{ color: "rgba(0,188,212,0.5)", fontSize: 11 }}>Loading illustration…</span>
+          </div>
+        )}
+        <img
+          src={imageUrl}
+          alt={`Medical illustration`}
+          onLoad={() => setImgLoaded(true)}
+          onError={() => setImgError(true)}
+          style={{
+            width: "100%", height: "100%", objectFit: "cover",
+            display: imgLoaded ? "block" : "none",
+          }}
+        />
+        <div style={{
+          position: "absolute", bottom: 0, left: 0, right: 0,
+          background: "linear-gradient(transparent, rgba(0,0,0,0.75))",
+          padding: "18px 12px 8px",
+          display: "flex", alignItems: "center", gap: 6,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: TEAL, flexShrink: 0 }} />
+          <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 9, fontWeight: "bold", letterSpacing: "0.07em", textTransform: "uppercase" }}>
+            AI Medical Illustration · SYNAPSE
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      background: "rgba(255,255,255,0.04)",
+      borderRadius: 14,
+      border: `1px solid rgba(0,188,212,0.28)`,
+      padding: "14px 14px 10px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: hasDiag ? "flex-start" : "center",
+      overflow: "hidden",
+    }}>
+      {hasDiag ? (
+        <>
+          <DiagramLabel diag={diag} />
+          <div style={{ width: "100%", overflow: "auto", flex: 1 }}>
+            <MermaidDiagram chart={chart} />
+          </div>
+        </>
+      ) : (
+        <p style={{ color: "rgba(0,188,212,0.25)", fontSize: 12, margin: 0 }}>No diagram available</p>
+      )}
+    </div>
+  );
+}
+
 function SpecSlide({ slide, current, total }: { slide: PresentationSlide; current: number; total: number }) {
   const diag = slide.diag ?? "none";
   const nodes = slide.nodes ?? [];
   const edges = slide.edges ?? [];
-  const hasDiag = diag !== "none" && nodes.length > 0;
-  const chart = hasDiag ? nodesToMermaid(diag, nodes, edges) : "";
 
   return (
     <div style={{
@@ -221,29 +303,8 @@ function SpecSlide({ slide, current, total }: { slide: PresentationSlide; curren
           )}
         </div>
 
-        {/* RIGHT PANEL — DIAGRAM */}
-        <div style={{
-          background: "rgba(255,255,255,0.04)",
-          borderRadius: 14,
-          border: `1px solid rgba(0,188,212,0.28)`,
-          padding: "14px 14px 10px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: hasDiag ? "flex-start" : "center",
-          overflow: "hidden",
-        }}>
-          {hasDiag ? (
-            <>
-              <DiagramLabel diag={diag} />
-              <div style={{ width: "100%", overflow: "auto", flex: 1 }}>
-                <MermaidDiagram chart={chart} />
-              </div>
-            </>
-          ) : (
-            <p style={{ color: "rgba(0,188,212,0.25)", fontSize: 12, margin: 0 }}>No diagram available</p>
-          )}
-        </div>
+        {/* RIGHT PANEL — AI IMAGE or DIAGRAM */}
+        <SlideImagePanel imageUrl={slide.imageUrl} diag={diag} nodes={nodes} edges={edges} />
       </div>
 
       {/* ── BOTTOM CONCEPT STRIP ── */}

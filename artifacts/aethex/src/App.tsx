@@ -2,6 +2,7 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useState, useEffect } from "react";
 import NotFound from "@/pages/not-found";
 
 import { Navbar } from "@/components/layout/Navbar";
@@ -15,20 +16,58 @@ import AiAssistant from "@/pages/AiAssistant";
 import OrderTracking from "@/pages/OrderTracking";
 import MyReviews from "@/pages/MyReviews";
 import AdminReviews from "@/pages/AdminReviews";
+import AdminSellers from "@/pages/AdminSellers";
+import SellerStorefront from "@/pages/SellerStorefront";
+
+import SellerRegister from "@/pages/seller/Register";
+import SellerLogin from "@/pages/seller/Login";
+import SellerDashboard from "@/pages/seller/Dashboard";
+import SellerProducts from "@/pages/seller/Products";
+import SellerOrders from "@/pages/seller/Orders";
+import SellerPayouts from "@/pages/seller/Payouts";
+import SellerAnalytics from "@/pages/seller/Analytics";
+import SellerSettings from "@/pages/seller/Settings";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      staleTime: 1000 * 60 * 5,
-    },
+    queries: { refetchOnWindowFocus: false, staleTime: 1000 * 60 * 5 },
   },
 });
 
 function Router() {
+  const [sellerSession, setSellerSession] = useState<any | null>(() => {
+    try {
+      const raw = localStorage.getItem("aethex_seller_info");
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  });
+
+  const handleSellerLogin = (seller: any) => setSellerSession(seller);
+  const handleSellerLogout = () => {
+    localStorage.removeItem("aethex_seller_code");
+    localStorage.removeItem("aethex_seller_info");
+    setSellerSession(null);
+    window.location.href = "/seller/login";
+  };
+
+  const sellerProps = { seller: sellerSession, onLogout: handleSellerLogout };
+
   return (
     <Switch>
+      {/* Full-screen pages (no Navbar/Footer) */}
       <Route path="/ai-assistant" component={AiAssistant} />
+      <Route path="/seller/register" component={SellerRegister} />
+      <Route path="/seller/login">{() => <SellerLogin onLogin={handleSellerLogin} />}</Route>
+
+      {/* Seller Dashboard pages (no Navbar/Footer) */}
+      <Route path="/seller/dashboard">{() => sellerSession ? <SellerDashboard {...sellerProps} /> : <SellerLogin onLogin={handleSellerLogin} />}</Route>
+      <Route path="/seller/products">{() => sellerSession ? <SellerProducts {...sellerProps} /> : <SellerLogin onLogin={handleSellerLogin} />}</Route>
+      <Route path="/seller/orders">{() => sellerSession ? <SellerOrders {...sellerProps} /> : <SellerLogin onLogin={handleSellerLogin} />}</Route>
+      <Route path="/seller/payouts">{() => sellerSession ? <SellerPayouts {...sellerProps} /> : <SellerLogin onLogin={handleSellerLogin} />}</Route>
+      <Route path="/seller/analytics">{() => sellerSession ? <SellerAnalytics {...sellerProps} /> : <SellerLogin onLogin={handleSellerLogin} />}</Route>
+      <Route path="/seller/settings">{() => sellerSession ? <SellerSettings {...sellerProps} /> : <SellerLogin onLogin={handleSellerLogin} />}</Route>
+
+      {/* Pages with Navbar + Footer */}
       <Route>
         {() => (
           <div className="flex flex-col min-h-screen">
@@ -43,6 +82,8 @@ function Router() {
                 <Route path="/orders/track" component={OrderTracking} />
                 <Route path="/my-reviews" component={MyReviews} />
                 <Route path="/admin/reviews" component={AdminReviews} />
+                <Route path="/admin/sellers" component={AdminSellers} />
+                <Route path="/seller/:code/store" component={SellerStorefront} />
                 <Route component={NotFound} />
               </Switch>
             </main>

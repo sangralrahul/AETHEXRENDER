@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useState, useEffect, useRef } from "react";
@@ -115,9 +115,18 @@ export function Navbar() {
                     <MapPin className="w-4 h-4" /> Track Order
                   </Link>
                   <div className="border-t border-slate-100 my-1" />
+                  <Link href="/seller/dashboard" onClick={() => setAccountOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors">
+                    <Store className="w-4 h-4" /> Seller Hub
+                  </Link>
+                  <div className="border-t border-slate-100 my-1" />
                   <Link href="/admin/reviews" onClick={() => setAccountOpen(false)}
                     className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-primary transition-colors">
                     <ShieldCheck className="w-4 h-4" /> Admin Reviews
+                  </Link>
+                  <Link href="/admin/sellers" onClick={() => setAccountOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-primary transition-colors">
+                    <ShieldCheck className="w-4 h-4" /> Admin Sellers
                   </Link>
                 </div>
               )}

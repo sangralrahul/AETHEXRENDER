@@ -1,0 +1,86 @@
+Now build a full Seller Onboarding system for Aethex. This allows medical brands and suppliers to list and sell their own products on Aethex (like Amazon seller). Here is everything needed:
+
+---
+
+1. SELLER REGISTRATION (/seller/register)
+- Separate seller signup form (not regular user signup)
+- Fields required:
+  * Business name
+  * Owner name
+  * Business email + phone
+  * GST number (mandatory for India)
+  * Business category (Surgical, Diagnostics, Pharma, PPE, Equipment, etc.)
+  * Business address + pincode
+  * Bank account details for payouts (account number, IFSC, account holder name)
+  * Upload: GST certificate, PAN card, business registration proof
+- After submission: "Your seller application is under review. We will contact you within 48 hours."
+- Admin gets notified of new seller application
+
+---
+
+2. SELLER APPROVAL (Admin Panel)
+- New seller applications listed under Admin > Sellers > Pending
+- Admin can: Approve, Reject with reason, Request more documents
+- On approval: seller gets email with login credentials for seller dashboard
+- On rejection: seller gets email with reason
+
+---
+
+3. SELLER DASHBOARD (/seller/dashboard)
+- Overview: total products listed, total orders, total revenue, pending payouts
+- Quick stats: this month sales, top selling product, average rating
+- Sidebar: Dashboard, Products, Orders, Payouts, Analytics, Settings
+
+---
+
+4. SELLER PRODUCT MANAGEMENT
+- Add new product: name, description, category, price, MRP, GST%, stock, images (up to 5), specifications, shipping weight
+- Products go to Pending review before going live on Aethex
+- Edit/delete existing products
+- See product performance: views, add to cart count, sales
+- Low stock alerts (when stock < 10)
+
+---
+
+5. SELLER ORDER MANAGEMENT
+- See all orders for their products only
+- Accept or reject incoming orders
+- Mark as shipped with courier name + tracking number
+- View buyer delivery address
+- Download packing slip PDF for each order
+
+---
+
+6. PAYOUTS
+- Aethex takes 10% commission on every sale (show this clearly)
+- Remaining 90% goes to seller
+- Payouts processed every 7 days automatically via Razorpay Route or manual bank transfer
+- Payout history page: date, amount, status (paid/pending)
+- Minimum payout threshold: ₹500
+
+---
+
+7. SELLER ANALYTICS
+- Revenue chart: daily/weekly/monthly
+- Top products by sales and revenue
+- Order status breakdown
+- Customer locations (state-wise)
+
+---
+
+8. SELLER SETTINGS
+- Edit business profile
+- Update bank details
+- Shipping settings: which pincodes they deliver to, delivery time estimate
+- Vacation mode: temporarily hide all their products
+
+---
+
+9. SELLER BADGE ON PRODUCT PAGES
+- Each product shows seller name + rating on product detail page
+- Clicking seller name shows their mini storefront with all their products
+- Top sellers get a Verified Seller badge
+
+---
+
+Keep dark theme throughout. Do NOT touch login page. Confirm when done.

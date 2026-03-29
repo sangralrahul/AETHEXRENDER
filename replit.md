@@ -35,6 +35,21 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
   - Product cards show filled star ratings
   - User account dropdown in Navbar → My Reviews, Track Order, Admin Reviews
 - **DB Tables**: products, categories, cart_items, orders, notifications, reviews, review_votes, platform_reviews, banned_words
+- **Seller Onboarding System**:
+  - Seller registration (/seller/register) — 3-step wizard: Business Info, Bank Details, Documents
+  - Seller login (/seller/login) — code-based (SELL-XXXX); demo: SELL-0001
+  - Seller Dashboard (/seller/dashboard) — stats, revenue chart (recharts), top products, commission notice
+  - Seller Products (/seller/products) — full CRUD with 5-image upload, low-stock alerts, status badges
+  - Seller Orders (/seller/orders) — accept/reject/ship/deliver workflow, tracking info, packing slip download
+  - Seller Payouts (/seller/payouts) — 10% commission, 90% to seller, 7-day cycle, ₹500 minimum threshold
+  - Seller Analytics (/seller/analytics) — line chart (revenue + orders), order breakdown pie, top-products bar
+  - Seller Settings (/seller/settings) — vacation mode toggle, business profile, bank details, delivery pincodes
+  - Admin Sellers (/admin/sellers) — pending/approved/rejected tabs, approve/reject/request docs, shows seller code on approval
+  - Seller Storefront (/seller/:code/store) — public mini-store with all live products
+  - Seller badge visible in Navbar account dropdown (Seller Hub, Admin Sellers)
+  - Dark theme throughout all seller pages; no Navbar/Footer on seller dashboard
+  - Demo seller: SELL-0001, MedTech Solutions India, 5 products (4 live + 1 pending), demo orders + payouts
+- **DB Tables**: products, categories, cart_items, orders, notifications, reviews, review_votes, platform_reviews, banned_words, sellers, seller_products, seller_orders, seller_payouts
 
 # Workspace
 

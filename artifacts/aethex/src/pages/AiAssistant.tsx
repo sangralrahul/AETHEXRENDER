@@ -702,8 +702,17 @@ export default function AiAssistant() {
   return (
     <div className="h-screen flex overflow-hidden relative" style={{ background: "var(--sp-root-bg)", ...themeVars }}>
 
-      {/* Blink-style spotlight background */}
-      <div className="synapse-spotlight" />
+      {/* Blink-style spotlight background — 3 layers (fully inline) */}
+      <div style={{ position:"absolute", inset:0, pointerEvents:"none", zIndex:1,
+        background:"radial-gradient(ellipse 85% 65% at 50% -5%, rgba(28,70,200,0.55) 0%, rgba(10,30,90,0.35) 40%, transparent 68%)",
+        animation:"synapse-spot-breathe 5s ease-in-out infinite" }} />
+      <div style={{ position:"absolute", inset:0, pointerEvents:"none", zIndex:1,
+        background:"radial-gradient(ellipse 42% 36% at 50% -2%, rgba(100,180,255,0.18) 0%, rgba(50,120,255,0.08) 45%, transparent 70%)",
+        animation:"synapse-spot-pulse 3.5s ease-in-out infinite", animationDelay:"-1.5s" }} />
+      <div style={{ position:"absolute", top:-40, left:"50%", transform:"translateX(-50%)", width:420, height:230,
+        borderRadius:"50%", pointerEvents:"none", zIndex:1,
+        background:"radial-gradient(ellipse at 50% 30%, rgba(60,140,255,0.14) 0%, transparent 65%)",
+        animation:"synapse-spot-pulse 4s ease-in-out infinite", animationDelay:"-0.7s" }} />
 
       {/* Hidden inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFileSelect(e, "image")} />

@@ -228,28 +228,62 @@
 }
 
 /* ── Blink-style spotlight background animation ─────────────────────────── */
-@keyframes synapse-spotlight-breathe {
-  0%, 100% {
-    opacity: 0.75;
-    transform: scaleX(1) scaleY(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scaleX(1.12) scaleY(1.08);
-  }
+@keyframes synapse-spot-breathe {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1;   }
+}
+@keyframes synapse-spot-pulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1;   }
 }
 
-.synapse-spotlight {
+.synapse-spot-outer {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(ellipse 85% 65% at 50% -8%,
-      rgba(18, 28, 64, 0.92) 0%,
-      rgba(8, 14, 36, 0.55) 38%,
-      rgba(0, 0, 0, 0) 68%
-    );
-  animation: synapse-spotlight-breathe 5s ease-in-out infinite;
-  transform-origin: top center;
+  background: radial-gradient(
+    ellipse 85% 65% at 50% -5%,
+    rgba(28, 70, 200, 0.55)   0%,
+    rgba(10, 30,  90, 0.35)   40%,
+    transparent               68%
+  );
+  animation: synapse-spot-breathe 5s ease-in-out infinite;
+  will-change: opacity;
+}
+
+.synapse-spot-inner {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse 42% 36% at 50% -2%,
+    rgba(100, 180, 255, 0.18) 0%,
+    rgba( 50, 120, 255, 0.08) 45%,
+    transparent               70%
+  );
+  animation: synapse-spot-pulse 3.5s ease-in-out infinite;
+  animation-delay: -1.5s;
+  will-change: opacity;
+}
+
+.synapse-spot-glow {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 220px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    rgba(60, 140, 255, 0.14) 0%,
+    transparent              65%
+  );
+  animation: synapse-spot-pulse 4s ease-in-out infinite;
+  animation-delay: -0.7s;
+  will-change: opacity;
 }

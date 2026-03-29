@@ -993,187 +993,211 @@ STRICT RULES:
       const BODY_H = BODY_TOP_Y - FOOTER_H;
 
       // ════════════════════════════════════════════════════════════════════
-      // LAYOUT: STATS  (3 big numbers like Gamma)
+      // LAYOUT: STATS  — Gamma-scale huge numbers with dramatic typography
       // ════════════════════════════════════════════════════════════════════
       if (slide.layout === "stats" && slide.stats.length >= 2) {
         const stats = slide.stats.slice(0, 3);
         const nCols = stats.length;
-        const COL_W = Math.floor((W - 28) / nCols);
-        const COL_GAP = 6;
+        const COL_W = Math.floor((W - 16) / nCols);
+
+        // Full-width light bottom band for context
+        const BAND_H = 110;
+        p.drawRectangle({ x: 0, y: FOOTER_H, width: W, height: BAND_H, color: LGRAY });
+        p.drawRectangle({ x: 0, y: FOOTER_H + BAND_H, width: W, height: 1, color: rgb(0.82, 0.88, 0.86) });
 
         stats.forEach((st, ci) => {
-          const cx = 12 + ci * (COL_W + COL_GAP);
+          const colX = ci * COL_W;
+          const colCX = colX + COL_W / 2;
+
           // Column divider (not after last)
           if (ci < nCols - 1)
-            p.drawRectangle({ x: cx + COL_W + 1, y: FOOTER_H + 30, width: 1, height: BODY_H - 70, color: rgb(0.84, 0.90, 0.88) });
+            p.drawRectangle({ x: colX + COL_W - 1, y: FOOTER_H + 20, width: 1, height: BODY_H - 40, color: rgb(0.82, 0.88, 0.86) });
 
-          // Big stat value — centered, very large
+          // === BIG STAT VALUE — massive, visually dominant ===
           const valStr = s(st.value);
-          const valSize = valStr.length <= 4 ? 64 : valStr.length <= 6 ? 52 : 42;
+          const valSize = valStr.length <= 3 ? 96 : valStr.length <= 5 ? 80 : valStr.length <= 7 ? 66 : 54;
           const valW = boldFont.widthOfTextAtSize(valStr, valSize);
-          const colCX = cx + COL_W / 2;
-          p.drawText(valStr, { x: colCX - valW / 2, y: FOOTER_H + BODY_H * 0.50, size: valSize, font: boldFont, color: TEAL });
-
-          // Label
-          const labStr = s(st.label);
-          const labW = boldFont.widthOfTextAtSize(labStr, 14);
-          p.drawText(labStr, { x: colCX - labW / 2, y: FOOTER_H + BODY_H * 0.35, size: 14, font: boldFont, color: DARK });
-
-          // Description (wrapped)
-          const descLines = wrap(s(st.desc), regFont, 10, COL_W - 20);
-          descLines.slice(0, 3).forEach((dl, di) => {
-            const descW = regFont.widthOfTextAtSize(dl, 10);
-            p.drawText(dl, { x: colCX - descW / 2, y: FOOTER_H + BODY_H * 0.25 - di * 13, size: 10, font: regFont, color: GRAY });
+          // Vertical center of the white area above the band
+          const whiteAreaMid = FOOTER_H + BAND_H + (BODY_H - BAND_H) / 2;
+          p.drawText(valStr, {
+            x: colCX - Math.min(valW / 2, COL_W / 2 - 8),
+            y: whiteAreaMid - valSize * 0.35,
+            size: valSize, font: boldFont, color: TEAL,
           });
 
-          // Top accent line above value
-          p.drawRectangle({ x: colCX - 24, y: FOOTER_H + BODY_H * 0.62, width: 48, height: 4, color: TEAL });
+          // Teal accent line under the value (sits at the band boundary)
+          p.drawRectangle({ x: colCX - 36, y: FOOTER_H + BAND_H + 8, width: 72, height: 5, color: TEAL });
+
+          // Label — large, bold, inside the band
+          const labStr = s(st.label);
+          const labSize = 15;
+          const labW = boldFont.widthOfTextAtSize(labStr, labSize);
+          p.drawText(labStr, { x: colCX - labW / 2, y: FOOTER_H + BAND_H - 24, size: labSize, font: boldFont, color: DARK });
+
+          // Description — wrapped, below label, in band
+          const descLines = wrap(s(st.desc), regFont, 10.5, COL_W - 24);
+          descLines.slice(0, 3).forEach((dl, di) => {
+            const descW = regFont.widthOfTextAtSize(dl, 10.5);
+            p.drawText(dl, { x: colCX - descW / 2, y: FOOTER_H + BAND_H - 44 - di * 14, size: 10.5, font: regFont, color: GRAY });
+          });
         });
 
-        // Caption at very bottom
+        // Caption — centered, bottom of band
         if (slide.caption) {
-          const capLines = wrap(s(slide.caption), oblFont, 10, W - 60);
-          capLines.slice(0, 2).forEach((cl, ci) => {
+          const capLines = wrap(s(slide.caption), oblFont, 10, W - 80);
+          capLines.slice(0, 2).forEach((cl, ci2) => {
             const cw = oblFont.widthOfTextAtSize(cl, 10);
-            p.drawText(cl, { x: W / 2 - cw / 2, y: FOOTER_H + 18 + (capLines.length - 1 - ci) * 13, size: 10, font: oblFont, color: GRAY });
+            p.drawText(cl, { x: W / 2 - cw / 2, y: FOOTER_H + 12 + (capLines.length - 1 - ci2) * 14, size: 10, font: oblFont, color: GRAY });
           });
         }
       }
 
       // ════════════════════════════════════════════════════════════════════
-      // LAYOUT: CARDS  (3-column card grid like Gamma "Debunking Myths")
+      // LAYOUT: CARDS  — Gamma "Debunking Myths" style 3-column cards
       // ════════════════════════════════════════════════════════════════════
       else if (slide.layout === "cards" && slide.cards.length >= 2) {
         const cards = slide.cards.slice(0, 3);
         const nCols = cards.length;
-        const CARD_OUTER = Math.floor((W - 28) / nCols);
-        const CARD_PAD = 6;
-        const CARD_W = CARD_OUTER - CARD_PAD;
-        const CARD_TOP = BODY_TOP_Y - 14;
-        const CARD_BOT = FOOTER_H + 12;
-        const CARD_H_VAL = CARD_TOP - CARD_BOT;
+        const GAP = 10;
+        const CARD_W = Math.floor((W - 16 - GAP * (nCols - 1)) / nCols);
+        const CARD_TOP_Y = BODY_TOP_Y - 10;
+        const CARD_BOT_Y = FOOTER_H + 10;
+        const CARD_H_VAL = CARD_TOP_Y - CARD_BOT_Y;
 
         cards.forEach((card, ci) => {
-          const cx = 12 + ci * (CARD_OUTER);
+          const cx = 8 + ci * (CARD_W + GAP);
+
           // Shadow
-          p.drawRectangle({ x: cx + 4, y: CARD_BOT - 4, width: CARD_W, height: CARD_H_VAL, color: SHADOW });
-          // Card body
-          p.drawRectangle({ x: cx, y: CARD_BOT, width: CARD_W, height: CARD_H_VAL, color: WHITE });
-          // Top teal accent stripe
-          p.drawRectangle({ x: cx, y: CARD_BOT + CARD_H_VAL - 5, width: CARD_W, height: 5, color: TEAL });
-          // Card number (large, decorative, top-left)
+          p.drawRectangle({ x: cx + 5, y: CARD_BOT_Y - 5, width: CARD_W, height: CARD_H_VAL, color: SHADOW });
+          // Card body — white
+          p.drawRectangle({ x: cx, y: CARD_BOT_Y, width: CARD_W, height: CARD_H_VAL, color: WHITE });
+          // Top accent — full-width teal stripe (8px — very prominent)
+          p.drawRectangle({ x: cx, y: CARD_TOP_Y - 8, width: CARD_W, height: 8, color: TEAL });
+
+          // Large decorative number (top left, light color for depth)
           const cNum = String(ci + 1).padStart(2, "0");
-          p.drawText(cNum, { x: cx + 10, y: CARD_BOT + CARD_H_VAL - 30, size: 18, font: boldFont, color: rgb(0.88, 0.94, 0.92) });
-          // Heading
-          const hLines = wrap(s(card.heading), boldFont, 13, CARD_W - 20);
+          p.drawText(cNum, { x: cx + 12, y: CARD_TOP_Y - 36, size: 22, font: boldFont, color: rgb(0.85, 0.93, 0.90) });
+
+          // Card heading — bold, dark, prominent
+          const HEADING_AREA_Y = CARD_TOP_Y - 60;
+          const hLines = wrap(s(card.heading), boldFont, 14, CARD_W - 22);
           hLines.slice(0, 2).forEach((hl, hi) =>
-            p.drawText(hl, { x: cx + 10, y: CARD_BOT + CARD_H_VAL - 48 - hi * 17, size: 13, font: boldFont, color: DARK }));
-          // Thin separator
-          p.drawRectangle({ x: cx + 10, y: CARD_BOT + CARD_H_VAL - 68, width: CARD_W - 20, height: 1, color: rgb(0.84, 0.90, 0.88) });
-          // Body text
-          const bLines = wrap(s(card.body), regFont, 10, CARD_W - 20);
-          bLines.slice(0, 8).forEach((bl, bi) =>
-            p.drawText(bl, { x: cx + 10, y: CARD_BOT + CARD_H_VAL - 80 - bi * 13, size: 10, font: regFont, color: GRAY }));
+            p.drawText(hl, { x: cx + 12, y: HEADING_AREA_Y - hi * 18, size: 14, font: boldFont, color: DARK }));
+
+          // Separator line under heading
+          p.drawRectangle({ x: cx + 12, y: CARD_TOP_Y - 88, width: CARD_W - 24, height: 1.5, color: rgb(0.82, 0.90, 0.88) });
+
+          // Body text — readable size, generous line spacing
+          const bLines = wrap(s(card.body), regFont, 11, CARD_W - 22);
+          bLines.slice(0, 10).forEach((bl, bi) =>
+            p.drawText(bl, { x: cx + 12, y: CARD_TOP_Y - 100 - bi * 15, size: 11, font: regFont, color: GRAY }));
         });
       }
 
       // ════════════════════════════════════════════════════════════════════
-      // LAYOUT: TWOCOL  (heading + paragraph left, bullet list right)
+      // LAYOUT: TWOCOL  — Gamma "A Jell-O-Like Marvel" style
       // ════════════════════════════════════════════════════════════════════
       else if (slide.layout === "twocol") {
-        const LEFT_W2  = 440;
-        const RIGHT_X2 = 460;
-        const RIGHT_W2 = W - RIGHT_X2 - 14;
+        const SPLIT_X = 450;
+        const RIGHT_X2 = SPLIT_X + 18;
+        const RIGHT_W2 = W - RIGHT_X2 - 10;
 
-        // Column divider
-        p.drawRectangle({ x: RIGHT_X2 - 10, y: FOOTER_H + 20, width: 1, height: BODY_H - 40, color: rgb(0.84, 0.90, 0.88) });
-        // Right bg
-        p.drawRectangle({ x: RIGHT_X2 - 8, y: FOOTER_H + 12, width: RIGHT_W2 + 10, height: BODY_H - 24, color: LGRAY });
+        // RIGHT column — light teal bg panel
+        p.drawRectangle({ x: RIGHT_X2 - 4, y: FOOTER_H + 8, width: RIGHT_W2 + 6, height: BODY_H - 16, color: LGRAY });
+        // Right panel top accent
+        p.drawRectangle({ x: RIGHT_X2 - 4, y: FOOTER_H + BODY_H - 8, width: RIGHT_W2 + 6, height: 4, color: TEAL });
 
-        // LEFT — subheading + paragraph
+        // LEFT — bold subheading
+        let leftY = BODY_TOP_Y - 22;
         if (slide.leftHeading) {
-          const lhLines = wrap(s(slide.leftHeading), boldFont, 20, LEFT_W2 - 30);
-          lhLines.slice(0, 2).forEach((ln, i) =>
-            p.drawText(ln, { x: 20, y: BODY_TOP_Y - 28 - i * 24, size: 20, font: boldFont, color: DARK }));
+          const lhLines = wrap(s(slide.leftHeading), boldFont, 22, SPLIT_X - 36);
+          lhLines.slice(0, 2).forEach((ln, i) => {
+            p.drawText(ln, { x: 20, y: leftY - i * 28, size: 22, font: boldFont, color: DARK });
+          });
+          leftY -= (lhLines.slice(0, 2).length * 28) + 14;
         }
-        // Teal accent line below heading
-        p.drawRectangle({ x: 20, y: BODY_TOP_Y - (slide.leftHeading ? 60 : 24), width: 48, height: 3, color: TEAL });
+        // Teal accent underline
+        p.drawRectangle({ x: 20, y: leftY + 8, width: 56, height: 4, color: TEAL });
+        leftY -= 20;
 
-        const paraStartY = BODY_TOP_Y - (slide.leftHeading ? 74 : 36);
-        const lbLines = wrap(s(slide.leftBody), regFont, 12, LEFT_W2 - 30);
-        lbLines.slice(0, 10).forEach((ln, i) =>
-          p.drawText(ln, { x: 20, y: paraStartY - i * 16, size: 12, font: regFont, color: DARK }));
+        // LEFT — body paragraph
+        const lbLines = wrap(s(slide.leftBody), regFont, 13, SPLIT_X - 36);
+        lbLines.slice(0, 12).forEach((ln, i) =>
+          p.drawText(ln, { x: 20, y: leftY - i * 17, size: 13, font: regFont, color: DARK }));
 
-        // Large decorative quote mark (visual element)
-        p.drawText('"', { x: LEFT_W2 - 50, y: FOOTER_H + 40, size: 100, font: boldFont, color: rgb(0.90, 0.95, 0.93) });
+        // Decorative large quote — bottom left, very light
+        p.drawText('"', { x: SPLIT_X - 64, y: FOOTER_H + 18, size: 110, font: boldFont, color: rgb(0.90, 0.95, 0.93) });
 
-        // RIGHT — bullet points
+        // RIGHT — bullet points with large teal accent squares
         const rPoints = slide.rightPoints.slice(0, 4);
-        const rSlotH = Math.floor((BODY_H - 24) / Math.max(rPoints.length, 1));
+        const rSlotH = Math.floor((BODY_H - 28) / Math.max(rPoints.length, 1));
         rPoints.forEach((rp, ri) => {
-          const ry = BODY_TOP_Y - 16 - ri * rSlotH;
-          // Teal dot
-          p.drawRectangle({ x: RIGHT_X2, y: ry - 6, width: 8, height: 8, color: TEAL });
-          // Text
-          const rpLines = wrap(s(rp), regFont, 11, RIGHT_W2 - 20);
+          const ry = BODY_TOP_Y - 14 - ri * rSlotH;
+          // Teal square bullet
+          p.drawRectangle({ x: RIGHT_X2 + 4, y: ry - 8, width: 10, height: 10, color: TEAL });
+          // Point text — larger, bold first line
+          const rpLines = wrap(s(rp), regFont, 12, RIGHT_W2 - 24);
           rpLines.slice(0, 3).forEach((rl, rli) =>
-            p.drawText(rl, { x: RIGHT_X2 + 14, y: ry - rli * 14, size: 11, font: rli === 0 ? boldFont : regFont, color: DARK }));
-          // Separator
+            p.drawText(rl, { x: RIGHT_X2 + 20, y: ry - rli * 16, size: 12, font: rli === 0 ? boldFont : regFont, color: DARK }));
+          // Row separator
           if (ri < rPoints.length - 1)
-            p.drawRectangle({ x: RIGHT_X2, y: ry - rSlotH + 4, width: RIGHT_W2 + 2, height: 0.5, color: rgb(0.84, 0.90, 0.88) });
+            p.drawRectangle({ x: RIGHT_X2, y: ry - rSlotH + 6, width: RIGHT_W2 + 2, height: 0.5, color: rgb(0.82, 0.88, 0.86) });
         });
       }
 
       // ════════════════════════════════════════════════════════════════════
-      // LAYOUT: LIST  (clean numbered list, full width, spacious — default)
+      // LAYOUT: LIST  — Gamma "Cerebral Cortex" style spacious numbered list
       // ════════════════════════════════════════════════════════════════════
       else {
-        const bullets = slide.bullets.slice(0, 6);
-        const KI_H = slide.keyFact ? 66 : 0;
-        const LIST_H = BODY_H - KI_H - 8;
+        const bullets = slide.bullets.slice(0, 5);
+        const KI_H = slide.keyFact ? 72 : 0;
+        const LIST_H = BODY_H - KI_H - 6;
         const SLOT_H = Math.floor(LIST_H / Math.max(bullets.length, 1));
 
+        // Vertical accent line running full list height (connects all rows)
+        p.drawRectangle({ x: 8, y: FOOTER_H + KI_H + 4, width: 5, height: LIST_H - 4, color: TEAL });
+
         bullets.forEach((bullet, bi) => {
-          const rowTop = BODY_TOP_Y - 8 - bi * SLOT_H;
+          const rowTop = BODY_TOP_Y - 4 - bi * SLOT_H;
           const rowBot = rowTop - SLOT_H;
           const midY   = (rowTop + rowBot) / 2;
 
-          // Alternate row fill
+          // Alternate row fill (light)
           if (bi % 2 === 0)
-            p.drawRectangle({ x: 8, y: rowBot + 1, width: W - 16, height: SLOT_H - 2, color: ROWS0 });
+            p.drawRectangle({ x: 13, y: rowBot + 2, width: W - 21, height: SLOT_H - 4, color: ROWS0 });
 
-          // Left teal accent bar
-          p.drawRectangle({ x: 8, y: rowBot + 2, width: 4, height: SLOT_H - 4, color: TEAL });
-
-          // Number badge
-          p.drawRectangle({ x: 16, y: midY - 12, width: 24, height: 24, color: TEALD });
-          p.drawRectangle({ x: 17, y: midY - 13, width: 24, height: 24, color: TEAL });
+          // Number badge — larger, prominent
+          p.drawRectangle({ x: 14, y: midY - 14, width: 28, height: 28, color: TEALD });
+          p.drawRectangle({ x: 15, y: midY - 15, width: 28, height: 28, color: TEAL });
           const biStr = String(bi + 1);
-          p.drawText(biStr, { x: 17 + (24 - boldFont.widthOfTextAtSize(biStr, 10)) / 2, y: midY - 8, size: 10, font: boldFont, color: WHITE });
-
-          // Bullet text
-          const bLines = wrap(s(bullet), regFont, 12, W - 78);
-          const textY = rowTop - 10;
-          bLines.slice(0, 3).forEach((bl, li) => {
-            const ty = textY - li * 15;
-            if (ty > FOOTER_H + 2)
-              p.drawText(bl, { x: 48, y: ty, size: 12, font: li === 0 ? boldFont : regFont, color: DARK });
+          p.drawText(biStr, {
+            x: 15 + (28 - boldFont.widthOfTextAtSize(biStr, 11)) / 2,
+            y: midY - 10, size: 11, font: boldFont, color: WHITE,
           });
 
-          // Separator
+          // Bullet text — larger font
+          const bLines = wrap(s(bullet), regFont, 13.5, W - 78);
+          const textY = rowTop - 10;
+          bLines.slice(0, 3).forEach((bl, li) => {
+            const ty = textY - li * 17;
+            if (ty > FOOTER_H + KI_H + 2)
+              p.drawText(bl, { x: 52, y: ty, size: 13.5, font: li === 0 ? boldFont : regFont, color: DARK });
+          });
+
+          // Thin separator
           if (bi < bullets.length - 1)
-            p.drawRectangle({ x: 8, y: rowBot + 0.5, width: W - 16, height: 0.5, color: rgb(0.84, 0.90, 0.88) });
+            p.drawRectangle({ x: 13, y: rowBot + 1, width: W - 21, height: 0.5, color: rgb(0.82, 0.88, 0.86) });
         });
 
-        // KEY INSIGHT band at bottom
+        // KEY INSIGHT band
         if (slide.keyFact) {
           const KI_Y = FOOTER_H + 2;
           p.drawRectangle({ x: 8, y: KI_Y, width: W - 16, height: KI_H - 2, color: NAVY });
-          p.drawRectangle({ x: 8, y: KI_Y + KI_H - 4, width: W - 16, height: 4, color: TEAL });
-          p.drawText("KEY INSIGHT", { x: 22, y: KI_Y + KI_H - 14, size: 7, font: boldFont, color: TEALB });
-          const kiLines = wrap(s(slide.keyFact), regFont, 11, W - 60);
+          p.drawRectangle({ x: 8, y: KI_Y + KI_H - 5, width: W - 16, height: 5, color: TEAL });
+          p.drawText("KEY INSIGHT", { x: 24, y: KI_Y + KI_H - 16, size: 7.5, font: boldFont, color: TEALB });
+          const kiLines = wrap(s(slide.keyFact), regFont, 12, W - 60);
           kiLines.slice(0, 2).forEach((kl, ki) =>
-            p.drawText(kl, { x: 22, y: KI_Y + KI_H - 26 - ki * 14, size: 11, font: regFont, color: WHITE }));
+            p.drawText(kl, { x: 24, y: KI_Y + KI_H - 30 - ki * 16, size: 12, font: regFont, color: WHITE }));
         }
       }
     }

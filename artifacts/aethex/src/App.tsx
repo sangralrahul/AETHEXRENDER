@@ -26,21 +26,27 @@ const queryClient = new QueryClient({
 
 function Router() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-1">
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/products" component={Products} />
-          <Route path="/products/:id" component={ProductDetail} />
-          <Route path="/category/:slug" component={Products} />
-          <Route path="/cart" component={Cart} />
-          <Route path="/ai-assistant" component={AiAssistant} />
-          <Route component={NotFound} />
-        </Switch>
-      </main>
-      <Footer />
-    </div>
+    <Switch>
+      <Route path="/ai-assistant" component={AiAssistant} />
+      <Route>
+        {() => (
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-1">
+              <Switch>
+                <Route path="/" component={Home} />
+                <Route path="/products" component={Products} />
+                <Route path="/products/:id" component={ProductDetail} />
+                <Route path="/category/:slug" component={Products} />
+                <Route path="/cart" component={Cart} />
+                <Route component={NotFound} />
+              </Switch>
+            </main>
+            <Footer />
+          </div>
+        )}
+      </Route>
+    </Switch>
   );
 }
 

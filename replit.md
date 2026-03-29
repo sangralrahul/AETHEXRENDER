@@ -15,7 +15,10 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 - Products page with category filters and search
 - Product detail pages
 - Shopping cart (session-based via localStorage)
-- AI Medical Assistant chat (powered by OpenAI via Replit AI Integrations)
+- AI Medical Assistant (SYNAPSE) — full-screen Replit-style interface at `/ai-assistant`
+  - Sidebar with workspace selector, nav (Home/Chats/Models/Settings), Pro upgrade card, and footer links
+  - Home view: banner, workspace selector, greeting heading, input with Plan/send, category pills row, example prompts, recent chats grid
+  - Chat view with model topbar and full message thread
 - 6 product categories: Scrubs, Aprons, Books, Stethoscopes, Surgical Instruments, Equipment
 - 19 seeded products with realistic Indian pricing (₹)
 

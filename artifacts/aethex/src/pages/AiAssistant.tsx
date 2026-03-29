@@ -4,10 +4,11 @@ import {
   Lock, Crown, Paperclip, Image, FileText, Camera, Search,
   ImagePlus, X, Microscope, Download, Presentation, PlayCircle,
   Plus, PanelLeft, Settings, MessageSquare, Tag,
+  ChevronDown, ChevronLeft, ChevronRight, RefreshCw,
+  Home, BookOpen, Upload, Stethoscope,
 } from "lucide-react";
 import { useAiChat } from "@workspace/api-client-react";
 import { type ChatMessage, ChatMessageRole } from "@workspace/api-client-react";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import PresentationViewer, { type PresentationData } from "@/components/synapse/PresentationViewer";
@@ -364,6 +365,9 @@ export default function AiAssistant() {
   const [activePresentationData, setActivePresentationData] = useState<(PresentationData & { pdfBase64?: string; docxBase64?: string }) | null>(null);
   const [input, setInput] = useState("");
   const [showSettings, setShowSettings] = useState(false);
+  const [showBanner, setShowBanner] = useState(true);
+  const [sidebarView, setSidebarView] = useState<"home" | "chats" | "models">("home");
+  const [categoryIndex, setCategoryIndex] = useState(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -663,178 +667,214 @@ export default function AiAssistant() {
   const olderSessions = sessions.filter((s) => now - s.createdAt >= 172800000);
 
   return (
-    <div className="h-screen pt-[72px] flex overflow-hidden relative" style={{ background: "var(--sp-root-bg)", ...themeVars }}>
-      {/* ── Live DNA Background (hidden in light mode) ── */}
+    <div className="h-screen flex overflow-hidden" style={{ background: "var(--sp-root-bg)", ...themeVars }}>
 
       {/* Hidden inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFileSelect(e, "image")} />
       <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.csv,.xlsx" multiple className="hidden" onChange={(e) => handleFileSelect(e, "file")} />
 
       {/* ═══════════════════════════════════════════════════════════
-          LEFT SIDEBAR
+          LEFT SIDEBAR — Replit style
       ══════════════════════════════════════════════════════════════ */}
       <aside
         className={cn(
           "relative z-20 flex flex-col shrink-0 transition-all duration-300 overflow-hidden",
-          sidebarOpen ? "w-[260px]" : "w-0"
+          sidebarOpen ? "w-[220px]" : "w-0"
         )}
         style={{
           background: "var(--sp-sidebar-bg)",
-          backdropFilter: "blur(20px)",
           borderRight: "1px solid var(--sp-sidebar-border)",
         }}
       >
-        {/* Sidebar header */}
-        <div className="flex items-center gap-2.5 px-4 pt-4 pb-3">
-          <SynapseLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
-          <span
-            className="font-bold text-base tracking-widest"
-            style={{ color: "rgba(255,255,255,0.9)", letterSpacing: "0.14em" }}
-          >SYNAPSE</span>
-        </div>
-
-        {/* New Chat button */}
-        <div className="px-3 pb-3">
-          <button
-            onClick={handleNewChat}
-            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
-            style={{
-              background: "var(--sp-new-chat-bg)",
-              border: "1px solid var(--sp-new-chat-border)",
-              color: "var(--sp-new-chat-color)",
-            }}
-          >
-            <Plus className="w-4 h-4" />
-            {tr.newChat}
+        {/* Top row: Logo + Search */}
+        <div className="flex items-center justify-between px-3 pt-3 pb-1 shrink-0">
+          <div className="flex items-center gap-2">
+            <SynapseLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+          </div>
+          <button className="p-1.5 rounded-lg transition-colors hover:bg-white/5" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <Search className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Model selector */}
-        <div className="px-3 mb-1">
-          <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-2" style={{ color: "var(--sp-label)" }}>
-            {tr.aiAgents}
-          </p>
-          {MODELS.map((m) => {
-            const MI = m.icon;
-            const isActive = m.id === activeModel;
-            return (
-              <button
-                key={m.id}
-                onClick={() => handleModelSelect(m)}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all mb-1.5"
-                style={
-                  isActive
-                    ? {
-                        ...m.activeStyle,
-                        borderRadius: 12,
-                        boxShadow: `0 0 16px ${m.activeStyle.borderColor ?? "rgba(0,188,212,0.2)"}`,
-                      }
-                    : {
-                        color: "var(--sp-model-inactive-color)",
-                        background: "var(--sp-model-inactive-bg)",
-                        border: "1px solid var(--sp-model-inactive-border)",
-                      }
-                }
-              >
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                  style={
-                    isActive
-                      ? { background: "rgba(255,255,255,0.15)" }
-                      : { background: "var(--sp-model-icon-inactive)" }
-                  }
-                >
-                  {m.pro && !isActive
-                    ? <Lock className="w-4 h-4" style={{ color: "rgba(167,139,250,0.7)" }} />
-                    : <MI className="w-4 h-4" />}
-                </div>
-                <div className="flex-1 text-left">
-                  <div className="text-[13px] font-semibold leading-tight">
-                    {m.name} <span className="font-normal opacity-60">{m.version}</span>
-                  </div>
-                  <div className="text-[10px] mt-0.5 opacity-50 truncate">{m.description}</div>
-                </div>
-                {m.pro && (
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
-                    style={{ background: "rgba(109,40,217,0.4)", color: "#c4b5fd", border: "1px solid rgba(167,139,250,0.3)" }}>
-                    PRO
-                  </span>
-                )}
-              </button>
-            );
-          })}
+        {/* Workspace selector */}
+        <div className="px-2 pb-2 shrink-0">
+          <button className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all hover:bg-white/5">
+            <div className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold text-white shrink-0"
+              style={{ background: "linear-gradient(135deg, #1a73e8, #0ea5e9)" }}>S</div>
+            <span className="flex-1 text-left text-xs font-medium truncate" style={{ color: "rgba(255,255,255,0.75)" }}>
+              SYNAPSE's Workspace
+            </span>
+            <ChevronDown className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(255,255,255,0.35)" }} />
+          </button>
         </div>
 
-        {/* Divider */}
-        <div className="mx-4 my-2" style={{ borderTop: "1px solid var(--sp-divider)" }} />
+        {/* Primary actions */}
+        <div className="px-3 pb-2 space-y-1 shrink-0">
+          <button onClick={handleNewChat}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white/5"
+            style={{ color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.1)" }}>
+            <Plus className="w-4 h-4" />
+            Create something new
+          </button>
+          <button onClick={() => imageInputRef.current?.click()}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all hover:bg-white/5"
+            style={{ color: "rgba(255,255,255,0.45)" }}>
+            <Upload className="w-4 h-4" />
+            Import files or images
+          </button>
+        </div>
 
-        {/* Chat history */}
-        <div className="flex-1 overflow-y-auto px-3 min-h-0">
+        {/* Nav links */}
+        <div className="px-2 pb-2 space-y-0.5 shrink-0">
           {[
-            { label: tr.today, list: todaySessions },
-            { label: tr.yesterday, list: yesterdaySessions },
-            { label: tr.older, list: olderSessions },
-          ].map(({ label, list }) =>
-            list.length > 0 ? (
-              <div key={label} className="mb-2">
-                <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-1" style={{ color: "var(--sp-label)" }}>
-                  {label}
-                </p>
-                {list.map((sess) => {
-                  const sm = MODELS.find((m) => m.id === sess.modelId)!;
-                  const SMIcon = sm.icon;
-                  const isActive = sess.id === activeSessionId;
-                  return (
-                    <div
-                      key={sess.id}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => setActiveSessionId(sess.id)}
-                      onKeyDown={(e) => e.key === "Enter" && setActiveSessionId(sess.id)}
-                      className="group w-full flex items-start gap-2 px-3 py-2 rounded-xl text-left transition-all mb-0.5 cursor-pointer"
-                      style={
-                        isActive
-                          ? { background: "var(--sp-session-active-bg)", border: "1px solid var(--sp-session-active-border)" }
-                          : { border: "1px solid transparent" }
-                      }
-                    >
-                      <SMIcon className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: isActive ? "#00E5FF" : "var(--sp-text-dim)" }} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[12px] truncate leading-tight"
-                          style={{ color: isActive ? "var(--sp-session-active-text)" : "var(--sp-session-inactive-text)" }}>
-                          {sess.title}
-                        </p>
-                        <p className="text-[10px] mt-0.5" style={{ color: "var(--sp-session-meta)" }}>
-                          {sm.name} {sm.version}
-                        </p>
-                      </div>
-                      <button
-                        onClick={(e) => handleDeleteSession(sess.id, e)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-red-900/40"
-                        style={{ color: "rgba(255,100,100,0.6)" }}
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : null
-          )}
-          {todaySessions.length === 0 && yesterdaySessions.length === 0 && olderSessions.length === 0 && (
-            <p className="text-xs text-center px-2 py-4" style={{ color: "var(--sp-text-faint)" }}>{tr.noChatsYet}</p>
-          )}
-        </div>
-
-        {/* Sidebar footer — settings */}
-        <div className="px-3 pb-4 pt-2" style={{ borderTop: "1px solid var(--sp-divider)" }}>
+            { id: "home" as const, icon: Home, label: "Home" },
+            { id: "chats" as const, icon: MessageSquare, label: "Chats" },
+            { id: "models" as const, icon: Activity, label: "Models" },
+          ].map(({ id, icon: Icon, label }) => (
+            <button key={id}
+              onClick={() => setSidebarView(id)}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all"
+              style={{
+                background: sidebarView === id ? "rgba(255,255,255,0.07)" : "transparent",
+                color: sidebarView === id ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.5)",
+              }}>
+              <Icon className="w-4 h-4" />
+              {label}
+            </button>
+          ))}
           <button
             onClick={() => setShowSettings(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all"
-            style={{ color: "var(--sp-text-footer)" }}
-          >
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all hover:bg-white/5"
+            style={{ color: "rgba(255,255,255,0.5)" }}>
             <Settings className="w-4 h-4" />
-            {tr.settings}
+            Settings
+          </button>
+        </div>
+
+        <div className="mx-3 my-1 shrink-0" style={{ borderTop: "1px solid var(--sp-divider)" }} />
+
+        {/* Session history (scrollable) */}
+        <div className="flex-1 overflow-y-auto px-2 min-h-0">
+          {sidebarView === "chats" && (
+            <>
+              {[
+                { label: tr.today, list: todaySessions },
+                { label: tr.yesterday, list: yesterdaySessions },
+                { label: tr.older, list: olderSessions },
+              ].map(({ label, list }) =>
+                list.length > 0 ? (
+                  <div key={label} className="mb-2">
+                    <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-1 pt-1" style={{ color: "rgba(255,255,255,0.28)" }}>
+                      {label}
+                    </p>
+                    {list.map((sess) => {
+                      const sm = MODELS.find((m) => m.id === sess.modelId)!;
+                      const isActive = sess.id === activeSessionId;
+                      return (
+                        <div key={sess.id} role="button" tabIndex={0}
+                          onClick={() => { setActiveSessionId(sess.id); setSidebarView("home"); }}
+                          onKeyDown={(e) => e.key === "Enter" && setActiveSessionId(sess.id)}
+                          className="group w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all mb-0.5 cursor-pointer"
+                          style={{
+                            background: isActive ? "rgba(255,255,255,0.07)" : "transparent",
+                            color: isActive ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.5)",
+                          }}>
+                          <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+                          <span className="text-[12px] truncate flex-1">{sess.title}</span>
+                          <button onClick={(e) => handleDeleteSession(sess.id, e)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            style={{ color: "rgba(255,100,100,0.6)" }}>
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null
+              )}
+              {sessions.every(s => s.messages.length === 0) && (
+                <p className="text-xs text-center px-2 py-4" style={{ color: "rgba(255,255,255,0.2)" }}>{tr.noChatsYet}</p>
+              )}
+            </>
+          )}
+          {sidebarView === "models" && (
+            <div className="pt-1 space-y-1">
+              {MODELS.map((m) => {
+                const MI = m.icon;
+                const isActive = m.id === activeModel;
+                return (
+                  <button key={m.id} onClick={() => handleModelSelect(m)}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-all"
+                    style={isActive
+                      ? { ...m.activeStyle, borderRadius: 8 }
+                      : { color: "rgba(255,255,255,0.5)", border: "1px solid transparent" }}>
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                      style={{ background: isActive ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.05)" }}>
+                      {m.pro && !isActive ? <Lock className="w-3.5 h-3.5" style={{ color: "rgba(167,139,250,0.7)" }} /> : <MI className="w-3.5 h-3.5" />}
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="text-xs font-semibold">{m.name} <span className="opacity-60 font-normal">{m.version}</span></div>
+                      <div className="text-[10px] opacity-40 truncate">{m.description}</div>
+                    </div>
+                    {m.pro && <span className="text-[9px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.4)", color: "#c4b5fd" }}>PRO</span>}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {sidebarView === "home" && sessions.some(s => s.messages.length > 0) && (
+            <div className="pt-1">
+              <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-1" style={{ color: "rgba(255,255,255,0.28)" }}>Recent</p>
+              {sessions.filter(s => s.messages.length > 0).slice(0, 8).map(sess => {
+                const isActive = sess.id === activeSessionId;
+                return (
+                  <button key={sess.id} onClick={() => setActiveSessionId(sess.id)}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-all mb-0.5"
+                    style={{ background: isActive ? "rgba(255,255,255,0.07)" : "transparent", color: isActive ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.45)" }}>
+                    <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">{sess.title}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Pro referral card */}
+        <div className="mx-3 mb-2 mt-2 p-3 rounded-xl shrink-0"
+          style={{ background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.2)" }}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-sm">🎁</span>
+            <span className="text-xs font-bold" style={{ color: "rgba(255,255,255,0.85)" }}>SYNAPSE Pro</span>
+          </div>
+          <p className="text-[10px] leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>
+            Upgrade to unlock Nova 4.6 advanced diagnostics and unlimited research.
+          </p>
+          <button onClick={() => setShowProModal(true)}
+            className="mt-2 text-[10px] font-bold px-3 py-1 rounded-lg transition-all hover:opacity-80"
+            style={{ background: "rgba(59,130,246,0.25)", color: "rgba(147,197,253,0.9)", border: "1px solid rgba(59,130,246,0.3)" }}>
+            Upgrade →
+          </button>
+        </div>
+
+        {/* Footer links */}
+        <div className="px-2 pb-3 space-y-0.5 shrink-0">
+          {[
+            { icon: BookOpen, label: "Learn" },
+            { icon: FileText, label: "Documentation" },
+          ].map(({ icon: Icon, label }) => (
+            <button key={label}
+              className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:bg-white/5"
+              style={{ color: "rgba(255,255,255,0.35)" }}>
+              <Icon className="w-3.5 h-3.5" />
+              {label}
+            </button>
+          ))}
+          <button onClick={() => setShowProModal(true)}
+            className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:bg-white/5"
+            style={{ color: "rgba(255,255,255,0.35)" }}>
+            <Crown className="w-3.5 h-3.5" />
+            Refer & Earn
           </button>
         </div>
       </aside>
@@ -842,72 +882,51 @@ export default function AiAssistant() {
       {/* ═══════════════════════════════════════════════════════════
           MAIN AREA
       ══════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col min-h-0 relative z-10">
+      <div className="flex-1 flex flex-col min-h-0 relative">
 
-        {/* ── Top bar ── */}
-        <div
-          className="shrink-0 flex items-center gap-2 px-3 py-2"
-          style={{
-            background: "var(--sp-topbar-bg)",
-            borderBottom: "1px solid var(--sp-topbar-border)",
-          }}
-        >
-          <button
-            onClick={() => setSidebarOpen((v) => !v)}
-            className="p-1.5 rounded-lg transition-colors"
-            style={{ color: "var(--sp-toggle-color)" }}
-            title={sidebarOpen ? "Close sidebar" : "Open sidebar"}
-          >
-            <PanelLeft className="w-5 h-5" />
-          </button>
-
-          <div className="w-px h-5 mx-1" style={{ background: "rgba(255,255,255,0.08)" }} />
-
-          <div className="flex items-center gap-1.5 flex-1">
-            <ModelIcon className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.45)" }} />
-            <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>
-              {model.name} {model.version}
-            </span>
-            {model.pro && (
-              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
-                style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.12)" }}>
-                PRO
-              </span>
-            )}
+        {/* ── Top Banner (like Replit's "Need more credits?" bar) ── */}
+        {showBanner && !hasMessages && (
+          <div className="shrink-0 flex items-center justify-center gap-3 px-4 py-2.5 text-sm relative"
+            style={{ background: "rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+            <span style={{ color: "rgba(255,255,255,0.55)" }}>Need more context?</span>
+            <button onClick={() => setShowProModal(true)}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all hover:opacity-90"
+              style={{ background: "#1a73e8", color: "white" }}>
+              🎁 Upgrade to Pro
+            </button>
+            <button onClick={() => setShowBanner(false)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-white/5"
+              style={{ color: "rgba(255,255,255,0.4)" }}>
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
+        )}
 
-          <button
-            onClick={handleNewChat}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
-            style={{ color: "var(--sp-new-chat-color)", border: "1px solid var(--sp-new-chat-border)" }}
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">{tr.newChat}</span>
-          </button>
-        </div>
-
-        {/* ── HOME VIEW (empty state — centered like Replit) ── */}
+        {/* ── HOME VIEW — Replit-style ── */}
         {!hasMessages && (
-          <div className="flex-1 flex flex-col items-center justify-center px-4 pb-6 gap-6 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto flex flex-col items-center pt-10 pb-8 px-4">
 
-            {/* Greeting */}
-            <div className="text-center w-full max-w-2xl">
-              <p className="text-sm font-medium mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>
-                @Synapse User
-              </p>
-              <h1 className="text-3xl font-semibold" style={{ color: "rgba(255,255,255,0.9)" }}>
-                {tr.greeting ?? "Hi, what can I help you with today?"}
-              </h1>
-            </div>
+            {/* Workspace selector */}
+            <button className="flex items-center gap-2 mb-7 px-3 py-1.5 rounded-xl transition-all hover:bg-white/5"
+              style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
+              <div className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold text-white"
+                style={{ background: "linear-gradient(135deg, #1a73e8, #0ea5e9)" }}>S</div>
+              <span className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.8)" }}>SYNAPSE's Workspace</span>
+              <ChevronDown className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.4)" }} />
+            </button>
 
-            {/* ── INPUT FORM centered ── */}
-            <div className="w-full max-w-2xl">
+            {/* Main greeting */}
+            <h1 className="text-[2rem] font-semibold text-center mb-7 leading-snug" style={{ color: "rgba(255,255,255,0.92)" }}>
+              Hi @Synapse User, what do you want to diagnose?
+            </h1>
+
+            {/* ── INPUT FORM (Replit-style) ── */}
+            <div className="w-full max-w-2xl mb-5">
               {isProLocked ? (
                 <div className="rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
                   style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-                      style={{ background: "rgba(255,255,255,0.07)" }}>
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.07)" }}>
                       <Lock className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
                     </div>
                     <div>
@@ -923,21 +942,14 @@ export default function AiAssistant() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="rounded-2xl overflow-visible"
-                  style={{
-                    background: "var(--sp-input-bg)",
-                    border: "1px solid var(--sp-input-border)",
-                    boxShadow: "0 4px 24px rgba(0,0,0,0.25)",
-                  }}
-                >
+                  style={{ background: "var(--sp-input-bg)", border: "1px solid var(--sp-input-border)", boxShadow: "0 4px 32px rgba(0,0,0,0.3)" }}>
                   {chatMode !== "normal" && (
                     <div className="flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold"
                       style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.03)" }}>
                       {chatMode === "deep-research" ? <><Microscope className="w-3.5 h-3.5" /> {tr.deepResearchMode}</>
                         : chatMode === "create-presentation" ? <><Presentation className="w-3.5 h-3.5" /> {presentationStage === "idle" ? tr.presentationMode : tr.selectSlideCountAbove}</>
                         : <><ImagePlus className="w-3.5 h-3.5" /> {imageStage === "waiting-type" ? tr.selectSlideCountAbove : tr.imageMode}</>}
-                      <button type="button" onClick={() => toggleMode(chatMode)} className="ml-auto hover:opacity-70">
-                        <X className="w-3.5 h-3.5" />
-                      </button>
+                      <button type="button" onClick={() => toggleMode(chatMode)} className="ml-auto hover:opacity-70"><X className="w-3.5 h-3.5" /></button>
                     </div>
                   )}
                   {attachments.length > 0 && (
@@ -970,21 +982,20 @@ export default function AiAssistant() {
                         : chatMode === "deep-research" ? tr.researchTopicPlaceholder
                         : chatMode === "create-presentation" && presentationStage === "idle" ? tr.presentationTopicPlaceholder
                         : chatMode === "create-presentation" && presentationStage === "waiting-slide-count" ? tr.selectSlidesPlaceholder
-                        : `${tr.messagePlaceholder} · ${model.name} ${model.version}...`
+                        : "Describe your clinical question, SYNAPSE will bring it to life..."
                     }
-                    rows={1}
-                    className="w-full px-5 pt-4 pb-2 text-base bg-transparent focus:outline-none resize-none synapse-textarea"
-                    style={{ color: "var(--sp-textarea-color)", caretColor: "var(--sp-caret-color)", minHeight: "52px", maxHeight: "160px" }}
+                    rows={2}
+                    className="w-full px-5 pt-4 pb-2 text-[15px] bg-transparent focus:outline-none resize-none synapse-textarea"
+                    style={{ color: "var(--sp-textarea-color)", caretColor: "var(--sp-caret-color)", minHeight: "72px", maxHeight: "180px" }}
                     disabled={chatMutation.isPending || isGeneratingPresentation || presentationStage === "waiting-slide-count"}
                   />
                   <div className="flex items-center justify-between px-3 pb-3 pt-1 gap-2">
                     <div className="flex items-center gap-1">
                       <div className="relative" ref={attachMenuRef}>
                         <button type="button" onClick={() => setShowAttachMenu((v) => !v)}
-                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
                           style={{ color: showAttachMenu ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)" }}>
-                          <Paperclip className="w-4 h-4" />
-                          <span className="hidden sm:inline">{tr.attach}</span>
+                          <Plus className="w-4 h-4" />
                         </button>
                         {showAttachMenu && (
                           <div className="absolute bottom-full left-0 mb-2 rounded-xl shadow-xl overflow-hidden w-52 z-30"
@@ -1010,35 +1021,14 @@ export default function AiAssistant() {
                           </div>
                         )}
                       </div>
-                      <button type="button" onClick={() => toggleMode("deep-research")}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-                        style={chatMode === "deep-research"
-                          ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
-                          : { color: "rgba(255,255,255,0.4)" }}>
-                        <Search className="w-4 h-4" />
-                        <span className="hidden sm:inline">{tr.deepResearch}</span>
-                      </button>
-                      <button type="button" onClick={() => toggleMode("create-image")}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-                        style={chatMode === "create-image"
-                          ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
-                          : { color: "rgba(255,255,255,0.4)" }}>
-                        <ImagePlus className="w-4 h-4" />
-                        <span className="hidden sm:inline">{tr.createImage}</span>
-                      </button>
-                      <button type="button" onClick={() => toggleMode("create-presentation")}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-                        style={chatMode === "create-presentation"
-                          ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
-                          : { color: "rgba(255,255,255,0.4)" }}>
-                        <Presentation className="w-4 h-4" />
-                        <span className="hidden sm:inline">{tr.presentation}</span>
-                      </button>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="hidden sm:inline text-xs font-medium" style={{ color: "rgba(255,255,255,0.3)" }}>
-                        {model.name}
-                      </span>
+                      <button type="button"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+                        style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                        Plan
+                        <ChevronDown className="w-3 h-3 opacity-60" />
+                      </button>
                       <button type="submit"
                         disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
                         className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
@@ -1049,38 +1039,127 @@ export default function AiAssistant() {
                   </div>
                 </form>
               )}
-              <p className="text-center text-[11px] mt-2" style={{ color: "rgba(255,255,255,0.18)" }}>
-                {tr.disclaimer}
-              </p>
             </div>
 
-            {/* Quick suggestions */}
-            {!isProLocked && (
-              <div className="flex flex-wrap gap-2 justify-center w-full max-w-2xl">
-                {quickSuggestions[activeModel].map((q) => (
-                  <button key={q} type="button" onClick={() => setInput(q)}
-                    className="text-sm px-4 py-2 rounded-full transition-all"
-                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.5)" }}>
-                    {q}
+            {/* ── Category pills row (Replit's Website/Mobile/Design/Slides/Animation) ── */}
+            {!isProLocked && (() => {
+              const categories = [
+                { icon: Stethoscope, label: "Diagnose", mode: "normal" as ChatMode, model: "pulse45" as ModelId },
+                { icon: Search, label: "Research", mode: "deep-research" as ChatMode, model: "pulse45" as ModelId },
+                { icon: ImagePlus, label: "Image", mode: "create-image" as ChatMode, model: "flux36" as ModelId },
+                { icon: Presentation, label: "Slides", mode: "create-presentation" as ChatMode, model: "pulse45" as ModelId },
+                { icon: FlaskConical, label: "Pharmacology", mode: "normal" as ChatMode, model: "flux36" as ModelId },
+              ];
+              const visible = categories.slice(categoryIndex, categoryIndex + 4);
+              return (
+                <div className="w-full max-w-2xl flex items-center gap-2 mb-5 justify-center">
+                  <button onClick={() => setCategoryIndex(i => Math.max(0, i - 1))}
+                    disabled={categoryIndex === 0}
+                    className="p-1.5 rounded-lg transition-all disabled:opacity-20"
+                    style={{ color: "rgba(255,255,255,0.5)" }}>
+                    <ChevronLeft className="w-4 h-4" />
                   </button>
-                ))}
-              </div>
+                  {visible.map(({ icon: Icon, label, mode, model: mId }) => (
+                    <button key={label}
+                      onClick={() => { toggleMode(mode); if (mId !== activeModel) { const m = MODELS.find(x => x.id === mId); if (m && !m.pro) handleModelSelect(m); } }}
+                      className="flex flex-col items-center gap-1.5 px-5 py-3 rounded-xl text-xs font-medium transition-all hover:bg-white/8"
+                      style={{
+                        background: chatMode === mode ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.04)",
+                        border: chatMode === mode ? "1px solid rgba(255,255,255,0.15)" : "1px solid rgba(255,255,255,0.07)",
+                        color: chatMode === mode ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.55)",
+                      }}>
+                      <Icon className="w-5 h-5" />
+                      {label}
+                    </button>
+                  ))}
+                  <button onClick={() => setCategoryIndex(i => Math.min(categories.length - 4, i + 1))}
+                    disabled={categoryIndex >= categories.length - 4}
+                    className="p-1.5 rounded-lg transition-all disabled:opacity-20"
+                    style={{ color: "rgba(255,255,255,0.5)" }}>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              );
+            })()}
+
+            {/* Try an example prompt */}
+            {!isProLocked && (
+              <>
+                <div className="flex items-center gap-1.5 mb-3">
+                  <span className="text-sm" style={{ color: "rgba(255,255,255,0.38)" }}>Try an example prompt</span>
+                  <button className="p-1 rounded transition-all hover:bg-white/5" style={{ color: "rgba(255,255,255,0.38)" }}>
+                    <RefreshCw className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2 justify-center mb-8">
+                  {quickSuggestions[activeModel].map((q) => (
+                    <button key={q} type="button" onClick={() => setInput(q)}
+                      className="text-sm px-4 py-2 rounded-full transition-all hover:bg-white/8"
+                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.55)" }}>
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
 
+            {/* Pro locked message */}
             {isProLocked && (
-              <div className="max-w-md text-center px-4">
+              <div className="max-w-md text-center px-4 mb-8">
                 <div className="w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center"
                   style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
                   <Crown className="w-6 h-6" style={{ color: "rgba(255,255,255,0.6)" }} />
                 </div>
-                <p className="text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
-                  {modelGreetings.nova46}
-                </p>
+                <p className="text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{modelGreetings.nova46}</p>
                 <button onClick={() => setShowProModal(true)}
-                  className="mt-4 flex items-center gap-2 mx-auto px-6 py-2.5 rounded-xl font-bold text-sm transition-all"
+                  className="mt-4 flex items-center gap-2 mx-auto px-6 py-2.5 rounded-xl font-bold text-sm"
                   style={{ background: "rgba(255,255,255,0.9)", color: "#111" }}>
                   <Crown className="w-4 h-4" /> {tr.upgradePro}
                 </button>
+              </div>
+            )}
+
+            {/* Your recent chats */}
+            {sessions.some(s => s.messages.length > 0) && (
+              <div className="w-full max-w-2xl">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>Your recent chats</span>
+                  <button onClick={() => setSidebarView("chats")}
+                    className="text-sm flex items-center gap-1 transition-all hover:opacity-80"
+                    style={{ color: "rgba(255,255,255,0.4)" }}>
+                    View All <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {sessions.filter(s => s.messages.length > 0).slice(0, 4).map((sess) => {
+                    const sm = MODELS.find((m) => m.id === sess.modelId)!;
+                    const SMIcon = sm?.icon ?? Activity;
+                    return (
+                      <div key={sess.id}
+                        role="button" tabIndex={0}
+                        onClick={() => setActiveSessionId(sess.id)}
+                        onKeyDown={(e) => e.key === "Enter" && setActiveSessionId(sess.id)}
+                        className="p-4 rounded-xl cursor-pointer transition-all hover:bg-white/6"
+                        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                            style={{ background: "rgba(255,255,255,0.06)" }}>
+                            <SMIcon className="w-4 h-4" style={{ color: "rgba(255,255,255,0.5)" }} />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium truncate" style={{ color: "rgba(255,255,255,0.75)" }}>{sess.title}</p>
+                            <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>{sm?.name} {sm?.version}</p>
+                          </div>
+                        </div>
+                        {sess.messages[0] && (
+                          <p className="text-[11px] truncate" style={{ color: "rgba(255,255,255,0.3)" }}>
+                            {sess.messages[0].content.slice(0, 60)}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
@@ -1089,6 +1168,28 @@ export default function AiAssistant() {
         {/* ── CHAT VIEW (has messages) ── */}
         {hasMessages && (
           <>
+            {/* Chat topbar */}
+            <div className="shrink-0 flex items-center gap-2 px-3 py-2"
+              style={{ background: "var(--sp-topbar-bg)", borderBottom: "1px solid var(--sp-topbar-border)" }}>
+              <button onClick={() => setSidebarOpen((v) => !v)}
+                className="p-1.5 rounded-lg transition-colors hover:bg-white/5"
+                style={{ color: "rgba(255,255,255,0.4)" }}>
+                <PanelLeft className="w-5 h-5" />
+              </button>
+              <div className="w-px h-4 mx-0.5" style={{ background: "rgba(255,255,255,0.08)" }} />
+              <div className="flex items-center gap-1.5 flex-1">
+                <ModelIcon className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.4)" }} />
+                <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.45)" }}>
+                  {model.name} {model.version}
+                </span>
+              </div>
+              <button onClick={handleNewChat}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:bg-white/5"
+                style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.09)" }}>
+                <Plus className="w-3 h-3" />
+                New chat
+              </button>
+            </div>
             <div className="flex-1 min-h-0 overflow-y-auto">
               <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col gap-5 min-h-full">
 

@@ -1,0 +1,30 @@
+Hey, can you do a full check on all the features we've built so far in SYNAPSE AI and make sure everything is working properly? Here's what needs to be tested and fixed if broken:
+
+🩺 CLINICAL TOOLS
+- Drug Interactions Checker — should detect drug-drug/drug-food interactions and flag severity (mild/moderate/severe)
+- Dosage Calculator — weight-based dosing, renal/hepatic adjustments, paediatric/ICU protocols
+- Differential Diagnosis (DDx) Generator — input symptoms → ranked DDx list with ICD-10 codes, red flags, and suggested workup
+- Lab Values Interpreter — paste CBC, LFT, KFT, ABG results → AI interpretation with action points
+
+⚡ MODE EXPANSIONS
+- Diagnose mode — fully functional with specialty filter applied
+- DDx Generator mode — results must show ranked differentials, not plain text
+- Research mode — responses should include citation sources (PubMed/WHO/guidelines)
+- Image mode — upload and analyse medical images
+- Case Summary (SOAP Notes) — generate structured S/O/A/P from clinical narrative
+- Patient Education mode — simplify diagnosis into layperson language
+- MCQ Generator — generate NEET-PG/USMLE style questions from any topic
+
+🤖 AI & UX
+- Voice input (mic button) — must be wired to Web Speech API and actually working
+- Specialty filter dropdown — all 10+ specialties (Cardiology, Neurology, Paediatrics, Obstetrics, Oncology, Emergency, Surgery, Psychiatry, Nephrology, Pulmonology, Gastroenterology) must filter responses correctly
+- Session history — past chats/cases should be saved per user
+- Pinned/favourite prompts — working save functionality
+- Mobile responsive layout — test on small screen sizes
+
+💎 PRO / MONETIZATION
+- SYNAPSE Pro gate — Nova 4.6 and advanced features must be locked behind Pro tier
+- PDF Export — any diagnosis/research output should be downloadable as a branded AETHEX PDF
+- Medical Image Analysis — X-ray, ECG, fundus upload with AI read (Pro only)
+
+Please go through each one, fix anything that's broken or incomplete, and let me know what's done, what was fixed, and if anything needs more info from my side. Thanks!

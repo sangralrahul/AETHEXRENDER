@@ -132,7 +132,7 @@ interface ExtendedMessage extends ChatMessage {
 type ModelId = "pulse45" | "flux36" | "nova46";
 type ChatMode = "normal" | "deep-research" | "create-image" | "create-presentation"
   | "drug-interactions" | "dosage-calc" | "lab-values" | "soap-note"
-  | "mcq-gen" | "patient-edu" | "procedure-guide" | "ddx";
+  | "mcq-gen" | "patient-edu" | "procedure-guide" | "ddx" | "image-analysis";
 
 interface Model {
   id: ModelId;
@@ -348,9 +348,31 @@ function makeSession(modelId: ModelId): ChatSession {
   return { id: crypto.randomUUID(), modelId, messages: [], title: "New chat", createdAt: Date.now() };
 }
 
+const SESSIONS_LS_KEY = "synapse_sessions_v2";
+const PINNED_LS_KEY = "synapse_pinned_v1";
+
+function saveSessions(sessions: ChatSession[]): void {
+  try { localStorage.setItem(SESSIONS_LS_KEY, JSON.stringify(sessions.slice(0, 30))); } catch {}
+}
+function loadSessions(): ChatSession[] {
+  try {
+    const raw = localStorage.getItem(SESSIONS_LS_KEY);
+    if (!raw) return [makeSession("pulse45")];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : [makeSession("pulse45")];
+  } catch { return [makeSession("pulse45")]; }
+}
+function loadPinned(): string[] {
+  try { return JSON.parse(localStorage.getItem(PINNED_LS_KEY) ?? "[]"); } catch { return []; }
+}
+function savePinned(pins: string[]): void {
+  try { localStorage.setItem(PINNED_LS_KEY, JSON.stringify(pins)); } catch {}
+}
+
 export default function AiAssistant() {
-  const [sessions, setSessions] = useState<ChatSession[]>(() => [makeSession("pulse45")]);
-  const [activeSessionId, setActiveSessionId] = useState<string>(() => sessions[0]?.id ?? "");
+  const [sessions, setSessions] = useState<ChatSession[]>(loadSessions);
+  const [activeSessionId, setActiveSessionId] = useState<string>(() => loadSessions()[0]?.id ?? "");
+  const [pinnedPrompts, setPinnedPrompts] = useState<string[]>(loadPinned);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [chatMode, setChatMode] = useState<ChatMode>("normal");
   const [showProModal, setShowProModal] = useState(false);
@@ -376,6 +398,8 @@ export default function AiAssistant() {
   const [voiceSupported] = useState(() => typeof window !== "undefined" && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window));
   const recognitionRef = useRef<any>(null);
   const specialtyPickerRef = useRef<HTMLDivElement>(null);
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState<string | null>(null);
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("demo") === "slides") {
@@ -426,6 +450,10 @@ export default function AiAssistant() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, chatMutation.isPending]);
+
+  useEffect(() => {
+    saveSessions(sessions);
+  }, [sessions]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -595,6 +623,36 @@ export default function AiAssistant() {
       return;
     }
 
+    if (chatMode === "image-analysis") {
+      const imageAttachment = attachments.find(a => a.type === "image");
+      if (!imageAttachment || !imageAttachment.previewUrl) {
+        toast({ title: "No image attached", description: "Please attach an X-ray, ECG, or medical image first.", variant: "destructive" });
+        updateSession(sessionId, currentMsgs);
+        return;
+      }
+      setIsAnalyzingImage(true);
+      try {
+        const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+        const resp = await fetch(`${apiBase}/api/ai/analyze-image`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            imageBase64: imageAttachment.previewUrl.split(",")[1],
+            imageType: imageAttachment.previewUrl.split(";")[0].split(":")[1] ?? "image/jpeg",
+            query: userMsg || "Please provide a full clinical analysis of this medical image.",
+            specialty,
+          }),
+        });
+        const data = await resp.json();
+        if (data.analysis) {
+          updateSession(sessionId, [...newMsgs, { role: ChatMessageRole.assistant, content: data.analysis }]);
+        } else throw new Error(data.error ?? "Analysis failed");
+      } catch (err: any) {
+        toast({ title: "Image analysis failed", description: err?.message ?? "Please try again.", variant: "destructive" });
+        updateSession(sessionId, currentMsgs);
+      } finally { setIsAnalyzingImage(false); }
+      return;
+    }
+
     const apiMode = chatMode === "normal" ? "normal" : chatMode;
     chatMutation.mutate(
       { data: { message: userMsg, conversationHistory: currentMsgs, agent: activeModel, language: settings.language, mode: apiMode, specialty } as any },
@@ -708,6 +766,42 @@ export default function AiAssistant() {
   };
 
   const removeAttachment = (id: string) => setAttachments((prev) => prev.filter((a) => a.id !== id));
+
+  const handleDownloadPdf = async (content: string, msgId: string) => {
+    setIsExportingPdf(msgId);
+    try {
+      const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+      const modeLabel = chatMode !== "normal" ? chatMode : "";
+      const firstUserMsg = messages.find(m => m.role === ChatMessageRole.user)?.content?.slice(0, 80) ?? "Clinical Report";
+      const resp = await fetch(`${apiBase}/api/ai/export-pdf`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content, title: `SYNAPSE — ${firstUserMsg}`, mode: modeLabel }),
+      });
+      const data = await resp.json();
+      if (data.pdfBase64) {
+        const bytes = atob(data.pdfBase64);
+        const arr = new Uint8Array(bytes.length);
+        for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+        const blob = new Blob([arr], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `synapse-report-${Date.now()}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch {
+      toast({ title: "Export failed", description: "Could not generate PDF. Please try again.", variant: "destructive" });
+    } finally { setIsExportingPdf(null); }
+  };
+
+  const handleTogglePin = (prompt: string) => {
+    setPinnedPrompts(prev => {
+      const next = prev.includes(prompt) ? prev.filter(p => p !== prompt) : [...prev, prompt];
+      savePinned(next);
+      return next;
+    });
+  };
 
   const handleCameraCapture = (file: File) => {
     const previewUrl = URL.createObjectURL(file);
@@ -1040,6 +1134,7 @@ export default function AiAssistant() {
                       : chatMode === "patient-edu"         ? <><Languages    className="w-3.5 h-3.5" style={{color:"#FB7185"}} /> Patient Education Mode</>
                       : chatMode === "procedure-guide"     ? <><Zap          className="w-3.5 h-3.5" style={{color:"#FDE047"}} /> Procedure Guide</>
                       : chatMode === "ddx"                 ? <><Brain        className="w-3.5 h-3.5" style={{color:"#A78BFA"}} /> Differential Diagnosis Generator</>
+                      : chatMode === "image-analysis"      ? <><Microscope  className="w-3.5 h-3.5" style={{color:"#2DD4BF"}} /> Medical Scan Analysis (Pro)</>
                       : null}
                       {specialty !== "General" && (
                         <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: "rgba(100,180,255,0.15)", color: "rgba(100,180,255,0.9)" }}>
@@ -1087,6 +1182,7 @@ export default function AiAssistant() {
                       : chatMode === "patient-edu"       ? "Enter the diagnosis/condition to explain to a patient in simple language..."
                       : chatMode === "procedure-guide"   ? "Enter a procedure name, e.g. 'Central venous catheter insertion'..."
                       : chatMode === "ddx"               ? "Describe symptoms, vitals, history — SYNAPSE will generate a ranked DDx with ICD-10 codes..."
+                      : chatMode === "image-analysis"    ? "Attach an X-ray, ECG, CT, MRI, or fundus image — then ask a question or just press Send to get a full report..."
                       : "Describe your clinical question, SYNAPSE will bring it to life..."
                     }
                     rows={2}
@@ -1185,10 +1281,10 @@ export default function AiAssistant() {
                         </button>
                       )}
                       <button type="submit"
-                        disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
+                        disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || isAnalyzingImage || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
                         className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
                         style={{ background: "rgba(255,255,255,0.9)" }}>
-                        <Send className="w-3.5 h-3.5 text-black" />
+                        {isAnalyzingImage ? <Loader2 className="w-3.5 h-3.5 text-black animate-spin" /> : <Send className="w-3.5 h-3.5 text-black" />}
                       </button>
                     </div>
                   </div>
@@ -1227,7 +1323,7 @@ export default function AiAssistant() {
 
             {/* ── Mode pills row ── */}
             {!isProLocked && (() => {
-              const categories: { icon: React.ElementType; label: string; mode: ChatMode; color?: string }[] = [
+              const categories: { icon: React.ElementType; label: string; mode: ChatMode; color?: string; pro?: boolean }[] = [
                 { icon: Stethoscope,   label: "Diagnose",       mode: "normal",               color: "#60A5FA" },
                 { icon: Brain,         label: "DDx Generator",  mode: "ddx",                  color: "#A78BFA" },
                 { icon: Search,        label: "Research",       mode: "deep-research",        color: "#34D399" },
@@ -1240,6 +1336,7 @@ export default function AiAssistant() {
                 { icon: HelpCircle,    label: "MCQ / Exam",     mode: "mcq-gen",              color: "#C084FC" },
                 { icon: Languages,     label: "Patient Edu",    mode: "patient-edu",          color: "#FB7185" },
                 { icon: Zap,           label: "Procedure",      mode: "procedure-guide",      color: "#FDE047" },
+                { icon: Microscope,    label: "Scan Analysis",  mode: "image-analysis",       color: "#2DD4BF", pro: true },
               ];
               const maxStart = Math.max(0, categories.length - 4);
               const visible = categories.slice(categoryIndex, categoryIndex + 4);
@@ -1251,17 +1348,18 @@ export default function AiAssistant() {
                     style={{ color: "rgba(255,255,255,0.5)" }}>
                     <ChevronLeft className="w-4 h-4" />
                   </button>
-                  {visible.map(({ icon: Icon, label, mode, color }) => {
+                  {visible.map(({ icon: Icon, label, mode, color, pro: isPro }) => {
                     const isActive = chatMode === mode;
                     return (
                       <button key={label}
-                        onClick={() => toggleMode(mode)}
-                        className="flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl text-xs font-medium transition-all hover:bg-white/8 min-w-[72px]"
+                        onClick={() => { if (isPro) { setShowProModal(true); return; } toggleMode(mode); }}
+                        className="relative flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl text-xs font-medium transition-all hover:bg-white/8 min-w-[72px]"
                         style={{
                           background: isActive ? `${color}18` : "rgba(255,255,255,0.04)",
                           border: isActive ? `1px solid ${color}40` : "1px solid rgba(255,255,255,0.07)",
                           color: isActive ? color : "rgba(255,255,255,0.55)",
                         }}>
+                        {isPro && <span className="absolute -top-1.5 -right-1.5 text-[8px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.85)", color: "#c4b5fd" }}>PRO</span>}
                         <Icon className="w-5 h-5" style={{ color: isActive ? color : undefined }} />
                         {label}
                       </button>
@@ -1277,6 +1375,32 @@ export default function AiAssistant() {
               );
             })()}
 
+            {/* Pinned prompts */}
+            {!isProLocked && pinnedPrompts.length > 0 && (
+              <div className="w-full max-w-2xl mb-4">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <Tag className="w-3.5 h-3.5" style={{ color: "rgba(251,191,36,0.7)" }} />
+                  <span className="text-xs font-semibold" style={{ color: "rgba(255,255,255,0.4)" }}>Pinned Prompts</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {pinnedPrompts.map((q) => (
+                    <div key={q} className="flex items-center gap-1">
+                      <button type="button" onClick={() => setInput(q)}
+                        className="text-xs px-3 py-1.5 rounded-full transition-all hover:bg-white/8"
+                        style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", color: "rgba(253,211,77,0.85)" }}>
+                        {q}
+                      </button>
+                      <button type="button" onClick={() => handleTogglePin(q)}
+                        className="p-0.5 rounded hover:bg-white/5"
+                        style={{ color: "rgba(251,191,36,0.5)" }} title="Unpin">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Try an example prompt */}
             {!isProLocked && (
               <>
@@ -1288,11 +1412,19 @@ export default function AiAssistant() {
                 </div>
                 <div className="flex flex-wrap gap-2 justify-center mb-8">
                   {quickSuggestions[activeModel].map((q) => (
-                    <button key={q} type="button" onClick={() => setInput(q)}
-                      className="text-sm px-4 py-2 rounded-full transition-all hover:bg-white/8"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.55)" }}>
-                      {q}
-                    </button>
+                    <div key={q} className="flex items-center group relative">
+                      <button type="button" onClick={() => setInput(q)}
+                        className="text-sm px-4 py-2 rounded-full transition-all hover:bg-white/8 pr-8"
+                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.55)" }}>
+                        {q}
+                      </button>
+                      <button type="button" onClick={() => handleTogglePin(q)}
+                        className="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                        title={pinnedPrompts.includes(q) ? "Unpin" : "Pin prompt"}
+                        style={{ color: pinnedPrompts.includes(q) ? "rgba(251,191,36,0.9)" : "rgba(255,255,255,0.4)" }}>
+                        <Tag className="w-3 h-3" />
+                      </button>
+                    </div>
                   ))}
                 </div>
               </>
@@ -1426,7 +1558,39 @@ export default function AiAssistant() {
                       }
                     >
                       {!(msg as ExtendedMessage).isDeepResearch && !(msg as ExtendedMessage).isPresentation && !(msg as ExtendedMessage).slideCountOptions && !(msg as ExtendedMessage).imageUrl && msg.content && (
-                        <div className="px-5 py-4 text-[15px] leading-relaxed">{msg.content}</div>
+                        <div>
+                          <div className="px-5 py-4 text-[14px] leading-relaxed space-y-1">
+                            {msg.content.split("\n").map((line, li) => {
+                              const stripped = line.trimStart();
+                              if (stripped.startsWith("### ")) return <p key={li} className="font-bold text-[13px] mt-3 mb-0.5" style={{ color: "rgba(150,220,255,0.95)" }}>{stripped.slice(4)}</p>;
+                              if (stripped.startsWith("## ")) return <p key={li} className="font-bold text-[14px] mt-4 mb-1" style={{ color: "rgba(100,190,255,0.95)" }}>{stripped.slice(3)}</p>;
+                              if (stripped.startsWith("# ")) return <p key={li} className="font-bold text-[15px] mt-4 mb-1" style={{ color: "rgba(150,210,255,1)" }}>{stripped.slice(2)}</p>;
+                              if (stripped.startsWith("- ") || stripped.startsWith("• ")) return <div key={li} className="flex gap-2"><span className="text-teal-400 mt-0.5 shrink-0">•</span><span>{stripped.slice(2).replace(/\*\*(.*?)\*\*/g, (_m, s) => s)}</span></div>;
+                              if (stripped === "---" || stripped === "***") return <hr key={li} style={{ borderColor: "rgba(255,255,255,0.1)", margin: "8px 0" }} />;
+                              if (stripped === "") return <div key={li} className="h-1" />;
+                              const parts = stripped.split(/(\*\*[^*]+\*\*)/);
+                              return <p key={li}>{parts.map((chunk, ci) => chunk.startsWith("**") && chunk.endsWith("**") ? <strong key={ci} style={{ color: "rgba(200,230,255,0.95)" }}>{chunk.slice(2,-2)}</strong> : <span key={ci}>{chunk}</span>)}</p>;
+                            })}
+                          </div>
+                          {msg.role === ChatMessageRole.assistant && (
+                            <div className="flex items-center gap-2 px-4 pb-3">
+                              <button type="button"
+                                onClick={() => navigator.clipboard.writeText(msg.content)}
+                                className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-white/8"
+                                style={{ color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                                <RefreshCw className="w-3 h-3" /> Copy
+                              </button>
+                              <button type="button"
+                                onClick={() => handleDownloadPdf(msg.content, String(idx))}
+                                disabled={isExportingPdf === String(idx)}
+                                className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-white/8"
+                                style={{ color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                                {isExportingPdf === String(idx) ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
+                                {isExportingPdf === String(idx) ? "Generating..." : "Export PDF"}
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       )}
                       {(msg as ExtendedMessage).isDeepResearch && (msg as ExtendedMessage).researchReport && (
                         <ResearchReportCard

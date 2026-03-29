@@ -5,6 +5,7 @@ import { useSession } from "@/hooks/use-session";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/NotificationBell";
 
 export function Navbar() {
   const [location, setLocation] = useLocation();
@@ -83,6 +84,8 @@ export function Navbar() {
             >
               Shop All
             </Link>
+
+            <NotificationBell />
 
             <Link href="/cart" className="relative p-2 text-foreground hover:bg-muted rounded-full transition-colors hover-lift">
               <ShoppingCart className="w-6 h-6" />

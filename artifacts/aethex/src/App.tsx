@@ -4,22 +4,21 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 
-// Components
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
-// Pages
 import Home from "@/pages/Home";
 import Products from "@/pages/Products";
 import ProductDetail from "@/pages/ProductDetail";
 import Cart from "@/pages/Cart";
 import AiAssistant from "@/pages/AiAssistant";
+import OrderTracking from "@/pages/OrderTracking";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 5,
     },
   },
 });
@@ -39,6 +38,7 @@ function Router() {
                 <Route path="/products/:id" component={ProductDetail} />
                 <Route path="/category/:slug" component={Products} />
                 <Route path="/cart" component={Cart} />
+                <Route path="/orders/track" component={OrderTracking} />
                 <Route component={NotFound} />
               </Switch>
             </main>

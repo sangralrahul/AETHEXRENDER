@@ -26,6 +26,11 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
   - Specialty context injected into AI system prompt when non-General selected
 - 6 product categories: Scrubs, Aprons, Books, Stethoscopes, Surgical Instruments, Equipment
 - 19 seeded products with realistic Indian pricing (₹)
+- **Order Tracking system** at `/orders/track` — stepper UI, auto-fetch from URL param `?orderId=`, courier info with copy tracking, two tabs (Track / My Orders)
+- **Notification Bell** in Navbar — real-time dropdown, unread count badge, mark-all-read, dismiss per item, auto-polls every 30s
+- **Email notifications** via Resend API (`RESEND_API_KEY` env var) — 8 email types (order confirmed, payment failed, shipped, out for delivery, delivered, cancelled, Pro activated, Pro expiring)
+- **SMS notifications** via Twilio (`TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`) — 5 SMS types, auto-prefixes `+91` for Indian numbers
+- Both email/SMS gracefully skip with console.log when credentials are absent
 
 # Workspace
 

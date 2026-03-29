@@ -1,0 +1,70 @@
+Now build the full Order Tracking and Notification system for Aethex. Here is everything needed:
+
+---
+
+1. ORDER TRACKING PAGE (/orders/track)
+- User can track any order by entering Order ID + registered email/phone
+- Also accessible from My Account > My Orders (auto-filled)
+- Show a visual progress stepper:
+  Order Placed → Payment Confirmed → Processing → Shipped → Out for Delivery → Delivered
+- Each step shows: status, date, time
+- Show estimated delivery date
+- If shipped: show courier name + tracking number with a Track on Courier Site button
+- If cancelled: show cancellation reason and refund status
+
+---
+
+2. EMAIL NOTIFICATIONS (use Nodemailer or Resend or SendGrid free tier)
+Send automatic emails to customer for every order status change:
+
+- Order Placed: "Your Aethex order #XXXX is confirmed!"
+  * Include: items ordered, total amount, delivery address, estimated delivery
+  * Aethex branding, dark themed HTML email
+
+- Payment Failed: "Your payment for order #XXXX failed"
+  * Include retry payment link
+
+- Order Shipped: "Your order #XXXX has been shipped!"
+  * Include tracking number, courier name, estimated delivery
+
+- Out for Delivery: "Your order #XXXX is out for delivery today!"
+
+- Order Delivered: "Your order #XXXX has been delivered!"
+  * Include: thank you message, rate your purchase CTA, buy again link
+
+- Order Cancelled: "Your order #XXXX has been cancelled"
+  * Include refund timeline (5-7 business days)
+
+- SYNAPSE Pro Activated: "Welcome to SYNAPSE Pro!"
+  * Include: features unlocked, validity period
+
+- SYNAPSE Pro Expiring Soon: "Your SYNAPSE Pro expires in 3 days"
+  * Include renew now link
+
+All emails must have:
+- Aethex logo at top
+- Dark themed HTML (background #0D1117, card #161B22, teal accents)
+- Footer: aethex.in | Support email | Unsubscribe link
+
+---
+
+3. SMS NOTIFICATIONS (use Twilio or Fast2SMS for India)
+Send SMS for key events only:
+- Order confirmed: "Aethex: Order #XXXX confirmed. Est. delivery: [date]. Track: aethex.in/track"
+- Order shipped: "Aethex: Order #XXXX shipped via [courier]. Tracking: [number]"
+- Out for delivery: "Aethex: Your order is out for delivery today!"
+- Order delivered: "Aethex: Order delivered! Rate your experience: aethex.in/orders"
+- SYNAPSE Pro activated: "Aethex: SYNAPSE Pro activated! Enjoy unlimited access."
+
+---
+
+4. IN-APP NOTIFICATIONS
+- Bell icon in navbar with unread count badge
+- Dropdown showing last 10 notifications
+- Clicking any notification takes user to relevant page
+- Mark all as read option
+- Notification types: order updates, SYNAPSE Pro status, new study materials added, special offers
+
+---
+
+Use free tiers for email/SMS services. Store notification logs in database. Keep dark theme. Do NOT touch login page. Confirm when done.

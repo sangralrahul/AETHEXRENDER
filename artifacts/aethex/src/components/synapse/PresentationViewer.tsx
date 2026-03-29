@@ -39,6 +39,7 @@ interface Props {
   onClose: () => void;
   pdfBase64?: string;
   docxBase64?: string;
+  initialIdx?: number;
 }
 
 const TEAL = "#00BCD4";
@@ -227,53 +228,48 @@ function SlideImagePanel({ imageUrl, diag, nodes, edges }: {
   );
 }
 
-// ── Shared slide frame (header + footer) for content slides ──────────────
+// ── Shared slide frame — clean white Gamma-style ─────────────────────────
 function ContentFrame({ slide, current, total, children }: {
   slide: PresentationSlide; current: number; total: number; children: React.ReactNode;
 }) {
   return (
     <div style={{
-      background: "#F7FAFB",
+      background: "white",
       height: "100%",
       display: "flex",
       flexDirection: "column",
       fontFamily: "'Inter', 'DM Sans', sans-serif",
       overflow: "hidden",
     }}>
-      {/* Header — dark navy */}
+      {/* Top teal stripe */}
+      <div style={{ height: 7, background: `linear-gradient(90deg, ${TEAL}, #3884FF)`, flexShrink: 0 }} />
+
+      {/* Title row — inside the white slide */}
       <div style={{
-        background: NAVY,
-        padding: "10px 24px 10px 18px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexShrink: 0,
-        borderLeft: `6px solid ${TEAL}`,
-        position: "relative",
-        overflow: "hidden",
+        padding: "14px 28px 12px 24px",
+        display: "flex", alignItems: "flex-start", justifyContent: "space-between",
+        flexShrink: 0, gap: 16,
+        borderBottom: "1.5px solid #E4EBF0",
+        background: "white",
       }}>
-        {/* Decorative diagonal strips */}
-        {[0,1,2,3,4].map(d => (
-          <div key={d} style={{
-            position: "absolute", right: 80 + d * 22, top: 0, width: 13, height: "100%",
-            background: `rgba(${6 + d},${10 + d},${38 + d * 3},0.9)`,
-            transform: "skewX(-10deg)", opacity: 0.4,
-          }} />
-        ))}
-        <div style={{ display: "flex", flexDirection: "column", gap: 1, minWidth: 0, flex: 1 }}>
-          <span style={{ color: "rgba(0,188,212,0.6)", fontSize: 9, fontWeight: "bold", letterSpacing: "0.07em", textTransform: "uppercase" }}>
-            MEDICAL EDUCATION | SYNAPSE
-          </span>
-          <span style={{ color: "white", fontSize: 18, fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.01em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div style={{ color: TEAL, fontSize: 9, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 5 }}>
+            SYNAPSE MEDICAL EDUCATION
+          </div>
+          <h2 style={{
+            color: "#0A1F3C", fontSize: 24, fontWeight: 900,
+            margin: 0, lineHeight: 1.1, letterSpacing: "-0.02em",
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+          }}>
             {slide.t}
-          </span>
+          </h2>
         </div>
         <div style={{
-          flexShrink: 0, width: 38, height: 38, background: TEAL,
+          flexShrink: 0, width: 44, height: 44, background: TEAL,
           display: "flex", alignItems: "center", justifyContent: "center",
-          borderRadius: 4, marginLeft: 14, zIndex: 1,
+          borderRadius: 8, fontSize: 20, fontWeight: 900, color: "white",
         }}>
-          <span style={{ color: "white", fontWeight: 900, fontSize: 15 }}>{current}</span>
+          {current}
         </div>
       </div>
 
@@ -282,19 +278,9 @@ function ContentFrame({ slide, current, total, children }: {
         {children}
       </div>
 
-      {/* Footer */}
-      <div style={{
-        background: NAVY, flexShrink: 0, padding: "5px 24px",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        borderTop: `3px solid ${TEAL}`,
-      }}>
-        {/* Progress bar */}
-        <div style={{ flex: 1, height: 3, background: "rgba(0,188,212,0.15)", borderRadius: 2, marginRight: 16 }}>
-          <div style={{ width: `${(current / total) * 100}%`, height: "100%", background: TEAL, borderRadius: 2, transition: "width 0.3s" }} />
-        </div>
-        <span style={{ color: TEAL_BRT, fontSize: 10, fontWeight: "bold", whiteSpace: "nowrap" }}>
-          SYNAPSE · aethex &nbsp;·&nbsp; {current} / {total}
-        </span>
+      {/* Progress bar */}
+      <div style={{ flexShrink: 0, height: 5, background: "#E4EBF0" }}>
+        <div style={{ width: `${(current / total) * 100}%`, height: "100%", background: `linear-gradient(90deg, ${TEAL}, #3884FF)`, transition: "width 0.35s ease" }} />
       </div>
     </div>
   );
@@ -331,7 +317,7 @@ function StatsLayout({ slide }: { slide: PresentationSlide }) {
             <div style={{ width: 40, height: 5, background: TEAL, borderRadius: 3, marginBottom: 12 }} />
             {/* Giant number */}
             <span style={{
-              fontSize: "clamp(60px, 10vw, 100px)",
+              fontSize: "clamp(48px, 8vw, 88px)",
               fontWeight: 900,
               color: TEAL,
               lineHeight: 1,
@@ -339,6 +325,7 @@ function StatsLayout({ slide }: { slide: PresentationSlide }) {
               textAlign: "center",
               position: "relative",
               zIndex: 1,
+              whiteSpace: "nowrap",
             }}>{st.value}</span>
           </div>
         ))}
@@ -587,27 +574,68 @@ function ContentSlide({ slide, current, total }: { slide: PresentationSlide; cur
 function TitleSlide({ slide, current, total }: { slide: PresentationSlide; current: number; total: number }) {
   return (
     <div style={{
-      background: `linear-gradient(135deg, ${NAVY} 0%, #0D1F3C 50%, #061828 100%)`,
-      height: "100%",
-      display: "flex",
-      flexDirection: "column",
+      background: `linear-gradient(145deg, #040B1A 0%, #071428 45%, #0A1F3C 100%)`,
+      height: "100%", display: "flex", flexDirection: "column",
       fontFamily: "'Inter', 'DM Sans', sans-serif",
+      position: "relative", overflow: "hidden",
     }}>
-      <div style={{ background: TEAL, padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
-        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE</span>
-        <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
-      </div>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 48px", textAlign: "center", gap: 16 }}>
-        <div style={{ width: 64, height: 4, borderRadius: 2, background: TEAL }} />
-        <h1 style={{ color: "white", fontSize: 40, fontWeight: 900, margin: 0, lineHeight: 1.1, letterSpacing: "-0.02em" }}>{slide.t}</h1>
-        {slide.sub && <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 16, margin: 0, maxWidth: 520, lineHeight: 1.6 }}>{slide.sub}</p>}
-        <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
-          <span style={{ padding: "8px 18px", borderRadius: 24, fontSize: 13, fontWeight: "bold", background: TEAL_DIM, color: "white" }}>{total} Slides</span>
-          <span style={{ padding: "8px 18px", borderRadius: 24, fontSize: 13, fontWeight: 600, border: `1px solid ${TEAL_DIM}`, color: TEAL_BRT }}>SYNAPSE Medical Education</span>
+      {/* Decorative large circle — top right */}
+      <div style={{
+        position: "absolute", top: -80, right: -80,
+        width: 380, height: 380, borderRadius: "50%",
+        background: "radial-gradient(circle at center, rgba(0,188,212,0.15) 0%, transparent 70%)",
+        pointerEvents: "none",
+      }} />
+      {/* Decorative small circle — bottom left */}
+      <div style={{
+        position: "absolute", bottom: -40, left: 60,
+        width: 200, height: 200, borderRadius: "50%",
+        background: "radial-gradient(circle at center, rgba(56,132,255,0.10) 0%, transparent 70%)",
+        pointerEvents: "none",
+      }} />
+      {/* Teal top stripe */}
+      <div style={{ height: 7, background: `linear-gradient(90deg, ${TEAL}, #3884FF)`, flexShrink: 0, position: "relative", zIndex: 1 }} />
+
+      {/* Content */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "28px 56px", textAlign: "center", gap: 18, position: "relative", zIndex: 1 }}>
+        {/* Teal pill label */}
+        <div style={{ background: "rgba(0,188,212,0.15)", border: `1px solid rgba(0,188,212,0.35)`, borderRadius: 20, padding: "5px 16px", display: "inline-flex", alignItems: "center", gap: 7 }}>
+          <div style={{ width: 7, height: 7, borderRadius: "50%", background: TEAL }} />
+          <span style={{ color: TEAL_BRT, fontSize: 10, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase" }}>SYNAPSE MEDICAL EDUCATION</span>
+        </div>
+
+        {/* Main title */}
+        <h1 style={{
+          color: "white", fontSize: "clamp(32px, 5vw, 52px)",
+          fontWeight: 900, margin: 0, lineHeight: 1.08, letterSpacing: "-0.03em",
+          textShadow: "0 4px 24px rgba(0,0,0,0.4)",
+        }}>
+          {slide.t}
+        </h1>
+
+        {/* Teal divider */}
+        <div style={{ width: 80, height: 4, background: `linear-gradient(90deg, ${TEAL}, #3884FF)`, borderRadius: 2 }} />
+
+        {/* Subtitle */}
+        {slide.sub && (
+          <p style={{ color: "rgba(255,255,255,0.60)", fontSize: 15, margin: 0, maxWidth: 560, lineHeight: 1.65 }}>{slide.sub}</p>
+        )}
+
+        {/* Badges */}
+        <div style={{ display: "flex", gap: 10, marginTop: 6, flexWrap: "wrap", justifyContent: "center" }}>
+          <span style={{ padding: "8px 20px", borderRadius: 24, fontSize: 12, fontWeight: 700, background: TEAL, color: "white", letterSpacing: "0.02em" }}>
+            {total} Slides
+          </span>
+          <span style={{ padding: "8px 20px", borderRadius: 24, fontSize: 12, fontWeight: 600, border: `1.5px solid rgba(0,188,212,0.4)`, color: TEAL_BRT }}>
+            AETHEX · Medical AI
+          </span>
         </div>
       </div>
-      <div style={{ padding: "0 0 20px", display: "flex", justifyContent: "center", opacity: 0.18 }}>
-        <div style={{ width: 120, height: 2, borderRadius: 1, background: TEAL }} />
+
+      {/* Bottom branding */}
+      <div style={{ padding: "12px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>Powered by SYNAPSE AI</span>
+        <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 9 }}>1 / {total}</span>
       </div>
     </div>
   );
@@ -770,8 +798,8 @@ function renderSlide(slide: PresentationSlide, data: PresentationData, current: 
   }
 }
 
-export default function PresentationViewer({ data, onClose, pdfBase64, docxBase64 }: Props) {
-  const [idx, setIdx] = useState(0);
+export default function PresentationViewer({ data, onClose, pdfBase64, docxBase64, initialIdx = 0 }: Props) {
+  const [idx, setIdx] = useState(initialIdx);
   const total = data.slides.length;
   const slide = data.slides[idx];
 
@@ -792,80 +820,84 @@ export default function PresentationViewer({ data, onClose, pdfBase64, docxBase6
   const docx64 = docxBase64 ?? data.docxBase64;
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", flexDirection: "column", background: "#000" }}>
-      {/* ── Outer top controls ── */}
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", flexDirection: "column", background: "#0B1221", fontFamily: "'Inter','DM Sans',sans-serif" }}>
+
+      {/* ── Top bar: title + downloads + close ── */}
       <div style={{
-        flexShrink: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "6px 14px",
-        gap: 12,
-        background: "#050C1A",
-        borderBottom: `1px solid ${TEAL_DIM}`,
+        flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "7px 16px", background: "#060D1E", borderBottom: `1px solid rgba(0,188,212,0.18)`,
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: TEAL, flexShrink: 0 }} />
-          <span style={{ color: "white", fontSize: 12, fontWeight: "bold", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{data.title}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+          <div style={{ width: 26, height: 26, background: TEAL, borderRadius: 5, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <span style={{ color: "white", fontWeight: 900, fontSize: 11 }}>S</span>
+          </div>
+          <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {data.title}
+          </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           {pdf64 && (
             <a href={`data:application/pdf;base64,${pdf64}`} download={`${data.title}.pdf`}
-              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 8, fontSize: 11, fontWeight: "bold", color: "white", background: TEAL_DIM, textDecoration: "none" }}>
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 6, fontSize: 11, fontWeight: 700, color: "white", background: TEAL_DIM, textDecoration: "none" }}>
               <Download style={{ width: 12, height: 12 }} /> PDF
             </a>
           )}
           {docx64 && (
             <a href={`data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${docx64}`} download={`${data.title}.docx`}
-              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 8, fontSize: 11, fontWeight: "bold", color: "white", background: "#1E3A5F", textDecoration: "none" }}>
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 6, fontSize: 11, fontWeight: 700, color: "white", background: "#1E3A5F", textDecoration: "none" }}>
               <Download style={{ width: 12, height: 12 }} /> DOCX
             </a>
           )}
-          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.08)", border: "none", cursor: "pointer", color: "white", opacity: 0.6 }}>
-            <X style={{ width: 16, height: 16 }} />
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.07)", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.6)" }}>
+            <X style={{ width: 15, height: 15 }} />
           </button>
         </div>
       </div>
 
-      {/* ── Slide area ── */}
-      <div style={{ flex: 1, display: "flex", alignItems: "stretch", minHeight: 0 }}>
-        <button onClick={prev} disabled={idx === 0}
-          style={{ flexShrink: 0, width: 44, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", border: "none", cursor: idx === 0 ? "default" : "pointer", color: "white", opacity: idx === 0 ? 0.1 : 0.4 }}>
-          <ChevronLeft style={{ width: 24, height: 24 }} />
+      {/* ── Stage — dark bg, slide centered ── */}
+      <div style={{ flex: 1, display: "flex", alignItems: "center", minHeight: 0, background: "#0B1221" }}>
+        {/* Prev arrow */}
+        <button onClick={prev} disabled={idx === 0} style={{
+          flexShrink: 0, width: 52, alignSelf: "stretch",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: "transparent", border: "none", cursor: idx === 0 ? "default" : "pointer",
+          color: "white", opacity: idx === 0 ? 0.1 : 0.55, transition: "opacity 0.2s",
+        }}>
+          <ChevronLeft style={{ width: 32, height: 32 }} />
         </button>
-        <div style={{ flex: 1, minWidth: 0, overflow: "hidden", position: "relative" }}>
-          {slide && renderSlide(slide, data, idx + 1, total)}
+
+        {/* Slide with drop shadow */}
+        <div style={{ flex: 1, minWidth: 0, height: "100%", display: "flex", alignItems: "stretch", padding: "18px 0" }}>
+          <div style={{ flex: 1, boxShadow: "0 24px 60px rgba(0,0,0,0.65)", borderRadius: 4, overflow: "hidden" }}>
+            {slide && renderSlide(slide, data, idx + 1, total)}
+          </div>
         </div>
-        <button onClick={next} disabled={idx === total - 1}
-          style={{ flexShrink: 0, width: 44, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", border: "none", cursor: idx === total - 1 ? "default" : "pointer", color: "white", opacity: idx === total - 1 ? 0.1 : 0.4 }}>
-          <ChevronRight style={{ width: 24, height: 24 }} />
+
+        {/* Next arrow */}
+        <button onClick={next} disabled={idx === total - 1} style={{
+          flexShrink: 0, width: 52, alignSelf: "stretch",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: "transparent", border: "none", cursor: idx === total - 1 ? "default" : "pointer",
+          color: "white", opacity: idx === total - 1 ? 0.1 : 0.55, transition: "opacity 0.2s",
+        }}>
+          <ChevronRight style={{ width: 32, height: 32 }} />
         </button>
       </div>
 
       {/* ── Dot nav ── */}
       <div style={{
-        flexShrink: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 6,
-        padding: "10px 12px",
-        background: "#050C1A",
-        borderTop: `1px solid ${TEAL_DIM}`,
-        flexWrap: "wrap",
+        flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+        gap: 7, padding: "10px 16px", background: "#060D1E",
+        borderTop: `1px solid rgba(0,188,212,0.15)`, flexWrap: "wrap",
       }}>
         {data.slides.map((_, i) => (
-          <button key={i} onClick={() => setIdx(i)}
-            style={{
-              borderRadius: 3,
-              height: 6,
-              width: i === idx ? 20 : 6,
-              background: i === idx ? TEAL : TEAL_DIM,
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-              transition: "width 0.2s, background 0.2s",
-            }} />
+          <button key={i} onClick={() => setIdx(i)} style={{
+            borderRadius: 4, height: 7,
+            width: i === idx ? 24 : 7,
+            background: i === idx ? TEAL : "rgba(0,188,212,0.25)",
+            border: "none", cursor: "pointer", padding: 0,
+            transition: "width 0.25s, background 0.25s",
+          }} />
         ))}
       </div>
     </div>

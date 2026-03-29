@@ -366,6 +366,31 @@ export default function AiAssistant() {
   const [buildingTopic, setBuildingTopic] = useState("");
   const [buildingSlideCount, setBuildingSlideCount] = useState(10);
   const [activePresentationData, setActivePresentationData] = useState<(PresentationData & { pdfBase64?: string; docxBase64?: string }) | null>(null);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("demo") === "slides") {
+      setActivePresentationData({
+        title: "Human Heart — Demo Presentation",
+        subtitle: "Medical Education | SYNAPSE",
+        slides: [
+          { n: 1, type: "title", layout: "", t: "The Human Heart", sub: "Structure, Physiology & Clinical Significance", bullets: [] },
+          { n: 2, type: "overview", layout: "cards", t: "Overview: Human Heart", sub: "", bullets: [], cards: [
+            { heading: "Anatomy & Structure", body: "The heart is a hollow muscular organ in the mediastinum. Four chambers — two atria and two ventricles — pump blood through pulmonary and systemic circuits. Three tissue layers: epicardium, myocardium, and endocardium." },
+            { heading: "Physiology & Function", body: "The heart acts as a dual pump circulating blood simultaneously. Cardiac output (CO = HR × SV), preload, afterload, and contractility are the four determinants of cardiac performance." },
+            { heading: "Clinical Significance", body: "Cardiovascular disease is the #1 cause of death worldwide. Rapid recognition of MI, heart failure, and arrhythmias using ECG interpretation and biomarkers is essential for every clinician." },
+          ]},
+          { n: 3, type: "physiology", layout: "stats", t: "Cardiac Physiology by Numbers", sub: "", bullets: [], stats: [
+            { value: "5 L/min", label: "Cardiac Output at Rest", desc: "Volume of blood pumped by the heart each minute" },
+            { value: "100,000", label: "Heartbeats Per Day", desc: "Approximate number of cardiac contractions daily" },
+            { value: "120/80", label: "Normal BP (mmHg)", desc: "Standard systolic / diastolic blood pressure reference" },
+          ]},
+          { n: 4, type: "clinical", layout: "twocol", t: "Acute Coronary Syndromes", sub: "", bullets: [], leftHeading: "Clinical Presentation", leftBody: "Acute coronary syndrome (ACS) encompasses STEMI, NSTEMI, and unstable angina. Patients present with chest pain, diaphoresis, and dyspnoea. Rapid troponin elevation and ECG changes guide diagnosis. Immediate revascularisation reduces mortality significantly in STEMI. Time is muscle — door-to-balloon under 90 minutes saves lives.", rightPoints: ["STEMI: Complete vessel occlusion — emergency PCI required", "NSTEMI: Partial occlusion — troponin positive, no ST elevation", "Unstable Angina: No troponin rise, high-risk — urgent workup", "Key: Dual antiplatelet therapy + anticoagulation within 10 minutes"] },
+          { n: 5, type: "pathways", layout: "list", t: "Management Pathways", sub: "", bullets: ["Primary prevention: Lifestyle modification, statin therapy, BP control", "Secondary prevention: Dual antiplatelet, ACE inhibitors, cardiac rehab", "Acute management: Aspirin + heparin + PCI within 90 minutes", "Heart failure: GDMT including beta-blockers, ARNi, SGLT2 inhibitors", "Sudden death prevention: ICD implant in EF < 35% on optimal therapy"], ki: "Early revascularisation and guideline-directed therapy dramatically reduce cardiovascular mortality — time-sensitive intervention saves lives." },
+        ],
+      });
+    }
+  }, []);
+
   const [input, setInput] = useState("");
   const [showSettings, setShowSettings] = useState(false);
   const [showBanner, setShowBanner] = useState(true);
@@ -1639,6 +1664,7 @@ export default function AiAssistant() {
           pdfBase64={activePresentationData.pdfBase64}
           docxBase64={activePresentationData.docxBase64}
           onClose={() => setActivePresentationData(null)}
+          initialIdx={Number(new URLSearchParams(window.location.search).get("slide") ?? 0) || 0}
         />
       )}
 

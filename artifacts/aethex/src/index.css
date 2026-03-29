@@ -226,3 +226,30 @@
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* ── Blink-style spotlight background animation ─────────────────────────── */
+@keyframes synapse-spotlight-breathe {
+  0%, 100% {
+    opacity: 0.75;
+    transform: scaleX(1) scaleY(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1.12) scaleY(1.08);
+  }
+}
+
+.synapse-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 85% 65% at 50% -8%,
+      rgba(18, 28, 64, 0.92) 0%,
+      rgba(8, 14, 36, 0.55) 38%,
+      rgba(0, 0, 0, 0) 68%
+    );
+  animation: synapse-spotlight-breathe 5s ease-in-out infinite;
+  transform-origin: top center;
+}

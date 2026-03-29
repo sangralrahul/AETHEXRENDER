@@ -64,8 +64,8 @@ function getThemeVars(theme: "dark" | "auto" | "light"): React.CSSProperties {
 
   /* dark + auto → clean Replit-style monochrome */
   return {
-    "--sp-root-bg":                  "#111111",
-    "--sp-sidebar-bg":               "#0C0C0C",
+    "--sp-root-bg":                  "#000000",
+    "--sp-sidebar-bg":               "#050505",
     "--sp-sidebar-border":           "rgba(255,255,255,0.06)",
     "--sp-topbar-bg":                "rgba(17,17,17,0.97)",
     "--sp-topbar-border":            "rgba(255,255,255,0.07)",
@@ -700,7 +700,10 @@ export default function AiAssistant() {
   const olderSessions = sessions.filter((s) => now - s.createdAt >= 172800000);
 
   return (
-    <div className="h-screen flex overflow-hidden" style={{ background: "var(--sp-root-bg)", ...themeVars }}>
+    <div className="h-screen flex overflow-hidden relative" style={{ background: "var(--sp-root-bg)", ...themeVars }}>
+
+      {/* Blink-style spotlight background */}
+      <div className="synapse-spotlight" />
 
       {/* Hidden inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFileSelect(e, "image")} />

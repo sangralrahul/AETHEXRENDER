@@ -448,46 +448,10 @@ RULES:
     }));
     const redflags = String(parsed.redflags ?? "").split("||").map(s => s.trim()).filter(Boolean);
 
-    // ── Generate medical illustrations for content slides in parallel ─────
-    const imageSlideTypes = new Set(["anatomy", "physiology", "pathways", "clinical", "overview", "mindmap"]);
-    const imageTypePrompts: Record<string, string> = {
-      anatomy: `Highly detailed 3D anatomical medical illustration of "$TITLE", cross-section labeled diagram, Netter's Gray's Anatomy style, dark navy background, teal accent highlights, clinical textbook quality, no text overlays`,
-      physiology: `Medical physiology process illustration of "$TITLE", step-by-step biological mechanism, arrows showing flow, 3D scientific art style, clinical textbook quality, dark background, teal accents`,
-      pathways: `Medical clinical pathway algorithm illustration for "$TITLE", branching decision tree diagram, professional medical education art, labeled steps, dark navy background, teal highlights`,
-      clinical: `Clinical medicine examination and diagnosis illustration of "$TITLE", doctor examining patient, medical setting, professional medical art, textbook quality, realistic`,
-      overview: `Medical education overview concept illustration of "$TITLE", comprehensive labeled medical diagram, professional clinical textbook art, dark background, multiple labeled components`,
-      mindmap: `Medical mind map visualization of "$TITLE", radial concept diagram, labeled medical branches, professional clinical art, dark navy background, teal and white labels`,
-    };
-    const slidesNeedingImages = slides.filter(sl => imageSlideTypes.has(sl.type));
-    const imageResults = await Promise.allSettled(
-      slidesNeedingImages.map(async (sl) => {
-        const promptTemplate = imageTypePrompts[sl.type] ?? `3D anatomical medical illustration of "$TITLE", clinical textbook quality, Netter style, dark background`;
-        const imagePrompt = promptTemplate.replace(/\$TITLE/g, sl.t);
-        const imageResp = await openai.images.generate({
-          model: "dall-e-3",
-          prompt: imagePrompt,
-          n: 1,
-          size: "1792x1024",
-          quality: "standard",
-        });
-        return { slideN: sl.n, url: imageResp.data[0]?.url ?? null };
-      })
-    );
-    const imageMap = new Map<number, string>();
-    imageResults.forEach(r => {
-      if (r.status === "fulfilled" && r.value?.url) {
-        imageMap.set(r.value.slideN, r.value.url);
-      }
-    });
-    const slidesWithImages = slides.map(sl => ({
-      ...sl,
-      imageUrl: imageMap.get(sl.n) ?? undefined,
-    }));
-
     res.json({
       title: String(parsed.title ?? prompt),
       subtitle: String(parsed.subtitle ?? ""),
-      slides: slidesWithImages,
+      slides,
       faq,
       refs,
       conditions,

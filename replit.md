@@ -19,6 +19,11 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
   - Sidebar with workspace selector, nav (Home/Chats/Models/Settings), Pro upgrade card, and footer links
   - Home view: banner, workspace selector, greeting heading, input with Plan/send, category pills row, example prompts, recent chats grid
   - Chat view with model topbar and full message thread
+  - 12 clinical AI modes: Diagnose, DDx Generator, Deep Research, Image, Slides, Drug Interactions, Dosage Calc, Lab Values, SOAP Note, MCQ/Exam, Patient Education, Procedure Guide
+  - Specialty filter dropdown: General, Cardiology, Neurology, Paediatrics, Obstetrics, Oncology, Emergency, Surgery, Psychiatry, Nephrology, Pulmonology, Gastroenterology
+  - Voice input via Web Speech API (en-IN) with pulsing mic button
+  - Mode-aware placeholder text and mode indicator badge in input bar
+  - Specialty context injected into AI system prompt when non-General selected
 - 6 product categories: Scrubs, Aprons, Books, Stethoscopes, Surgical Instruments, Equipment
 - 19 seeded products with realistic Indian pricing (₹)
 

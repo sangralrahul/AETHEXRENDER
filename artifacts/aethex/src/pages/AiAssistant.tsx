@@ -6,6 +6,8 @@ import {
   Plus, PanelLeft, Settings, MessageSquare, Tag,
   ChevronDown, ChevronLeft, ChevronRight, RefreshCw,
   Home, BookOpen, Upload, Stethoscope,
+  Pill, Calculator, TestTube2, ClipboardList, HelpCircle,
+  Brain, Languages, Mic, MicOff, SlidersHorizontal, Zap,
 } from "lucide-react";
 import { useAiChat } from "@workspace/api-client-react";
 import { type ChatMessage, ChatMessageRole } from "@workspace/api-client-react";
@@ -128,7 +130,9 @@ interface ExtendedMessage extends ChatMessage {
 }
 
 type ModelId = "pulse45" | "flux36" | "nova46";
-type ChatMode = "normal" | "deep-research" | "create-image" | "create-presentation";
+type ChatMode = "normal" | "deep-research" | "create-image" | "create-presentation"
+  | "drug-interactions" | "dosage-calc" | "lab-values" | "soap-note"
+  | "mcq-gen" | "patient-edu" | "procedure-guide" | "ddx";
 
 interface Model {
   id: ModelId;
@@ -366,6 +370,12 @@ export default function AiAssistant() {
   const [buildingTopic, setBuildingTopic] = useState("");
   const [buildingSlideCount, setBuildingSlideCount] = useState(10);
   const [activePresentationData, setActivePresentationData] = useState<(PresentationData & { pdfBase64?: string; docxBase64?: string }) | null>(null);
+  const [specialty, setSpecialty] = useState<string>("General");
+  const [showSpecialtyPicker, setShowSpecialtyPicker] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [voiceSupported] = useState(() => typeof window !== "undefined" && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window));
+  const recognitionRef = useRef<any>(null);
+  const specialtyPickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("demo") === "slides") {
@@ -425,10 +435,37 @@ export default function AiAssistant() {
       if (modelPickerRef.current && !modelPickerRef.current.contains(e.target as Node)) {
         setShowModelPicker(false);
       }
+      if (specialtyPickerRef.current && !specialtyPickerRef.current.contains(e.target as Node)) {
+        setShowSpecialtyPicker(false);
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  const toggleVoiceInput = useCallback(() => {
+    if (!voiceSupported) return;
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+    const SR = (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition;
+    const recognition = new SR();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = "en-IN";
+    recognition.onresult = (event: any) => {
+      const transcript = Array.from(event.results as any[])
+        .map((r: any) => r[0].transcript).join("");
+      setInput(transcript);
+    };
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+  }, [voiceSupported, isListening]);
 
   const updateSession = useCallback((sessionId: string, msgs: ExtendedMessage[]) => {
     setSessions((prev) =>
@@ -558,8 +595,9 @@ export default function AiAssistant() {
       return;
     }
 
+    const apiMode = chatMode === "normal" ? "normal" : chatMode;
     chatMutation.mutate(
-      { data: { message: userMsg, conversationHistory: currentMsgs, agent: activeModel, language: settings.language } as any },
+      { data: { message: userMsg, conversationHistory: currentMsgs, agent: activeModel, language: settings.language, mode: apiMode, specialty } as any },
       {
         onSuccess: (data) => {
           updateSession(sessionId, [...newMsgs, { role: ChatMessageRole.assistant, content: data.message }]);
@@ -991,9 +1029,23 @@ export default function AiAssistant() {
                   {chatMode !== "normal" && (
                     <div className="flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold"
                       style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.03)" }}>
-                      {chatMode === "deep-research" ? <><Microscope className="w-3.5 h-3.5" /> {tr.deepResearchMode}</>
-                        : chatMode === "create-presentation" ? <><Presentation className="w-3.5 h-3.5" /> {presentationStage === "idle" ? tr.presentationMode : tr.selectSlideCountAbove}</>
-                        : <><ImagePlus className="w-3.5 h-3.5" /> {imageStage === "waiting-type" ? tr.selectSlideCountAbove : tr.imageMode}</>}
+                      {chatMode === "deep-research"        ? <><Microscope    className="w-3.5 h-3.5" style={{color:"#34D399"}} /> Deep Research Mode</>
+                      : chatMode === "create-presentation" ? <><Presentation  className="w-3.5 h-3.5" style={{color:"#FBBF24"}} /> {presentationStage === "idle" ? "Slides Mode" : tr.selectSlideCountAbove}</>
+                      : chatMode === "create-image"        ? <><ImagePlus     className="w-3.5 h-3.5" style={{color:"#F472B6"}} /> {imageStage === "waiting-type" ? tr.selectSlideCountAbove : "Image Mode"}</>
+                      : chatMode === "drug-interactions"   ? <><Pill          className="w-3.5 h-3.5" style={{color:"#F87171"}} /> Drug Interaction Checker</>
+                      : chatMode === "dosage-calc"         ? <><Calculator    className="w-3.5 h-3.5" style={{color:"#FB923C"}} /> Dosage Calculator</>
+                      : chatMode === "lab-values"          ? <><TestTube2     className="w-3.5 h-3.5" style={{color:"#4ADE80"}} /> Lab Values Interpreter</>
+                      : chatMode === "soap-note"           ? <><ClipboardList className="w-3.5 h-3.5" style={{color:"#38BDF8"}} /> SOAP Note Generator</>
+                      : chatMode === "mcq-gen"             ? <><HelpCircle   className="w-3.5 h-3.5" style={{color:"#C084FC"}} /> MCQ / Exam Prep Generator</>
+                      : chatMode === "patient-edu"         ? <><Languages    className="w-3.5 h-3.5" style={{color:"#FB7185"}} /> Patient Education Mode</>
+                      : chatMode === "procedure-guide"     ? <><Zap          className="w-3.5 h-3.5" style={{color:"#FDE047"}} /> Procedure Guide</>
+                      : chatMode === "ddx"                 ? <><Brain        className="w-3.5 h-3.5" style={{color:"#A78BFA"}} /> Differential Diagnosis Generator</>
+                      : null}
+                      {specialty !== "General" && (
+                        <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: "rgba(100,180,255,0.15)", color: "rgba(100,180,255,0.9)" }}>
+                          {specialty}
+                        </span>
+                      )}
                       <button type="button" onClick={() => toggleMode(chatMode)} className="ml-auto hover:opacity-70"><X className="w-3.5 h-3.5" /></button>
                     </div>
                   )}
@@ -1023,11 +1075,19 @@ export default function AiAssistant() {
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit(e as any); } }}
                     placeholder={
-                      chatMode === "create-image" ? tr.describeImagePlaceholder
-                        : chatMode === "deep-research" ? tr.researchTopicPlaceholder
-                        : chatMode === "create-presentation" && presentationStage === "idle" ? tr.presentationTopicPlaceholder
-                        : chatMode === "create-presentation" && presentationStage === "waiting-slide-count" ? tr.selectSlidesPlaceholder
-                        : "Describe your clinical question, SYNAPSE will bring it to life..."
+                      chatMode === "create-image"        ? tr.describeImagePlaceholder
+                      : chatMode === "deep-research"     ? tr.researchTopicPlaceholder
+                      : chatMode === "create-presentation" && presentationStage === "idle" ? tr.presentationTopicPlaceholder
+                      : chatMode === "create-presentation" && presentationStage === "waiting-slide-count" ? tr.selectSlidesPlaceholder
+                      : chatMode === "drug-interactions" ? "Enter drug names, e.g. 'Warfarin + Aspirin + Metformin'..."
+                      : chatMode === "dosage-calc"       ? "Enter drug + patient details, e.g. 'Gentamicin, 60kg male, eGFR 45'..."
+                      : chatMode === "lab-values"        ? "Paste lab results, e.g. 'Hb 8.2, WBC 12000, Platelets 95000, ALT 120...'..."
+                      : chatMode === "soap-note"         ? "Describe the clinical encounter in free text — SYNAPSE will structure it as a SOAP note..."
+                      : chatMode === "mcq-gen"           ? "Enter a topic for NEET-PG / USMLE questions, e.g. 'Myocardial Infarction'..."
+                      : chatMode === "patient-edu"       ? "Enter the diagnosis/condition to explain to a patient in simple language..."
+                      : chatMode === "procedure-guide"   ? "Enter a procedure name, e.g. 'Central venous catheter insertion'..."
+                      : chatMode === "ddx"               ? "Describe symptoms, vitals, history — SYNAPSE will generate a ranked DDx with ICD-10 codes..."
+                      : "Describe your clinical question, SYNAPSE will bring it to life..."
                     }
                     rows={2}
                     className="w-full px-5 pt-4 pb-2 text-[15px] bg-transparent focus:outline-none resize-none synapse-textarea"
@@ -1115,6 +1175,15 @@ export default function AiAssistant() {
                           </div>
                         )}
                       </div>
+                      {voiceSupported && (
+                        <button type="button"
+                          onClick={toggleVoiceInput}
+                          className="w-8 h-8 rounded-xl flex items-center justify-center transition-all"
+                          title={isListening ? "Stop voice input" : "Voice input (en-IN)"}
+                          style={{ background: isListening ? "rgba(248,113,113,0.2)" : "rgba(255,255,255,0.07)", color: isListening ? "#F87171" : "rgba(255,255,255,0.5)", border: isListening ? "1px solid rgba(248,113,113,0.45)" : "1px solid transparent", animation: isListening ? "synapse-spot-breathe 1.2s ease-in-out infinite" : "none" }}>
+                          {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+                        </button>
+                      )}
                       <button type="submit"
                         disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
                         className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
@@ -1127,15 +1196,52 @@ export default function AiAssistant() {
               )}
             </div>
 
-            {/* ── Category pills row (Replit's Website/Mobile/Design/Slides/Animation) ── */}
+            {/* ── Specialty Filter ── */}
+            {!isProLocked && (
+              <div className="w-full max-w-2xl flex items-center justify-center gap-2 mb-3">
+                <div className="relative" ref={specialtyPickerRef}>
+                  <button onClick={() => setShowSpecialtyPicker(v => !v)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.65)" }}>
+                    <SlidersHorizontal className="w-3.5 h-3.5" />
+                    {specialty}
+                    <ChevronDown className="w-3 h-3 opacity-60" />
+                  </button>
+                  {showSpecialtyPicker && (
+                    <div className="absolute top-full left-0 mt-1 z-30 rounded-xl shadow-2xl overflow-hidden w-44"
+                      style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.1)" }}>
+                      {["General","Cardiology","Neurology","Paediatrics","Obstetrics","Oncology","Emergency","Surgery","Psychiatry","Nephrology","Pulmonology","Gastroenterology"].map((sp) => (
+                        <button key={sp} type="button"
+                          onClick={() => { setSpecialty(sp); setShowSpecialtyPicker(false); }}
+                          className="flex items-center w-full px-3 py-2 text-xs transition-all hover:bg-white/5 text-left"
+                          style={{ color: specialty === sp ? "rgba(100,180,255,1)" : "rgba(255,255,255,0.65)", background: specialty === sp ? "rgba(100,180,255,0.08)" : "transparent" }}>
+                          {sp}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <span className="text-[10px]" style={{ color: "rgba(255,255,255,0.25)" }}>Filter by specialty</span>
+              </div>
+            )}
+
+            {/* ── Mode pills row ── */}
             {!isProLocked && (() => {
-              const categories = [
-                { icon: Stethoscope, label: "Diagnose", mode: "normal" as ChatMode, model: "pulse45" as ModelId },
-                { icon: Search, label: "Research", mode: "deep-research" as ChatMode, model: "pulse45" as ModelId },
-                { icon: ImagePlus, label: "Image", mode: "create-image" as ChatMode, model: "flux36" as ModelId },
-                { icon: Presentation, label: "Slides", mode: "create-presentation" as ChatMode, model: "pulse45" as ModelId },
-                { icon: FlaskConical, label: "Pharmacology", mode: "normal" as ChatMode, model: "flux36" as ModelId },
+              const categories: { icon: React.ElementType; label: string; mode: ChatMode; color?: string }[] = [
+                { icon: Stethoscope,   label: "Diagnose",       mode: "normal",               color: "#60A5FA" },
+                { icon: Brain,         label: "DDx Generator",  mode: "ddx",                  color: "#A78BFA" },
+                { icon: Search,        label: "Research",       mode: "deep-research",        color: "#34D399" },
+                { icon: ImagePlus,     label: "Image",          mode: "create-image",         color: "#F472B6" },
+                { icon: Presentation,  label: "Slides",         mode: "create-presentation",  color: "#FBBF24" },
+                { icon: Pill,          label: "Drug Inter.",    mode: "drug-interactions",    color: "#F87171" },
+                { icon: Calculator,    label: "Dosage Calc",    mode: "dosage-calc",          color: "#FB923C" },
+                { icon: TestTube2,     label: "Lab Values",     mode: "lab-values",           color: "#4ADE80" },
+                { icon: ClipboardList, label: "SOAP Note",      mode: "soap-note",            color: "#38BDF8" },
+                { icon: HelpCircle,    label: "MCQ / Exam",     mode: "mcq-gen",              color: "#C084FC" },
+                { icon: Languages,     label: "Patient Edu",    mode: "patient-edu",          color: "#FB7185" },
+                { icon: Zap,           label: "Procedure",      mode: "procedure-guide",      color: "#FDE047" },
               ];
+              const maxStart = Math.max(0, categories.length - 4);
               const visible = categories.slice(categoryIndex, categoryIndex + 4);
               return (
                 <div className="w-full max-w-2xl flex items-center gap-2 mb-5 justify-center">
@@ -1145,21 +1251,24 @@ export default function AiAssistant() {
                     style={{ color: "rgba(255,255,255,0.5)" }}>
                     <ChevronLeft className="w-4 h-4" />
                   </button>
-                  {visible.map(({ icon: Icon, label, mode, model: mId }) => (
-                    <button key={label}
-                      onClick={() => { toggleMode(mode); if (mId !== activeModel) { const m = MODELS.find(x => x.id === mId); if (m && !m.pro) handleModelSelect(m); } }}
-                      className="flex flex-col items-center gap-1.5 px-5 py-3 rounded-xl text-xs font-medium transition-all hover:bg-white/8"
-                      style={{
-                        background: chatMode === mode ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.04)",
-                        border: chatMode === mode ? "1px solid rgba(255,255,255,0.15)" : "1px solid rgba(255,255,255,0.07)",
-                        color: chatMode === mode ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.55)",
-                      }}>
-                      <Icon className="w-5 h-5" />
-                      {label}
-                    </button>
-                  ))}
-                  <button onClick={() => setCategoryIndex(i => Math.min(categories.length - 4, i + 1))}
-                    disabled={categoryIndex >= categories.length - 4}
+                  {visible.map(({ icon: Icon, label, mode, color }) => {
+                    const isActive = chatMode === mode;
+                    return (
+                      <button key={label}
+                        onClick={() => toggleMode(mode)}
+                        className="flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl text-xs font-medium transition-all hover:bg-white/8 min-w-[72px]"
+                        style={{
+                          background: isActive ? `${color}18` : "rgba(255,255,255,0.04)",
+                          border: isActive ? `1px solid ${color}40` : "1px solid rgba(255,255,255,0.07)",
+                          color: isActive ? color : "rgba(255,255,255,0.55)",
+                        }}>
+                        <Icon className="w-5 h-5" style={{ color: isActive ? color : undefined }} />
+                        {label}
+                      </button>
+                    );
+                  })}
+                  <button onClick={() => setCategoryIndex(i => Math.min(maxStart, i + 1))}
+                    disabled={categoryIndex >= maxStart}
                     className="p-1.5 rounded-lg transition-all disabled:opacity-20"
                     style={{ color: "rgba(255,255,255,0.5)" }}>
                     <ChevronRight className="w-4 h-4" />

@@ -19,6 +19,11 @@ import AdminReviews from "@/pages/AdminReviews";
 import AdminSellers from "@/pages/AdminSellers";
 import SellerStorefront from "@/pages/SellerStorefront";
 
+import Blog from "@/pages/Blog";
+import BlogPost from "@/pages/BlogPost";
+import MedicalNews from "@/pages/News";
+import AdminBlog from "@/pages/AdminBlog";
+
 import SellerRegister from "@/pages/seller/Register";
 import SellerLogin from "@/pages/seller/Login";
 import SellerDashboard from "@/pages/seller/Dashboard";
@@ -83,7 +88,11 @@ function Router() {
                 <Route path="/my-reviews" component={MyReviews} />
                 <Route path="/admin/reviews" component={AdminReviews} />
                 <Route path="/admin/sellers" component={AdminSellers} />
+                <Route path="/admin/blog" component={AdminBlog} />
                 <Route path="/seller/:code/store" component={SellerStorefront} />
+                <Route path="/blog/:slug" component={BlogPost} />
+                <Route path="/blog" component={Blog} />
+                <Route path="/news" component={MedicalNews} />
                 <Route component={NotFound} />
               </Switch>
             </main>

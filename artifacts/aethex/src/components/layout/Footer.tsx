@@ -1,5 +1,42 @@
 import { Link, useLocation } from "wouter";
-import { Heart, ShieldCheck, Truck, Twitter, Linkedin, Send } from "lucide-react";
+import { Heart, ShieldCheck, Truck, Twitter, Linkedin, Send, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+
+const apiBase = () => import.meta.env.BASE_URL.replace(/\/$/, "");
+
+function FooterNewsletter() {
+  const [email, setEmail] = useState("");
+  const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setLoading(true);
+    try {
+      await fetch(`${apiBase()}/api/newsletter/subscribe`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source: "footer" }),
+      });
+      setDone(true);
+    } catch {} finally { setLoading(false); }
+  };
+
+  if (done) return (
+    <div className="flex items-center gap-2 text-emerald-400 font-semibold"><CheckCircle2 className="w-5 h-5" /> You're subscribed! Weekly updates incoming.</div>
+  );
+
+  return (
+    <form className="flex w-full md:w-auto gap-2" onSubmit={handleSubmit}>
+      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter your email" required
+        className="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary flex-1 md:w-64" />
+      <button type="submit" disabled={loading}
+        className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-colors disabled:opacity-60">
+        {loading ? "..." : <><Send className="w-4 h-4" /> Subscribe</>}
+      </button>
+    </form>
+  );
+}
 
 export function Footer() {
   const [location] = useLocation();
@@ -11,19 +48,10 @@ export function Footer() {
         {/* Newsletter Section */}
         <div className="bg-slate-800/50 rounded-2xl p-8 mb-16 flex flex-col md:flex-row items-center justify-between gap-8 border border-slate-700/50">
           <div className="text-center md:text-left flex-1">
-            <h3 className="text-2xl font-display font-bold text-white mb-2">Get exclusive deals for doctors</h3>
-            <p className="text-slate-400">Subscribe to our newsletter for the latest medical equipment and offers.</p>
+            <h3 className="text-2xl font-display font-bold text-white mb-2">Weekly Medical Insights + NEET-PG Tips</h3>
+            <p className="text-slate-400">Subscribe for the latest clinical tips, medical news, exam updates, and exclusive deals. 12,000+ subscribers.</p>
           </div>
-          <form className="flex w-full md:w-auto gap-2" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary flex-1 md:w-64"
-            />
-            <button className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-colors">
-              Subscribe <Send className="w-4 h-4" />
-            </button>
-          </form>
+          <FooterNewsletter />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
@@ -64,14 +92,14 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Resources */}
           <div>
-            <h3 className="font-display font-bold text-white text-lg mb-6">Support</h3>
+            <h3 className="font-display font-bold text-white text-lg mb-6">Resources</h3>
             <ul className="space-y-4 text-sm text-slate-400">
-              <li><Link href="/ai-assistant" className="hover:text-primary transition-colors">SYNAPSE AI Agents</Link></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Track Order</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Return Policy</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Contact Us</a></li>
+              <li><Link href="/ai-assistant" className="hover:text-primary transition-colors">SYNAPSE AI Assistant</Link></li>
+              <li><Link href="/blog" className="hover:text-primary transition-colors">Medical Blog</Link></li>
+              <li><Link href="/news" className="hover:text-primary transition-colors">Medical News</Link></li>
+              <li><Link href="/orders/track" className="hover:text-primary transition-colors">Track Order</Link></li>
               <li><a href="#" className="hover:text-primary transition-colors">FAQs for Doctors</a></li>
             </ul>
           </div>

@@ -49,7 +49,20 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
   - Seller badge visible in Navbar account dropdown (Seller Hub, Admin Sellers)
   - Dark theme throughout all seller pages; no Navbar/Footer on seller dashboard
   - Demo seller: SELL-0001, MedTech Solutions India, 5 products (4 live + 1 pending), demo orders + payouts
-- **DB Tables**: products, categories, cart_items, orders, notifications, reviews, review_votes, platform_reviews, banned_words, sellers, seller_products, seller_orders, seller_payouts
+- **DB Tables**: products, categories, cart_items, orders, notifications, reviews, review_votes, platform_reviews, banned_words, sellers, seller_products, seller_orders, seller_payouts, blog_posts, blog_comments, newsletter_subscribers
+- **Blog & Medical News System**:
+  - Blog listing (/blog) — hero, category filter, 9-post grid (featured first), sticky sidebar with newsletter + popular posts + categories, pagination
+  - Individual post (/blog/:slug) — featured image, author card, auto-generated TOC, social share (WhatsApp/Twitter/LinkedIn/Copy), article HTML, related posts, comments
+  - Medical News (/news) — 8 demo articles with breaking news banner (NewsAPI live when NEWS_API_KEY secret added, auto-cached 6h)
+  - Admin Blog (/admin/blog) — full CRUD, HTML editor with live preview toggle, publish/draft toggle, scheduled publishing, SEO fields, subscriber CSV export
+  - Newsletter — sidebar + footer forms, stored in DB, CSV export at /api/admin/newsletter/subscribers?format=csv
+  - SEO — every blog post sets document.title + meta description + OG tags dynamically; index.html has site-wide meta + OG + Twitter card + GA placeholder
+  - Sitemap — auto-generated at /api/sitemap.xml covering all 6 static pages + all published blog posts
+  - Robots.txt — at /api/robots.txt; allows all crawlers, blocks admin/seller dashboard
+  - Navbar — Blog + News links added; Admin Blog added to account dropdown
+  - Footer — Resources section with Blog/News/AI links; newsletter wired to API
+  - 6 starter posts seeded: gadgets, PrepLadder vs Marrow, SYNAPSE AI guide, stethoscopes guide, NEET-PG 2025 strategy, portable devices
+  - Optional env vars: NEWS_API_KEY (for live news), SITE_URL (for sitemap canonical, default https://aethex.in)
 
 # Workspace
 

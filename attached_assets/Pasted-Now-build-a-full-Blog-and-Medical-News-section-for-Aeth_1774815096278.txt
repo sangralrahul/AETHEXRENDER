@@ -1,0 +1,77 @@
+Now build a full Blog and Medical News section for Aethex. This brings organic Google traffic and establishes Aethex as a trusted medical platform. Here is everything needed:
+
+---
+
+1. BLOG SECTION (/blog)
+- Hero: "Medical Insights, News & Study Tips from Aethex"
+- Blog cards grid: featured image, category tag, title, short excerpt, author, date, read time
+- Categories: Clinical Tips, NEET-PG Prep, Medical News, Product Guides, Doctor Life, Research & Studies
+- Sticky sidebar: Popular Posts, Categories list, Newsletter signup
+- Pagination (10 posts per page)
+
+---
+
+2. INDIVIDUAL BLOG POST PAGE (/blog/[slug])
+- Full article with proper heading structure (H1, H2, H3)
+- Featured image at top
+- Author info card (name, role, avatar)
+- Table of contents (auto-generated from headings)
+- Social share buttons: WhatsApp, Twitter/X, LinkedIn, Copy Link
+- Related posts at bottom (same category)
+- Comments section (Aethex account required to comment)
+
+---
+
+3. MEDICAL NEWS SECTION (/news)
+- Auto-fetch latest medical news using a free news API (NewsAPI.org or similar)
+- Filter by: India Medical News, Global Health, NEET-PG Updates, Drug Approvals, Medical Research
+- News cards: source logo, headline, short summary, published time, Read More link
+- Refresh every 6 hours
+- Breaking news banner at top if any major health news
+
+---
+
+4. ADMIN BLOG MANAGEMENT (in existing Admin Panel)
+- Add new blog post: title, slug, content (rich text editor), featured image, category, tags, author, SEO meta title + description
+- Edit/delete posts
+- Publish/unpublish toggle
+- Schedule post for future date/time
+- View post analytics: views, shares, comments
+
+---
+
+5. SEO SETUP (very important)
+- Every blog post and page must have:
+  * Proper meta title and description
+  * Open Graph tags (for WhatsApp/social previews)
+  * Canonical URLs
+  * Structured data (Article schema for blog posts, Product schema for shop items)
+- Auto-generate sitemap.xml at /sitemap.xml covering all pages, products, blog posts
+- robots.txt at /robots.txt allowing Google to crawl everything
+- Page load speed: lazy load all images, minify CSS/JS
+- Add Google Analytics tracking code (placeholder for now, I will add the ID later)
+
+---
+
+6. NEWSLETTER
+- Email signup form in blog sidebar and homepage footer
+- "Subscribe for weekly medical updates + NEET-PG tips"
+- Store emails in database
+- Admin can export subscriber list as CSV
+- Welcome email sent on signup
+
+---
+
+7. SEED CONTENT (add these starter blog posts):
+- "Top 10 Must-Have Medical Gadgets for Doctors in 2025"
+- "PrepLadder vs Marrow vs PW Med: Which is Best for NEET-PG 2025?"
+- "How to Use SYNAPSE AI for Clinical Diagnosis"
+- "Best Stethoscopes for Medical Students in India Under ₹5000"
+- "NEET-PG 2025 Exam Pattern, Syllabus and Preparation Strategy"
+- "5 Portable Medical Devices Every Doctor Should Own"
+
+Each post should be 600-800 words, properly formatted, SEO optimised.
+
+---
+
+Keep dark theme. Mobile responsive. Do NOT touch login page. Confirm when done.

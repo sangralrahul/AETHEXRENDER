@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useState, useEffect, useRef } from "react";
@@ -97,6 +97,20 @@ export function Navbar() {
               Shop All
             </Link>
 
+            <Link
+              href="/blog"
+              className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors hidden lg:block"
+            >
+              Blog
+            </Link>
+
+            <Link
+              href="/news"
+              className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors hidden lg:block"
+            >
+              News
+            </Link>
+
             {/* Account Dropdown */}
             <div ref={accountRef} className="relative hidden md:block">
               <button onClick={() => setAccountOpen(o => !o)}
@@ -127,6 +141,10 @@ export function Navbar() {
                   <Link href="/admin/sellers" onClick={() => setAccountOpen(false)}
                     className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-primary transition-colors">
                     <ShieldCheck className="w-4 h-4" /> Admin Sellers
+                  </Link>
+                  <Link href="/admin/blog" onClick={() => setAccountOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-primary transition-colors">
+                    <BookOpen className="w-4 h-4" /> Admin Blog
                   </Link>
                 </div>
               )}

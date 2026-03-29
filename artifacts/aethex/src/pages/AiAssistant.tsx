@@ -11,6 +11,8 @@ import { useAiChat } from "@workspace/api-client-react";
 import { type ChatMessage, ChatMessageRole } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import ringAnimImg from "@assets/photo_2026-03-29_15-00-52_1774776666332.jpg";
+import neuralNetImg from "@assets/photo_2026-03-29_15-00-48_1774776666333.jpg";
 import PresentationViewer, { type PresentationData } from "@/components/synapse/PresentationViewer";
 import SynapseLogo from "@/components/synapse/SynapseLogo";
 import DNABackground from "@/components/synapse/DNABackground";
@@ -368,6 +370,8 @@ export default function AiAssistant() {
   const [showBanner, setShowBanner] = useState(true);
   const [sidebarView, setSidebarView] = useState<"home" | "chats" | "models">("home");
   const [categoryIndex, setCategoryIndex] = useState(0);
+  const [showModelPicker, setShowModelPicker] = useState(false);
+  const modelPickerRef = useRef<HTMLDivElement>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -391,6 +395,9 @@ export default function AiAssistant() {
     const handler = (e: MouseEvent) => {
       if (attachMenuRef.current && !attachMenuRef.current.contains(e.target as Node)) {
         setShowAttachMenu(false);
+      }
+      if (modelPickerRef.current && !modelPickerRef.current.contains(e.target as Node)) {
+        setShowModelPicker(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -1023,12 +1030,53 @@ export default function AiAssistant() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button type="button"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
-                        style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                        Plan
-                        <ChevronDown className="w-3 h-3 opacity-60" />
-                      </button>
+                      {/* Model picker dropdown */}
+                      <div className="relative" ref={modelPickerRef}>
+                        <button type="button"
+                          onClick={() => setShowModelPicker(v => !v)}
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+                          style={{ background: "rgba(255,255,255,0.07)", color: model.activeStyle.color, border: `1px solid ${model.activeStyle.border.replace("1px solid ", "")}` }}>
+                          <ModelIcon className="w-3.5 h-3.5" />
+                          <span>{model.name}</span>
+                          <ChevronDown className="w-3 h-3 opacity-60" />
+                        </button>
+                        {showModelPicker && (
+                          <div className="absolute bottom-full right-0 mb-2 rounded-xl shadow-2xl overflow-hidden z-40 w-56"
+                            style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.1)" }}>
+                            <div className="px-3 pt-2.5 pb-1 text-[10px] font-bold uppercase tracking-wider"
+                              style={{ color: "rgba(255,255,255,0.28)" }}>AI Models</div>
+                            {MODELS.map((m) => {
+                              const MI = m.icon;
+                              const isActive = m.id === activeModel;
+                              return (
+                                <button key={m.id} type="button"
+                                  onClick={() => { setShowModelPicker(false); handleModelSelect(m); }}
+                                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm transition-all hover:bg-white/5"
+                                  style={{ background: isActive ? "rgba(255,255,255,0.06)" : "transparent" }}>
+                                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                                    style={{ background: isActive ? m.activeStyle.background : "rgba(255,255,255,0.05)", border: isActive ? m.activeStyle.border : "1px solid rgba(255,255,255,0.07)" }}>
+                                    {m.pro && !isActive
+                                      ? <Lock className="w-3.5 h-3.5" style={{ color: "rgba(167,139,250,0.7)" }} />
+                                      : <MI className="w-3.5 h-3.5" style={{ color: isActive ? m.activeStyle.color : "rgba(255,255,255,0.4)" }} />}
+                                  </div>
+                                  <div className="flex-1 text-left">
+                                    <div className="text-xs font-semibold flex items-center gap-1.5"
+                                      style={{ color: isActive ? m.activeStyle.color : "rgba(255,255,255,0.75)" }}>
+                                      {m.name}
+                                      <span className="font-normal opacity-50 text-[10px]">{m.version}</span>
+                                      {m.pro && (
+                                        <span className="text-[8px] font-bold px-1 py-0.5 rounded-full ml-auto"
+                                          style={{ background: "rgba(109,40,217,0.4)", color: "#c4b5fd", border: "1px solid rgba(167,139,250,0.3)" }}>PRO</span>
+                                      )}
+                                    </div>
+                                    <div className="text-[10px] opacity-40">{m.description.split(" · ")[0]}</div>
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
                       <button type="submit"
                         disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
                         className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
@@ -1606,173 +1654,172 @@ export default function AiAssistant() {
 
 function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
   const [phase, setPhase] = useState(0);
+  const [progress, setProgress] = useState(0);
   const phases = [
-    "Analyzing prompt…",
-    "Composing scene…",
-    "Rendering details…",
-    "Adding highlights…",
-    "Finalizing image…",
+    "Initializing neural network…",
+    "Processing visual tokens…",
+    "Synthesizing anatomy…",
+    "Rendering fine details…",
+    "Applying clinical clarity…",
+    "Finalizing medical image…",
   ];
   useEffect(() => {
-    const t = setInterval(() => setPhase(p => (p + 1) % phases.length), 2400);
+    const t = setInterval(() => setPhase(p => (p + 1) % phases.length), 2200);
+    return () => clearInterval(t);
+  }, []);
+  useEffect(() => {
+    setProgress(0);
+    const t = setInterval(() => setProgress(p => {
+      if (p >= 95) return p;
+      return p + (Math.random() * 3.5);
+    }), 180);
     return () => clearInterval(t);
   }, []);
 
-  // One ECG heartbeat cycle: flat → P wave → flat → Q dip → R spike → S dip → flat → T wave → flat
-  // viewBox: 0 0 280 90  baseline at y=55
-  const ecgCycle =
-    "M 0,55 L 22,55 " +
-    "Q 28,46 34,55 " +
-    "L 50,55 " +
-    "L 55,62 L 62,6 L 68,64 " +
-    "L 80,55 " +
-    "Q 95,36 106,55 " +
-    "L 280,55";
-
   return (
     <div style={{
-      background: "linear-gradient(160deg, rgba(2,8,28,0.95) 0%, rgba(4,14,40,0.95) 100%)",
-      border: "1px solid rgba(0,188,212,0.2)",
-      borderRadius: "16px",
-      padding: "18px 20px",
-      backdropFilter: "blur(16px)",
-      minWidth: "270px",
+      background: "linear-gradient(160deg, rgba(2,6,20,0.98) 0%, rgba(3,12,35,0.98) 100%)",
+      border: "1px solid rgba(0,150,212,0.25)",
+      borderRadius: "18px",
+      overflow: "hidden",
+      minWidth: "280px",
+      maxWidth: "340px",
+      boxShadow: "0 0 40px rgba(0,120,200,0.15)",
     }}>
-      {/* ECG monitor */}
-      <div style={{
-        position: "relative",
-        height: "108px",
-        marginBottom: "14px",
-        overflow: "hidden",
-        borderRadius: "10px",
-        background: "rgba(0,8,18,0.85)",
-      }}>
-        {/* Graph-paper grid */}
-        {[25, 50, 75].map(pct => (
-          <div key={`h${pct}`} style={{
-            position: "absolute", left: 0, right: 0,
-            top: `${pct}%`, height: "1px",
-            background: "rgba(0,200,180,0.07)",
-            pointerEvents: "none",
+      {/* Main visual — neural net bg + rotating ring overlay */}
+      <div style={{ position: "relative", height: "190px", overflow: "hidden" }}>
+        {/* Neural network background */}
+        <img src={neuralNetImg} alt=""
+          style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover",
+            opacity: 0.55,
+            animation: "synapse-img-bg-pulse 3s ease-in-out infinite",
           }} />
-        ))}
-        {[20, 40, 60, 80].map(pct => (
-          <div key={`v${pct}`} style={{
-            position: "absolute", top: 0, bottom: 0,
-            left: `${pct}%`, width: "1px",
-            background: "rgba(0,200,180,0.07)",
-            pointerEvents: "none",
+        {/* Dark vignette overlay */}
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse at center, transparent 30%, rgba(2,6,20,0.75) 100%)",
+          pointerEvents: "none",
+        }} />
+        {/* Blue ring — spinning */}
+        <div style={{
+          position: "absolute", inset: 0,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          <img src={ringAnimImg} alt=""
+            style={{
+              width: "140px", height: "140px",
+              objectFit: "contain",
+              animation: "synapse-ring-spin 3.5s linear infinite",
+              filter: "drop-shadow(0 0 18px rgba(0,180,255,0.7)) drop-shadow(0 0 36px rgba(0,120,220,0.4))",
+            }} />
+        </div>
+        {/* Inner glow pulse */}
+        <div style={{
+          position: "absolute", inset: 0,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          pointerEvents: "none",
+        }}>
+          <div style={{
+            width: "72px", height: "72px",
+            borderRadius: "50%",
+            background: "rgba(0,180,255,0.08)",
+            animation: "synapse-core-pulse 1.6s ease-in-out infinite",
+            boxShadow: "0 0 30px 10px rgba(0,150,255,0.12)",
           }} />
-        ))}
-
-        {/* Scrolling ECG strip — 3 tiled copies so the loop is seamless */}
-        <div style={{
-          position: "absolute",
-          top: 0, left: 0,
-          display: "flex",
-          animation: "img-gen-ecg-scroll 2s linear infinite",
-          willChange: "transform",
-        }}>
-          {[0, 1, 2].map(idx => (
-            <svg key={idx} width="280" height="90" viewBox="0 0 280 90" fill="none" style={{ display: "block", flexShrink: 0 }}>
-              {/* Glow layer (wider, blurred) */}
-              <path d={ecgCycle} stroke="#00E5FF" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
-                style={{ filter: "blur(4px)", opacity: 0.35 }} />
-              {/* Main line */}
-              <path d={ecgCycle} stroke="#00E5FF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          ))}
         </div>
-
-        {/* Fade masks on left and right edges */}
+        {/* LIVE badge */}
         <div style={{
-          position: "absolute", top: 0, left: 0, bottom: 0, width: "28px",
-          background: "linear-gradient(to right, rgba(0,8,18,1), transparent)",
-          pointerEvents: "none", zIndex: 3,
-        }} />
-        <div style={{
-          position: "absolute", top: 0, right: 0, bottom: 0, width: "28px",
-          background: "linear-gradient(to left, rgba(0,8,18,1), transparent)",
-          pointerEvents: "none", zIndex: 3,
-        }} />
-
-        {/* BPM readout */}
-        <div style={{
-          position: "absolute", top: "9px", right: "14px",
-          color: "#00E5FF",
-          fontSize: "12px", fontWeight: 700,
-          fontFamily: "monospace",
-          letterSpacing: "0.06em",
-          animation: "img-gen-bpm-pulse 2s ease-in-out infinite",
-          zIndex: 4,
-        }}>
-          72 BPM
-        </div>
-
-        {/* Bottom status dot */}
-        <div style={{
-          position: "absolute", bottom: "10px", left: "14px",
+          position: "absolute", top: "10px", right: "12px",
           display: "flex", alignItems: "center", gap: "5px",
-          zIndex: 4,
+          background: "rgba(0,0,0,0.5)",
+          backdropFilter: "blur(8px)",
+          border: "1px solid rgba(0,220,255,0.2)",
+          borderRadius: "20px",
+          padding: "3px 8px",
         }}>
           <div style={{
             width: "5px", height: "5px", borderRadius: "50%",
-            background: "#00E5FF",
+            background: "#00e5ff",
             boxShadow: "0 0 6px 3px rgba(0,229,255,0.6)",
-            animation: "img-gen-bpm-pulse 2s ease-in-out infinite",
+            animation: "synapse-dot-blink 1s ease-in-out infinite",
           }} />
-          <span style={{ fontSize: "10px", color: "rgba(0,229,255,0.5)", fontFamily: "monospace", letterSpacing: "0.04em" }}>
+          <span style={{ fontSize: "9px", fontWeight: 700, color: "#00e5ff", letterSpacing: "0.08em", fontFamily: "monospace" }}>
             LIVE
           </span>
         </div>
+        {/* Particle dots */}
+        {[...Array(6)].map((_, i) => (
+          <div key={i} style={{
+            position: "absolute",
+            width: `${3 + (i % 3)}px`, height: `${3 + (i % 3)}px`,
+            borderRadius: "50%",
+            background: "rgba(0,200,255,0.7)",
+            left: `${15 + i * 14}%`,
+            top: `${20 + (i % 2) * 50}%`,
+            animation: `synapse-particle 2s ease-in-out ${i * 0.35}s infinite`,
+            boxShadow: "0 0 6px rgba(0,200,255,0.6)",
+          }} />
+        ))}
       </div>
 
-      {/* Prompt preview */}
-      <div style={{
-        fontSize: "11px",
-        color: "rgba(100,200,255,0.45)",
-        marginBottom: "7px",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap",
-        letterSpacing: "0.02em",
-      }}>
-        "{prompt.length > 40 ? prompt.substring(0, 40) + "…" : prompt}"
+      {/* Progress bar */}
+      <div style={{ padding: "0 14px", marginTop: "-2px" }}>
+        <div style={{ height: "2px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", overflow: "hidden" }}>
+          <div style={{
+            height: "100%",
+            width: `${Math.min(progress, 95)}%`,
+            background: "linear-gradient(to right, #0070f3, #00e5ff)",
+            borderRadius: "2px",
+            transition: "width 0.18s ease-out",
+            boxShadow: "0 0 8px rgba(0,180,255,0.6)",
+          }} />
+        </div>
       </div>
 
-      {/* Shimmer heading */}
-      <div style={{
-        fontSize: "13px",
-        fontWeight: 700,
-        background: "linear-gradient(90deg, #00BCD4, #7C3AED, #00E5FF, #0097A7, #7C3AED, #00BCD4)",
-        backgroundSize: "300% auto",
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        backgroundClip: "text",
-        animation: "img-gen-shimmer 2.4s linear infinite",
-        marginBottom: "4px",
-        letterSpacing: "0.04em",
-      }}>
-        Generating your image
-      </div>
-
-      {/* Phase text */}
-      <div key={phase} style={{
-        fontSize: "12px",
-        color: "rgba(100,200,255,0.65)",
-        animation: "img-gen-text-in 0.35s ease-out",
-        display: "flex",
-        alignItems: "center",
-        gap: "6px",
-      }}>
+      {/* Info row */}
+      <div style={{ padding: "10px 14px 14px" }}>
+        {/* Prompt preview */}
         <div style={{
-          width: "6px", height: "6px", borderRadius: "50%",
-          background: "#00E5FF",
-          boxShadow: "0 0 6px 2px rgba(0,229,255,0.5)",
-          flexShrink: 0,
-          animation: "img-gen-orb 1.2s ease-in-out infinite",
-        }} />
-        {phases[phase]}
+          fontSize: "10px", color: "rgba(100,180,255,0.4)",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+          marginBottom: "5px", letterSpacing: "0.02em",
+        }}>
+          "{prompt.length > 42 ? prompt.substring(0, 42) + "…" : prompt}"
+        </div>
+        {/* Shimmer heading */}
+        <div style={{
+          fontSize: "13px", fontWeight: 700,
+          background: "linear-gradient(90deg, #00cfff, #7c5cfc, #00e5ff, #00cfff)",
+          backgroundSize: "250% auto",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+          animation: "img-gen-shimmer 2.4s linear infinite",
+          marginBottom: "5px",
+        }}>
+          Generating medical image
+        </div>
+        {/* Phase + progress % */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div key={phase} style={{
+            fontSize: "11px", color: "rgba(100,200,255,0.65)",
+            animation: "img-gen-text-in 0.3s ease-out",
+            display: "flex", alignItems: "center", gap: "5px",
+          }}>
+            <div style={{
+              width: "5px", height: "5px", borderRadius: "50%",
+              background: "#00cfff", boxShadow: "0 0 5px rgba(0,200,255,0.6)",
+              animation: "synapse-dot-blink 1s ease-in-out infinite",
+            }} />
+            {phases[phase]}
+          </div>
+          <span style={{ fontSize: "11px", fontFamily: "monospace", color: "rgba(0,200,255,0.5)", fontWeight: 600 }}>
+            {Math.round(Math.min(progress, 95))}%
+          </span>
+        </div>
       </div>
     </div>
   );

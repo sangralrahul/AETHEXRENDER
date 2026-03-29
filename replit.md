@@ -29,6 +29,7 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 - **Order Tracking system** at `/orders/track` — stepper UI, auto-fetch from URL param `?orderId=`, courier info with copy tracking, two tabs (Track / My Orders)
 - **Notification Bell** in Navbar — real-time dropdown, unread count badge, mark-all-read, dismiss per item, auto-polls every 30s
 - **Email notifications** via Resend API (`RESEND_API_KEY` env var) — 8 email types (order confirmed, payment failed, shipped, out for delivery, delivered, cancelled, Pro activated, Pro expiring)
+  - NOTE: Resend integration was dismissed by user. To enable email delivery, either connect the Resend integration (connector:ccfg_resend_01K69QKYK789WN202XSE3QS17V) or provide `RESEND_API_KEY` and `FROM_EMAIL` as secrets. Without these, emails are logged to console only.
 - **SMS notifications** via Twilio (`TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`) — 5 SMS types, auto-prefixes `+91` for Indian numbers
 - Both email/SMS gracefully skip with console.log when credentials are absent
 

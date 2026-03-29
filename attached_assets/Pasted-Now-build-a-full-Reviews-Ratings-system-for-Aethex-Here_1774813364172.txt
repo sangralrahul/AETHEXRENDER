@@ -1,0 +1,65 @@
+Now build a full Reviews & Ratings system for Aethex. Here is everything needed:
+
+---
+
+1. PRODUCT REVIEWS
+- After order is delivered, user gets an email + in-app notification: "Rate your purchase"
+- Review form on product page:
+  * Star rating (1-5)
+  * Title (e.g. "Great stethoscope!")
+  * Written review (min 20 chars)
+  * Upload photos (optional, max 3 images)
+  * Verified Purchase badge auto-applied if user actually bought it
+- Only users who purchased the product can leave a review
+- One review per user per product
+- User can edit their review within 7 days
+
+---
+
+2. REVIEW DISPLAY ON PRODUCT PAGE
+- Overall rating score (e.g. 4.3/5) with total review count
+- Star breakdown bar chart (how many 5★, 4★, 3★, 2★, 1★)
+- Sort reviews by: Most Recent, Most Helpful, Highest Rated, Lowest Rated
+- Filter by star rating
+- Each review card shows: user name (partial), role (Doctor/Student), rating, title, review text, photos, date, Verified Purchase badge
+- Helpful button (thumbs up) on each review
+
+---
+
+3. COACHING PLATFORM REVIEWS (Study Hub)
+- Same review system for coaching platforms (PrepLadder, Marrow, etc.)
+- Additional fields specific to courses:
+  * Value for money (1-5)
+  * Content quality (1-5)
+  * Faculty rating (1-5)
+  * Would you recommend? (Yes/No)
+  * Which exam are you preparing for?
+- Show aggregate scores for each sub-rating
+- Anyone with an Aethex account can review platforms (not just buyers)
+
+---
+
+4. REVIEW MODERATION (in Admin Panel)
+- New reviews go to Pending status first
+- Admin can: Approve, Reject, Flag as inappropriate
+- Auto-approve reviews with no flagged words after 24 hours
+- Add a banned words list in admin settings
+- Reported reviews (by users) get flagged for admin review
+- Admin can reply to any review on behalf of Aethex
+
+---
+
+5. RATINGS ON PRODUCT CARDS
+- Show star rating + review count on every product card in the shop
+- Show rating on Study Hub platform cards
+- Sort products by Top Rated option in filters
+
+---
+
+6. USER PROFILE — MY REVIEWS
+- In user account, show all reviews they have written
+- Option to edit or delete their own review
+
+---
+
+Keep dark theme. Do NOT touch login page. Confirm when done.

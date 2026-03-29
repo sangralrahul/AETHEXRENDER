@@ -1,8 +1,9 @@
 import { Link } from "wouter";
-import { Star, ShoppingCart, Tag } from "lucide-react";
+import { ShoppingCart, Tag } from "lucide-react";
 import { type Product } from "@workspace/api-client-react";
 import { formatINR, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { StarRating } from "./StarRating";
 
 interface ProductCardProps {
   product: Product;
@@ -58,9 +59,9 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
       {/* Content */}
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-            <span className="text-sm font-semibold text-foreground">{product.rating}</span>
+          <div className="flex items-center gap-1.5">
+            <StarRating value={Math.round(product.rating)} readOnly size="sm" />
+            <span className="text-sm font-semibold text-foreground">{Number(product.rating).toFixed(1)}</span>
             <span className="text-xs text-muted-foreground">({product.reviewCount})</span>
           </div>
           <span className={cn("text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm", product.inStock ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700")}>

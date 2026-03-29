@@ -7,6 +7,7 @@ import { formatINR } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
+import { ReviewSection } from "@/components/ReviewSection";
 
 export default function ProductDetail() {
   const [, params] = useRoute("/products/:id");
@@ -190,6 +191,14 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {/* Reviews Section */}
+      <ReviewSection
+        productId={productId}
+        productName={product.name}
+        sessionId={sessionId}
+        apiBase={import.meta.env.BASE_URL.replace(/\/$/, "")}
+      />
 
       {/* Related Products */}
       {relatedProducts && relatedProducts.products.length > 1 && (

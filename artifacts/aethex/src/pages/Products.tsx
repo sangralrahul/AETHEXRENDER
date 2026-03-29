@@ -18,6 +18,7 @@ export default function Products() {
   
   const [localSearch, setLocalSearch] = useState(searchFilter);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [sortBy, setSortBy] = useState("Featured");
 
   const sessionId = useSession();
   const { toast } = useToast();
@@ -88,7 +89,7 @@ export default function Products() {
             <div className="flex items-center gap-3 bg-slate-100 px-4 py-2 rounded-xl">
               <SlidersHorizontal className="w-4 h-4 text-slate-500" />
               <span className="text-sm font-medium text-slate-600">Sort by:</span>
-              <select className="bg-transparent text-sm font-bold text-foreground focus:outline-none cursor-pointer">
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="bg-transparent text-sm font-bold text-foreground focus:outline-none cursor-pointer">
                 <option>Featured</option>
                 <option>Price: Low to High</option>
                 <option>Price: High to Low</option>
@@ -190,7 +191,12 @@ export default function Products() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {productsData?.products.map((product) => (
+                {[...(productsData?.products ?? [])].sort((a, b) => {
+                  if (sortBy === "Price: Low to High") return a.price - b.price;
+                  if (sortBy === "Price: High to Low") return b.price - a.price;
+                  if (sortBy === "Highest Rated") return (b.rating ?? 0) - (a.rating ?? 0);
+                  return 0;
+                }).map((product) => (
                   <ProductCard 
                     key={product.id} 
                     product={product} 

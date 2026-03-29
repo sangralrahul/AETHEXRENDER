@@ -13,6 +13,8 @@ import ProductDetail from "@/pages/ProductDetail";
 import Cart from "@/pages/Cart";
 import AiAssistant from "@/pages/AiAssistant";
 import OrderTracking from "@/pages/OrderTracking";
+import MyReviews from "@/pages/MyReviews";
+import AdminReviews from "@/pages/AdminReviews";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,6 +41,8 @@ function Router() {
                 <Route path="/category/:slug" component={Products} />
                 <Route path="/cart" component={Cart} />
                 <Route path="/orders/track" component={OrderTracking} />
+                <Route path="/my-reviews" component={MyReviews} />
+                <Route path="/admin/reviews" component={AdminReviews} />
                 <Route component={NotFound} />
               </Switch>
             </main>

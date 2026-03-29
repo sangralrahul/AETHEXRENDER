@@ -1,8 +1,8 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -12,6 +12,18 @@ export function Navbar() {
   const sessionId = useSession();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [accountOpen, setAccountOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
+        setAccountOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   const { data: cart } = useGetCart(
     { sessionId },
@@ -84,6 +96,32 @@ export function Navbar() {
             >
               Shop All
             </Link>
+
+            {/* Account Dropdown */}
+            <div ref={accountRef} className="relative hidden md:block">
+              <button onClick={() => setAccountOpen(o => !o)}
+                className="flex items-center gap-1 p-2 rounded-xl text-slate-500 hover:text-primary hover:bg-slate-100 transition-all">
+                <User className="w-5 h-5" />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${accountOpen ? "rotate-180" : ""}`} />
+              </button>
+              {accountOpen && (
+                <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50 py-2 z-50">
+                  <Link href="/my-reviews" onClick={() => setAccountOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors">
+                    <Star className="w-4 h-4" /> My Reviews
+                  </Link>
+                  <Link href="/orders/track" onClick={() => setAccountOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors">
+                    <MapPin className="w-4 h-4" /> Track Order
+                  </Link>
+                  <div className="border-t border-slate-100 my-1" />
+                  <Link href="/admin/reviews" onClick={() => setAccountOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-primary transition-colors">
+                    <ShieldCheck className="w-4 h-4" /> Admin Reviews
+                  </Link>
+                </div>
+              )}
+            </div>
 
             <NotificationBell />
 

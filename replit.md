@@ -11,27 +11,30 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 
 ## Features
 
-- Home page with hero section, categories grid, featured products, AI assistant banner
-- Products page with category filters and search
-- Product detail pages
+- Home page with hero section, 8-category grid, featured products, Study Hub section, AI assistant banner
+- Products page with category filters, search, and sort (Featured / Price / Highest Rated)
+- Product detail pages with full review section, star breakdown, sort/filter, review form
 - Shopping cart (session-based via localStorage)
 - AI Medical Assistant (SYNAPSE) — full-screen Replit-style interface at `/ai-assistant`
-  - Sidebar with workspace selector, nav (Home/Chats/Models/Settings), Pro upgrade card, and footer links
-  - Home view: banner, workspace selector, greeting heading, input with Plan/send, category pills row, example prompts, recent chats grid
-  - Chat view with model topbar and full message thread
   - 12 clinical AI modes: Diagnose, DDx Generator, Deep Research, Image, Slides, Drug Interactions, Dosage Calc, Lab Values, SOAP Note, MCQ/Exam, Patient Education, Procedure Guide
-  - Specialty filter dropdown: General, Cardiology, Neurology, Paediatrics, Obstetrics, Oncology, Emergency, Surgery, Psychiatry, Nephrology, Pulmonology, Gastroenterology
-  - Voice input via Web Speech API (en-IN) with pulsing mic button
-  - Mode-aware placeholder text and mode indicator badge in input bar
-  - Specialty context injected into AI system prompt when non-General selected
-- 6 product categories: Scrubs, Aprons, Books, Stethoscopes, Surgical Instruments, Equipment
-- 19 seeded products with realistic Indian pricing (₹)
-- **Order Tracking system** at `/orders/track` — stepper UI, auto-fetch from URL param `?orderId=`, courier info with copy tracking, two tabs (Track / My Orders)
+  - Specialty filter, voice input (en-IN), session persistence
+- 8 product categories: Scrubs, Aprons, Books, Stethoscopes, Surgical Instruments, Dental Supplies, Lab Supplies, Equipment
+- 30 seeded products with realistic Indian pricing (₹)
+- **Order Tracking system** at `/orders/track` — stepper UI, auto-fetch from URL param `?orderId=`, courier info with copy tracking
 - **Notification Bell** in Navbar — real-time dropdown, unread count badge, mark-all-read, dismiss per item, auto-polls every 30s
-- **Email notifications** via Resend API (`RESEND_API_KEY` env var) — 8 email types (order confirmed, payment failed, shipped, out for delivery, delivered, cancelled, Pro activated, Pro expiring)
-  - NOTE: Resend integration was dismissed by user. To enable email delivery, either connect the Resend integration (connector:ccfg_resend_01K69QKYK789WN202XSE3QS17V) or provide `RESEND_API_KEY` and `FROM_EMAIL` as secrets. Without these, emails are logged to console only.
-- **SMS notifications** via Twilio (`TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`) — 5 SMS types, auto-prefixes `+91` for Indian numbers
-- Both email/SMS gracefully skip with console.log when credentials are absent
+- **Email notifications** via Resend API (`RESEND_API_KEY` env var) — graceful fallback when credentials absent
+- **SMS notifications** via Twilio — 5 SMS types, auto-prefixes `+91`; graceful fallback without creds
+- **Reviews & Ratings System**:
+  - Product reviews: star rating (1–5), title, body, photos (up to 3, resized client-side), Verified Purchase badge
+  - One review per session per product; 7-day edit window; helpful voting; report flagging
+  - Review display: overall score, star breakdown bars, sort (Recent/Helpful/Highest/Lowest), star filter, pagination
+  - Platform reviews (Study Hub): additional fields (value, content quality, faculty, exam prep, would recommend)
+  - Admin moderation panel at `/admin/reviews` — Pending/Approved/Rejected/Flagged tabs, approve/reject/flag actions, official replies
+  - Auto-approve reviews with no banned words; banned words trigger `pending` status
+  - My Reviews page at `/my-reviews` — user's own reviews with edit/delete
+  - Product cards show filled star ratings
+  - User account dropdown in Navbar → My Reviews, Track Order, Admin Reviews
+- **DB Tables**: products, categories, cart_items, orders, notifications, reviews, review_votes, platform_reviews, banned_words
 
 # Workspace
 

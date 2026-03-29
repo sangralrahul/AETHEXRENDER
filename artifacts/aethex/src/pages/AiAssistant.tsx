@@ -770,27 +770,107 @@ export default function AiAssistant() {
   const handleDownloadPdf = async (content: string, msgId: string) => {
     setIsExportingPdf(msgId);
     try {
-      const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
-      const modeLabel = chatMode !== "normal" ? chatMode : "";
+      const { jsPDF } = await import("jspdf");
+      const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const pageW = doc.internal.pageSize.getWidth();
+      const pageH = doc.internal.pageSize.getHeight();
+      const margin = 14;
+      const contentW = pageW - margin * 2;
+      let y = 0;
+
+      // Header bar
+      doc.setFillColor(8, 20, 58);
+      doc.rect(0, 0, pageW, 22, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(100, 200, 255);
+      doc.text("SYNAPSE", margin, 14);
+      const modeLabel = chatMode && chatMode !== "normal"
+        ? chatMode.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())
+        : "Clinical Report";
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(160, 190, 230);
+      doc.text(`AI ${modeLabel}`, margin + 30, 14);
+      const dateStr = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+      doc.text(dateStr, pageW - margin, 14, { align: "right" });
+
+      y = 30;
       const firstUserMsg = messages.find(m => m.role === ChatMessageRole.user)?.content?.slice(0, 80) ?? "Clinical Report";
-      const resp = await fetch(`${apiBase}/api/ai/export-pdf`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content, title: `SYNAPSE — ${firstUserMsg}`, mode: modeLabel }),
-      });
-      const data = await resp.json();
-      if (data.pdfBase64) {
-        const bytes = atob(data.pdfBase64);
-        const arr = new Uint8Array(bytes.length);
-        for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
-        const blob = new Blob([arr], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `synapse-report-${Date.now()}.pdf`;
-        a.click();
-        URL.revokeObjectURL(url);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.setTextColor(235, 245, 255);
+      const titleLines = doc.splitTextToSize(`SYNAPSE — ${firstUserMsg}`, contentW);
+      doc.text(titleLines, margin, y);
+      y += titleLines.length * 6 + 3;
+
+      doc.setDrawColor(50, 100, 200);
+      doc.setLineWidth(0.4);
+      doc.line(margin, y, pageW - margin, y);
+      y += 6;
+
+      const checkNewPage = (needed: number) => {
+        if (y + needed > pageH - 20) {
+          doc.addPage();
+          doc.setFillColor(8, 20, 58);
+          doc.rect(0, 0, pageW, 10, "F");
+          y = 18;
+        }
+      };
+
+      const lines = content.split("\n");
+      for (const line of lines) {
+        const stripped = line.trimStart();
+        if (stripped === "") { y += 2; continue; }
+
+        if (stripped.startsWith("# ")) {
+          checkNewPage(10);
+          y += 3;
+          doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(160, 210, 255);
+          const wrapped = doc.splitTextToSize(stripped.slice(2), contentW);
+          doc.text(wrapped, margin, y); y += wrapped.length * 6 + 2;
+        } else if (stripped.startsWith("## ")) {
+          checkNewPage(9);
+          y += 2;
+          doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(120, 185, 255);
+          const wrapped = doc.splitTextToSize(stripped.slice(3), contentW);
+          doc.text(wrapped, margin, y); y += wrapped.length * 5.5 + 2;
+        } else if (stripped.startsWith("### ")) {
+          checkNewPage(8);
+          y += 1;
+          doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(160, 210, 255);
+          const wrapped = doc.splitTextToSize(stripped.slice(4), contentW);
+          doc.text(wrapped, margin, y); y += wrapped.length * 5 + 1;
+        } else if (stripped.startsWith("- ") || stripped.startsWith("• ") || stripped.match(/^\d+\.\s/)) {
+          checkNewPage(6);
+          const bulletText = stripped.startsWith("- ") ? stripped.slice(2) : stripped.startsWith("• ") ? stripped.slice(2) : stripped.replace(/^\d+\.\s/, "");
+          const clean = bulletText.replace(/\*\*(.*?)\*\*/g, "$1");
+          doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(210, 230, 255);
+          const wrapped = doc.splitTextToSize(`  •  ${clean}`, contentW - 4);
+          doc.text(wrapped, margin + 2, y); y += wrapped.length * 4.8 + 0.5;
+        } else {
+          checkNewPage(6);
+          const clean = stripped.replace(/\*\*(.*?)\*\*/g, "$1");
+          doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(210, 230, 255);
+          const wrapped = doc.splitTextToSize(clean, contentW);
+          doc.text(wrapped, margin, y); y += wrapped.length * 4.8 + 0.5;
+        }
       }
-    } catch {
+
+      // Footer on last page
+      const totalPages = doc.getNumberOfPages();
+      for (let p = 1; p <= totalPages; p++) {
+        doc.setPage(p);
+        doc.setFillColor(10, 18, 48);
+        doc.rect(0, pageH - 12, pageW, 12, "F");
+        doc.setFont("helvetica", "normal"); doc.setFontSize(6.5); doc.setTextColor(90, 120, 170);
+        doc.text("Generated by SYNAPSE AI — AETHEX Medical Platform  |  For clinical reference only. Not a substitute for professional medical judgment.", margin, pageH - 5);
+        doc.text(`Page ${p} of ${totalPages}`, pageW - margin, pageH - 5, { align: "right" });
+      }
+
+      doc.save(`synapse-report-${Date.now()}.pdf`);
+    } catch (err) {
+      console.error("PDF export error:", err);
       toast({ title: "Export failed", description: "Could not generate PDF. Please try again.", variant: "destructive" });
     } finally { setIsExportingPdf(null); }
   };

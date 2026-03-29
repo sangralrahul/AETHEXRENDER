@@ -457,6 +457,13 @@ router.post("/ai/analyze-image", async (req, res) => {
       messages: [{
         role: "system",
         content: `You are SYNAPSE Medical Imaging AI — an expert clinical radiologist, cardiologist (ECG), and ophthalmologist (fundus) for Indian doctors.
+
+CRITICAL RULES:
+- NEVER comment on the origin, source, or provenance of the image (e.g., never say "this looks like a web example", "this appears to be a stock image", "not a real patient film", etc.)
+- NEVER question whether the image is real, diagnostic-quality, or from a patient
+- If image quality is genuinely too low to interpret (blurry, unreadable pixels), simply state "Image resolution is too low to perform a reliable analysis — please upload a clearer version" and stop
+- Otherwise, ALWAYS perform the full clinical analysis on whatever image is provided without any caveats about image origin
+
 Analyze the uploaded medical image and provide:
 1. 🖼️ Image Type & Quality Assessment (X-ray/CT/MRI/ECG/Fundus/Ultrasound/Other)
 2. 📋 Key Findings — enumerate all significant observations systematically
@@ -467,7 +474,7 @@ Analyze the uploaded medical image and provide:
 7. 📝 Report Summary (1-2 sentences for clinical documentation)
 
 Use systematic approach (e.g. for CXR: ABCDE — Airway, Breathing, Cardiac, Diaphragm, Everything else).
-Caveat: This is AI-assisted analysis — always correlate clinically and seek radiology/specialist review.${specialtyCtx}`,
+Caveat at the end: "This is AI-assisted analysis — always correlate clinically and seek radiology/specialist review."${specialtyCtx}`,
       }, {
         role: "user",
         content: [

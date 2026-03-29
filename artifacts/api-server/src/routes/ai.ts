@@ -1,5 +1,6 @@
 import { Router, type IRouter } from "express";
 import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
 import { jsonrepair } from "jsonrepair";
@@ -9,6 +10,11 @@ const router: IRouter = Router();
 const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+});
+
+const anthropic = new Anthropic({
+  baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
+  apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
 });
 
 const agentPrompts: Record<string, { systemPrompt: string; suggestions: string[] }> = {
@@ -302,14 +308,11 @@ title, overview, anatomy, physiology, pathways, clinical, conditions, redflags, 
 Types: title|overview|anatomy|physiology|pathways|clinical|conditions|redflags|mindmap|faq|glossary|summary`
       : `Generate ${count} slides. First must be type "title", last must be type "summary". Middle slides should be: overview, anatomy, physiology, clinical, faq, glossary as appropriate.`;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-5.2",
-      max_completion_tokens: 8192,
+    const claudeMsg = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 8192,
+      system: "You are SYNAPSE, a medical education AI built on Claude. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out: alpha, beta, etc.).",
       messages: [
-        {
-          role: "system",
-          content: "You are SYNAPSE, a medical education AI. Return ONLY valid JSON — no markdown, no fences. ASCII only (no Unicode, no Greek letters, spell them out).",
-        },
         {
           role: "user",
           content: `Create a ${count}-slide medical education presentation on: "${prompt}".
@@ -364,7 +367,7 @@ DIAGRAM RULES — every content slide MUST have a real diagram:
       ],
     });
 
-    const raw = completion.choices[0]?.message?.content ?? "";
+    const raw = claudeMsg.content[0]?.type === "text" ? claudeMsg.content[0].text : "";
     let parsed: Record<string, unknown> = {};
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
@@ -448,16 +451,12 @@ router.post("/ai/generate-presentation", async (req, res) => {
 
     const count = Math.max(3, Math.min(30, parseInt(String(slideCount ?? 10)) || 10));
 
-    // ── AI call: FLAT JSON with diagram type + nodes + edges ─────────────
-    const completion = await openai.chat.completions.create({
-      model: "gpt-5.2",
-      max_completion_tokens: 8192,
+    // ── AI call: FLAT JSON with diagram type + nodes + edges (Claude) ─────
+    const claudePDFMsg = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 8192,
+      system: "You are SYNAPSE, a medical education AI built on Claude, creating high-quality PDF presentations. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell out: alpha, beta, etc.).",
       messages: [
-        {
-          role: "system",
-          content:
-            "You are an expert medical educator creating high-quality PDF presentations. Return ONLY valid JSON — no markdown. ASCII only (no Unicode, no Greek letters, spell out: alpha, beta, etc.).",
-        },
         {
           role: "user",
           content: `Create a ${count}-slide medical PDF presentation on: "${prompt}".
@@ -506,7 +505,7 @@ STRICT RULES for diagram fields:
       ],
     });
 
-    const raw = completion.choices[0]?.message?.content ?? "";
+    const raw = claudePDFMsg.content[0]?.type === "text" ? claudePDFMsg.content[0].text : "";
 
     // Parse with 4 fallback layers
     let parsed: Record<string, unknown> = {};

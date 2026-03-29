@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, Activity, ShieldPlus, BrainCircuit, Users, Package, MapPin, SmilePlus, Sparkles, Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, HeartPulse, Shield, Quote } from "lucide-react";
+import { ArrowRight, Activity, ShieldPlus, BrainCircuit, Users, Package, MapPin, SmilePlus, Sparkles, Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, HeartPulse, Shield, Quote, GraduationCap, FileText, Microscope, PlayCircle, PenLine, Trophy } from "lucide-react";
 import { useListProducts, useListCategories } from "@workspace/api-client-react";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,17 @@ import { useAddToCart } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 
 const categoryIconMap: Record<string, React.ElementType> = {
-  Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield, HeartPulse
+  Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield, HeartPulse, SmilePlus
 };
+
+const studyHubItems = [
+  { icon: BookOpen, label: "Textbooks", desc: "MBBS & PG standard texts", color: "#3B82F6", href: "/products?category=books" },
+  { icon: FileText, label: "MCQ Banks", desc: "NEET PG, USMLE, FMGE prep", color: "#8B5CF6", href: "/products?category=books&search=MCQ" },
+  { icon: Microscope, label: "Lab Manuals", desc: "Pathology & physiology manuals", color: "#10B981", href: "/products?category=books&search=manual" },
+  { icon: GraduationCap, label: "Exam Notes", desc: "High-yield short notes", color: "#F59E0B", href: "/products?category=books&search=notes" },
+  { icon: PenLine, label: "Case Studies", desc: "Clinical case books & vignettes", color: "#EF4444", href: "/products?category=books&search=case" },
+  { icon: Trophy, label: "Top Ranked", desc: "Best-sellers for PG entrance", color: "#EC4899", href: "/products?category=books" },
+];
 
 const trustedBrands = [
   "3M Littmann", "OMRON", "Accu-Chek", "Grey's Anatomy", "DAMS", "MDF Instruments", "Dr. Trust", "SurgiMed"
@@ -184,6 +193,62 @@ export default function Home() {
               })}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Study Hub Section */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 to-[#0F2A5C] relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-64 h-64 bg-cyan-400 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-64 h-64 bg-violet-400 rounded-full blur-3xl" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-400/20 text-cyan-300 font-semibold text-sm mb-4 border border-cyan-400/30">
+                <GraduationCap className="w-4 h-4" />
+                Study Hub
+              </div>
+              <h2 className="text-3xl font-display font-bold text-white mb-2">Everything for your medical education</h2>
+              <p className="text-slate-400 max-w-xl">Textbooks, MCQ banks, notes and reference guides — curated for MBBS, NEET PG, USMLE and FMGE aspirants.</p>
+            </div>
+            <Link href="/products?category=books" className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-cyan-300 border border-cyan-400/30 hover:bg-cyan-400/10 transition-all">
+              Browse All Books <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {studyHubItems.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                >
+                  <Link href={item.href}
+                    className="flex flex-col items-center text-center p-5 rounded-2xl group transition-all hover:scale-105"
+                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
+                  >
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-all group-hover:scale-110"
+                      style={{ background: `${item.color}22`, border: `1px solid ${item.color}44` }}>
+                      <Icon className="w-5 h-5" style={{ color: item.color }} />
+                    </div>
+                    <div className="font-semibold text-sm text-white mb-1">{item.label}</div>
+                    <div className="text-xs text-slate-400 leading-snug">{item.desc}</div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <div className="mt-8 sm:hidden text-center">
+            <Link href="/products?category=books" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-cyan-300 border border-cyan-400/30">
+              Browse All Books <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </section>
 

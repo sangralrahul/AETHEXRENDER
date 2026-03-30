@@ -30,7 +30,8 @@ export default function Signup() {
       if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
       const res = signup(name.trim(), email, password);
       if (!res.success) { setError(res.error || "Signup failed. Please try again."); return; }
-      setLocation("/");
+      localStorage.removeItem("aethex_onboarded");
+      setLocation("/onboarding");
     } finally { setLoading(false); }
   };
 

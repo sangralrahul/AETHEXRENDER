@@ -32,6 +32,7 @@ import ClinicalTools from "@/pages/ClinicalTools";
 import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
+import Onboarding from "@/pages/Onboarding";
 
 import SellerRegister from "@/pages/seller/Register";
 import SellerLogin from "@/pages/seller/Login";
@@ -72,6 +73,7 @@ function Router() {
       <Route path="/ai-assistant" component={AiAssistant} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
+      <Route path="/onboarding" component={Onboarding} />
       <Route path="/seller/register" component={SellerRegister} />
       <Route path="/seller/login">{() => <SellerLogin onLogin={handleSellerLogin} />}</Route>
 

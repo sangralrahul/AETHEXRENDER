@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "wouter";
-import { User, MapPin, Heart, Crown, Settings, LogOut, Plus, Trash2, CheckCircle2, Star, Bell, ShieldCheck, ChevronRight, Edit3, Package } from "lucide-react";
+import { User, MapPin, Heart, Crown, Settings, LogOut, Plus, Trash2, CheckCircle2, Star, Bell, ShieldCheck, ChevronRight, Edit3, Package, Camera } from "lucide-react";
 import { useUserAuth, type Address } from "@/hooks/use-user-auth";
 import { formatINR } from "@/lib/utils";
 
@@ -113,6 +113,22 @@ export default function Account() {
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [proLoading, setProLoading] = useState(false);
   const [notifToggles, setNotifToggles] = useState([true, true, false, true, false]);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return;
+    setPhotoUploading(true);
+    const reader = new FileReader();
+    reader.onload = () => {
+      updateProfile({ avatar: reader.result as string });
+      setPhotoUploading(false);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
 
   if (!isLoggedIn || !user) {
     return (
@@ -174,10 +190,28 @@ export default function Account() {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-[#161B22] border border-white/8 rounded-2xl p-5 mb-4">
+              <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-14 h-14 rounded-2xl bg-[#00C2A8]/20 border border-[#00C2A8]/30 flex items-center justify-center text-[#00C2A8] font-bold text-xl">
-                  {user.name[0]?.toUpperCase()}
-                </div>
+                <button
+                  onClick={() => photoInputRef.current?.click()}
+                  className="relative w-14 h-14 rounded-2xl overflow-hidden group flex-shrink-0"
+                  title="Change profile photo"
+                >
+                  {user.avatar ? (
+                    <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-[#00C2A8]/20 border border-[#00C2A8]/30 flex items-center justify-center text-[#00C2A8] font-bold text-xl">
+                      {user.name[0]?.toUpperCase()}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    {photoUploading ? (
+                      <div className="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <Camera className="w-4 h-4 text-white" />
+                    )}
+                  </div>
+                </button>
                 <div className="min-w-0">
                   <p className="font-bold text-white truncate">{user.name}</p>
                   <p className="text-xs text-white/40 truncate">{user.email}</p>
@@ -226,6 +260,51 @@ export default function Account() {
                     <Edit3 className="w-3.5 h-3.5" />
                     {editName ? "Cancel" : "Edit"}
                   </button>
+                </div>
+
+                {/* Profile Photo */}
+                <div className="flex items-center gap-5 mb-6 pb-6 border-b border-white/8">
+                  <button
+                    onClick={() => photoInputRef.current?.click()}
+                    className="relative w-20 h-20 rounded-2xl overflow-hidden group flex-shrink-0"
+                    title="Change profile photo"
+                  >
+                    {user.avatar ? (
+                      <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-[#00C2A8]/20 border-2 border-[#00C2A8]/30 flex items-center justify-center text-[#00C2A8] font-bold text-3xl">
+                        {user.name[0]?.toUpperCase()}
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      {photoUploading ? (
+                        <div className="w-5 h-5 border-2 border-white/60 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <Camera className="w-5 h-5 text-white" />
+                      )}
+                    </div>
+                  </button>
+                  <div>
+                    <p className="text-sm font-semibold text-white mb-1">Profile Photo</p>
+                    <p className="text-xs text-white/40 mb-3">JPG, PNG or GIF · Max 5 MB</p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => photoInputRef.current?.click()}
+                        disabled={photoUploading}
+                        className="px-3 py-1.5 text-xs font-semibold bg-[#00C2A8]/15 border border-[#00C2A8]/30 text-[#00C2A8] rounded-lg hover:bg-[#00C2A8]/25 transition-all disabled:opacity-50"
+                      >
+                        {photoUploading ? "Uploading…" : user.avatar ? "Change Photo" : "Upload Photo"}
+                      </button>
+                      {user.avatar && (
+                        <button
+                          onClick={() => updateProfile({ avatar: undefined })}
+                          className="px-3 py-1.5 text-xs font-semibold text-white/40 hover:text-red-400 bg-white/5 hover:bg-red-500/10 rounded-lg transition-all"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 {editName ? (
                   <div className="space-y-4">

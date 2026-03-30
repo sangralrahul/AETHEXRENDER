@@ -7,7 +7,6 @@ import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { NotificationBell } from "@/components/NotificationBell";
 import { AuthModal } from "@/components/AuthModal";
-import SettingsModal, { loadSettings, saveSettings, type CadusSettings } from "@/components/cadus/SettingsModal";
 
 export function Navbar() {
   const [location, setLocation] = useLocation();
@@ -20,30 +19,6 @@ export function Navbar() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const accountRef = useRef<HTMLDivElement>(null);
-  const [showSettings, setShowSettings] = useState(false);
-  const [cadusSettings, setCadusSettings] = useState<CadusSettings>(loadSettings);
-
-  const handleSettingsChange = (s: CadusSettings) => {
-    setCadusSettings(s);
-    saveSettings(s);
-  };
-
-  const handleClearAllChats = () => {
-    try { localStorage.removeItem("cadus_sessions_v2"); } catch {}
-    window.dispatchEvent(new StorageEvent("storage", { key: "cadus_sessions_v2", newValue: null }));
-  };
-
-  const handleExportChats = () => {
-    try {
-      const raw = localStorage.getItem("cadus_sessions_v2") ?? "[]";
-      const blob = new Blob([raw], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = `cadus-chats-${Date.now()}.json`; a.click();
-      URL.revokeObjectURL(url);
-    } catch {}
-  };
-
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
@@ -78,16 +53,6 @@ export function Navbar() {
   return (
     <>
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
-      {showSettings && (
-        <SettingsModal
-          settings={cadusSettings}
-          onSettingsChange={handleSettingsChange}
-          onClearAllChats={handleClearAllChats}
-          onExportChats={handleExportChats}
-          onClose={() => setShowSettings(false)}
-          user={user}
-        />
-      )}
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
@@ -206,13 +171,10 @@ export function Navbar() {
                           className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
                           <Settings className="w-4 h-4" /> My Account
                         </Link>
-                        <button
-                          type="button"
-                          onClick={() => { setAccountOpen(false); setShowSettings(true); }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors"
-                        >
+                        <Link href="/settings" onClick={() => setAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
                           <Brain className="w-4 h-4" /> Cadus AI Settings
-                        </button>
+                        </Link>
                         <Link href="/orders" onClick={() => setAccountOpen(false)}
                           className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
                           <Package className="w-4 h-4" /> My Orders

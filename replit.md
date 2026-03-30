@@ -11,12 +11,14 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 
 ## Features
 
-### Settings Sync (March 2026)
-- **Cadus AI Settings in Navbar** — account dropdown now has a "Cadus AI Settings" button (Brain icon) for all logged-in users
-- **Real user data in Account tab** — shows actual name, email, PRO badge, daily query usage bar (20/day free, 200/day pro)
-- **Real-time sync** — AiAssistant listens to `window.storage` events; settings changed on website apply instantly to the AI page
-- **Context-aware Chats tab** — when opened from website, shows informational hint instead of destructive chat actions
-- **SettingsModal props** — all chat-action props now optional; accepts `user` and `isFromWebsite` flags
+### Settings Page (March 2026)
+- **Full-page `/settings` route** — completely standalone black-background settings page at `/settings` (no Navbar/Footer, full-screen like `/ai-assistant`)
+- **Animated particle canvas** — 60 floating dots with faint connecting lines + two ambient radial gradient blobs (teal + purple), all animated
+- **Left sidebar navigation** — 7 sections each with icon, label, subtitle, and an active teal indicator bar
+- **Section fade-slide animation** — each section switch plays a 250ms `fadeSlideIn` animation
+- **Full feature parity** — General, Interface, Models, Chats (export+clear from localStorage), Personalization, Account (real user data + daily usage bar), About
+- **Navbar entry point** — account dropdown → "Cadus AI Settings" → navigates to `/settings`
+- **No more modal** — old SettingsModal and all its state removed from Navbar; `SettingsModal.tsx` still exists for legacy exports only
 
 ### New (2026 Audit Pass)
 - **Dark theme** — #0D1117 background, #161B22 cards, #00C2A8 teal. Applied globally via CSS variables

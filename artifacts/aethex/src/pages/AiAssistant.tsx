@@ -1791,29 +1791,46 @@ export default function AiAssistant() {
                 {/* Typing indicator */}
                 {(chatMutation.isPending || isGeneratingResearch) && (
                   <div className="flex gap-3 self-start max-w-[92%]" style={{ animation: "tw-bubble-in 0.22s ease-out both" }}>
-                    <div className="w-8 h-8 shrink-0 mt-1">
+                    <div className="shrink-0 mt-0.5" style={{ width: 38, height: 38 }}>
                       <CadusLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                     </div>
-                    <div className="rounded-2xl rounded-tl-sm px-5 py-4 flex items-center gap-1.5"
-                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                    <div className="rounded-2xl rounded-tl-sm px-5 py-3.5 flex items-center gap-3"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(0,194,168,0.18)",
+                        boxShadow: "0 0 18px rgba(0,194,168,0.06), 0 0 32px rgba(168,85,247,0.04)",
+                      }}>
                       {isGeneratingResearch ? (
                         <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "rgba(0,194,168,0.7)" }} />
-                          <span className="text-sm ml-2" style={{ color: "rgba(255,255,255,0.4)" }}>{tr.researching}</span>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" style={{ color: "rgba(0,194,168,0.7)" }} />
+                          <span className="text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>{tr.researching}</span>
                         </>
                       ) : (
                         <>
                           {[0, 1, 2].map(i => (
                             <span
                               key={i}
-                              className="w-2 h-2 rounded-full"
+                              className="rounded-full"
                               style={{
-                                background: "rgba(0,194,168,0.75)",
+                                width: 7, height: 7,
+                                background: i === 0
+                                  ? "rgba(0,194,168,0.85)"
+                                  : i === 1 ? "rgba(100,160,240,0.75)" : "rgba(168,85,247,0.7)",
                                 animation: "tw-dot-bounce 1.2s ease-in-out infinite",
                                 animationDelay: `${i * 0.18}s`,
+                                boxShadow: i === 0
+                                  ? "0 0 6px rgba(0,194,168,0.5)"
+                                  : i === 2 ? "0 0 6px rgba(168,85,247,0.4)" : undefined,
                               }}
                             />
                           ))}
+                          <span className="text-xs ml-1" style={{
+                            color: "rgba(255,255,255,0.28)",
+                            letterSpacing: "0.04em",
+                            animation: "cadus-think-pulse 2s ease-in-out infinite",
+                          }}>
+                            Cadus AI is thinking...
+                          </span>
                         </>
                       )}
                     </div>

@@ -147,7 +147,27 @@
   color: var(--sp-placeholder-color, rgba(100, 170, 220, 0.45));
 }
 
-/* ── CADUS Animated Logo keyframes ─────────────────────────────────────── */
+/* ── Cadus Caduceus Logo keyframes ──────────────────────────────────────── */
+@keyframes cadus-think-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.09); }
+}
+@keyframes cadus-think-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes cadus-wing-flap {
+  0%, 100% { transform: scaleX(1) translateY(0px); }
+  50%       { transform: scaleX(1.07) translateY(-1px); }
+}
+@keyframes cadus-wing-flap-r {
+  0%, 100% { transform: scaleX(1) translateY(0px); }
+  50%       { transform: scaleX(1.07) translateY(-1px); }
+}
+@keyframes cadus-serpent-pulse {
+  0%, 100% { opacity: 0.72; stroke-width: 2.2; }
+  50%       { opacity: 1;    stroke-width: 2.8; }
+}
 @keyframes cadus-orbit-cw {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }

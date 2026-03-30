@@ -1,0 +1,93 @@
+You are building a modern AI medical web app called "CADUS AI".
+
+TASK:
+1. Add the provided Caduceus (snake + wings medical symbol) logo to the UI.
+2. Animate the logo ONLY when the AI is "thinking" (i.e., waiting for response).
+3. Keep design clean, futuristic, and responsive.
+
+REQUIREMENTS:
+
+### 1. Logo Integration
+- Place logo in:
+  - Navbar (left side)
+  - Chat thinking loader (center)
+- Use the uploaded image as logo (name it: cadus-logo.png)
+
+### 2. Thinking Animation (IMPORTANT)
+When AI is generating a response:
+- Show the logo in center
+- Apply:
+  - Smooth pulse (scale up/down)
+  - Glow effect (blue/purple medical AI theme)
+  - Subtle rotation (very slow, 3–5s loop)
+
+### 3. Animation Behavior
+- Animation starts when:
+  isLoading = true
+- Animation stops when:
+  isLoading = false
+
+### 4. UI Style
+- Dark theme (background: #0B1C2C or similar)
+- Neon glow accents (blue/purple)
+- Smooth transitions
+
+### 5. Code Implementation
+
+Use this structure:
+
+#### HTML
+<div class="logo-container">
+  <img src="/cadus-logo.png" class="cadus-logo" id="aiLogo" />
+</div>
+
+#### CSS
+.cadus-logo {
+  width: 80px;
+  transition: all 0.3s ease;
+}
+
+.thinking {
+  animation: pulse 1.5s infinite ease-in-out,
+             glow 2s infinite alternate,
+             rotate 6s linear infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes glow {
+  0% { filter: drop-shadow(0 0 5px #00c3ff); }
+  100% { filter: drop-shadow(0 0 20px #7a5cff); }
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#### JavaScript
+function setThinking(state) {
+  const logo = document.getElementById("aiLogo");
+  if (state) {
+    logo.classList.add("thinking");
+  } else {
+    logo.classList.remove("thinking");
+  }
+}
+
+### 6. Chat Integration
+- When user sends message:
+  call → setThinking(true)
+- When AI response received:
+  call → setThinking(false)
+
+### 7. Bonus (Optional)
+- Add floating particles around logo while thinking
+- Add text: "CADUS AI is thinking..."
+
+GOAL:
+Make the logo feel like a living AI brain — subtle, premium, and not distracting.

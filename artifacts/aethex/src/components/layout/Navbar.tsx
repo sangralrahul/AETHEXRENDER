@@ -1,18 +1,23 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
+import { useUserAuth } from "@/hooks/use-user-auth";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/NotificationBell";
+import { AuthModal } from "@/components/AuthModal";
 
 export function Navbar() {
   const [location, setLocation] = useLocation();
   const sessionId = useSession();
+  const { user, isLoggedIn, isPro, logout } = useUserAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [accountOpen, setAccountOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const accountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,134 +44,239 @@ export function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      setLocation(`/products?search=${encodeURIComponent(searchQuery)}`);
+      setLocation(`/shop?search=${encodeURIComponent(searchQuery)}`);
     }
   };
 
+  const openLogin = () => { setAuthMode("login"); setAuthOpen(true); setAccountOpen(false); };
+  const openSignup = () => { setAuthMode("signup"); setAuthOpen(true); setAccountOpen(false); };
+
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
-        isScrolled
-          ? "bg-white/90 backdrop-blur-xl border-border shadow-sm py-3"
-          : "bg-white border-transparent py-4"
-      )}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4 md:gap-8">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-            <img
-              src={`${import.meta.env.BASE_URL}aethex-logo.jpg`}
-              alt="aethex logo"
-              className="w-10 h-10 object-contain"
-            />
-            <span className="font-display font-bold text-2xl tracking-tight text-[#0F2A5C] leading-none">
-              aethex
-            </span>
-          </Link>
-
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl relative group">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2.5 border-2 border-border rounded-2xl leading-5 bg-muted/30 placeholder-muted-foreground focus:outline-none focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm"
-              placeholder="Search scrubs, stethoscopes, books..."
-            />
-          </form>
-
-          {/* Right Navigation */}
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <Link
-              href="/ai-assistant"
-              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-secondary to-secondary/50 text-secondary-foreground font-semibold hover:shadow-md transition-all border border-secondary hover-lift"
-            >
-              <Sparkles className="w-4 h-4 text-accent" />
-              <span>SYNAPSE</span>
-            </Link>
-
-            <Link
-              href="/products"
-              className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors hidden md:block"
-            >
-              Shop All
-            </Link>
-
-            <Link
-              href="/blog"
-              className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors hidden lg:block"
-            >
-              Blog
-            </Link>
-
-            <Link
-              href="/news"
-              className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors hidden lg:block"
-            >
-              News
-            </Link>
-
-            {/* Account Dropdown */}
-            <div ref={accountRef} className="relative hidden md:block">
-              <button onClick={() => setAccountOpen(o => !o)}
-                className="flex items-center gap-1 p-2 rounded-xl text-slate-500 hover:text-primary hover:bg-slate-100 transition-all">
-                <User className="w-5 h-5" />
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${accountOpen ? "rotate-180" : ""}`} />
-              </button>
-              {accountOpen && (
-                <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50 py-2 z-50">
-                  <Link href="/my-reviews" onClick={() => setAccountOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors">
-                    <Star className="w-4 h-4" /> My Reviews
-                  </Link>
-                  <Link href="/orders/track" onClick={() => setAccountOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors">
-                    <MapPin className="w-4 h-4" /> Track Order
-                  </Link>
-                  <div className="border-t border-slate-100 my-1" />
-                  <Link href="/seller/dashboard" onClick={() => setAccountOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors">
-                    <Store className="w-4 h-4" /> Seller Hub
-                  </Link>
-                  <div className="border-t border-slate-100 my-1" />
-                  <Link href="/admin/reviews" onClick={() => setAccountOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-primary transition-colors">
-                    <ShieldCheck className="w-4 h-4" /> Admin Reviews
-                  </Link>
-                  <Link href="/admin/sellers" onClick={() => setAccountOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-primary transition-colors">
-                    <ShieldCheck className="w-4 h-4" /> Admin Sellers
-                  </Link>
-                  <Link href="/admin/blog" onClick={() => setAccountOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-primary transition-colors">
-                    <BookOpen className="w-4 h-4" /> Admin Blog
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            <NotificationBell />
-
-            <Link href="/cart" className="relative p-2 text-foreground hover:bg-muted rounded-full transition-colors hover-lift">
-              <ShoppingCart className="w-6 h-6" />
-              {cart && cart.itemCount > 0 && (
-                <span className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform bg-destructive rounded-full border-2 border-white">
-                  {cart.itemCount}
+    <>
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
+      <header
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
+          isScrolled
+            ? "bg-[#0D1117]/95 backdrop-blur-xl border-white/8 shadow-lg shadow-black/30 py-3"
+            : "bg-[#0D1117] border-white/5 py-4"
+        )}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-4 md:gap-8">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+              <img
+                src={`${import.meta.env.BASE_URL}aethex-logo.jpg`}
+                alt="aethex logo"
+                className="w-9 h-9 object-contain rounded-lg"
+              />
+              <span className="font-display font-bold text-xl tracking-tight text-white leading-none">
+                aethex
+              </span>
+              {isPro && (
+                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 bg-[#00C2A8]/20 border border-[#00C2A8]/40 rounded-full text-[#00C2A8] text-xs font-bold">
+                  <Crown className="w-3 h-3" />PRO
                 </span>
               )}
             </Link>
 
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="w-6 h-6" />
-            </Button>
+            {/* Search Bar */}
+            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl relative group">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-white/30 group-focus-within:text-[#00C2A8] transition-colors" />
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="block w-full pl-10 pr-3 py-2.5 border border-white/10 rounded-xl leading-5 bg-white/5 placeholder-white/25 text-white focus:outline-none focus:bg-white/8 focus:border-[#00C2A8]/50 focus:ring-2 focus:ring-[#00C2A8]/15 transition-all sm:text-sm"
+                placeholder="Search scrubs, stethoscopes, books..."
+              />
+            </form>
+
+            {/* Right Navigation */}
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+              <Link
+                href="/ai-assistant"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#00C2A8]/15 text-[#00C2A8] font-semibold text-sm hover:bg-[#00C2A8]/25 transition-all border border-[#00C2A8]/25"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>SYNAPSE</span>
+              </Link>
+
+              <Link
+                href="/shop"
+                className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden md:block px-2 py-1"
+              >
+                Shop
+              </Link>
+
+              <Link
+                href="/study-hub"
+                className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden lg:block px-2 py-1"
+              >
+                Study Hub
+              </Link>
+
+              <Link
+                href="/blog"
+                className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden lg:block px-2 py-1"
+              >
+                Blog
+              </Link>
+
+              <Link
+                href="/news"
+                className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden xl:block px-2 py-1"
+              >
+                News
+              </Link>
+
+              {/* Account Dropdown */}
+              <div ref={accountRef} className="relative hidden md:block">
+                <button onClick={() => setAccountOpen(o => !o)}
+                  className="flex items-center gap-1.5 p-2 rounded-xl text-white/50 hover:text-white hover:bg-white/8 transition-all">
+                  {isLoggedIn ? (
+                    <div className="w-7 h-7 rounded-full bg-[#00C2A8]/20 border border-[#00C2A8]/40 flex items-center justify-center text-[#00C2A8] text-xs font-bold">
+                      {user?.name?.[0]?.toUpperCase() || "U"}
+                    </div>
+                  ) : (
+                    <User className="w-5 h-5" />
+                  )}
+                  <ChevronDown className={`w-3 h-3 transition-transform ${accountOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {accountOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-[#161B22] border border-white/10 rounded-2xl shadow-2xl shadow-black/50 py-2 z-50">
+                    {isLoggedIn ? (
+                      <>
+                        <div className="px-4 py-3 border-b border-white/8">
+                          <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
+                          <p className="text-xs text-white/40 truncate">{user?.email}</p>
+                          {isPro && (
+                            <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-[#00C2A8]/15 border border-[#00C2A8]/30 rounded-full text-[#00C2A8] text-xs font-bold">
+                              <Crown className="w-3 h-3" />SYNAPSE PRO
+                            </span>
+                          )}
+                        </div>
+                        <Link href="/account" onClick={() => setAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                          <Settings className="w-4 h-4" /> My Account
+                        </Link>
+                        <Link href="/orders" onClick={() => setAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                          <Package className="w-4 h-4" /> My Orders
+                        </Link>
+                        <Link href="/my-reviews" onClick={() => setAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                          <Star className="w-4 h-4" /> My Reviews
+                        </Link>
+                        <Link href="/orders/track" onClick={() => setAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                          <MapPin className="w-4 h-4" /> Track Order
+                        </Link>
+                        <div className="border-t border-white/8 my-1" />
+                        <Link href="/seller/dashboard" onClick={() => setAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                          <Store className="w-4 h-4" /> Seller Hub
+                        </Link>
+                        <div className="border-t border-white/8 my-1" />
+                        <Link href="/admin" onClick={() => setAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/40 hover:bg-white/5 hover:text-white/70 transition-colors">
+                          <ShieldCheck className="w-4 h-4" /> Admin Panel
+                        </Link>
+                        <div className="border-t border-white/8 my-1" />
+                        <button onClick={() => { logout(); setAccountOpen(false); }}
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors">
+                          <LogOut className="w-4 h-4" /> Sign Out
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="px-4 py-3 border-b border-white/8">
+                          <p className="text-sm text-white/50">Sign in to access your account, orders, and SYNAPSE AI.</p>
+                        </div>
+                        <button onClick={openLogin}
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                          <User className="w-4 h-4" /> Sign In
+                        </button>
+                        <button onClick={openSignup}
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#00C2A8] hover:bg-[#00C2A8]/10 transition-colors font-medium">
+                          <Sparkles className="w-4 h-4" /> Create Account
+                        </button>
+                        <div className="border-t border-white/8 my-1" />
+                        <Link href="/seller/register" onClick={() => setAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/40 hover:bg-white/5 hover:text-white/70 transition-colors">
+                          <Store className="w-4 h-4" /> Sell on aethex
+                        </Link>
+                        <Link href="/admin" onClick={() => setAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/40 hover:bg-white/5 hover:text-white/70 transition-colors">
+                          <ShieldCheck className="w-4 h-4" /> Admin
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <NotificationBell />
+
+              <Link href="/cart" className="relative p-2 text-white/60 hover:text-white hover:bg-white/8 rounded-xl transition-all">
+                <ShoppingCart className="w-5 h-5" />
+                {cart && cart.itemCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold leading-none text-[#0D1117] bg-[#00C2A8] rounded-full">
+                    {cart.itemCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Mobile menu button */}
+              <button onClick={() => setMobileOpen(o => !o)} className="md:hidden p-2 text-white/60 hover:text-white hover:bg-white/8 rounded-xl transition-all">
+                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
           </div>
+
+          {/* Mobile Menu */}
+          {mobileOpen && (
+            <div className="md:hidden border-t border-white/8 mt-3 pt-3 pb-4 space-y-1">
+              <form onSubmit={handleSearch} className="relative mb-3">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 text-sm focus:outline-none focus:border-[#00C2A8]/50"
+                  placeholder="Search products..." />
+              </form>
+              {[
+                { href: "/shop", label: "Shop All Products" },
+                { href: "/ai-assistant", label: "SYNAPSE AI" },
+                { href: "/study-hub", label: "Study Hub" },
+                { href: "/blog", label: "Blog" },
+                { href: "/news", label: "Medical News" },
+                { href: "/orders/track", label: "Track Order" },
+              ].map(item => (
+                <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
+                  className="flex items-center px-3 py-2.5 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                  {item.label}
+                </Link>
+              ))}
+              <div className="border-t border-white/8 pt-2 mt-2">
+                {isLoggedIn ? (
+                  <button onClick={() => { logout(); setMobileOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                    <LogOut className="w-4 h-4" /> Sign Out ({user?.name})
+                  </button>
+                ) : (
+                  <button onClick={() => { openLogin(); setMobileOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-white/70 hover:bg-white/5 rounded-lg transition-colors">
+                    <User className="w-4 h-4" /> Sign In / Sign Up
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 }

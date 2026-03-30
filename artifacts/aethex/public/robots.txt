@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /seller/dashboard
+Disallow: /seller/products
+Disallow: /seller/orders
+Disallow: /seller/payouts
+Disallow: /seller/analytics
+Disallow: /seller/settings
+Disallow: /account
+Disallow: /orders
+Disallow: /cart
+Disallow: /checkout
+Disallow: /api/
+
+Sitemap: https://aethex.in/sitemap.xml

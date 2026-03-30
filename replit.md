@@ -11,6 +11,51 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 
 ## Features
 
+### New (2026 Audit Pass)
+- **Dark theme** — #0D1117 background, #161B22 cards, #00C2A8 teal. Applied globally via CSS variables
+- **User Auth** — email signup/login + Google placeholder. `AuthModal.tsx` + `use-user-auth.ts` hook (localStorage)
+- **SYNAPSE Pro subscription** — ₹299/month, ₹1999/year. UI in `/account`. Admin hint: `aethex@admin2026`
+- **New pages**: `/shop` (alias for /products), `/study-hub`, `/checkout`, `/orders`, `/account`, `/admin`
+- **Trust badges** on Home — GST Invoice, Fast Delivery, Verified Brands, Easy Returns
+- **Newsletter section** on Home
+- **Navbar** — dark theme, auth dropdown with Pro Crown badge, Study Hub/Shop/Blog/News links
+- **sitemap.xml** and **robots.txt** in `/public/`
+- **DB tables created** and seeded with 6 categories, 19 products
+
+### Study Hub (`/study-hub`)
+- 10 coaching platforms compared (PrepLadder, Marrow, AMBOSS, Dr. Najeeb, etc.)
+- Exam filter (NEET PG, NEXT, FMGE, USMLE, INI-CET)
+- Compare up to 3 platforms side-by-side in a modal
+- Essential medical books section, free YouTube channels section
+- SYNAPSE CTA banner
+
+### Checkout (`/checkout`)
+- 3-step flow: Address → Payment → Confirm
+- Full Indian address form with state selector
+- Payment methods: UPI, Card, Net Banking, COD
+- Demo order placement with success screen and order ID
+- Razorpay ready (demo mode active)
+
+### Orders (`/orders`)
+- Order history with status badges and stepper tracker
+- Search/filter by status
+- Order detail modal with full tracker, address, tracking info, and totals
+- Stats: total orders, delivered, in transit
+
+### Account (`/account`)
+- Tabbed: Profile, Addresses, Wishlist, Subscription, Notifications
+- Edit name/phone, saved addresses (CRUD), Pro subscription upgrade UI
+- Toggle notification preferences
+
+### Admin (`/admin`)
+- Password-protected (hint: aethex@admin2026)
+- 8 tabs: Dashboard, Products, Orders, Users, Sellers, Blog, Analytics, Settings
+- Dashboard shows revenue, orders, users, Pro subscriptions
+- Sellers tab: approve/reject pending sellers
+- Analytics: top categories revenue bar chart
+
+---
+
 - Home page with hero section, 8-category grid, featured products, Study Hub section, AI assistant banner
 - Products page with category filters, search, and sort (Featured / Price / Highest Rated)
 - Product detail pages with full review section, star breakdown, sort/filter, review form

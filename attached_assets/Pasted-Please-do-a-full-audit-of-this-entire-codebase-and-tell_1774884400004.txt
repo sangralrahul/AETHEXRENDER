@@ -1,0 +1,94 @@
+Please do a full audit of this entire codebase and tell me exactly what is currently built and working. List every page, every feature, and every section that exists. Then build everything that is missing from this list:
+
+=== AETHEX COMPLETE WEBSITE CHECKLIST ===
+
+AETHEX is India's medical marketplace platform. It has two main parts:
+1. Medical Shop (buy surgical items, equipment, scrubs, stethoscopes, BP machines etc.)
+2. SYNAPSE AI (AI clinical assistant for doctors and students, lives at /ai-assistant)
+
+--- PAGES THAT MUST EXIST ---
+
+/ (Homepage)
+- Dark hero: "Everything a Doctor Needs, Delivered"
+- Search bar
+- Product categories row with icons
+- Featured products
+- SYNAPSE AI banner with Try Now button
+- Trust badges: GST Invoice, Fast Delivery, Verified Brands, Easy Returns
+- Newsletter signup
+- Footer with all links
+
+/shop
+- All products grid with filters (category, price, rating)
+- Sort by: popular, price, rating
+- Product cards with image, name, price, rating, Add to Cart
+
+/shop/[product-slug]
+- Product images, description, specs, price with GST
+- Add to Cart + Buy Now
+- Reviews & ratings section
+- Related products
+
+/ai-assistant (SYNAPSE AI)
+- Modes: Diagnose, DDx Generator, Research, Image, Lab Values, Drug Interactions, SOAP Notes, MCQ Generator
+- Specialty filter dropdown (Cardiology, Neurology, Paediatrics, Obstetrics, Oncology, Emergency, Surgery, Psychiatry, Nephrology, Pulmonology, Gastroenterology)
+- Voice input (mic button working)
+- Structured response cards (not plain text)
+- Copy + Export PDF buttons working on every response
+- No false "example image" warning on uploads
+
+/study-hub
+- Coaching platforms comparison: PrepLadder, Marrow, PW Med, DAMS, Bhatia, Amboss, Lecturio, Osmosis, Sketchy Medical, Dr. Najeeb
+- Each with logo, price, features, exams covered, rating
+- Compare up to 3 platforms side by side
+- Filter by exam type
+- Books store section
+- Free YouTube resources section
+
+/blog
+- Blog posts grid with categories
+- Individual post pages with SEO
+- At least 6 starter posts
+
+/news
+- Live medical news feed
+
+/cart
+- Cart with items, quantities, GST breakdown, total
+
+/checkout
+- Address form, Razorpay payment (UPI, card, netbanking, COD)
+
+/orders
+- Order history
+- Order tracking with progress stepper
+
+/account
+- Profile, saved addresses, wishlist, subscription status
+
+/seller/register
+- Seller onboarding form
+
+/seller/dashboard
+- Seller product and order management
+
+/admin (password protected)
+- Full admin panel: dashboard, products, orders, users, sellers, blog, analytics, settings
+
+--- FEATURES THAT MUST WORK ---
+- User login/signup (Google + Email) connected throughout
+- Free users: 10 SYNAPSE queries/day, Pro users: unlimited
+- SYNAPSE Pro subscription via Razorpay: ₹299/month or ₹1999/year
+- Pro badge on navbar after subscribing
+- Order notifications via email
+- In-app notification bell
+- Reviews and ratings on products and platforms
+- Dark theme everywhere (#0D1117 bg, #161B22 cards, #00C2A8 teal accent)
+- Mobile responsive on all pages
+- SEO: meta tags, sitemap.xml, robots.txt on all pages
+- Google Analytics placeholder
+
+--- DO NOT TOUCH ---
+- Login page (will be redesigned separately at the very end)
+
+Please audit first, tell me what exists vs what is missing, then build everything missing. Confirm when fully done.

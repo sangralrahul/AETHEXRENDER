@@ -14,10 +14,15 @@ import ProductDetail from "@/pages/ProductDetail";
 import Cart from "@/pages/Cart";
 import AiAssistant from "@/pages/AiAssistant";
 import OrderTracking from "@/pages/OrderTracking";
+import Orders from "@/pages/Orders";
 import MyReviews from "@/pages/MyReviews";
 import AdminReviews from "@/pages/AdminReviews";
 import AdminSellers from "@/pages/AdminSellers";
 import SellerStorefront from "@/pages/SellerStorefront";
+import StudyHub from "@/pages/StudyHub";
+import Checkout from "@/pages/Checkout";
+import Account from "@/pages/Account";
+import Admin from "@/pages/Admin";
 
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
@@ -80,19 +85,45 @@ function Router() {
             <main className="flex-1">
               <Switch>
                 <Route path="/" component={Home} />
+
+                {/* Shop routes (also alias /products) */}
+                <Route path="/shop" component={Products} />
+                <Route path="/shop/:id" component={ProductDetail} />
                 <Route path="/products" component={Products} />
                 <Route path="/products/:id" component={ProductDetail} />
                 <Route path="/category/:slug" component={Products} />
+
+                {/* Cart & Checkout */}
                 <Route path="/cart" component={Cart} />
+                <Route path="/checkout" component={Checkout} />
+
+                {/* Orders */}
+                <Route path="/orders" component={Orders} />
                 <Route path="/orders/track" component={OrderTracking} />
+
+                {/* Account */}
+                <Route path="/account" component={Account} />
+
+                {/* Study Hub */}
+                <Route path="/study-hub" component={StudyHub} />
+
+                {/* Reviews */}
                 <Route path="/my-reviews" component={MyReviews} />
+
+                {/* Admin */}
+                <Route path="/admin" component={Admin} />
                 <Route path="/admin/reviews" component={AdminReviews} />
                 <Route path="/admin/sellers" component={AdminSellers} />
                 <Route path="/admin/blog" component={AdminBlog} />
+
+                {/* Seller storefronts */}
                 <Route path="/seller/:code/store" component={SellerStorefront} />
+
+                {/* Blog & News */}
                 <Route path="/blog/:slug" component={BlogPost} />
                 <Route path="/blog" component={Blog} />
                 <Route path="/news" component={MedicalNews} />
+
                 <Route component={NotFound} />
               </Switch>
             </main>

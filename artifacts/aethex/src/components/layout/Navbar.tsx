@@ -82,16 +82,16 @@ export function Navbar() {
             </Link>
 
             {/* Search Bar */}
-            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-white/30 group-focus-within:text-[#00C2A8] transition-colors" />
+            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xs relative group">
+              <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                <Search className="h-3.5 w-3.5 text-white/30 group-focus-within:text-[#00C2A8] transition-colors" />
               </div>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2.5 border border-white/10 rounded-xl leading-5 bg-white/5 placeholder-white/25 text-white focus:outline-none focus:bg-white/8 focus:border-[#00C2A8]/50 focus:ring-2 focus:ring-[#00C2A8]/15 transition-all sm:text-sm"
-                placeholder="Search scrubs, stethoscopes, books..."
+                className="block w-full pl-8 pr-3 py-2 border border-white/10 rounded-lg leading-5 bg-white/5 placeholder-white/25 text-white focus:outline-none focus:bg-white/8 focus:border-[#00C2A8]/50 focus:ring-1 focus:ring-[#00C2A8]/15 transition-all text-xs"
+                placeholder="Search products..."
               />
             </form>
 
@@ -177,15 +177,17 @@ export function Navbar() {
                           <MapPin className="w-4 h-4" /> Track Order
                         </Link>
                         <div className="border-t border-white/8 my-1" />
-                        <Link href="/seller/dashboard" onClick={() => setAccountOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
-                          <Store className="w-4 h-4" /> Seller Hub
-                        </Link>
-                        <div className="border-t border-white/8 my-1" />
-                        <Link href="/admin" onClick={() => setAccountOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/40 hover:bg-white/5 hover:text-white/70 transition-colors">
-                          <ShieldCheck className="w-4 h-4" /> Admin Panel
-                        </Link>
+                        <div className="flex items-center gap-2 px-4 py-1.5">
+                          <Link href="/seller/dashboard" onClick={() => setAccountOpen(false)}
+                            className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white/60 transition-colors">
+                            <Store className="w-3 h-3" /> Seller
+                          </Link>
+                          <span className="text-white/15">·</span>
+                          <Link href="/admin" onClick={() => setAccountOpen(false)}
+                            className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white/60 transition-colors">
+                            <ShieldCheck className="w-3 h-3" /> Admin
+                          </Link>
+                        </div>
                         <div className="border-t border-white/8 my-1" />
                         <button onClick={() => { logout(); setAccountOpen(false); }}
                           className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors">
@@ -206,14 +208,17 @@ export function Navbar() {
                           <Sparkles className="w-4 h-4" /> Create Account
                         </button>
                         <div className="border-t border-white/8 my-1" />
-                        <Link href="/seller/register" onClick={() => setAccountOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/40 hover:bg-white/5 hover:text-white/70 transition-colors">
-                          <Store className="w-4 h-4" /> Sell on aethex
-                        </Link>
-                        <Link href="/admin" onClick={() => setAccountOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/40 hover:bg-white/5 hover:text-white/70 transition-colors">
-                          <ShieldCheck className="w-4 h-4" /> Admin
-                        </Link>
+                        <div className="flex items-center gap-2 px-4 py-1.5">
+                          <Link href="/seller/register" onClick={() => setAccountOpen(false)}
+                            className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/55 transition-colors">
+                            <Store className="w-3 h-3" /> Sell
+                          </Link>
+                          <span className="text-white/15">·</span>
+                          <Link href="/admin" onClick={() => setAccountOpen(false)}
+                            className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/55 transition-colors">
+                            <ShieldCheck className="w-3 h-3" /> Admin
+                          </Link>
+                        </div>
                       </>
                     )}
                   </div>

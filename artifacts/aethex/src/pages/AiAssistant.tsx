@@ -7,7 +7,7 @@ import {
   ChevronDown, ChevronLeft, ChevronRight, RefreshCw,
   Home, BookOpen, Upload, Stethoscope,
   Pill, Calculator, TestTube2, ClipboardList, HelpCircle,
-  Brain, Languages, Mic, MicOff, SlidersHorizontal, Zap,
+  Brain, Languages, Mic, MicOff, SlidersHorizontal, Zap, ExternalLink,
 } from "lucide-react";
 import { useAiChat } from "@workspace/api-client-react";
 import { type ChatMessage, ChatMessageRole } from "@workspace/api-client-react";
@@ -231,12 +231,12 @@ function ResearchReportCard({
 }: {
   report: string; sources: ResearchSource[]; queries: string[]; hasGoogleSearch: boolean;
 }) {
-  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([0, 1]));
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set(Array.from({ length: 10 }, (_, i) => i)));
   const [showAllSources, setShowAllSources] = useState(false);
 
   const sections = report
-    .split(/\n## /)
-    .map((s) => s.replace(/^## /, ""))
+    .split(/\n(?=## )/)
+    .map((s) => s.replace(/^## /, "").trim())
     .filter(Boolean)
     .map((s) => {
       const nlIdx = s.indexOf("\n");
@@ -252,7 +252,7 @@ function ResearchReportCard({
       return next;
     });
 
-  const visibleSources = showAllSources ? sources : sources.slice(0, 4);
+  const visibleSources = showAllSources ? sources : sources.slice(0, 6);
 
   const sectionIcons: Record<string, string> = {
     "Executive Summary": "📋",
@@ -265,83 +265,125 @@ function ResearchReportCard({
     "Clinical Pearls": "💡",
   };
 
+  const renderBody = (body: string) =>
+    body.split("\n").filter(Boolean).map((line, li) => {
+      const isBullet = line.startsWith("- ") || line.startsWith("* ");
+      const isTakeaway = line.startsWith("**Takeaway:");
+      const clean = isBullet ? line.slice(2) : line;
+      if (isTakeaway) {
+        return (
+          <div key={li} className="mt-3 pt-3 border-t border-blue-800/40 flex items-start gap-2">
+            <span className="text-yellow-400 shrink-0 text-xs mt-0.5">★</span>
+            <span className="text-[12px] font-medium" style={{ color: "rgba(250,220,100,0.9)" }}>{renderMarkdownText(clean)}</span>
+          </div>
+        );
+      }
+      return isBullet ? (
+        <div key={li} className="flex gap-2">
+          <span className="text-cyan-400 mt-1 shrink-0 text-[10px]">◆</span>
+          <span className="text-[13px] leading-relaxed">{renderMarkdownText(clean)}</span>
+        </div>
+      ) : <p key={li} className="text-[13px] leading-relaxed">{renderMarkdownText(line)}</p>;
+    });
+
   return (
     <div className="w-full max-w-2xl">
-      <div className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-700 to-indigo-700 rounded-t-2xl">
-        <Microscope className="w-4 h-4 text-white shrink-0" />
-        <span className="text-sm font-bold text-white">Cadus AI Deep Research</span>
+      {/* Header */}
+      <div className="flex items-center gap-3 px-4 py-3.5 rounded-t-2xl" style={{ background: "linear-gradient(135deg,#1e3a8a,#3730a3)" }}>
+        <div className="w-7 h-7 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
+          <Microscope className="w-4 h-4 text-white" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <span className="text-sm font-bold text-white block">Cadus AI Deep Research</span>
+          <span className="text-[10px] text-blue-200/70">{sections.length} sections · {sources.length > 0 ? `${sources.length} sources` : "AI knowledge base"}</span>
+        </div>
         {hasGoogleSearch && (
-          <span className="ml-auto flex items-center gap-1 text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full">
-            <Search className="w-2.5 h-2.5" /> Google Search
+          <span className="flex items-center gap-1 text-[10px] bg-white/15 text-white px-2 py-1 rounded-full shrink-0">
+            <Search className="w-2.5 h-2.5" /> Web Search
           </span>
         )}
       </div>
+
+      {/* Search queries used */}
       {queries.length > 0 && (
-        <div className="px-4 py-2 border-x border-blue-900/60 flex flex-wrap gap-1.5"
-          style={{ background: "rgba(30,58,138,0.3)" }}>
+        <div className="px-4 py-2.5 border-x border-blue-900/50 flex flex-wrap gap-1.5" style={{ background: "rgba(15,30,80,0.6)" }}>
+          <span className="text-[10px] text-blue-400/60 mr-1 self-center">Searched:</span>
           {queries.map((q, i) => (
-            <span key={i} className="text-[10px] border border-blue-700/50 text-blue-300 px-2 py-0.5 rounded-full truncate max-w-[200px]"
-              style={{ background: "rgba(30,58,138,0.4)" }} title={q}>
-              🔍 {q}
+            <span key={i} className="text-[10px] border border-blue-700/40 text-blue-300/80 px-2 py-0.5 rounded-full truncate max-w-[180px]"
+              style={{ background: "rgba(30,58,138,0.35)" }} title={q}>
+              {q}
             </span>
           ))}
         </div>
       )}
-      <div className="border-x border-b border-slate-700/50 rounded-b-2xl overflow-hidden divide-y divide-slate-700/30">
+
+      {/* Report sections */}
+      <div className="border-x border-slate-700/50 divide-y divide-slate-700/25" style={{ background: "rgba(5,12,35,0.75)" }}>
         {sections.map((sec, i) => (
-          <div key={i} style={{ background: "rgba(5,15,40,0.7)" }}>
+          <div key={i}>
             <button type="button"
-              className="w-full flex items-center gap-2 px-4 py-3 hover:bg-white/5 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/4 transition-colors text-left"
               onClick={() => toggleSection(i)}>
-              <span className="text-base">{sectionIcons[sec.title] ?? "📌"}</span>
-              <span className="text-[13px] font-semibold flex-1" style={{ color: "rgba(200,230,255,0.9)" }}>{sec.title}</span>
-              <span className="text-xs" style={{ color: "rgba(0,200,255,0.5)" }}>{expandedSections.has(i) ? "▲" : "▼"}</span>
+              <span className="text-base shrink-0">{sectionIcons[sec.title] ?? "📌"}</span>
+              <span className="text-[13px] font-semibold flex-1" style={{ color: "rgba(210,235,255,0.95)" }}>{sec.title}</span>
+              <span className="text-[10px] shrink-0 transition-transform" style={{ color: "rgba(0,200,255,0.45)", transform: expandedSections.has(i) ? "rotate(0deg)" : "rotate(-90deg)" }}>▼</span>
             </button>
             {expandedSections.has(i) && sec.body && (
-              <div className="px-4 pb-4 text-[13px] leading-relaxed space-y-1.5" style={{ color: "rgba(170,210,250,0.85)" }}>
-                {sec.body.split("\n").filter(Boolean).map((line, li) => {
-                  const isBullet = line.startsWith("- ") || line.startsWith("* ");
-                  const clean = isBullet ? line.slice(2) : line;
-                  return isBullet ? (
-                    <div key={li} className="flex gap-2">
-                      <span className="text-cyan-400 mt-0.5 shrink-0">•</span>
-                      <span>{renderMarkdownText(clean)}</span>
-                    </div>
-                  ) : <p key={li}>{renderMarkdownText(line)}</p>;
-                })}
+              <div className="px-5 pb-4 space-y-2" style={{ color: "rgba(175,215,255,0.85)" }}>
+                {renderBody(sec.body)}
               </div>
             )}
           </div>
         ))}
-        {sources.length > 0 && (
-          <div className="px-4 py-3" style={{ background: "rgba(5,15,40,0.8)" }}>
-            <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: "rgba(0,200,255,0.5)" }}>
-              Sources ({sources.length})
-            </p>
-            <div className="space-y-2">
-              {visibleSources.map((src, i) => (
-                <a key={i} href={src.url} target="_blank" rel="noreferrer" className="flex items-start gap-2 group">
-                  <div className="w-5 h-5 rounded border flex items-center justify-center shrink-0 mt-0.5"
-                    style={{ background: "rgba(20,40,80,0.8)", borderColor: "rgba(0,188,212,0.3)" }}>
-                    <img src={`https://www.google.com/s2/favicons?domain=${src.domain}&sz=16`} alt="" className="w-3 h-3"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[11px] font-medium text-cyan-400 group-hover:underline truncate">{src.title}</p>
-                    <p className="text-[10px]" style={{ color: "rgba(100,160,220,0.5)" }}>{src.domain}</p>
-                  </div>
-                </a>
-              ))}
-            </div>
-            {sources.length > 4 && (
-              <button type="button" onClick={() => setShowAllSources((v) => !v)}
-                className="mt-2 text-[11px] text-cyan-500 hover:underline">
-                {showAllSources ? "Show fewer" : `Show ${sources.length - 4} more sources`}
-              </button>
-            )}
-          </div>
-        )}
       </div>
+
+      {/* Sources — always visible at the bottom */}
+      {sources.length > 0 && (
+        <div className="border border-slate-700/50 rounded-b-2xl mt-0 overflow-hidden" style={{ background: "rgba(5,12,35,0.85)" }}>
+          <div className="px-4 py-3 border-b border-slate-700/30 flex items-center gap-2" style={{ background: "rgba(10,20,60,0.6)" }}>
+            <ExternalLink className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
+            <span className="text-[12px] font-semibold text-cyan-400">Sources</span>
+            <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 font-medium">{sources.length}</span>
+          </div>
+          <div className="p-3 grid grid-cols-1 gap-2">
+            {visibleSources.map((src, i) => (
+              <a key={i} href={src.url} target="_blank" rel="noreferrer"
+                className="flex items-start gap-3 p-2.5 rounded-xl group transition-colors hover:bg-white/5"
+                style={{ border: "1px solid rgba(0,188,212,0.12)" }}>
+                <div className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 mt-0.5 text-[10px] font-bold text-blue-300"
+                  style={{ background: "rgba(30,58,138,0.5)", border: "1px solid rgba(59,130,246,0.3)" }}>
+                  {i + 1}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[12px] font-medium text-cyan-400 group-hover:text-cyan-300 group-hover:underline leading-snug mb-0.5 line-clamp-2">{src.title}</p>
+                  <div className="flex items-center gap-1.5">
+                    <img src={`https://www.google.com/s2/favicons?domain=${src.domain}&sz=16`} alt="" className="w-3 h-3 rounded-sm"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                    <span className="text-[10px]" style={{ color: "rgba(100,160,220,0.55)" }}>{src.domain}</span>
+                  </div>
+                  {src.snippet && (
+                    <p className="text-[11px] mt-1 leading-snug line-clamp-2" style={{ color: "rgba(160,195,240,0.55)" }}>{src.snippet}</p>
+                  )}
+                </div>
+                <ExternalLink className="w-3 h-3 shrink-0 mt-1 opacity-0 group-hover:opacity-40 text-cyan-400 transition-opacity" />
+              </a>
+            ))}
+          </div>
+          {sources.length > 6 && (
+            <div className="px-4 pb-3">
+              <button type="button" onClick={() => setShowAllSources((v) => !v)}
+                className="text-[11px] text-cyan-500 hover:text-cyan-300 hover:underline transition-colors">
+                {showAllSources ? "Show fewer" : `Show ${sources.length - 6} more sources ↓`}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      {sources.length === 0 && (
+        <div className="border border-t-0 border-slate-700/50 rounded-b-2xl px-4 py-3 flex items-center gap-2" style={{ background: "rgba(5,12,35,0.85)" }}>
+          <span className="text-[10px] text-white/25">⚠ Based on AI training knowledge — add Google Search API keys for live web sources</span>
+        </div>
+      )}
     </div>
   );
 }

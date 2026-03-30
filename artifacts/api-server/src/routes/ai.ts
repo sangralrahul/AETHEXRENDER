@@ -102,7 +102,7 @@ router.post("/ai/deep-research", async (req, res) => {
 
     // Step 1 — generate focused search sub-queries
     const queryGen = await openai.chat.completions.create({
-      model: "gpt-5.2",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
@@ -158,26 +158,18 @@ router.post("/ai/deep-research", async (req, res) => {
       );
     }
 
-    // Step 3 — AI synthesis with source grounding
-    const agentKey    = String(agent).toLowerCase().replace(/[\s.]/g, "");
-    const agentConfig = agentPrompts[agentKey] ?? agentPrompts.cadus;
-
+    // Step 3 — AI synthesis with source grounding (Claude for high-quality output)
     const sourceBlock = sources.length
       ? `\n\n---\nLIVE SEARCH RESULTS (from Google):\n${
           sources.map((s, i) => `[${i + 1}] ${s.title}\n${s.snippet}\nSource: ${s.url}`).join("\n\n")
         }\n---`
       : "";
 
-    const synthesis = await openai.chat.completions.create({
-      model: "gpt-5.2",
-      messages: [
-        {
-          role: "system",
-          content: `${agentConfig.systemPrompt}
+    const systemPrompt = `You are Cadus AI — a world-class medical research assistant for Indian doctors and medical students. You are now operating in DEEP RESEARCH mode.
 
-You are now in DEEP RESEARCH mode. Produce a comprehensive, evidence-based medical research report for Indian doctors and medical students.${sources.length ? " Cite the provided Google search results using [1], [2], etc. where relevant." : ""}
+Your task is to produce an exceptionally comprehensive, evidence-based, and clinically practical medical research report.${sources.length ? " Cite the provided search results using [1], [2], etc. where relevant." : ""}
 
-Use these EXACT section headers (markdown ##):
+Structure your report using EXACTLY these section headers (markdown ##):
 ## Executive Summary
 ## Epidemiology & Indian Burden
 ## Pathophysiology
@@ -187,17 +179,29 @@ Use these EXACT section headers (markdown ##):
 ## Key Guidelines & Evidence
 ## Clinical Pearls
 
-Be thorough, accurate, and practically useful. Use **bold** for key terms. End each section with a concise takeaway.`,
-        },
+Requirements:
+- Write like a senior clinician explaining to a junior resident — practical and evidence-based
+- Use **bold** for critical terms, drug names, key values, and red flags
+- Include specific numbers, percentages, dosages, and timeframes wherever relevant
+- Reference Indian epidemiology, ICMR/NMC guidelines, and local clinical context
+- Each section should be thorough: 150-300 words minimum
+- End each section with a "**Takeaway:**" summary line
+- Use bullet points (- ) for lists within sections
+- Be factually accurate — this is read by medical professionals`;
+
+    const synthesis = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 8000,
+      system: systemPrompt,
+      messages: [
         {
           role: "user",
           content: `Deep research request: ${query}${sourceBlock}`,
         },
       ],
-      max_completion_tokens: 4096,
     });
 
-    const report = synthesis.choices[0]?.message?.content ?? "Unable to generate research report.";
+    const report = (synthesis.content[0] as { type: string; text: string })?.text ?? "Unable to generate research report.";
 
     res.json({ report, sources: sources.slice(0, 12), searchQueries, hasGoogleSearch });
   } catch (err) {

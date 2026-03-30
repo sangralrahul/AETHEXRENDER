@@ -28,6 +28,7 @@ import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import MedicalNews from "@/pages/News";
 import AdminBlog from "@/pages/AdminBlog";
+import ClinicalTools from "@/pages/ClinicalTools";
 
 import SellerRegister from "@/pages/seller/Register";
 import SellerLogin from "@/pages/seller/Login";
@@ -103,6 +104,9 @@ function Router() {
 
                 {/* Account */}
                 <Route path="/account" component={Account} />
+
+                {/* Clinical Tools */}
+                <Route path="/tools" component={ClinicalTools} />
 
                 {/* Study Hub */}
                 <Route path="/study-hub" component={StudyHub} />

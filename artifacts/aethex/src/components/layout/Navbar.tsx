@@ -127,6 +127,13 @@ export function Navbar() {
               </Link>
 
               <Link
+                href="/tools"
+                className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden lg:block px-2 py-1"
+              >
+                Tools
+              </Link>
+
+              <Link
                 href="/news"
                 className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden xl:block px-2 py-1"
               >
@@ -255,6 +262,7 @@ export function Navbar() {
               {[
                 { href: "/shop", label: "Shop All Products" },
                 { href: "/ai-assistant", label: "ZYRA AI" },
+                { href: "/tools", label: "Clinical Tools" },
                 { href: "/study-hub", label: "Study Hub" },
                 { href: "/blog", label: "Blog" },
                 { href: "/news", label: "Medical News" },

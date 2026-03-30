@@ -1,0 +1,135 @@
+I am building a modern medical AI website called AETHEX.
+
+I want you to design and implement a premium UI similar to the uploaded reference with the following requirements:
+
+========================
+1. NAVBAR (TOP SECTION)
+========================
+
+Create a sticky, glassmorphism-style navbar with:
+
+Left:
+- Logo: "AETHEX" with a medical + AI icon (neural/brain style)
+
+Center Navigation Links:
+- Home
+- AI Assistant
+- Diseases
+- Study
+- Research
+- Tools (highlight this when active)
+
+Right:
+- A glowing CTA button: "Start Chat"
+
+Design:
+- Dark gradient background (black → dark blue/green)
+- Glass effect (blur + transparency)
+- Smooth hover animations
+- Subtle neon glow (green/teal)
+- Fully responsive (mobile friendly)
+
+========================
+2. HERO SECTION
+========================
+
+Title:
+"Clinical Tools"
+
+Subtitle:
+"Essential tools for daily clinical practice."
+
+Style:
+- Center aligned
+- Clean typography
+- Subtle glow effect
+
+========================
+3. CLINICAL TOOLS GRID
+========================
+
+Create a responsive card grid (3 columns desktop, 2 tablet, 1 mobile)
+
+Each card should include:
+- Icon (minimal, medical-themed)
+- Title
+- Short description
+- Hover animation (lift + glow)
+
+Include these tools:
+
+1. Drug Interaction Checker
+2. Dosage Calculator
+3. BMI Calculator
+4. Medical Abbreviations
+5. Differential Diagnosis (AI-powered)
+6. Symptom Checker
+
+========================
+4. ADD MORE ADVANCED TOOLS (IMPORTANT)
+========================
+
+Also add these premium tools to make the platform powerful:
+
+7. Clinical Decision Support ⭐
+8. Lab Value Interpreter
+9. ECG Analyzer (AI)
+10. Radiology Assistant (X-ray / CT / MRI)
+11. Prescription Generator
+12. Case Study Simulator (for students)
+13. Risk Calculator (Cardio, Diabetes, etc.)
+14. Medical Chat Assistant (quick access)
+
+========================
+5. DESIGN SYSTEM
+========================
+
+- Theme: Dark + futuristic medical AI
+- Colors:
+  - Primary: Teal / Green glow (#00FFC6 or similar)
+  - Background: Deep dark (#0B0F14)
+- Font: Clean modern (Inter / Poppins)
+- Cards:
+  - Rounded corners
+  - Soft shadows
+  - Glassmorphism effect
+- Animations:
+  - Smooth transitions (300ms ease)
+  - Hover scale + glow
+  - Fade-in on load
+
+========================
+6. TECH REQUIREMENTS
+========================
+
+- Use React + Tailwind CSS
+- Clean component structure:
+  - Navbar.jsx
+  - ToolCard.jsx
+  - ToolsPage.jsx
+- Reusable components
+- Mobile responsive
+- Smooth scrolling
+
+========================
+7. EXTRA FEATURES (IMPORTANT)
+========================
+
+- Add search bar for tools
+- Add category filters (All / AI / Calculators / Diagnostics)
+- Add click interaction (each card opens tool page/modal)
+- Add subtle background animation (gradient or particles)
+
+========================
+GOAL:
+========================
+
+The UI should feel like:
+- Perplexity AI + modern healthcare dashboard
+- Premium, fast, and futuristic
+- Suitable for doctors and medical students (NEET PG)
+
+Return:
+- Clean code
+- Modular components
+- Ready-to-run UI

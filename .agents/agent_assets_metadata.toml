@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "EP3CXdXu_cxSdDLbGmxRo"
+uri = "file://downloads/AiAssistant.txt"
+type = "text"
+title = "AiAssistant.tsx — Cadus AI Full Source Code"

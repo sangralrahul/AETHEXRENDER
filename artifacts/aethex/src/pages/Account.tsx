@@ -112,6 +112,7 @@ export default function Account() {
   const [phoneInput, setPhoneInput] = useState(user?.phone || "");
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [proLoading, setProLoading] = useState(false);
+  const [notifToggles, setNotifToggles] = useState([true, true, false, true, false]);
 
   if (!isLoggedIn || !user) {
     return (
@@ -414,21 +415,18 @@ export default function Account() {
                     { label: "Exclusive deals & offers", desc: "Personalized discounts on medical supplies", defaultOn: false },
                     { label: "Medical news digest", desc: "Weekly curated medical news", defaultOn: true },
                     { label: "Blog & study tips", desc: "New blog posts and exam tips", defaultOn: false },
-                  ].map((pref, i) => {
-                    const [on, setOn] = useState(pref.defaultOn);
-                    return (
-                      <div key={i} className="flex items-center justify-between py-4 border-b border-white/5 last:border-0">
-                        <div>
-                          <p className="text-sm font-medium text-white">{pref.label}</p>
-                          <p className="text-xs text-white/40">{pref.desc}</p>
-                        </div>
-                        <button onClick={() => setOn(!on)}
-                          className={`w-12 h-6 rounded-full transition-all relative ${on ? "bg-[#00C2A8]" : "bg-white/15"}`}>
-                          <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${on ? "left-7" : "left-1"}`} />
-                        </button>
+                  ].map((pref, i) => (
+                    <div key={i} className="flex items-center justify-between py-4 border-b border-white/5 last:border-0">
+                      <div>
+                        <p className="text-sm font-medium text-white">{pref.label}</p>
+                        <p className="text-xs text-white/40">{pref.desc}</p>
                       </div>
-                    );
-                  })}
+                      <button onClick={() => setNotifToggles(prev => prev.map((v, j) => j === i ? !v : v))}
+                        className={`w-12 h-6 rounded-full transition-all relative ${notifToggles[i] ? "bg-[#00C2A8]" : "bg-white/15"}`}>
+                        <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${notifToggles[i] ? "left-7" : "left-1"}`} />
+                      </button>
+                    </div>
+                  ))}
                 </div>
                 <button className="mt-5 w-full py-3 bg-white/5 border border-white/10 text-white font-semibold rounded-xl hover:bg-white/10 transition-colors text-sm">
                   Save Preferences

@@ -27,6 +27,7 @@ export interface Address {
 
 const STORAGE_KEY = "aethex_user";
 const USERS_KEY = "aethex_users_db";
+const JWT_KEY = "aethex_jwt";
 
 function getUsers(): Record<string, UserProfile & { passwordHash: string }> {
   try {
@@ -104,8 +105,38 @@ export function useUserAuth() {
     return { success: true };
   };
 
+  const otpLogin = (email: string, jwt: string): void => {
+    localStorage.setItem(JWT_KEY, jwt);
+    const users = getUsers();
+    const emailKey = email.toLowerCase();
+    let profile: UserProfile;
+    if (users[emailKey]) {
+      const { passwordHash: _ph, ...existing } = users[emailKey];
+      profile = existing;
+    } else {
+      const namePart = email.split("@")[0] ?? "Doctor";
+      const name = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+      profile = {
+        id: Date.now().toString(),
+        name,
+        email: emailKey,
+        isPro: false,
+        addresses: [],
+        wishlist: [],
+        cadusDailyCount: 0,
+        cadusLastDate: "",
+      };
+      users[emailKey] = { ...profile, passwordHash: "" };
+      saveUsers(users);
+    }
+    saveUser(profile);
+  };
+
+  const getJwt = (): string | null => localStorage.getItem(JWT_KEY);
+
   const logout = () => {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(JWT_KEY);
     setUser(null);
   };
 
@@ -159,6 +190,8 @@ export function useUserAuth() {
     isPro: user?.isPro ?? false,
     signup,
     login,
+    otpLogin,
+    getJwt,
     logout,
     updateProfile,
     toggleWishlist,

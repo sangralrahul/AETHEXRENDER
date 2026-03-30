@@ -1,0 +1,198 @@
+Build a production-ready AI-powered system for my medical website "AETHEX" with an AI assistant named "SYNAPSE".
+
+========================
+CORE REQUIREMENT
+========================
+System must include:
+1. OTP-based authentication (email login)
+2. Contact/query system
+3. AI-generated responses via SYNAPSE
+4. Zoho Mail integration (SMTP)
+5. Secure, scalable backend (Vercel-ready)
+
+IMPORTANT:
+- OTP flow and AI response flow must be completely separate.
+
+========================
+1. AUTHENTICATION (OTP LOGIN)
+========================
+
+Frontend:
+- Email input
+- "Send OTP" button
+- OTP input (6 digits)
+- Timer (60s resend)
+- Success login state
+
+Backend APIs:
+
+/api/auth/send-otp
+- Generate 6-digit OTP
+- Store:
+  - email
+  - hashed OTP
+  - expiry (5 min)
+  - attempts
+- Send email via Zoho SMTP
+
+OTP Email:
+Subject: "Your AETHEX OTP Code"
+Body:
+"Your OTP is: 123456 (valid for 5 minutes)"
+
+---
+
+/api/auth/verify-otp
+- Validate OTP
+- Check expiry + attempts
+- If valid:
+  - Create JWT session
+  - Login user
+
+Security:
+- Max 3 attempts
+- Rate limit (5 OTP/hour/email)
+- Hash OTP before storing
+
+========================
+2. CONTACT / QUERY SYSTEM
+========================
+
+Frontend form:
+- Name
+- Email
+- Subject
+- Message
+
+Validation + loading + success UI
+
+Backend:
+/api/contact
+
+Flow:
+1. Receive user query
+2. Send to AI (SYNAPSE)
+3. Generate response
+4. Send 2 emails:
+   - User → AI response
+   - Admin → full details
+
+========================
+3. AI ASSISTANT (SYNAPSE)
+========================
+
+Use OpenAI API
+
+SYSTEM PROMPT:
+"You are SYNAPSE, an advanced AI medical assistant inside AETHEX.
+You help medical students with NEET PG preparation, concepts, and safe health explanations.
+Be structured, accurate, and concise.
+Do not provide unsafe medical advice or diagnoses."
+
+Features:
+- Limit response length
+- Add fallback if AI fails
+
+========================
+4. EMAIL SYSTEM (ZOHO SMTP)
+========================
+
+Use Nodemailer:
+
+- Host: smtp.zoho.in
+- Port: 465
+- Secure: true
+
+ENV:
+- ZOHO_USER=email@aethex.in
+- ZOHO_PASS=app_password
+
+Emails to implement:
+
+A. OTP Email
+- Simple, clean
+- Highlight OTP
+
+B. AI Response Email
+- Greeting
+- Structured answer
+- Footer disclaimer
+
+C. Admin Email
+- User info
+- Query
+- AI response
+- Timestamp
+
+========================
+5. DATABASE
+========================
+
+Use MongoDB / Firebase / Supabase
+
+Collections:
+- users
+- otp_requests
+- messages
+- email_logs
+
+========================
+6. SESSION MANAGEMENT
+========================
+
+- Use JWT
+- Store in httpOnly cookies
+- Expiry-based sessions
+
+========================
+7. SECURITY
+========================
+
+- Environment variables only
+- Input validation
+- Rate limiting
+- Prevent spam
+- Sanitize inputs
+
+========================
+8. ERROR HANDLING
+========================
+
+Handle:
+- SMTP failures
+- OTP expiry
+- Invalid OTP
+- AI timeout
+
+Return clean API responses
+
+========================
+9. DEPLOYMENT
+========================
+
+- Must work on Vercel
+- Use serverless API routes
+- Optimize for speed
+
+========================
+10. OPTIONAL (ADVANCED)
+========================
+
+- SYNAPSE chatbot UI (ChatGPT-like)
+- User dashboard
+- Save chat history
+- Admin panel
+- Analytics
+
+========================
+FINAL GOAL
+========================
+
+User flow:
+1. User logs in via OTP (email)
+2. User submits query
+3. SYNAPSE generates response
+4. User receives AI reply via email
+5. Admin gets notified
+
+System must be clean, secure, scalable, and production-ready.

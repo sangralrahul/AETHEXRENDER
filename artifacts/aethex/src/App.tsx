@@ -29,6 +29,7 @@ import BlogPost from "@/pages/BlogPost";
 import MedicalNews from "@/pages/News";
 import AdminBlog from "@/pages/AdminBlog";
 import ClinicalTools from "@/pages/ClinicalTools";
+import Contact from "@/pages/Contact";
 
 import SellerRegister from "@/pages/seller/Register";
 import SellerLogin from "@/pages/seller/Login";
@@ -122,6 +123,9 @@ function Router() {
 
                 {/* Seller storefronts */}
                 <Route path="/seller/:code/store" component={SellerStorefront} />
+
+                {/* Contact */}
+                <Route path="/contact" component={Contact} />
 
                 {/* Blog & News */}
                 <Route path="/blog/:slug" component={BlogPost} />

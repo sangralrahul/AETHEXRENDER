@@ -8,10 +8,14 @@ import notificationsRouter from "./notifications";
 import reviewsRouter from "./reviews";
 import sellerRouter from "./seller";
 import blogRouter from "./blog";
+import authRouter from "./auth";
+import contactRouter from "./contact";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
+router.use(authRouter);
+router.use(contactRouter);
 router.use(productsRouter);
 router.use(cartRouter);
 router.use(aiRouter);

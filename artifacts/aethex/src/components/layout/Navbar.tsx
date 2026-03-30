@@ -28,6 +28,22 @@ export function Navbar() {
     saveSettings(s);
   };
 
+  const handleClearAllChats = () => {
+    try { localStorage.removeItem("cadus_sessions_v2"); } catch {}
+    window.dispatchEvent(new StorageEvent("storage", { key: "cadus_sessions_v2", newValue: null }));
+  };
+
+  const handleExportChats = () => {
+    try {
+      const raw = localStorage.getItem("cadus_sessions_v2") ?? "[]";
+      const blob = new Blob([raw], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = `cadus-chats-${Date.now()}.json`; a.click();
+      URL.revokeObjectURL(url);
+    } catch {}
+  };
+
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
@@ -66,9 +82,10 @@ export function Navbar() {
         <SettingsModal
           settings={cadusSettings}
           onSettingsChange={handleSettingsChange}
+          onClearAllChats={handleClearAllChats}
+          onExportChats={handleExportChats}
           onClose={() => setShowSettings(false)}
           user={user}
-          isFromWebsite
         />
       )}
       <header

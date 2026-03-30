@@ -3,7 +3,7 @@ import {
   Send, User, Loader2, Activity, FlaskConical,
   Lock, Crown, Paperclip, Image, FileText, Camera, Search,
   ImagePlus, X, Microscope, Download, Presentation, PlayCircle,
-  Plus, PanelLeft, Settings, MessageSquare, Tag,
+  Plus, PanelLeft, MessageSquare, Tag,
   ChevronDown, ChevronLeft, ChevronRight, RefreshCw,
   Home, BookOpen, Upload, Stethoscope,
   Pill, Calculator, TestTube2, ClipboardList, HelpCircle,
@@ -20,7 +20,7 @@ import PresentationViewer, { type PresentationData } from "@/components/cadus/Pr
 import CadusLogo from "@/components/cadus/CadusLogo";
 import DNABackground from "@/components/cadus/DNABackground";
 import CameraModal from "@/components/cadus/CameraModal";
-import SettingsModal, { loadSettings, saveSettings, DEFAULT_SETTINGS, type CadusSettings } from "@/components/cadus/SettingsModal";
+import { loadSettings, type CadusSettings } from "@/components/cadus/SettingsModal";
 import { TypewriterText } from "@/components/cadus/TypewriterText";
 import { getTranslation } from "@/lib/translations";
 import { useUserAuth } from "@/hooks/use-user-auth";
@@ -436,13 +436,17 @@ export default function AiAssistant() {
           setSettings((prev) => ({ ...prev, ...next }));
         } catch {}
       }
+      if (e.key === "cadus_sessions_v2" && !e.newValue) {
+        const fresh = makeSession("pulse45");
+        setSessions([fresh]);
+        setActiveSessionId(fresh.id);
+      }
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   const [input, setInput] = useState("");
-  const [showSettings, setShowSettings] = useState(false);
   const [showBanner, setShowBanner] = useState(true);
   const [sidebarView, setSidebarView] = useState<"home" | "chats" | "models">("home");
   const [categoryIndex, setCategoryIndex] = useState(0);
@@ -1034,13 +1038,6 @@ export default function AiAssistant() {
               {label}
             </button>
           ))}
-          <button
-            onClick={() => setShowSettings(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all hover:bg-white/5"
-            style={{ color: "rgba(255,255,255,0.5)" }}>
-            <Settings className="w-4 h-4" />
-            Settings
-          </button>
         </div>
 
         <div className="mx-3 my-1 shrink-0" style={{ borderTop: "1px solid var(--sp-divider)" }} />
@@ -2070,22 +2067,6 @@ export default function AiAssistant() {
         </div>
       )}
 
-      {/* ── Settings Modal ── */}
-      {showSettings && (
-        <SettingsModal
-          settings={settings}
-          onSettingsChange={setSettings}
-          onClearAllChats={() => {
-            const fresh = makeSession("pulse45");
-            setSessions([fresh]);
-            setActiveSessionId(fresh.id);
-          }}
-          onClearCurrentChat={handleClearCurrentChat}
-          onExportChats={handleExportChats}
-          onClose={() => setShowSettings(false)}
-          user={user}
-        />
-      )}
 
       {/* ── In-Browser Presentation Viewer ── */}
       {activePresentationData && (

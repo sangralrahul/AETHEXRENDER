@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 
-interface SynapseLogoProps {
+interface CadusLogoProps {
   size?: "sm" | "md" | "lg";
   thinking?: boolean;
   className?: string;
@@ -58,9 +58,9 @@ function nodeColor(x: number): string {
   return `rgb(${r},${g},${b})`;
 }
 
-export default function SynapseLogo({
+export default function CadusLogo({
   size = "md", thinking = false, className, baseUrl = "",
-}: SynapseLogoProps) {
+}: CadusLogoProps) {
   const d = SIZES[size];
   const half = d.outer / 2;
   const canvasSize = d.inner;
@@ -86,7 +86,7 @@ export default function SynapseLogo({
     >
       {/* Outer glow halo */}
       <div className="absolute inset-0 rounded-full"
-        style={{ animation: `synapse-glow-ring ${glowSpeed} ease-in-out infinite`, opacity: thinking ? 1 : 0.4 }} />
+        style={{ animation: `cadus-glow-ring ${glowSpeed} ease-in-out infinite`, opacity: thinking ? 1 : 0.4 }} />
 
       {/* ── Orbiting rings (SVG, overflow:visible so rings extend past boundary) ── */}
       <svg
@@ -96,24 +96,24 @@ export default function SynapseLogo({
         style={{ overflow: "visible" }}
       >
         <defs>
-          <filter id={`synapse-glow-${size}`} x="-50%" y="-50%" width="200%" height="200%">
+          <filter id={`cadus-glow-${size}`} x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation={thinking ? "2.5" : "1.5"} result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
         </defs>
 
         {/* Ring 1 — CW, teal */}
-        <g style={{ transformOrigin: `${half}px ${half}px`, animation: `synapse-orbit-cw ${speed1} linear infinite` }}>
+        <g style={{ transformOrigin: `${half}px ${half}px`, animation: `cadus-orbit-cw ${speed1} linear infinite` }}>
           <circle cx={half} cy={half} r={arc1R} fill="none" strokeWidth={d.stroke1}
             strokeDasharray={`${dash1 * 0.35} ${dash1 * 0.65}`} strokeLinecap="round"
             style={{
               stroke: "#00BCD4", opacity: thinking ? 0.92 : 0.55,
-              animation: thinking ? "synapse-color-shift 2.5s linear infinite" : undefined,
+              animation: thinking ? "cadus-color-shift 2.5s linear infinite" : undefined,
             }} />
         </g>
 
         {/* Ring 2 — CCW, violet */}
-        <g style={{ transformOrigin: `${half}px ${half}px`, animation: `synapse-orbit-ccw ${speed2} linear infinite` }}>
+        <g style={{ transformOrigin: `${half}px ${half}px`, animation: `cadus-orbit-ccw ${speed2} linear infinite` }}>
           <circle cx={half} cy={half} r={arc2R} fill="none" strokeWidth={d.stroke2}
             strokeDasharray={`${dash2 * 0.25} ${dash2 * 0.75}`} strokeLinecap="round"
             style={{ stroke: "#7C3AED", opacity: thinking ? 0.8 : 0.35 }} />
@@ -121,7 +121,7 @@ export default function SynapseLogo({
 
         {/* Ring 3 — CW, emerald, only while thinking */}
         {thinking && (
-          <g style={{ transformOrigin: `${half}px ${half}px`, animation: `synapse-orbit-cw ${speed3} linear infinite` }}>
+          <g style={{ transformOrigin: `${half}px ${half}px`, animation: `cadus-orbit-cw ${speed3} linear infinite` }}>
             <circle cx={half} cy={half} r={arc3R} fill="none" strokeWidth={d.stroke2 * 0.7}
               strokeDasharray={`${dash3 * 0.18} ${dash3 * 0.82}`} strokeLinecap="round"
               style={{ stroke: "#10B981", opacity: 0.72 }} />
@@ -129,14 +129,14 @@ export default function SynapseLogo({
         )}
 
         {/* Racing dot — ring 1 */}
-        <g style={{ transformOrigin: `${half}px ${half}px`, animation: `synapse-orbit-cw ${speed1} linear infinite` }}>
+        <g style={{ transformOrigin: `${half}px ${half}px`, animation: `cadus-orbit-cw ${speed1} linear infinite` }}>
           <circle cx={half} cy={half - arc1R} r={thinking ? d.stroke1 * 1.5 : d.stroke1}
             fill={thinking ? "#00E5FF" : "#00BCD480"}
             style={{ filter: thinking ? "drop-shadow(0 0 3px #00E5FF)" : undefined }} />
         </g>
 
         {/* Racing dot — ring 2 */}
-        <g style={{ transformOrigin: `${half}px ${half}px`, animation: `synapse-orbit-ccw ${speed2} linear infinite` }}>
+        <g style={{ transformOrigin: `${half}px ${half}px`, animation: `cadus-orbit-ccw ${speed2} linear infinite` }}>
           <circle cx={half} cy={half - arc2R} r={thinking ? d.stroke1 : d.stroke1 * 0.7}
             fill={thinking ? "#A855F7" : "#7C3AED60"}
             style={{ filter: thinking ? "drop-shadow(0 0 3px #A855F7)" : undefined }} />
@@ -148,7 +148,7 @@ export default function SynapseLogo({
         className="z-10 flex items-center justify-center"
         style={{
           width: canvasSize, height: canvasSize,
-          animation: `synapse-breathe ${breatheSpeed} ease-in-out infinite`,
+          animation: `cadus-breathe ${breatheSpeed} ease-in-out infinite`,
           filter: thinking
             ? "drop-shadow(0 0 8px rgba(0,188,212,0.5)) drop-shadow(0 0 16px rgba(168,85,247,0.3))"
             : "drop-shadow(0 0 4px rgba(0,188,212,0.25))",
@@ -195,7 +195,7 @@ export default function SynapseLogo({
                   style={{
                     opacity: thinking ? 0.85 : 0.55,
                     animation: thinking
-                      ? `synapse-breathe ${1.8 + (i % 5) * 0.25}s ease-in-out infinite alternate`
+                      ? `cadus-breathe ${1.8 + (i % 5) * 0.25}s ease-in-out infinite alternate`
                       : undefined,
                   }}
                 />
@@ -217,7 +217,7 @@ export default function SynapseLogo({
                   opacity={thinking ? 0.25 : 0.12}
                   style={{
                     animation: thinking
-                      ? `synapse-pulse-glow ${0.9 + (i % 3) * 0.2}s ease-in-out infinite alternate`
+                      ? `cadus-pulse-glow ${0.9 + (i % 3) * 0.2}s ease-in-out infinite alternate`
                       : undefined,
                     animationDelay: pulseDelay,
                   }}
@@ -229,7 +229,7 @@ export default function SynapseLogo({
                   fill={color}
                   style={{
                     animation: thinking
-                      ? `synapse-breathe ${0.85 + (i % 4) * 0.18}s ease-in-out infinite`
+                      ? `cadus-breathe ${0.85 + (i % 4) * 0.18}s ease-in-out infinite`
                       : undefined,
                     animationDelay: pulseDelay,
                   }}
@@ -237,7 +237,7 @@ export default function SynapseLogo({
                 {/* White sparkle center on brightest nodes when thinking */}
                 {thinking && (n.x < 35 || (n.x > 45 && n.x < 55 && n.y < 30)) && (
                   <circle cx={n.x} cy={n.y} r={d.nodeR * 0.45} fill="white" opacity={0.85}
-                    style={{ animation: `synapse-pulse-glow 1.1s ease-in-out infinite alternate`, animationDelay: pulseDelay }} />
+                    style={{ animation: `cadus-pulse-glow 1.1s ease-in-out infinite alternate`, animationDelay: pulseDelay }} />
                 )}
               </g>
             );
@@ -246,7 +246,7 @@ export default function SynapseLogo({
           {/* Neural impulse — a bright dot traveling along edges when thinking */}
           {thinking && (
             <circle r={d.nodeR * 1.3} fill="#00E5FF" opacity={0.9}
-              style={{ filter: "drop-shadow(0 0 4px #00E5FF)", animation: "synapse-neural-pulse 2s linear infinite" }}>
+              style={{ filter: "drop-shadow(0 0 4px #00E5FF)", animation: "cadus-neural-pulse 2s linear infinite" }}>
               <animateMotion dur="2s" repeatCount="indefinite" rotate="auto">
                 <mpath href="#brain-path-travel" />
               </animateMotion>

@@ -14,7 +14,7 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 ### New (2026 Audit Pass)
 - **Dark theme** — #0D1117 background, #161B22 cards, #00C2A8 teal. Applied globally via CSS variables
 - **User Auth** — email signup/login + Google placeholder. `AuthModal.tsx` + `use-user-auth.ts` hook (localStorage)
-- **SYNAPSE Pro subscription** — ₹299/month, ₹1999/year. UI in `/account`. Admin hint: `aethex@admin2026`
+- **CADUS AI Pro subscription** — ₹299/month, ₹1999/year. UI in `/account`. Admin hint: `aethex@admin2026`
 - **New pages**: `/shop` (alias for /products), `/study-hub`, `/checkout`, `/orders`, `/account`, `/admin`
 - **Trust badges** on Home — GST Invoice, Fast Delivery, Verified Brands, Easy Returns
 - **Newsletter section** on Home
@@ -27,7 +27,7 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 - Exam filter (NEET PG, NEXT, FMGE, USMLE, INI-CET)
 - Compare up to 3 platforms side-by-side in a modal
 - Essential medical books section, free YouTube channels section
-- SYNAPSE CTA banner
+- CADUS AI CTA banner
 
 ### Checkout (`/checkout`)
 - 3-step flow: Address → Payment → Confirm
@@ -60,7 +60,7 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 - Products page with category filters, search, and sort (Featured / Price / Highest Rated)
 - Product detail pages with full review section, star breakdown, sort/filter, review form
 - Shopping cart (session-based via localStorage)
-- AI Medical Assistant (SYNAPSE) — full-screen Replit-style interface at `/ai-assistant`
+- AI Medical Assistant (CADUS AI) — full-screen Replit-style interface at `/ai-assistant`
   - 12 clinical AI modes: Diagnose, DDx Generator, Deep Research, Image, Slides, Drug Interactions, Dosage Calc, Lab Values, SOAP Note, MCQ/Exam, Patient Education, Procedure Guide
   - Specialty filter, voice input (en-IN), session persistence
 - 8 product categories: Scrubs, Aprons, Books, Stethoscopes, Surgical Instruments, Dental Supplies, Lab Supplies, Equipment
@@ -106,7 +106,7 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
   - Robots.txt — at /api/robots.txt; allows all crawlers, blocks admin/seller dashboard
   - Navbar — Blog + News links added; Admin Blog added to account dropdown
   - Footer — Resources section with Blog/News/AI links; newsletter wired to API
-  - 6 starter posts seeded: gadgets, PrepLadder vs Marrow, SYNAPSE AI guide, stethoscopes guide, NEET-PG 2025 strategy, portable devices
+  - 6 starter posts seeded: gadgets, PrepLadder vs Marrow, CADUS AI guide, stethoscopes guide, NEET-PG 2025 strategy, portable devices
   - Optional env vars: NEWS_API_KEY (for live news), SITE_URL (for sitemap canonical, default https://aethex.in)
 
 # Workspace

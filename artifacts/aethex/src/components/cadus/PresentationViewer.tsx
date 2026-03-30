@@ -195,7 +195,7 @@ function SlideImagePanel({ imageUrl, diag, nodes, edges }: {
         }}>
           <span style={{ width: 6, height: 6, borderRadius: "50%", background: TEAL, flexShrink: 0 }} />
           <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 9, fontWeight: "bold", letterSpacing: "0.07em", textTransform: "uppercase" }}>
-            AI Medical Illustration · SYNAPSE
+            AI Medical Illustration · CADUS
           </span>
         </div>
       </div>
@@ -254,7 +254,7 @@ function ContentFrame({ slide, current, total, children }: {
       }}>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ color: TEAL, fontSize: 9, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 5 }}>
-            SYNAPSE MEDICAL EDUCATION
+            CADUS MEDICAL EDUCATION
           </div>
           <h2 style={{
             color: "#0A1F3C", fontSize: 24, fontWeight: 900,
@@ -601,7 +601,7 @@ function TitleSlide({ slide, current, total }: { slide: PresentationSlide; curre
         {/* Teal pill label */}
         <div style={{ background: "rgba(0,188,212,0.15)", border: `1px solid rgba(0,188,212,0.35)`, borderRadius: 20, padding: "5px 16px", display: "inline-flex", alignItems: "center", gap: 7 }}>
           <div style={{ width: 7, height: 7, borderRadius: "50%", background: TEAL }} />
-          <span style={{ color: TEAL_BRT, fontSize: 10, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase" }}>SYNAPSE MEDICAL EDUCATION</span>
+          <span style={{ color: TEAL_BRT, fontSize: 10, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase" }}>CADUS MEDICAL EDUCATION</span>
         </div>
 
         {/* Main title */}
@@ -634,7 +634,7 @@ function TitleSlide({ slide, current, total }: { slide: PresentationSlide; curre
 
       {/* Bottom branding */}
       <div style={{ padding: "12px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-        <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>Powered by SYNAPSE AI</span>
+        <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>Powered by CADUS AI</span>
         <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 9 }}>1 / {total}</span>
       </div>
     </div>
@@ -646,7 +646,7 @@ function ConditionsSlide({ slide, conditions, current, total }: { slide: Present
   return (
     <div style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY2} 100%)`, height: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{ background: TEAL, padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
-        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE</span>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | CADUS</span>
         <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
       </div>
       <div style={{ padding: "14px 24px 8px", borderBottom: `2px solid ${TEAL}`, flexShrink: 0 }}>
@@ -673,7 +673,7 @@ function RedFlagsSlide({ slide, redflags, current, total }: { slide: Presentatio
   return (
     <div style={{ background: "#140A0A", height: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "#c62828", padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
-        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE — RED FLAGS</span>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | CADUS — RED FLAGS</span>
         <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
       </div>
       <div style={{ padding: "14px 24px 8px", borderBottom: "2px solid #EF4444", flexShrink: 0 }}>
@@ -697,7 +697,7 @@ function FAQSlide({ slide, faq, current, total }: { slide: PresentationSlide; fa
   return (
     <div style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY2} 100%)`, height: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{ background: TEAL, padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
-        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE</span>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | CADUS</span>
         <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
       </div>
       <div style={{ padding: "14px 24px 8px", borderBottom: `2px solid ${TEAL}`, flexShrink: 0 }}>
@@ -730,7 +730,7 @@ function GlossarySlide({ slide, refs, current, total }: { slide: PresentationSli
   return (
     <div style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY2} 100%)`, height: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{ background: TEAL, padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
-        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE</span>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | CADUS</span>
         <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
       </div>
       <div style={{ padding: "14px 24px 8px", borderBottom: `2px solid ${TEAL}`, flexShrink: 0 }}>
@@ -757,7 +757,7 @@ function SummarySlide({ slide, current, total }: { slide: PresentationSlide; cur
   return (
     <div style={{ background: `linear-gradient(135deg, ${NAVY} 0%, #0A1F3C 100%)`, height: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{ background: TEAL, padding: "8px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
-        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | SYNAPSE</span>
+        <span style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>MEDICAL EDUCATION | CADUS</span>
         <span style={{ color: "white", fontSize: 12 }}>Slide {current} / {total}</span>
       </div>
       <div style={{ padding: "14px 24px 8px", borderBottom: `2px solid ${TEAL}`, flexShrink: 0 }}>
@@ -779,7 +779,7 @@ function SummarySlide({ slide, current, total }: { slide: PresentationSlide; cur
       </div>
       <div style={{ padding: "0 24px 16px", display: "flex", alignItems: "center", gap: 10, opacity: 0.3, flexShrink: 0 }}>
         <div style={{ flex: 1, height: 1, background: TEAL_DIM }} />
-        <span style={{ color: TEAL, fontSize: 9, fontWeight: "bold", letterSpacing: "0.08em" }}>SYNAPSE · aethex Medical Education</span>
+        <span style={{ color: TEAL, fontSize: 9, fontWeight: "bold", letterSpacing: "0.08em" }}>CADUS · aethex Medical Education</span>
         <div style={{ flex: 1, height: 1, background: TEAL_DIM }} />
       </div>
     </div>

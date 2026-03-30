@@ -137,48 +137,48 @@
   }
 }
 
-/* ── Orbitron for SYNAPSE brand title ─────────────────────────────────────── */
+/* ── Orbitron for CADUS brand title ─────────────────────────────────────── */
 .font-orbitron {
   font-family: 'Orbitron', 'Exo 2', monospace;
 }
 
-/* ── SYNAPSE page textarea placeholder (themed via CSS var) ──────────────── */
-.synapse-textarea::placeholder {
+/* ── CADUS page textarea placeholder (themed via CSS var) ──────────────── */
+.cadus-textarea::placeholder {
   color: var(--sp-placeholder-color, rgba(100, 170, 220, 0.45));
 }
 
-/* ── SYNAPSE Animated Logo keyframes ─────────────────────────────────────── */
-@keyframes synapse-orbit-cw {
+/* ── CADUS Animated Logo keyframes ─────────────────────────────────────── */
+@keyframes cadus-orbit-cw {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
-@keyframes synapse-orbit-ccw {
+@keyframes cadus-orbit-ccw {
   from { transform: rotate(0deg); }
   to   { transform: rotate(-360deg); }
 }
-@keyframes synapse-pulse-glow {
+@keyframes cadus-pulse-glow {
   0%, 100% { opacity: 0.55; transform: scale(1); }
   50%       { opacity: 1;    transform: scale(1.06); }
 }
-@keyframes synapse-breathe {
+@keyframes cadus-breathe {
   0%, 100% { transform: scale(1); }
   50%       { transform: scale(1.04); }
 }
-@keyframes synapse-glow-ring {
+@keyframes cadus-glow-ring {
   0%, 100% { box-shadow: 0 0 0 0 rgba(0,188,212,0); }
   50%       { box-shadow: 0 0 18px 6px rgba(0,188,212,0.35); }
 }
-@keyframes synapse-dash {
+@keyframes cadus-dash {
   0%   { stroke-dashoffset: 0; }
   100% { stroke-dashoffset: -502; }
 }
-@keyframes synapse-color-shift {
+@keyframes cadus-color-shift {
   0%   { stroke: #00BCD4; }
   33%  { stroke: #7C3AED; }
   66%  { stroke: #10B981; }
   100% { stroke: #00BCD4; }
 }
-@keyframes synapse-neural-pulse {
+@keyframes cadus-neural-pulse {
   0%, 100% { opacity: 0.7; r: 1; }
   50%       { opacity: 1;   r: 1.4; }
 }
@@ -230,24 +230,24 @@
   50%       { opacity: 1;   transform: scale(1.06); }
 }
 
-/* Synapse image generation animation */
-@keyframes synapse-ring-spin {
+/* Cadus image generation animation */
+@keyframes cadus-ring-spin {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-@keyframes synapse-img-bg-pulse {
+@keyframes cadus-img-bg-pulse {
   0%, 100% { transform: scale(1); opacity: 0.55; }
   50%       { transform: scale(1.04); opacity: 0.65; }
 }
-@keyframes synapse-core-pulse {
+@keyframes cadus-core-pulse {
   0%, 100% { transform: scale(1); opacity: 0.4; }
   50%       { transform: scale(1.4); opacity: 0.08; }
 }
-@keyframes synapse-dot-blink {
+@keyframes cadus-dot-blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.3; }
 }
-@keyframes synapse-particle {
+@keyframes cadus-particle {
   0%   { transform: translateY(0) scale(1); opacity: 0.6; }
   50%  { transform: translateY(-12px) scale(1.3); opacity: 1; }
   100% { transform: translateY(0) scale(1); opacity: 0.6; }
@@ -276,16 +276,16 @@
 }
 
 /* ── Blink-style spotlight background animation ─────────────────────────── */
-@keyframes synapse-spot-breathe {
+@keyframes cadus-spot-breathe {
   0%, 100% { opacity: 0.5; }
   50%       { opacity: 1;   }
 }
-@keyframes synapse-spot-pulse {
+@keyframes cadus-spot-pulse {
   0%, 100% { opacity: 0.3; }
   50%       { opacity: 1;   }
 }
 
-.synapse-spot-outer {
+.cadus-spot-outer {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -296,11 +296,11 @@
     rgba(10, 30,  90, 0.35)   40%,
     transparent               68%
   );
-  animation: synapse-spot-breathe 5s ease-in-out infinite;
+  animation: cadus-spot-breathe 5s ease-in-out infinite;
   will-change: opacity;
 }
 
-.synapse-spot-inner {
+.cadus-spot-inner {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -311,12 +311,12 @@
     rgba( 50, 120, 255, 0.08) 45%,
     transparent               70%
   );
-  animation: synapse-spot-pulse 3.5s ease-in-out infinite;
+  animation: cadus-spot-pulse 3.5s ease-in-out infinite;
   animation-delay: -1.5s;
   will-change: opacity;
 }
 
-.synapse-spot-glow {
+.cadus-spot-glow {
   position: absolute;
   top: -40px;
   left: 50%;
@@ -331,7 +331,7 @@
     rgba(60, 140, 255, 0.14) 0%,
     transparent              65%
   );
-  animation: synapse-spot-pulse 4s ease-in-out infinite;
+  animation: cadus-spot-pulse 4s ease-in-out infinite;
   animation-delay: -0.7s;
   will-change: opacity;
 }

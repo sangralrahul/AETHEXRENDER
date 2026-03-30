@@ -80,7 +80,7 @@ export default function CameraModal({ onCapture, onClose }: CameraModalProps) {
 
     canvas.toBlob((blob) => {
       if (!blob) return;
-      const file = new File([blob], `synapse-photo-${Date.now()}.jpg`, { type: "image/jpeg" });
+      const file = new File([blob], `cadus-photo-${Date.now()}.jpg`, { type: "image/jpeg" });
       const url = URL.createObjectURL(blob);
       setCapturedUrl(url);
       setCapturedFile(file);

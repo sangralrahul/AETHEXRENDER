@@ -10,8 +10,8 @@ export interface UserProfile {
   phone?: string;
   addresses: Address[];
   wishlist: number[];
-  synapseDailyCount: number;
-  synapseLastDate: string;
+  cadusDailyCount: number;
+  cadusLastDate: string;
 }
 
 export interface Address {
@@ -78,8 +78,8 @@ export function useUserAuth() {
       isPro: false,
       addresses: [],
       wishlist: [],
-      synapseDailyCount: 0,
-      synapseLastDate: "",
+      cadusDailyCount: 0,
+      cadusLastDate: "",
       passwordHash: simpleHash(password),
     };
     users[emailKey] = newUser;
@@ -143,13 +143,13 @@ export function useUserAuth() {
     updateProfile({ isPro: true, proExpiry: expiry.toISOString() });
   };
 
-  const incrementSynapseCount = (): boolean => {
+  const incrementCadusCount = (): boolean => {
     if (!user) return false;
     if (user.isPro) return true;
     const today = new Date().toDateString();
-    const count = user.synapseLastDate === today ? user.synapseDailyCount : 0;
+    const count = user.cadusLastDate === today ? user.cadusDailyCount : 0;
     if (count >= 10) return false;
-    updateProfile({ synapseDailyCount: count + 1, synapseLastDate: today });
+    updateProfile({ cadusDailyCount: count + 1, cadusLastDate: today });
     return true;
   };
 
@@ -164,6 +164,6 @@ export function useUserAuth() {
     toggleWishlist,
     activatePro,
     activateProAnnual,
-    incrementSynapseCount,
+    incrementCadusCount,
   };
 }

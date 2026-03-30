@@ -9,7 +9,7 @@ import {
 import { getTranslation } from "@/lib/translations";
 
 /* ── Types ──────────────────────────────────────────────────────────────── */
-export interface SynapseSettings {
+export interface CadusSettings {
   theme: "dark" | "auto" | "light";
   fontSize: "sm" | "md" | "lg";
   compactMode: boolean;
@@ -29,7 +29,7 @@ export interface SynapseSettings {
   referenceChatHistory: boolean;
 }
 
-export const DEFAULT_SETTINGS: SynapseSettings = {
+export const DEFAULT_SETTINGS: CadusSettings = {
   theme: "dark",
   fontSize: "md",
   compactMode: false,
@@ -49,22 +49,22 @@ export const DEFAULT_SETTINGS: SynapseSettings = {
   referenceChatHistory: true,
 };
 
-const LS_KEY = "synapse-settings-v1";
-export function loadSettings(): SynapseSettings {
+const LS_KEY = "cadus-settings-v1";
+export function loadSettings(): CadusSettings {
   try {
     const raw = localStorage.getItem(LS_KEY);
     if (!raw) return DEFAULT_SETTINGS;
     return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
   } catch { return DEFAULT_SETTINGS; }
 }
-export function saveSettings(s: SynapseSettings) {
+export function saveSettings(s: CadusSettings) {
   localStorage.setItem(LS_KEY, JSON.stringify(s));
 }
 
 /* ── Props ──────────────────────────────────────────────────────────────── */
 interface SettingsModalProps {
-  settings: SynapseSettings;
-  onSettingsChange: (s: SynapseSettings) => void;
+  settings: CadusSettings;
+  onSettingsChange: (s: CadusSettings) => void;
   onClearAllChats: () => void;
   onClearCurrentChat: () => void;
   onExportChats: () => void;
@@ -150,7 +150,7 @@ function DangerButton({ label, desc, icon: Icon, onClick }: {
 }
 
 /* ── Section: General ───────────────────────────────────────────────────── */
-function SectionGeneral({ s, set, tr }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void; tr: ReturnType<typeof getTranslation> }) {
+function SectionGeneral({ s, set, tr }: { s: CadusSettings; set: (k: keyof CadusSettings, v: any) => void; tr: ReturnType<typeof getTranslation> }) {
   return (
     <div className="space-y-6">
       {/* Theme */}
@@ -234,7 +234,7 @@ function SectionGeneral({ s, set, tr }: { s: SynapseSettings; set: (k: keyof Syn
 }
 
 /* ── Section: Interface ─────────────────────────────────────────────────── */
-function SectionInterface({ s, set }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void }) {
+function SectionInterface({ s, set }: { s: CadusSettings; set: (k: keyof CadusSettings, v: any) => void }) {
   return (
     <div>
       <SectionTitle>Chat</SectionTitle>
@@ -270,7 +270,7 @@ function SectionInterface({ s, set }: { s: SynapseSettings; set: (k: keyof Synap
 const MODEL_DATA = [
   {
     id: "pulse45" as const,
-    name: "Pulse 4.5",
+    name: "CADUS Minor",
     color: "#10B981",
     desc: "Vitals, Emergency & Critical Care. Optimised for fast, accurate clinical triage.",
     context: "512,000 tokens",
@@ -279,7 +279,7 @@ const MODEL_DATA = [
   },
   {
     id: "flux36" as const,
-    name: "Flux 3.6",
+    name: "CADUS Medius",
     color: "#F59E0B",
     desc: "Pharmacology, Drug Interactions & Lab Analysis. Deep biomedical knowledge base.",
     context: "256,000 tokens",
@@ -288,7 +288,7 @@ const MODEL_DATA = [
   },
   {
     id: "nova46" as const,
-    name: "Nova 4.6 PRO",
+    name: "CADUS Magnus",
     color: "#A855F7",
     desc: "Advanced Diagnostics, Research & Multimodal. State-of-the-art reasoning for complex cases.",
     context: "1,000,000 tokens",
@@ -297,7 +297,7 @@ const MODEL_DATA = [
   },
 ];
 
-function SectionModels({ s, set }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void }) {
+function SectionModels({ s, set }: { s: CadusSettings; set: (k: keyof CadusSettings, v: any) => void }) {
   const [expanded, setExpanded] = useState<string | null>(s.defaultModel);
   return (
     <div className="space-y-2">
@@ -423,7 +423,7 @@ function SectionChatsClean({ onClearAll, onClearCurrent, onExport, onClose }: {
 }
 
 /* ── Section: Personalization ───────────────────────────────────────────── */
-function SectionPersonalization({ s, set }: { s: SynapseSettings; set: (k: keyof SynapseSettings, v: any) => void }) {
+function SectionPersonalization({ s, set }: { s: CadusSettings; set: (k: keyof CadusSettings, v: any) => void }) {
   return (
     <div className="space-y-6">
       {/* Memory */}
@@ -435,21 +435,21 @@ function SectionPersonalization({ s, set }: { s: SynapseSettings; set: (k: keyof
             Manage
           </button>
         </div>
-        <Row label="Reference saved memories" desc="Synapse will save and reference memories when generating replies">
+        <Row label="Reference saved memories" desc="Cadus will save and reference memories when generating replies">
           <Toggle checked={s.referenceSavedMemories} onChange={(v) => set("referenceSavedMemories", v)} />
         </Row>
-        <Row label="Reference the chat history" desc="Synapse will reference saved memory when generating responses" last>
+        <Row label="Reference the chat history" desc="Cadus will reference saved memory when generating responses" last>
           <Toggle checked={s.referenceChatHistory} onChange={(v) => set("referenceChatHistory", v)} />
         </Row>
       </div>
 
       {/* Customize */}
       <div className="pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-        <SectionTitle>Customize Synapse</SectionTitle>
+        <SectionTitle>Customize Cadus</SectionTitle>
         <button type="button" className="w-full flex items-center gap-3 py-3.5"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
           <Pencil className="w-4 h-4 shrink-0" style={{ color: "rgba(0,188,212,0.6)" }} />
-          <span className="flex-1 text-sm text-left" style={{ color: "rgba(200,230,255,0.85)" }}>Customize Synapse</span>
+          <span className="flex-1 text-sm text-left" style={{ color: "rgba(200,230,255,0.85)" }}>Customize Cadus</span>
           <div className="flex items-center gap-1.5 text-xs" style={{ color: "rgba(0,200,255,0.5)" }}>
             <Archive className="w-3 h-3" />
             Settings
@@ -485,7 +485,7 @@ function SectionAccount() {
           <User className="w-6 h-6 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm" style={{ color: "rgba(210,240,255,0.95)" }}>Synapse User</p>
+          <p className="font-semibold text-sm" style={{ color: "rgba(210,240,255,0.95)" }}>Cadus User</p>
           <p className="text-xs mt-0.5" style={{ color: "rgba(120,170,220,0.5)" }}>user@aethex.in</p>
         </div>
         <button type="button" className="text-sm px-3 py-1.5 rounded-lg"
@@ -547,12 +547,12 @@ function SectionAbout() {
             <Zap className="w-5 h-5" style={{ color: "#00E5FF" }} />
           </div>
           <div>
-            <p className="font-bold text-sm" style={{ color: "rgba(200,240,255,0.95)", fontFamily: "'Orbitron', monospace", letterSpacing: "0.06em" }}>SYNAPSE</p>
+            <p className="font-bold text-sm" style={{ color: "rgba(200,240,255,0.95)", fontFamily: "'Orbitron', monospace", letterSpacing: "0.06em" }}>CADUS AI</p>
             <p className="text-xs" style={{ color: "rgba(100,170,220,0.55)" }}>Medical AI Suite · v3.0.0</p>
           </div>
         </div>
         <p className="text-xs leading-relaxed" style={{ color: "rgba(120,175,220,0.6)" }}>
-          Synapse is dedicated to pursuing next-generation medical AI, focused on building specialist models for Indian doctors and medical students. Our mission is to create safe, responsible, and intelligent tools that make quality clinical decision support accessible to every healthcare professional.
+          Cadus is dedicated to pursuing next-generation medical AI, focused on building specialist models for Indian doctors and medical students. Our mission is to create safe, responsible, and intelligent tools that make quality clinical decision support accessible to every healthcare professional.
         </p>
       </div>
 
@@ -560,7 +560,7 @@ function SectionAbout() {
       <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
         <p className="text-sm font-semibold mb-2" style={{ color: "rgba(200,235,255,0.9)" }}>About</p>
         <p className="text-xs leading-relaxed" style={{ color: "rgba(120,170,220,0.55)" }}>
-          A product of nexrya technologies pvt ltd. Synapse provides AI-powered clinical assistance including diagnostic support, drug interaction checking, and medical image generation. All outputs must be verified by qualified medical professionals before clinical use.
+          A product of nexrya technologies pvt ltd. Cadus provides AI-powered clinical assistance including diagnostic support, drug interaction checking, and medical image generation. All outputs must be verified by qualified medical professionals before clinical use.
         </p>
       </div>
 
@@ -575,7 +575,7 @@ function SectionAbout() {
         style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)" }}>
         <Activity className="w-4 h-4 text-emerald-400" />
         <p className="text-sm" style={{ color: "rgba(110,231,183,0.85)" }}>All systems operational</p>
-        <div className="ml-auto w-2 h-2 rounded-full bg-emerald-400" style={{ animation: "synapse-breathe 2s ease-in-out infinite" }} />
+        <div className="ml-auto w-2 h-2 rounded-full bg-emerald-400" style={{ animation: "cadus-breathe 2s ease-in-out infinite" }} />
       </div>
 
       {/* Links */}
@@ -616,7 +616,7 @@ export default function SettingsModal({
   const [activeSection, setActiveSection] = useState<SectionId>("general");
   const tr = getTranslation(settings.language);
 
-  const set = (key: keyof SynapseSettings, value: any) => {
+  const set = (key: keyof CadusSettings, value: any) => {
     const next = { ...settings, [key]: value };
     onSettingsChange(next);
     saveSettings(next);
@@ -676,7 +676,7 @@ export default function SettingsModal({
           </nav>
 
           <div className="px-4 pt-3 mt-2" style={{ borderTop: "1px solid rgba(0,188,212,0.08)" }}>
-            <p className="text-[10px]" style={{ color: "rgba(0,200,255,0.25)" }}>SYNAPSE · v3.0.0</p>
+            <p className="text-[10px]" style={{ color: "rgba(0,200,255,0.25)" }}>CADUS AI · v3.0.0</p>
           </div>
         </div>
 

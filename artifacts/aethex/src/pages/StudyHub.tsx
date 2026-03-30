@@ -510,7 +510,7 @@ export default function StudyHub() {
         </div>
       </section>
 
-      {/* SYNAPSE CTA */}
+      {/* CADUS AI CTA */}
       <section className="py-16 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-[#161B22] to-[#0D1117] border border-[#00C2A8]/20 rounded-2xl p-8 md:p-12 text-center">
@@ -518,7 +518,7 @@ export default function StudyHub() {
               <Crown className="w-8 h-8 text-[#00C2A8]" />
             </div>
             <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-4">
-              Supercharge your prep with SYNAPSE AI
+              Supercharge your prep with CADUS AI
             </h3>
             <p className="text-white/60 max-w-xl mx-auto mb-8">
               Generate MCQs, get DDx lists, analyze lab values, and get instant clinical references — all powered by AI specialized for Indian medical education.
@@ -526,7 +526,7 @@ export default function StudyHub() {
             <div className="flex flex-wrap gap-4 justify-center">
               <Link href="/ai-assistant"
                 className="px-8 py-3 bg-[#00C2A8] text-[#0D1117] font-bold rounded-xl hover:bg-[#00D4B8] transition-all">
-                Try SYNAPSE Free
+                Try CADUS AI Free
               </Link>
               <Link href="/account"
                 className="px-8 py-3 bg-white/5 border border-white/15 text-white font-semibold rounded-xl hover:bg-white/10 transition-all">

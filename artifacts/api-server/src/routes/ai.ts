@@ -100,22 +100,17 @@ router.post("/ai/deep-research", async (req, res) => {
     const GOOGLE_CSE_ID  = process.env.GOOGLE_CSE_ID;
     const hasGoogleSearch = !!(GOOGLE_API_KEY && GOOGLE_CSE_ID);
 
-    // Step 1 — generate focused search sub-queries
-    const queryGen = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are a medical research query generator. Generate 4 targeted Google search queries to comprehensively research the given medical topic from multiple angles (pathophysiology, clinical, guidelines, Indian context). Return ONLY a JSON array of strings, no other text. Example: ["query1","query2","query3","query4"]`,
-        },
-        { role: "user", content: query },
-      ],
-      max_completion_tokens: 300,
-    });
-
+    // Step 1 — generate focused search sub-queries via Anthropic
     let searchQueries: string[] = [];
     try {
-      const parsed = JSON.parse(jsonrepair(queryGen.choices[0]?.message?.content ?? "[]"));
+      const queryGenMsg = await anthropic.messages.create({
+        model: "claude-sonnet-4-6",
+        max_tokens: 300,
+        system: `You are a medical research query generator. Generate 4 targeted Google search queries to comprehensively research the given medical topic from multiple angles (pathophysiology, clinical, guidelines, Indian context). Return ONLY a JSON array of strings, no other text. Example: ["query1","query2","query3","query4"]`,
+        messages: [{ role: "user", content: query }],
+      });
+      const raw = (queryGenMsg.content[0] as { type: string; text: string })?.text ?? "[]";
+      const parsed = JSON.parse(jsonrepair(raw));
       searchQueries = Array.isArray(parsed) ? parsed.map(String) : [];
     } catch { /* fall through */ }
     if (!searchQueries.length) {

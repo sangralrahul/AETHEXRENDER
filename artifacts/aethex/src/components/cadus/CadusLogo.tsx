@@ -25,7 +25,7 @@ export default function CadusLogo({
       style={{
         width: box, height: box,
         animation: thinking
-          ? `cadus-think-pulse 1.8s ease-in-out infinite, cadus-think-rotate 5s linear infinite`
+          ? `cadus-think-spin-pulse 5s linear infinite`
           : undefined,
         filter: thinking
           ? "drop-shadow(0 0 10px rgba(0,194,168,0.7)) drop-shadow(0 0 22px rgba(168,85,247,0.45))"
@@ -229,15 +229,21 @@ export default function CadusLogo({
               fill="none" stroke="#22D3EE" strokeWidth="0.6"
               strokeDasharray="6 10"
               strokeLinecap="round"
-              style={{ opacity: 0.25, animation: "cadus-orbit-cw 4s linear infinite", transformOrigin: "50px 55px" }}
-            />
+              opacity="0.28"
+            >
+              <animateTransform attributeName="transform" type="rotate"
+                from="0 50 55" to="360 50 55" dur="4s" repeatCount="indefinite" />
+            </circle>
             {/* Inner orbit ring */}
             <circle cx="50" cy="55" r="36"
               fill="none" stroke="#A855F7" strokeWidth="0.5"
               strokeDasharray="4 12"
               strokeLinecap="round"
-              style={{ opacity: 0.2, animation: "cadus-orbit-ccw 6s linear infinite", transformOrigin: "50px 55px" }}
-            />
+              opacity="0.22"
+            >
+              <animateTransform attributeName="transform" type="rotate"
+                from="0 50 55" to="-360 50 55" dur="6s" repeatCount="indefinite" />
+            </circle>
             {/* Racing dots */}
             <circle r="2.5" fill="#00E5FF"
               style={{ filter: "drop-shadow(0 0 4px #00E5FF)", opacity: 0.9 }}>

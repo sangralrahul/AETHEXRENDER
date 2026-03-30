@@ -156,6 +156,13 @@
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+@keyframes cadus-think-spin-pulse {
+  0%   { transform: rotate(0deg)   scale(1); }
+  25%  { transform: rotate(90deg)  scale(1.05); }
+  50%  { transform: rotate(180deg) scale(1.09); }
+  75%  { transform: rotate(270deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(1); }
+}
 @keyframes cadus-wing-flap {
   0%, 100% { transform: scaleX(1) translateY(0px); }
   50%       { transform: scaleX(1.07) translateY(-1px); }

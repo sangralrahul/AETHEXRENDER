@@ -44,7 +44,7 @@ export default function Contact() {
     "Product Query",
     "NEET PG / Medical Exam Help",
     "Order Support",
-    "CADUS AI Feedback",
+    "Cadus AI Feedback",
     "Partnership / Wholesale",
     "Technical Issue",
     "Other",
@@ -63,7 +63,7 @@ export default function Contact() {
             Contact AETHEX
           </h1>
           <p className="text-white/50 text-base max-w-lg mx-auto">
-            Submit your query and CADUS AI will respond instantly. You'll also receive the response in your email.
+            Submit your query and Cadus AI will respond instantly. You'll also receive the response in your email.
           </p>
         </div>
 
@@ -74,7 +74,7 @@ export default function Contact() {
                 <CheckCircle className="w-5 h-5 text-[#00C2A8]" />
               </div>
               <div>
-                <h2 className="text-white font-bold text-lg">CADUS AI Response</h2>
+                <h2 className="text-white font-bold text-lg">Cadus AI Response</h2>
                 <p className="text-white/40 text-sm">
                   {result.emailSent ? "A copy has been sent to your email." : "Response generated below."}
                 </p>
@@ -84,7 +84,7 @@ export default function Contact() {
               {result.aiResponse}
             </div>
             <div className="text-xs text-white/30 mb-6">
-              CADUS AI responses are for informational purposes only. Always consult a licensed medical professional for clinical decisions.
+              Cadus AI responses are for informational purposes only. Always consult a licensed medical professional for clinical decisions.
             </div>
             <button onClick={() => setResult(null)}
               className="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white font-medium transition-all">
@@ -96,7 +96,7 @@ export default function Contact() {
             <div className="bg-gradient-to-r from-[#0D2137] to-[#161B22] px-8 py-5 border-b border-white/5">
               <div className="flex items-center gap-2 text-white/60 text-sm">
                 <Bot className="w-4 h-4 text-[#00C2A8]" />
-                CADUS AI will analyse your query and respond immediately
+                Cadus AI will analyse your query and respond immediately
               </div>
             </div>
 
@@ -156,18 +156,18 @@ export default function Contact() {
                 {loading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-[#0D1117]/30 border-t-[#0D1117] rounded-full animate-spin" />
-                    CADUS AI is thinking…
+                    Cadus AI is thinking…
                   </>
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    Send to CADUS AI
+                    Send to Cadus AI
                   </>
                 )}
               </button>
 
               <p className="text-center text-xs text-white/30">
-                Response delivered via CADUS AI + email confirmation. Usually instant.
+                Response delivered via Cadus AI + email confirmation. Usually instant.
               </p>
             </form>
           </div>

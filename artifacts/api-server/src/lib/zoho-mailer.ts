@@ -53,13 +53,13 @@ function baseHtml(content: string): string {
   <div class="card">
     <div class="hdr">
       <div class="logo">aethex<span>.</span></div>
-      <div class="sub">Medical Store &amp; CADUS AI Platform</div>
+      <div class="sub">Medical Store &amp; Cadus AI Platform</div>
     </div>
     ${content}
     <div class="footer">
       &copy; ${new Date().getFullYear()} AETHEX &middot; India's Medical Store &middot;
       <a href="${SITE_URL}">${SITE_URL}</a>
-      <div class="disclaimer">CADUS AI responses are for informational purposes only. Always consult a licensed medical professional for clinical decisions.</div>
+      <div class="disclaimer">Cadus AI responses are for informational purposes only. Always consult a licensed medical professional for clinical decisions.</div>
     </div>
   </div>
 </div>
@@ -97,13 +97,13 @@ export async function sendContactUserEmail(
 ): Promise<void> {
   const html = baseHtml(`
     <div class="body">
-      <div class="title">Hi ${name}, CADUS AI has responded</div>
-      <p style="color:#8B949E;font-size:14px;margin:0 0 20px;">Thank you for reaching out to AETHEX. Here's CADUS AI's response to your query.</p>
+      <div class="title">Hi ${name}, Cadus AI has responded</div>
+      <p style="color:#8B949E;font-size:14px;margin:0 0 20px;">Thank you for reaching out to AETHEX. Here's Cadus AI's response to your query.</p>
       <div class="info-box">
         <div class="info-row"><span class="info-label">Subject</span><span class="info-value">${subject}</span></div>
         <div class="info-row"><span class="info-label">Your Query</span><span class="info-value" style="max-width:60%;text-align:right;">${query}</span></div>
       </div>
-      <p style="color:#E6EDF3;font-weight:600;margin:20px 0 8px;">CADUS AI Response:</p>
+      <p style="color:#E6EDF3;font-weight:600;margin:20px 0 8px;">Cadus AI Response:</p>
       <div class="ai-box">${aiResponse.replace(/\n/g, "<br/>")}</div>
       <p style="color:#8B949E;font-size:13px;">Our support team will follow up if your query requires human assistance.</p>
     </div>
@@ -112,7 +112,7 @@ export async function sendContactUserEmail(
   await getTransporter().sendMail({
     from: `"${FROM_NAME}" <${ZOHO_USER}>`,
     to,
-    subject: `Re: ${subject} — CADUS AI Response`,
+    subject: `Re: ${subject} — Cadus AI Response`,
     html,
   });
 }
@@ -138,7 +138,7 @@ export async function sendContactAdminEmail(
       </div>
       <p style="color:#E6EDF3;font-weight:600;margin:20px 0 8px;">User Message:</p>
       <div class="ai-box" style="border-color:#8B949E;">${query.replace(/\n/g, "<br/>")}</div>
-      <p style="color:#E6EDF3;font-weight:600;margin:20px 0 8px;">CADUS AI Response Sent to User:</p>
+      <p style="color:#E6EDF3;font-weight:600;margin:20px 0 8px;">Cadus AI Response Sent to User:</p>
       <div class="ai-box">${aiResponse.replace(/\n/g, "<br/>")}</div>
     </div>
   `);

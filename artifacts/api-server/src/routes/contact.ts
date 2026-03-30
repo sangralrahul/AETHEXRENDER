@@ -22,7 +22,7 @@ const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
 });
 
-const CADUS_SYSTEM_PROMPT = `You are CADUS AI, an advanced AI medical assistant inside AETHEX — India's premier medical store for doctors and medical students.
+const CADUS_SYSTEM_PROMPT = `You are Cadus AI, an advanced AI medical assistant inside AETHEX — India's premier medical store for doctors and medical students.
 You help medical professionals and students with:
 - NEET PG / USMLE preparation and medical exam guidance
 - Medical product recommendations (stethoscopes, BP machines, surgical instruments, lab coats, scrubs)
@@ -31,7 +31,7 @@ You help medical professionals and students with:
 
 Be structured, accurate, and concise. Use numbered or bulleted lists when helpful.
 Do not provide direct clinical diagnoses or unsafe medical advice. Always recommend consulting a licensed specialist.
-Keep responses helpful and professional. Your name is CADUS AI.`;
+Keep responses helpful and professional. Your name is Cadus AI.`;
 
 router.post("/contact", contactLimiter, async (req, res) => {
   const { name, email, subject, message } = req.body as {
@@ -79,7 +79,7 @@ router.post("/contact", contactLimiter, async (req, res) => {
 
     aiResponse = completion.choices[0]?.message?.content ?? aiResponse;
   } catch (aiErr) {
-    console.error("CADUS AI error for contact:", aiErr);
+    console.error("Cadus AI error for contact:", aiErr);
   }
 
   try {
@@ -126,7 +126,7 @@ router.post("/contact", contactLimiter, async (req, res) => {
     success: true,
     aiResponse,
     emailSent: emailErrors.length === 0,
-    message: "Your query has been received. Check your email for CADUS AI's response.",
+    message: "Your query has been received. Check your email for Cadus AI's response.",
   });
 });
 

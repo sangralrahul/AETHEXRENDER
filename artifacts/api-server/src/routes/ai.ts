@@ -19,14 +19,14 @@ const anthropic = new Anthropic({
 
 const agentPrompts: Record<string, { systemPrompt: string; suggestions: string[] }> = {
   cadus: {
-    systemPrompt: `You are CADUS AI — the primary AI medical assistant for aethex, India's premier medical store for doctors and medical students.
+    systemPrompt: `You are Cadus AI — the primary AI medical assistant for aethex, India's premier medical store for doctors and medical students.
 You are a knowledgeable, professional, and approachable assistant who helps with:
 - Medical product recommendations (stethoscopes, BP machines, surgical instruments, scrubs, aprons, etc.)
 - Study material and book recommendations for medical exams (NEET-PG, USMLE, MBBS, MD courses)
 - Clinical queries and general medical information
 - Guidance on medical equipment selection
 - Tips for medical students and resident doctors
-Keep responses helpful, professional, and concise. Always recommend consulting senior doctors or specialists for clinical decisions. Your name is CADUS AI.`,
+Keep responses helpful, professional, and concise. Always recommend consulting senior doctors or specialists for clinical decisions. Your name is Cadus AI.`,
     suggestions: [
       "Which stethoscope is best for a medical student?",
       "Recommend books for NEET-PG 2025",
@@ -215,7 +215,7 @@ const LANG_NAMES: Record<string, string> = {
 };
 
 const MODE_PROMPTS: Record<string, string> = {
-  "drug-interactions": `You are CADUS AI Drug Interaction Checker — an expert clinical pharmacologist for Indian doctors.
+  "drug-interactions": `You are Cadus AI Drug Interaction Checker — an expert clinical pharmacologist for Indian doctors.
 For any drug(s) the user provides, return a comprehensive interaction analysis:
 1. 🔴 SEVERE interactions (avoid combination — explain why and provide alternatives)
 2. 🟡 MODERATE interactions (use with caution — monitoring needed, dose adjustments)
@@ -225,7 +225,7 @@ For any drug(s) the user provides, return a comprehensive interaction analysis:
 Format clearly with severity badges, mechanism of interaction, and clinical management.
 Always cite mechanism (e.g. CYP3A4 inhibition, QT prolongation, serotonin syndrome).`,
 
-  "dosage-calc": `You are CADUS AI Dosage Calculator — a clinical pharmacist specialised for Indian medical practice.
+  "dosage-calc": `You are Cadus AI Dosage Calculator — a clinical pharmacist specialised for Indian medical practice.
 For any drug and patient parameters the user provides, calculate the appropriate dose with full workup:
 1. Standard adult dose and route
 2. Weight-based calculation (mg/kg) with step-by-step working
@@ -237,7 +237,7 @@ For any drug and patient parameters the user provides, calculate the appropriate
 8. Maximum daily dose and duration
 Show all calculations clearly. Reference standard formulary (BNFC, Micromedex, Indian National Formulary).`,
 
-  "lab-values": `You are CADUS AI Lab Values Interpreter — a clinical pathologist and biochemist for Indian doctors.
+  "lab-values": `You are Cadus AI Lab Values Interpreter — a clinical pathologist and biochemist for Indian doctors.
 For any lab results the user pastes, provide:
 1. Reference ranges (with Indian lab context where different from Western)
 2. ✅ Normal / ⚠️ Borderline / 🔴 Critical flags for each value
@@ -248,7 +248,7 @@ For any lab results the user pastes, provide:
 7. Next investigations to consider
 Format as a structured table where appropriate. Panels: CBC, LFT, RFT/KFT, lipid profile, ABG, TFT, coagulation, electrolytes, cardiac biomarkers, HbA1c.`,
 
-  "soap-note": `You are CADUS AI SOAP Note Generator — a clinical documentation specialist.
+  "soap-note": `You are Cadus AI SOAP Note Generator — a clinical documentation specialist.
 Convert any clinical narrative into a perfectly structured SOAP note:
 
 **S — Subjective**: Chief complaint, HPI (onset, duration, character, severity, associated symptoms, relieving/aggravating factors), past medical history, medications, allergies, social history, family history, review of systems.
@@ -258,7 +258,7 @@ Convert any clinical narrative into a perfectly structured SOAP note:
 
 Be concise, professional, and use standard medical abbreviations. Format for easy EMR entry.`,
 
-  "mcq-gen": `You are CADUS AI MCQ Generator — an expert medical educator for NEET-PG, USMLE, and MBBS exams.
+  "mcq-gen": `You are Cadus AI MCQ Generator — an expert medical educator for NEET-PG, USMLE, and MBBS exams.
 Generate 5 high-quality clinical vignette-style MCQs on the given topic:
 - Format: Clinical scenario → Question → 4 options (A, B, C, D) → ✅ Correct answer → 📝 Explanation (why correct and why others are wrong)
 - Style: NEET-PG/USMLE Step 2 standard with realistic clinical vignettes
@@ -267,7 +267,7 @@ Generate 5 high-quality clinical vignette-style MCQs on the given topic:
 - Tag each with: difficulty (Easy/Medium/Hard) and topic subtag
 Always include a brief explanation that teaches the concept, not just the answer.`,
 
-  "patient-edu": `You are CADUS AI Patient Educator — a compassionate medical communicator.
+  "patient-edu": `You are Cadus AI Patient Educator — a compassionate medical communicator.
 Translate complex medical information into simple, easy-to-understand language for patients and families:
 1. Avoid jargon — use everyday words
 2. Explain: What is this condition? What causes it? How is it treated?
@@ -279,7 +279,7 @@ Translate complex medical information into simple, easy-to-understand language f
 If the user requests Hindi or another Indian language, respond in that language with warm, respectful tone.
 Keep responses reassuring, clear, and actionable. Use simple analogies.`,
 
-  "procedure-guide": `You are CADUS AI Procedure Guide — a clinical skills trainer for doctors and residents.
+  "procedure-guide": `You are Cadus AI Procedure Guide — a clinical skills trainer for doctors and residents.
 Provide comprehensive step-by-step procedure walkthroughs:
 1. 📋 Indications and Contraindications
 2. 🩺 Equipment checklist
@@ -291,7 +291,7 @@ Provide comprehensive step-by-step procedure walkthroughs:
 8. 🎓 Key tips and common mistakes to avoid
 Procedures covered: LP, central line, arterial line, chest drain, intubation, suturing, IV access, urinary catheterisation, paracentesis, thoracocentesis, cardioversion, pericardiocentesis, bone marrow biopsy, etc.`,
 
-  "ddx": `You are CADUS AI Differential Diagnosis Engine — a senior clinical diagnostician.
+  "ddx": `You are Cadus AI Differential Diagnosis Engine — a senior clinical diagnostician.
 For any symptoms/vitals/history the user provides, generate:
 1. 🔢 Ranked Differential Diagnosis list (most likely → least likely)
 2. For each DDx: ICD-10 code, key supporting features, distinguishing features
@@ -357,7 +357,7 @@ router.post("/ai/chat", async (req, res) => {
 
 router.post("/ai/export-pdf", async (req, res) => {
   try {
-    const { content = "", title = "CADUS AI Clinical Report", mode = "" } = req.body;
+    const { content = "", title = "Cadus AI Clinical Report", mode = "" } = req.body;
     const pdfDoc = await PDFDocument.create();
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -393,7 +393,7 @@ router.post("/ai/export-pdf", async (req, res) => {
 
     // Header bar
     page.drawRectangle({ x: 0, y: height - 60, width: 595, height: 60, color: rgb(0.05, 0.1, 0.25) });
-    page.drawText("CADUS AI", { x: MARGIN, y: height - 38, size: 22, font: boldFont, color: rgb(0.6, 0.85, 1) });
+    page.drawText("Cadus AI", { x: MARGIN, y: height - 38, size: 22, font: boldFont, color: rgb(0.6, 0.85, 1) });
     const modeLabel = mode && mode !== "normal" ? ` | ${mode.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}` : "";
     page.drawText(`Clinical Report${modeLabel}`, { x: MARGIN + 96, y: height - 38, size: 11, font, color: rgb(0.7, 0.8, 0.95) });
     page.drawText(new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }), { x: 595 - MARGIN - 100, y: height - 38, size: 9, font, color: rgb(0.5, 0.6, 0.8) });
@@ -432,7 +432,7 @@ router.post("/ai/export-pdf", async (req, res) => {
     // Footer
     const lastPage = pdfDoc.getPages().at(-1)!;
     lastPage.drawRectangle({ x: 0, y: 0, width: 595, height: 28, color: rgb(0.04, 0.08, 0.2) });
-    lastPage.drawText("Generated by CADUS AI AI — aethex Medical Platform | For clinical use only — always verify with senior clinician", { x: MARGIN, y: 9, size: 7, font, color: rgb(0.4, 0.5, 0.7) });
+    lastPage.drawText("Generated by Cadus AI AI — aethex Medical Platform | For clinical use only — always verify with senior clinician", { x: MARGIN, y: 9, size: 7, font, color: rgb(0.4, 0.5, 0.7) });
 
     const pdfBytes = await pdfDoc.save();
     const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
@@ -456,7 +456,7 @@ router.post("/ai/analyze-image", async (req, res) => {
       model: "gpt-4o",
       messages: [{
         role: "system",
-        content: `You are CADUS AI Medical Imaging AI — an expert clinical radiologist, cardiologist (ECG), and ophthalmologist (fundus) for Indian doctors.
+        content: `You are Cadus AI Medical Imaging AI — an expert clinical radiologist, cardiologist (ECG), and ophthalmologist (fundus) for Indian doctors.
 
 CRITICAL RULES:
 - NEVER comment on the origin, source, or provenance of the image (e.g., never say "this looks like a web example", "this appears to be a stock image", "not a real patient film", etc.)
@@ -547,7 +547,7 @@ title, overview, anatomy, physiology, pathways, clinical, conditions, redflags, 
     const claudeMsg = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 8192,
-      system: "You are CADUS AI, a medical education AI built on Claude. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out).",
+      system: "You are Cadus AI, a medical education AI built on Claude. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out).",
       messages: [
         {
           role: "user",
@@ -711,7 +711,7 @@ router.post("/ai/generate-presentation", async (req, res) => {
     const claudePDFMsg = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 8192,
-      system: `You are CADUS AI, a medical education AI creating Gamma.app-quality PDF presentations.
+      system: `You are Cadus AI, a medical education AI creating Gamma.app-quality PDF presentations.
 Return ONLY valid JSON — no markdown fences, no explanation.
 ASCII only: no Unicode, no Greek letters (write: alpha, beta, gamma, delta, mu, etc.).
 Every slide MUST have a layout field. Mix all 4 layouts throughout for visual variety.`,
@@ -899,7 +899,7 @@ STRICT RULES:
       return lines;
     };
 
-    // ── Single CADUS AI theme (Gamma-style clean professional) ─────────────
+    // ── Single Cadus AI theme (Gamma-style clean professional) ─────────────
     type Theme = {
       bg: ReturnType<typeof rgb>; header: ReturnType<typeof rgb>; headerText: ReturnType<typeof rgb>;
       accent: ReturnType<typeof rgb>; accentDim: ReturnType<typeof rgb>; accentBrt: ReturnType<typeof rgb>;
@@ -1090,8 +1090,8 @@ STRICT RULES:
       // Teal separator between top and bottom panels
       p.drawRectangle({ x: 8, y: H - TOP_H - 4, width: W - 8, height: 4, color: TEAL_A });
 
-      // CADUS AI label (top-left, small)
-      p.drawText("MEDICAL EDUCATION  |  CADUS AI", { x: 22, y: H - 18, size: 7, font: regFont, color: rgb(0.35, 0.65, 0.58) });
+      // Cadus AI label (top-left, small)
+      p.drawText("MEDICAL EDUCATION  |  Cadus AI", { x: 22, y: H - 18, size: 7, font: regFont, color: rgb(0.35, 0.65, 0.58) });
 
       // Main title (large, white, in dark panel)
       const tLines = wrap(s(pres.title || prompt), boldFont, 32, W * 0.70 - 30);
@@ -1147,8 +1147,8 @@ STRICT RULES:
       // Footer
       p.drawRectangle({ x: 0, y: 0, width: W, height: 46, color: NAVY });
       p.drawRectangle({ x: 0, y: 44, width: W, height: 2, color: TEAL_A });
-      p.drawText(`CADUS AI - aethex  |  Medical Education Series  |  ${pres.slides.length} slides`, { x: 22, y: 16, size: 9, font: regFont, color: rgb(0.55, 0.78, 0.72) });
-      p.drawText("CADUS AI", { x: W - 72, y: 16, size: 9, font: boldFont, color: TEAL_B });
+      p.drawText(`Cadus AI - aethex  |  Medical Education Series  |  ${pres.slides.length} slides`, { x: 22, y: 16, size: 9, font: regFont, color: rgb(0.55, 0.78, 0.72) });
+      p.drawText("Cadus AI", { x: W - 72, y: 16, size: 9, font: boldFont, color: TEAL_B });
     }
 
     // ── CONTENT SLIDES (Gamma multi-layout: stats / cards / list / twocol) ─
@@ -1185,7 +1185,7 @@ STRICT RULES:
           rotate: { type: "degrees", angle: -10 }, opacity: 0.28 });
       }
       // Category label
-      p.drawText("MEDICAL EDUCATION  |  CADUS AI", { x: 20, y: H - 14, size: 6.5, font: regFont, color: rgb(0.38, 0.68, 0.62) });
+      p.drawText("MEDICAL EDUCATION  |  Cadus AI", { x: 20, y: H - 14, size: 6.5, font: regFont, color: rgb(0.38, 0.68, 0.62) });
       // Slide title — large
       const stL = wrap(s(title), boldFont, 22, W - 118);
       stL.slice(0, 2).forEach((ln, i) =>
@@ -1202,7 +1202,7 @@ STRICT RULES:
       const prog = slideNum / totalSlides;
       p.drawRectangle({ x: 12, y: FOOTER_H / 2 - 1, width: W - 190, height: 3, color: rgb(0.12, 0.20, 0.38) });
       p.drawRectangle({ x: 12, y: FOOTER_H / 2 - 1, width: (W - 190) * prog, height: 3, color: TEAL });
-      p.drawText("CADUS AI - aethex", { x: W / 2 - 44, y: FOOTER_H / 2 - 5, size: 8, font: boldFont, color: TEALB });
+      p.drawText("Cadus AI - aethex", { x: W / 2 - 44, y: FOOTER_H / 2 - 5, size: 8, font: boldFont, color: TEALB });
       p.drawText(`${slideNum} / ${totalSlides}`, { x: W - 54, y: FOOTER_H / 2 - 5, size: 8, font: boldFont, color: rgb(0.45, 0.68, 0.65) });
     };
 
@@ -1436,7 +1436,7 @@ STRICT RULES:
           color: th.accentDim, rotate: { type: "degrees", angle: -15 }, opacity: 0.2 + d * 0.05 });
       }
       p.drawText("QUICK REFERENCE GUIDE", { x: 22, y: H - 40, size: 22, font: boldFont, color: WHITE });
-      p.drawText("Key clinical terminology  |  CADUS AI - aethex", { x: 22, y: H - 60, size: 9, font: oblFont, color: rgb(0.60, 0.82, 0.78) });
+      p.drawText("Key clinical terminology  |  Cadus AI - aethex", { x: 22, y: H - 60, size: 9, font: oblFont, color: rgb(0.60, 0.82, 0.78) });
 
       const refs = (pres.quickReference ?? []).slice(0, 10);
       const COLS = 2, colW = (W - 52) / COLS, ROW_H = 62;
@@ -1461,7 +1461,7 @@ STRICT RULES:
 
       // Footer
       p.drawRectangle({ x: 0, y: 0, width: W, height: 30, color: th.footerBg });
-      p.drawText("CADUS AI - aethex  |  Medical Education Series  |  All rights reserved", { x: 20, y: 9, size: 9, font: regFont, color: rgb(0.75, 0.88, 0.92) });
+      p.drawText("Cadus AI - aethex  |  Medical Education Series  |  All rights reserved", { x: 20, y: 9, size: 9, font: regFont, color: rgb(0.75, 0.88, 0.92) });
     }
 
     const pdfBytes = await pdfDoc.save();
@@ -1497,7 +1497,7 @@ STRICT RULES:
       }
     }
 
-    children.push(new Paragraph({ children: [new TextRun({ text: "Generated by CADUS AI - aethex", italics: true, size: 18, color: "999999" })], alignment: AlignmentType.CENTER, spacing: { before: 400 } }));
+    children.push(new Paragraph({ children: [new TextRun({ text: "Generated by Cadus AI - aethex", italics: true, size: 18, color: "999999" })], alignment: AlignmentType.CENTER, spacing: { before: 400 } }));
 
     const doc = new Document({ sections: [{ properties: {}, children }] });
     const docxBuffer = await Packer.toBuffer(doc);

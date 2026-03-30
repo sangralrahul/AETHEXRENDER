@@ -54,5 +54,5 @@ export async function sendOrderDeliveredSms(phone: string, orderId: string): Pro
 }
 
 export async function sendProActivatedSms(phone: string): Promise<boolean> {
-  return sendSms(phone, `Aethex: CADUS AI Pro activated! Enjoy unlimited AI queries and all Pro features. Visit aethex.in/ai-assistant`, undefined, "pro_activated");
+  return sendSms(phone, `Aethex: Cadus AI Pro activated! Enjoy unlimited AI queries and all Pro features. Visit aethex.in/ai-assistant`, undefined, "pro_activated");
 }

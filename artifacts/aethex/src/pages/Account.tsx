@@ -121,7 +121,7 @@ export default function Account() {
             <User className="w-8 h-8 text-white/30" />
           </div>
           <h2 className="text-xl font-display font-bold text-white mb-2">Sign in to access your account</h2>
-          <p className="text-white/50 text-sm mb-6">Manage your profile, addresses, orders, and CADUS AI Pro subscription.</p>
+          <p className="text-white/50 text-sm mb-6">Manage your profile, addresses, orders, and Cadus AI Pro subscription.</p>
           <Link href="/" className="px-6 py-3 bg-[#00C2A8] text-[#0D1117] font-bold rounded-xl hover:bg-[#00D4B8] transition-colors">
             Sign In
           </Link>
@@ -250,7 +250,7 @@ export default function Account() {
                       { label: "Full Name", value: user.name },
                       { label: "Email Address", value: user.email },
                       { label: "Phone", value: user.phone || "Not set" },
-                      { label: "Account Type", value: user.isPro ? "CADUS AI Pro Member" : "Free Account" },
+                      { label: "Account Type", value: user.isPro ? "Cadus AI Pro Member" : "Free Account" },
                     ].map((field, i) => (
                       <div key={i} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
                         <span className="text-sm text-white/40">{field.label}</span>
@@ -319,14 +319,14 @@ export default function Account() {
               <div className="space-y-5">
                 <h2 className="text-lg font-display font-bold text-white flex items-center gap-2">
                   <Crown className="w-5 h-5 text-[#00C2A8]" />
-                  CADUS AI Subscription
+                  Cadus AI Subscription
                 </h2>
 
                 {/* Current Plan */}
                 <div className={`p-6 rounded-2xl border ${user.isPro ? "border-[#00C2A8]/40 bg-[#00C2A8]/5" : "border-white/8 bg-[#161B22]"}`}>
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h3 className="font-bold text-white">{user.isPro ? "CADUS AI Pro" : "Free Plan"}</h3>
+                      <h3 className="font-bold text-white">{user.isPro ? "Cadus AI Pro" : "Free Plan"}</h3>
                       <p className="text-sm text-white/50">
                         {user.isPro
                           ? `Active until ${user.proExpiry ? new Date(user.proExpiry).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : "—"}`
@@ -356,7 +356,7 @@ export default function Account() {
 
                 {!user.isPro && (
                   <>
-                    <p className="text-sm text-white/60">Upgrade to CADUS AI Pro for unlimited AI queries, advanced features, and priority access.</p>
+                    <p className="text-sm text-white/60">Upgrade to Cadus AI Pro for unlimited AI queries, advanced features, and priority access.</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {[
                         { plan: "monthly" as const, label: "Monthly", price: 299, period: "/month", saving: null },
@@ -376,7 +376,7 @@ export default function Account() {
                           {option.saving && <p className="text-xs text-[#00C2A8] mb-4">{option.saving}</p>}
                           {!option.saving && <p className="text-xs text-white/40 mb-4">Cancel anytime</p>}
                           <ul className="space-y-2 mb-5">
-                            {["Unlimited CADUS AI queries", "Image & lab analysis", "PDF export", "Drug interaction checker", "SOAP notes generator", "MCQ generator"].map((feat, i) => (
+                            {["Unlimited Cadus AI queries", "Image & lab analysis", "PDF export", "Drug interaction checker", "SOAP notes generator", "MCQ generator"].map((feat, i) => (
                               <li key={i} className="flex items-center gap-2 text-xs text-white/70">
                                 <CheckCircle2 className="w-3.5 h-3.5 text-[#00C2A8] shrink-0" />
                                 {feat}
@@ -410,7 +410,7 @@ export default function Account() {
                 <div className="space-y-4">
                   {[
                     { label: "Order updates & tracking", desc: "Get notified about your order status", defaultOn: true },
-                    { label: "CADUS AI updates", desc: "New features and model updates", defaultOn: true },
+                    { label: "Cadus AI updates", desc: "New features and model updates", defaultOn: true },
                     { label: "Exclusive deals & offers", desc: "Personalized discounts on medical supplies", defaultOn: false },
                     { label: "Medical news digest", desc: "Weekly curated medical news", defaultOn: true },
                     { label: "Blog & study tips", desc: "New blog posts and exam tips", defaultOn: false },

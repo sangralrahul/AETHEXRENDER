@@ -471,7 +471,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CADUS AI Banner */}
+      {/* Cadus AI Banner */}
       <section className="py-20 bg-[#0D1117]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-[#161B22] to-[#0D1117] border border-[#00C2A8]/15 rounded-3xl p-8 lg:p-14 relative overflow-hidden shadow-2xl">

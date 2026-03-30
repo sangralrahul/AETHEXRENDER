@@ -45,7 +45,7 @@ function baseEmailHtml(content: string, previewText: string): string {
   <div class="card">
     <div class="header">
       <div class="logo">aethex<span>.</span></div>
-      <div style="font-size:12px;color:#8B949E;margin-top:4px;">Medical Store & CADUS AI Platform</div>
+      <div style="font-size:12px;color:#8B949E;margin-top:4px;">Medical Store & Cadus AI Platform</div>
     </div>
     ${content}
     <div class="footer">
@@ -221,30 +221,30 @@ export async function sendProActivatedEmail(to: string, name: string, validUntil
 
   const html = baseEmailHtml(`
     <div class="body">
-      <div class="title">Welcome to CADUS AI Pro! ✨</div>
-      <div class="subtitle">Hi ${name}, your CADUS AI Pro plan is now active.</div>
+      <div class="title">Welcome to Cadus AI Pro! ✨</div>
+      <div class="subtitle">Hi ${name}, your Cadus AI Pro plan is now active.</div>
       <div class="info-box">
-        <div class="info-row"><span class="info-label">Plan</span><span class="info-value">CADUS AI Pro</span></div>
+        <div class="info-row"><span class="info-label">Plan</span><span class="info-value">Cadus AI Pro</span></div>
         <div class="info-row"><span class="info-label">Valid Until</span><span class="info-value">${validity}</span></div>
       </div>
-      <p style="color:#8B949E;font-size:14px;">You now have access to all Pro features including CADUS Magnus, Scan Analysis, unlimited queries, and more.</p>
-      <a href="${SITE_URL}/ai-assistant" class="cta-btn">Start Using CADUS AI Pro</a>
-    </div>`, "Welcome to CADUS AI Pro!");
+      <p style="color:#8B949E;font-size:14px;">You now have access to all Pro features including Cadus Magnus, Scan Analysis, unlimited queries, and more.</p>
+      <a href="${SITE_URL}/ai-assistant" class="cta-btn">Start Using Cadus AI Pro</a>
+    </div>`, "Welcome to Cadus AI Pro!");
 
-  return sendEmail(to, "Welcome to CADUS AI Pro! Your plan is now active ✨", html, undefined, "pro_activated");
+  return sendEmail(to, "Welcome to Cadus AI Pro! Your plan is now active ✨", html, undefined, "pro_activated");
 }
 
 export async function sendProExpiringEmail(to: string, name: string, daysLeft: number, validUntil: Date): Promise<boolean> {
   const html = baseEmailHtml(`
     <div class="body">
-      <div class="title">CADUS AI Pro Expiring Soon ⏰</div>
-      <div class="subtitle">Hi ${name}, your CADUS AI Pro plan expires in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}.</div>
+      <div class="title">Cadus AI Pro Expiring Soon ⏰</div>
+      <div class="subtitle">Hi ${name}, your Cadus AI Pro plan expires in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}.</div>
       <div class="info-box">
         <div class="info-row"><span class="info-label">Expiry Date</span><span class="info-value">${new Date(validUntil).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</span></div>
       </div>
-      <p style="color:#8B949E;font-size:14px;">Renew now to continue uninterrupted access to all CADUS AI Pro features.</p>
-      <a href="${SITE_URL}/ai-assistant" class="cta-btn">Renew CADUS AI Pro</a>
-    </div>`, `CADUS AI Pro expires in ${daysLeft} days`);
+      <p style="color:#8B949E;font-size:14px;">Renew now to continue uninterrupted access to all Cadus AI Pro features.</p>
+      <a href="${SITE_URL}/ai-assistant" class="cta-btn">Renew Cadus AI Pro</a>
+    </div>`, `Cadus AI Pro expires in ${daysLeft} days`);
 
-  return sendEmail(to, `Your CADUS AI Pro expires in ${daysLeft} days — Renew now`, html, undefined, "pro_expiring");
+  return sendEmail(to, `Your Cadus AI Pro expires in ${daysLeft} days — Renew now`, html, undefined, "pro_expiring");
 }

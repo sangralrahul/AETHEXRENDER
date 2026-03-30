@@ -270,7 +270,7 @@ function SectionInterface({ s, set }: { s: CadusSettings; set: (k: keyof CadusSe
 const MODEL_DATA = [
   {
     id: "pulse45" as const,
-    name: "CADUS Minor",
+    name: "Cadus Minor",
     color: "#10B981",
     desc: "Vitals, Emergency & Critical Care. Optimised for fast, accurate clinical triage.",
     context: "512,000 tokens",
@@ -279,7 +279,7 @@ const MODEL_DATA = [
   },
   {
     id: "flux36" as const,
-    name: "CADUS Medius",
+    name: "Cadus Medius",
     color: "#F59E0B",
     desc: "Pharmacology, Drug Interactions & Lab Analysis. Deep biomedical knowledge base.",
     context: "256,000 tokens",
@@ -288,7 +288,7 @@ const MODEL_DATA = [
   },
   {
     id: "nova46" as const,
-    name: "CADUS Magnus",
+    name: "Cadus Magnus",
     color: "#A855F7",
     desc: "Advanced Diagnostics, Research & Multimodal. State-of-the-art reasoning for complex cases.",
     context: "1,000,000 tokens",
@@ -547,7 +547,7 @@ function SectionAbout() {
             <Zap className="w-5 h-5" style={{ color: "#00E5FF" }} />
           </div>
           <div>
-            <p className="font-bold text-sm" style={{ color: "rgba(200,240,255,0.95)", fontFamily: "'Orbitron', monospace", letterSpacing: "0.06em" }}>CADUS AI</p>
+            <p className="font-bold text-sm" style={{ color: "rgba(200,240,255,0.95)", fontFamily: "'Orbitron', monospace", letterSpacing: "0.06em" }}>Cadus AI</p>
             <p className="text-xs" style={{ color: "rgba(100,170,220,0.55)" }}>Medical AI Suite · v3.0.0</p>
           </div>
         </div>
@@ -676,7 +676,7 @@ export default function SettingsModal({
           </nav>
 
           <div className="px-4 pt-3 mt-2" style={{ borderTop: "1px solid rgba(0,188,212,0.08)" }}>
-            <p className="text-[10px]" style={{ color: "rgba(0,200,255,0.25)" }}>CADUS AI · v3.0.0</p>
+            <p className="text-[10px]" style={{ color: "rgba(0,200,255,0.25)" }}>Cadus AI · v3.0.0</p>
           </div>
         </div>
 

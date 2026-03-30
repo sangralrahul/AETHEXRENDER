@@ -96,7 +96,7 @@ export function Footer() {
           <div>
             <h3 className="font-display font-bold text-white text-lg mb-6">Resources</h3>
             <ul className="space-y-4 text-sm text-slate-400">
-              <li><Link href="/ai-assistant" className="hover:text-primary transition-colors">SYNAPSE AI Assistant</Link></li>
+              <li><Link href="/ai-assistant" className="hover:text-primary transition-colors">ZYRA AI Assistant</Link></li>
               <li><Link href="/blog" className="hover:text-primary transition-colors">Medical Blog</Link></li>
               <li><Link href="/news" className="hover:text-primary transition-colors">Medical News</Link></li>
               <li><Link href="/orders/track" className="hover:text-primary transition-colors">Track Order</Link></li>

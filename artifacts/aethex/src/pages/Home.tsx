@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, Activity, BrainCircuit, Sparkles, Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, HeartPulse, Shield, Quote, GraduationCap, FileText, Microscope, PenLine, Trophy, ShieldCheck, Truck, RotateCcw, Receipt, CheckCircle2, Send } from "lucide-react";
+import { ArrowRight, Activity, BrainCircuit, Sparkles, Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, HeartPulse, Shield, Quote, GraduationCap, FileText, Microscope, PenLine, Trophy, ShieldCheck, Truck, RotateCcw, Receipt, Send, MessageSquare, Search, Image, Zap, Wrench, ClipboardList } from "lucide-react";
 import { useListProducts, useListCategories } from "@workspace/api-client-react";
 import { ProductCard } from "@/components/ProductCard";
 import { useSession } from "@/hooks/use-session";
@@ -156,13 +156,13 @@ export default function Home() {
                 India's #1 Store for Medical Professionals
               </div>
               <h1 className="text-5xl lg:text-7xl font-display font-extrabold text-white leading-[1.05] tracking-tight mb-6">
-                Everything a Doctor Needs,{" "}
+                Everything Medicine,{" "}
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00C2A8] to-[#00E5D0]">
-                  Delivered.
+                  One Platform.
                 </span>
               </h1>
               <p className="text-lg text-white/60 mb-8 leading-relaxed max-w-xl">
-                Premium medical supplies for Indian doctors and students. From Littmann stethoscopes to top-tier scrubs, surgical instruments, textbooks, and SYNAPSE AI — all in one place.
+                From clinical queries to exam prep, AETHEX combines the AI tools, medical supplies, and study resources doctors and students need most.
               </p>
               
               <div className="flex flex-wrap gap-4">
@@ -171,7 +171,7 @@ export default function Home() {
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
                 <Link href="/ai-assistant" className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-white/8 border border-white/15 rounded-xl hover:bg-white/15 hover:border-white/25 transition-all">
-                  Try SYNAPSE AI
+                  Start Chat
                   <BrainCircuit className="ml-2 w-5 h-5 text-[#00C2A8]" />
                 </Link>
               </div>
@@ -194,6 +194,106 @@ export default function Home() {
                 <div className="text-3xl font-display font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-sm text-white/40 font-medium">{stat.label}</div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Features Grid */}
+      <section className="py-20 bg-[#0D1117] relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full"
+            style={{ background: "radial-gradient(ellipse, rgba(0,194,168,0.05) 0%, transparent 70%)" }} />
+        </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-3">
+              Everything Medicine,{" "}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00C2A8] to-[#00E5D0]">One Platform</span>
+            </h2>
+            <p className="text-white/45 max-w-xl mx-auto">
+              From clinical queries to exam prep, AETHEX combines the tools doctors and students need most.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                icon: <MessageSquare className="w-6 h-6" />,
+                title: "AI Medical Assistant",
+                desc: "Ask any clinical question and get structured, textbook-quality answers with references.",
+                href: "/ai-assistant",
+                color: "#00C2A8",
+              },
+              {
+                icon: <Search className="w-6 h-6" />,
+                title: "Disease Knowledge Engine",
+                desc: "Searchable database of diseases with pathophysiology, diagnosis, treatment, and more.",
+                href: "/tools",
+                color: "#3B82F6",
+              },
+              {
+                icon: <Image className="w-6 h-6" />,
+                title: "Medical Image Library",
+                desc: "Browse radiology, pathology, dermatology images linked to diseases and conditions.",
+                href: "/tools",
+                color: "#8B5CF6",
+              },
+              {
+                icon: <Sparkles className="w-6 h-6" />,
+                title: "AI Image Generator",
+                desc: "Generate medical diagrams, anatomy visuals, and pathology illustrations on demand.",
+                href: "/ai-assistant",
+                color: "#EC4899",
+              },
+              {
+                icon: <Zap className="w-6 h-6" />,
+                title: "Deep Research Engine",
+                desc: "Search and summarize medical literature, analyze papers, and explain complex studies.",
+                href: "/ai-assistant",
+                color: "#F59E0B",
+              },
+              {
+                icon: <BookOpen className="w-6 h-6" />,
+                title: "Study Materials",
+                desc: "NEET PG, USMLE prep with flashcards, MCQs, clinical cases, and subject-wise notes.",
+                href: "/study-hub",
+                color: "#10B981",
+              },
+              {
+                icon: <Wrench className="w-6 h-6" />,
+                title: "Clinical Tools",
+                desc: "Drug interactions, dosage calculators, BMI tools, and differential diagnosis generators.",
+                href: "/tools",
+                color: "#06B6D4",
+              },
+              {
+                icon: <ClipboardList className="w-6 h-6" />,
+                title: "Clinical Decision Support",
+                desc: "Input symptoms and labs to get AI-powered differential diagnoses and treatment plans.",
+                href: "/ai-assistant",
+                color: "#6366F1",
+              },
+            ].map((feature, i) => (
+              <Link key={i} href={feature.href}>
+                <div
+                  className="group relative p-5 rounded-2xl cursor-pointer transition-all duration-300 hover:-translate-y-1 h-full"
+                  style={{
+                    background: "rgba(22,27,34,0.8)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                  }}
+                >
+                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ background: `radial-gradient(ellipse at top left, ${feature.color}0D 0%, transparent 60%)` }} />
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                    style={{ background: `${feature.color}18`, color: feature.color }}
+                  >
+                    {feature.icon}
+                  </div>
+                  <h3 className="font-semibold text-[14px] text-white/90 mb-2 leading-snug">{feature.title}</h3>
+                  <p className="text-[12px] text-white/40 leading-relaxed">{feature.desc}</p>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -382,7 +482,7 @@ export default function Home() {
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00C2A8]/15 text-[#00C2A8] font-semibold text-sm mb-6 border border-[#00C2A8]/25">
                   <BrainCircuit className="w-4 h-4" />
-                  SYNAPSE — aethex AI Suite
+                  ZYRA — aethex AI Suite
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-display font-bold text-white mb-6 leading-tight">
                   Your smart AI companion for medical queries.
@@ -392,7 +492,7 @@ export default function Home() {
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <Link href="/ai-assistant" className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-[#0D1117] bg-[#00C2A8] rounded-xl hover:bg-[#00D4B8] hover:scale-105 transition-all">
-                    Try Now — It's Free
+                    Start Chat — It's Free
                     <Sparkles className="ml-2 w-5 h-5" />
                   </Link>
                   <Link href="/account" className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-white/8 border border-white/15 rounded-xl hover:bg-white/15 transition-all">

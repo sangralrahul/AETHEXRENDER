@@ -99,10 +99,11 @@ export function Navbar() {
             <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               <Link
                 href="/ai-assistant"
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#00C2A8]/15 text-[#00C2A8] font-semibold text-sm hover:bg-[#00C2A8]/25 transition-all border border-[#00C2A8]/25"
+                className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl font-semibold text-sm transition-all hover:opacity-90 hover:scale-105"
+                style={{ background: "#00C2A8", color: "#0D1117" }}
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>ZYRA</span>
+                <span>Start Chat</span>
               </Link>
 
               <Link
@@ -261,7 +262,7 @@ export function Navbar() {
               </form>
               {[
                 { href: "/shop", label: "Shop All Products" },
-                { href: "/ai-assistant", label: "ZYRA AI" },
+                { href: "/ai-assistant", label: "Start Chat (ZYRA AI)" },
                 { href: "/tools", label: "Clinical Tools" },
                 { href: "/study-hub", label: "Study Hub" },
                 { href: "/blog", label: "Blog" },

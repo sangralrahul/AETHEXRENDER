@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import rateLimit from "express-rate-limit";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import OpenAI from "openai";
 import { db } from "@workspace/db";
 import { messagesTable } from "@workspace/db";
@@ -10,7 +10,8 @@ const router: IRouter = Router();
 const contactLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 10,
-  keyGenerator: (req) => req.ip ?? "unknown",
+  keyGenerator: (req) => ipKeyGenerator(req),
+  validate: { xForwardedForHeader: false },
   message: { error: "Too many requests. Please try again later." },
   standardHeaders: true,
   legacyHeaders: false,

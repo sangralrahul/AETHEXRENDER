@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import bcrypt from "bcryptjs";
-import rateLimit from "express-rate-limit";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import { db } from "@workspace/db";
 import { otpRequestsTable, authUsersTable } from "@workspace/db";
 import { eq, and, gt } from "drizzle-orm";
@@ -12,7 +12,8 @@ const router: IRouter = Router();
 const otpSendLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 5,
-  keyGenerator: (req) => req.body?.email ?? req.ip ?? "unknown",
+  keyGenerator: (req) => req.body?.email ?? ipKeyGenerator(req),
+  validate: { xForwardedForHeader: false },
   message: { error: "Too many OTP requests. Please try again in an hour." },
   standardHeaders: true,
   legacyHeaders: false,
@@ -21,7 +22,8 @@ const otpSendLimiter = rateLimit({
 const otpVerifyLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
-  keyGenerator: (req) => req.body?.email ?? req.ip ?? "unknown",
+  keyGenerator: (req) => req.body?.email ?? ipKeyGenerator(req),
+  validate: { xForwardedForHeader: false },
   message: { error: "Too many verification attempts. Please try again later." },
   standardHeaders: true,
   legacyHeaders: false,

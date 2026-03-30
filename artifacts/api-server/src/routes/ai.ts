@@ -909,7 +909,7 @@ STRICT RULES:
       footerBg: ReturnType<typeof rgb>; footerText: ReturnType<typeof rgb>;
       sepLine: ReturnType<typeof rgb>;
     };
-    const CADUS AI_THEME: Theme = {
+    const CADUS_AI_THEME: Theme = {
       bg: rgb(0.97, 0.98, 0.99),         header: rgb(0.04, 0.07, 0.18),
       headerText: WHITE,                  accent: rgb(0.04, 0.74, 0.60),
       accentDim: rgb(0.03, 0.40, 0.33),  accentBrt: rgb(0.15, 0.88, 0.72),
@@ -919,7 +919,7 @@ STRICT RULES:
       footerBg: rgb(0.04, 0.07, 0.18),   footerText: WHITE,
       sepLine: rgb(0.86, 0.92, 0.90),
     };
-    const THEMES: Theme[] = Array(6).fill(CADUS AI_THEME);
+    const THEMES: Theme[] = Array(6).fill(CADUS_AI_THEME);
 
     // ── Diagram drawing helpers ───────────────────────────────────────────
     type Page = ReturnType<typeof pdfDoc.addPage>;
@@ -1424,7 +1424,7 @@ STRICT RULES:
 
     // ── QUICK REFERENCE PAGE ──────────────────────────────────────────────
     if ((pres.quickReference ?? []).length) {
-      const th = CADUS AI_THEME;
+      const th = CADUS_AI_THEME;
       const p = pdfDoc.addPage([W, H]);
       p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: th.bg });
       // Header

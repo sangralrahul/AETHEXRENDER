@@ -3,6 +3,28 @@ import { Link, useRoute } from "wouter";
 import { ArrowLeft, Clock, Eye, Share2, Copy, Check, MessageSquare, Loader2, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+function ReadingProgressBar() {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const update = () => {
+      const el = document.documentElement;
+      const scrolled = el.scrollTop;
+      const total = el.scrollHeight - el.clientHeight;
+      setProgress(total > 0 ? Math.min(100, (scrolled / total) * 100) : 0);
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[60] h-0.5 bg-slate-100">
+      <div
+        className="h-full bg-primary transition-all duration-100 ease-out"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
+  );
+}
+
 const apiBase = () => import.meta.env.BASE_URL.replace(/\/$/, "");
 
 function formatDate(iso: string) {
@@ -80,6 +102,22 @@ export default function BlogPost() {
   const toc = useMemo(() => data?.post?.content ? extractTOC(data.post.content) : [], [data?.post?.content]);
   const processedContent = useMemo(() => data?.post?.content ? injectIds(data.post.content) : "", [data?.post?.content]);
 
+  useEffect(() => {
+    if (toc.length === 0) return;
+    const observers: IntersectionObserver[] = [];
+    toc.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { rootMargin: "-80px 0px -60% 0px", threshold: 0 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach(o => o.disconnect());
+  }, [toc, processedContent]);
+
   const shareUrl = window.location.href;
   const shareTitle = data?.post?.title ?? "";
 
@@ -123,6 +161,7 @@ export default function BlogPost() {
 
   return (
     <div className="bg-white min-h-screen">
+      <ReadingProgressBar />
       {/* Featured Image */}
       {post.featuredImage && (
         <div className="w-full h-72 overflow-hidden">

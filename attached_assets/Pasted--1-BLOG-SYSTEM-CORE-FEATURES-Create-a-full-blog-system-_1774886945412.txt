@@ -1,0 +1,114 @@
+🧱 1. BLOG SYSTEM (CORE FEATURES)
+
+Create a full blog system with:
+
+Blog listing page: /blog
+Individual blog page: /blog/:slug
+
+Categories:
+
+NEET PG Preparation
+Medical Concepts
+PYQs & MCQs
+Study Strategies
+
+Tags support: (e.g., anatomy, pharmacology, revision)
+
+Each blog should include:
+
+Title
+Slug (SEO-friendly URL)
+Featured image
+Author name (default: Team AETHEX)
+Publish date
+Read time (auto-calculated)
+Content (Markdown or rich text)
+Table of contents (auto-generated from headings)
+⚡ 2. SEO OPTIMIZATION (CRITICAL)
+
+Implement strong SEO:
+
+Dynamic <title> and <meta description>
+Open Graph tags (for social sharing)
+Twitter card support
+Canonical URLs
+Structured data (JSON-LD for blog articles)
+Sitemap.xml generation
+robots.txt
+
+Each blog should:
+
+Target NEET PG keywords (e.g., "NEET PG anatomy revision notes")
+Maintain proper keyword placement (not stuffing)
+Use correct H1, H2, H3 hierarchy
+🔍 3. SEARCH + FILTER
+Search bar (by title, tags, keywords)
+Filter by category
+Sort by:
+Latest
+Most popular
+Most read
+📈 4. ANALYTICS + PERFORMANCE
+Track:
+Views per blog
+Average read time
+Basic engagement metrics
+Performance optimization:
+Lazy loading for images
+Optimized images (WebP if possible)
+Fast page load (important for SEO)
+🛠️ 5. ADMIN PANEL
+
+Create a simple admin dashboard:
+
+Create / Edit / Delete blog posts
+Upload and manage images
+Add tags & categories
+Preview before publishing
+Toggle publish/draft mode
+🎨 6. UI DESIGN (MEDICAL + CLEAN)
+Clean UI inspired by Medium / Notion
+Card-based blog layout
+Fully responsive (mobile-first)
+Medical theme (blue/white color palette)
+Reading progress bar on blog page
+🔐 7. TECH STACK (FLEXIBLE)
+
+Frontend:
+
+React + Tailwind CSS
+React Router
+
+OR (preferred for SEO):
+
+Next.js (SSR/SSG support)
+
+Backend:
+
+Node.js + Express OR Firebase
+
+Database:
+
+MongoDB / Firebase / Supabase
+📄 8. SAMPLE BLOG CONTENT
+
+Create 3 sample blog posts:
+
+"How to Crack NEET PG in First Attempt"
+"Top 50 Anatomy MCQs for NEET PG"
+"Best Revision Strategy for Last 30 Days"
+🚀 9. FINAL OUTPUT REQUIREMENTS
+Fully working blog system integrated into AETHEX
+SEO-optimized pages
+Clean folder structure
+Well-commented code
+Ready for deployment
+💡 OPTIONAL FEATURES (IF TIME PERMITS)
+Newsletter/email subscription
+Related posts section
+Dark mode
+Bookmark/save blog feature
+⚠️ IMPORTANT CONTEXT
+Target audience: Indian NEET PG aspirants
+Content style: exam-focused, high-value, non-generic
+Prioritize SEO + usability + performance

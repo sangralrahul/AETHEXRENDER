@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useUserAuth } from "@/hooks/use-user-auth";
@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { NotificationBell } from "@/components/NotificationBell";
 import { AuthModal } from "@/components/AuthModal";
+import SettingsModal, { loadSettings, saveSettings, type CadusSettings } from "@/components/cadus/SettingsModal";
 
 export function Navbar() {
   const [location, setLocation] = useLocation();
@@ -19,6 +20,13 @@ export function Navbar() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const accountRef = useRef<HTMLDivElement>(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [cadusSettings, setCadusSettings] = useState<CadusSettings>(loadSettings);
+
+  const handleSettingsChange = (s: CadusSettings) => {
+    setCadusSettings(s);
+    saveSettings(s);
+  };
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -54,6 +62,15 @@ export function Navbar() {
   return (
     <>
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
+      {showSettings && (
+        <SettingsModal
+          settings={cadusSettings}
+          onSettingsChange={handleSettingsChange}
+          onClose={() => setShowSettings(false)}
+          user={user}
+          isFromWebsite
+        />
+      )}
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
@@ -172,6 +189,13 @@ export function Navbar() {
                           className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
                           <Settings className="w-4 h-4" /> My Account
                         </Link>
+                        <button
+                          type="button"
+                          onClick={() => { setAccountOpen(false); setShowSettings(true); }}
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors"
+                        >
+                          <Brain className="w-4 h-4" /> Cadus AI Settings
+                        </button>
                         <Link href="/orders" onClick={() => setAccountOpen(false)}
                           className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
                           <Package className="w-4 h-4" /> My Orders

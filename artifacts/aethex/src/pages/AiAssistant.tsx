@@ -23,6 +23,7 @@ import CameraModal from "@/components/cadus/CameraModal";
 import SettingsModal, { loadSettings, saveSettings, DEFAULT_SETTINGS, type CadusSettings } from "@/components/cadus/SettingsModal";
 import { TypewriterText } from "@/components/cadus/TypewriterText";
 import { getTranslation } from "@/lib/translations";
+import { useUserAuth } from "@/hooks/use-user-auth";
 
 /* ── Cadus theme CSS custom-property tokens ─────────────────────────── */
 function getThemeVars(theme: "dark" | "auto" | "light"): React.CSSProperties {
@@ -371,6 +372,7 @@ function savePinned(pins: string[]): void {
 }
 
 export default function AiAssistant() {
+  const { user } = useUserAuth();
   const [sessions, setSessions] = useState<ChatSession[]>(loadSessions);
   const [activeSessionId, setActiveSessionId] = useState<string>(() => loadSessions()[0]?.id ?? "");
   const [pinnedPrompts, setPinnedPrompts] = useState<string[]>(loadPinned);
@@ -424,6 +426,19 @@ export default function AiAssistant() {
         ],
       });
     }
+  }, []);
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "cadus-settings-v1" && e.newValue) {
+        try {
+          const next = JSON.parse(e.newValue);
+          setSettings((prev) => ({ ...prev, ...next }));
+        } catch {}
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   const [input, setInput] = useState("");
@@ -2068,6 +2083,7 @@ export default function AiAssistant() {
           onClearCurrentChat={handleClearCurrentChat}
           onExportChats={handleExportChats}
           onClose={() => setShowSettings(false)}
+          user={user}
         />
       )}
 

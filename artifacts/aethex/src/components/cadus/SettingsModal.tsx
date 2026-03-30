@@ -4,9 +4,10 @@ import {
   Moon, Sun, ChevronDown, ChevronUp, ChevronRight,
   Download, Upload, Archive, Trash2, Lock,
   UserCheck, Pencil, Key, Cookie,
-  Activity, CheckCircle, Zap, RotateCcw, Volume2,
+  Activity, CheckCircle, Zap, RotateCcw, Volume2, Crown,
 } from "lucide-react";
 import { getTranslation } from "@/lib/translations";
+import type { UserProfile } from "@/hooks/use-user-auth";
 
 /* ── Types ──────────────────────────────────────────────────────────────── */
 export interface CadusSettings {
@@ -65,10 +66,13 @@ export function saveSettings(s: CadusSettings) {
 interface SettingsModalProps {
   settings: CadusSettings;
   onSettingsChange: (s: CadusSettings) => void;
-  onClearAllChats: () => void;
-  onClearCurrentChat: () => void;
-  onExportChats: () => void;
+  onClearAllChats?: () => void;
+  onClearCurrentChat?: () => void;
+  onExportChats?: () => void;
   onClose: () => void;
+  user?: UserProfile | null;
+  /** When true, chat-destructive actions are hidden (opened from website, not AI page) */
+  isFromWebsite?: boolean;
 }
 
 type SectionId = "general" | "interface" | "models" | "chats" | "personalization" | "account" | "about";
@@ -350,8 +354,8 @@ function SectionModels({ s, set }: { s: CadusSettings; set: (k: keyof CadusSetti
 }
 
 /* ── Section: Chats ─────────────────────────────────────────────────────── */
-function SectionChatsClean({ onClearAll, onClearCurrent, onExport, onClose }: {
-  onClearAll: () => void; onClearCurrent: () => void; onExport: () => void; onClose: () => void;
+function SectionChatsClean({ onClearAll, onClearCurrent, onExport, onClose, isFromWebsite }: {
+  onClearAll?: () => void; onClearCurrent?: () => void; onExport?: () => void; onClose: () => void; isFromWebsite?: boolean;
 }) {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
@@ -364,11 +368,13 @@ function SectionChatsClean({ onClearAll, onClearCurrent, onExport, onClose }: {
     {
       label: "Export Chats",
       icon: Download,
-      right: (
-        <button type="button" onClick={() => { onExport(); onClose(); }}
+      right: onExport ? (
+        <button type="button" onClick={() => { onExport!(); onClose(); }}
           className="text-sm" style={{ color: "rgba(120,170,220,0.6)" }}>
           Export Chats
         </button>
+      ) : (
+        <span className="text-sm" style={{ color: "rgba(120,170,220,0.35)" }}>Open AI page first</span>
       ),
     },
     {
@@ -379,8 +385,8 @@ function SectionChatsClean({ onClearAll, onClearCurrent, onExport, onClose }: {
     {
       label: "Delete All Chats",
       icon: Trash2,
-      right: deleteConfirm ? (
-        <button type="button" onClick={() => { onClearAll(); setDeleteConfirm(false); onClose(); }}
+      right: onClearAll ? (deleteConfirm ? (
+        <button type="button" onClick={() => { onClearAll!(); setDeleteConfirm(false); onClose(); }}
           className="text-xs font-bold px-2 py-1 rounded-lg"
           style={{ background: "rgba(239,68,68,0.15)", color: "#F87171", border: "1px solid rgba(248,113,113,0.3)" }}>
           Confirm
@@ -391,12 +397,21 @@ function SectionChatsClean({ onClearAll, onClearCurrent, onExport, onClose }: {
           style={{ background: "rgba(239,68,68,0.1)", color: "#F87171", border: "1px solid rgba(248,113,113,0.25)" }}>
           Delete Chat
         </button>
+      )) : (
+        <span className="text-sm" style={{ color: "rgba(120,170,220,0.35)" }}>Open AI page first</span>
       ),
     },
   ];
 
   return (
     <div>
+      {isFromWebsite && (
+        <div className="mb-4 flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs"
+          style={{ background: "rgba(0,188,212,0.07)", border: "1px solid rgba(0,188,212,0.15)", color: "rgba(0,200,255,0.6)" }}>
+          <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+          Chat actions are available inside the Cadus AI page.
+        </div>
+      )}
       {rows.map((r, i) => {
         const Icon = r.icon;
         const isLast = i === rows.length - 1;
@@ -413,11 +428,13 @@ function SectionChatsClean({ onClearAll, onClearCurrent, onExport, onClose }: {
         );
       })}
 
-      <div className="mt-6 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-        <SectionTitle>Current Session</SectionTitle>
-        <DangerButton label="Clear current chat" desc="Remove messages from active session"
-          icon={RotateCcw} onClick={onClearCurrent} />
-      </div>
+      {!isFromWebsite && (
+        <div className="mt-6 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <SectionTitle>Current Session</SectionTitle>
+          <DangerButton label="Clear current chat" desc="Remove messages from active session"
+            icon={RotateCcw} onClick={onClearCurrent ?? (() => {})} />
+        </div>
+      )}
     </div>
   );
 }
@@ -474,24 +491,64 @@ function SectionPersonalization({ s, set }: { s: CadusSettings; set: (k: keyof C
 }
 
 /* ── Section: Account ───────────────────────────────────────────────────── */
-function SectionAccount() {
+function SectionAccount({ user }: { user?: UserProfile | null }) {
+  const displayName = user?.name || "Cadus User";
+  const displayEmail = user?.email || "user@aethex.in";
+  const isPro = user?.isPro ?? false;
+  const dailyCount = user?.cadusDailyCount ?? 0;
+  const dailyLimit = isPro ? 200 : 20;
+  const dailyPct = Math.min(100, Math.round((dailyCount / dailyLimit) * 100));
+  const initials = displayName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
+
   return (
     <div className="space-y-5">
       {/* Profile card */}
       <div className="flex items-center gap-4 px-4 py-4 rounded-xl"
         style={{ background: "rgba(0,188,212,0.05)", border: "1px solid rgba(0,188,212,0.12)" }}>
-        <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+        <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 font-bold text-base text-white"
           style={{ background: "linear-gradient(135deg, #00BCD4, #7C3AED)", boxShadow: "0 0 16px rgba(0,188,212,0.3)" }}>
-          <User className="w-6 h-6 text-white" />
+          {initials || <User className="w-6 h-6" />}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm" style={{ color: "rgba(210,240,255,0.95)" }}>Cadus User</p>
-          <p className="text-xs mt-0.5" style={{ color: "rgba(120,170,220,0.5)" }}>user@aethex.in</p>
+          <div className="flex items-center gap-2">
+            <p className="font-semibold text-sm truncate" style={{ color: "rgba(210,240,255,0.95)" }}>{displayName}</p>
+            {isPro && (
+              <span className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.35)", color: "#00C2A8" }}>
+                <Crown className="w-2.5 h-2.5" />PRO
+              </span>
+            )}
+          </div>
+          <p className="text-xs mt-0.5 truncate" style={{ color: "rgba(120,170,220,0.5)" }}>{displayEmail}</p>
         </div>
         <button type="button" className="text-sm px-3 py-1.5 rounded-lg"
           style={{ color: "rgba(0,200,255,0.7)", border: "1px solid rgba(0,188,212,0.2)" }}>
           Edit account
         </button>
+      </div>
+
+      {/* Daily usage bar */}
+      <div className="rounded-xl px-4 py-3" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-semibold" style={{ color: "rgba(180,215,255,0.75)" }}>Daily AI queries</p>
+          <p className="text-xs font-bold" style={{ color: dailyCount >= dailyLimit ? "#F87171" : "rgba(0,200,255,0.7)" }}>
+            {dailyCount} / {dailyLimit}
+          </p>
+        </div>
+        <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+          <div className="h-full rounded-full transition-all duration-500"
+            style={{
+              width: `${dailyPct}%`,
+              background: dailyCount >= dailyLimit
+                ? "linear-gradient(90deg,#F87171,#ef4444)"
+                : "linear-gradient(90deg,#00BCD4,#00E5FF)",
+            }} />
+        </div>
+        {!isPro && (
+          <p className="text-[10px] mt-1.5" style={{ color: "rgba(120,170,220,0.4)" }}>
+            Upgrade to Cadus Magnus for 200 daily queries
+          </p>
+        )}
       </div>
 
       {/* Password */}
@@ -611,7 +668,7 @@ const NAV: { id: SectionId; label: string; icon: React.ElementType }[] = [
 
 /* ── Main Modal ─────────────────────────────────────────────────────────── */
 export default function SettingsModal({
-  settings, onSettingsChange, onClearAllChats, onClearCurrentChat, onExportChats, onClose,
+  settings, onSettingsChange, onClearAllChats, onClearCurrentChat, onExportChats, onClose, user, isFromWebsite,
 }: SettingsModalProps) {
   const [activeSection, setActiveSection] = useState<SectionId>("general");
   const tr = getTranslation(settings.language);
@@ -705,10 +762,11 @@ export default function SettingsModal({
                 onClearCurrent={onClearCurrentChat}
                 onExport={onExportChats}
                 onClose={onClose}
+                isFromWebsite={isFromWebsite}
               />
             )}
             {activeSection === "personalization" && <SectionPersonalization s={settings} set={set} />}
-            {activeSection === "account" && <SectionAccount />}
+            {activeSection === "account" && <SectionAccount user={user} />}
             {activeSection === "about" && <SectionAbout />}
           </div>
         </div>

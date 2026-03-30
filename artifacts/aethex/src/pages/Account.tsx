@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "wouter";
 import { User, MapPin, Heart, Crown, Settings, LogOut, Plus, Trash2, CheckCircle2, Star, Bell, ShieldCheck, ChevronRight, Edit3, Package, Camera } from "lucide-react";
 import { useUserAuth, type Address } from "@/hooks/use-user-auth";
@@ -114,7 +114,20 @@ export default function Account() {
   const [proLoading, setProLoading] = useState(false);
   const [notifToggles, setNotifToggles] = useState([true, true, false, true, false]);
   const [photoUploading, setPhotoUploading] = useState(false);
+  const [showAvatarMenu, setShowAvatarMenu] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
+  const avatarMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showAvatarMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(e.target as Node)) {
+        setShowAvatarMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showAvatarMenu]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -192,26 +205,48 @@ export default function Account() {
             <div className="bg-[#161B22] border border-white/8 rounded-2xl p-5 mb-4">
               <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
               <div className="flex items-center gap-4 mb-5">
-                <button
-                  onClick={() => photoInputRef.current?.click()}
-                  className="relative w-14 h-14 rounded-2xl overflow-hidden group flex-shrink-0"
-                  title="Change profile photo"
-                >
-                  {user.avatar ? (
-                    <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full bg-[#00C2A8]/20 border border-[#00C2A8]/30 flex items-center justify-center text-[#00C2A8] font-bold text-xl">
-                      {user.name[0]?.toUpperCase()}
+                <div ref={avatarMenuRef} className="relative flex-shrink-0">
+                  <button
+                    onClick={() => setShowAvatarMenu(v => !v)}
+                    className="relative w-14 h-14 rounded-2xl overflow-hidden group"
+                    title="Profile photo options"
+                  >
+                    {user.avatar ? (
+                      <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-[#00C2A8]/20 border border-[#00C2A8]/30 flex items-center justify-center text-[#00C2A8] font-bold text-xl">
+                        {user.name[0]?.toUpperCase()}
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      {photoUploading ? (
+                        <div className="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <Camera className="w-4 h-4 text-white" />
+                      )}
+                    </div>
+                  </button>
+                  {showAvatarMenu && (
+                    <div className="absolute top-full left-0 mt-2 w-40 bg-[#1C2128] border border-white/10 rounded-xl shadow-2xl shadow-black/60 z-50 overflow-hidden">
+                      <button
+                        onClick={() => { setShowAvatarMenu(false); photoInputRef.current?.click(); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:bg-white/8 hover:text-white transition-colors"
+                      >
+                        <Camera className="w-3.5 h-3.5 text-[#00C2A8]" />
+                        {user.avatar ? "Change photo" : "Upload photo"}
+                      </button>
+                      {user.avatar && (
+                        <button
+                          onClick={() => { updateProfile({ avatar: undefined }); setShowAvatarMenu(false); }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Remove photo
+                        </button>
+                      )}
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    {photoUploading ? (
-                      <div className="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin" />
-                    ) : (
-                      <Camera className="w-4 h-4 text-white" />
-                    )}
-                  </div>
-                </button>
+                </div>
                 <div className="min-w-0">
                   <p className="font-bold text-white truncate">{user.name}</p>
                   <p className="text-xs text-white/40 truncate">{user.email}</p>

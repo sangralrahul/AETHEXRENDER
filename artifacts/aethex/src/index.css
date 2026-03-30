@@ -257,6 +257,24 @@
   100% { transform: rotate(360deg); }
 }
 
+/* ── TypewriterText animations ──────────────────────────────────────────── */
+@keyframes tw-cursor-blink {
+  0%, 100% { opacity: 1; }
+  45%       { opacity: 0; }
+}
+@keyframes tw-fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+@keyframes tw-bubble-in {
+  from { opacity: 0; transform: scale(0.96) translateY(4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0);       }
+}
+@keyframes tw-dot-bounce {
+  0%, 60%, 100% { transform: translateY(0);    opacity: 0.5; }
+  30%            { transform: translateY(-5px); opacity: 1;   }
+}
+
 /* ── Blink-style spotlight background animation ─────────────────────────── */
 @keyframes synapse-spot-breathe {
   0%, 100% { opacity: 0.5; }

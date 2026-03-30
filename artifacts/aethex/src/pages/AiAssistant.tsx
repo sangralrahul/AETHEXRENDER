@@ -21,6 +21,7 @@ import SynapseLogo from "@/components/synapse/SynapseLogo";
 import DNABackground from "@/components/synapse/DNABackground";
 import CameraModal from "@/components/synapse/CameraModal";
 import SettingsModal, { loadSettings, saveSettings, DEFAULT_SETTINGS, type SynapseSettings } from "@/components/synapse/SettingsModal";
+import { TypewriterText } from "@/components/synapse/TypewriterText";
 import { getTranslation } from "@/lib/translations";
 
 /* ── Synapse theme CSS custom-property tokens ─────────────────────────── */
@@ -446,6 +447,25 @@ export default function AiAssistant() {
   const hasMessages = messages.length > 0;
   const model = MODELS.find((m) => m.id === activeModel)!;
   const isProLocked = model.pro ?? false;
+
+  const seenMsgKeys = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!activeSessionId) return;
+    messages.forEach((_, idx) => {
+      seenMsgKeys.current.add(`${activeSessionId}:${idx}`);
+    });
+  }, [activeSessionId]);
+
+  const isMsgNew = (idx: number) =>
+    !!activeSessionId && !seenMsgKeys.current.has(`${activeSessionId}:${idx}`);
+
+  const markMsgSeen = (idx: number) => {
+    if (activeSessionId) seenMsgKeys.current.add(`${activeSessionId}:${idx}`);
+  };
+
+  const scrollToBottom = () =>
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -1609,6 +1629,7 @@ export default function AiAssistant() {
                         ? "self-end flex-row-reverse max-w-[85%]"
                         : "self-start max-w-[92%] w-full"
                     )}
+                    style={{ animation: "tw-bubble-in 0.28s ease-out both", animationDelay: `${isMsgNew(idx) ? 0 : 0}ms` }}
                   >
                     {/* Avatar */}
                     <div className={cn(
@@ -1639,18 +1660,13 @@ export default function AiAssistant() {
                     >
                       {!(msg as ExtendedMessage).isDeepResearch && !(msg as ExtendedMessage).isPresentation && !(msg as ExtendedMessage).slideCountOptions && !(msg as ExtendedMessage).imageUrl && msg.content && (
                         <div>
-                          <div className="px-5 py-4 text-[14px] leading-relaxed space-y-1">
-                            {msg.content.split("\n").map((line, li) => {
-                              const stripped = line.trimStart();
-                              if (stripped.startsWith("### ")) return <p key={li} className="font-bold text-[13px] mt-3 mb-0.5" style={{ color: "rgba(150,220,255,0.95)" }}>{stripped.slice(4)}</p>;
-                              if (stripped.startsWith("## ")) return <p key={li} className="font-bold text-[14px] mt-4 mb-1" style={{ color: "rgba(100,190,255,0.95)" }}>{stripped.slice(3)}</p>;
-                              if (stripped.startsWith("# ")) return <p key={li} className="font-bold text-[15px] mt-4 mb-1" style={{ color: "rgba(150,210,255,1)" }}>{stripped.slice(2)}</p>;
-                              if (stripped.startsWith("- ") || stripped.startsWith("• ")) return <div key={li} className="flex gap-2"><span className="text-teal-400 mt-0.5 shrink-0">•</span><span>{stripped.slice(2).replace(/\*\*(.*?)\*\*/g, (_m, s) => s)}</span></div>;
-                              if (stripped === "---" || stripped === "***") return <hr key={li} style={{ borderColor: "rgba(255,255,255,0.1)", margin: "8px 0" }} />;
-                              if (stripped === "") return <div key={li} className="h-1" />;
-                              const parts = stripped.split(/(\*\*[^*]+\*\*)/);
-                              return <p key={li}>{parts.map((chunk, ci) => chunk.startsWith("**") && chunk.endsWith("**") ? <strong key={ci} style={{ color: "rgba(200,230,255,0.95)" }}>{chunk.slice(2,-2)}</strong> : <span key={ci}>{chunk}</span>)}</p>;
-                            })}
+                          <div className="px-5 py-4 text-[14px] leading-relaxed">
+                            <TypewriterText
+                              text={msg.content}
+                              isNew={isMsgNew(idx)}
+                              onDone={() => markMsgSeen(idx)}
+                              onScroll={scrollToBottom}
+                            />
                           </div>
                           {msg.role === ChatMessageRole.assistant && (
                             <div className="flex items-center gap-2 px-4 pb-3">
@@ -1772,18 +1788,34 @@ export default function AiAssistant() {
                   </div>
                 )}
 
-                {/* Thinking indicator */}
+                {/* Typing indicator */}
                 {(chatMutation.isPending || isGeneratingResearch) && (
-                  <div className="flex gap-3 self-start max-w-[92%]">
+                  <div className="flex gap-3 self-start max-w-[92%]" style={{ animation: "tw-bubble-in 0.22s ease-out both" }}>
                     <div className="w-8 h-8 shrink-0 mt-1">
                       <SynapseLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                     </div>
-                    <div className="rounded-2xl rounded-tl-sm px-5 py-4 flex items-center gap-3"
+                    <div className="rounded-2xl rounded-tl-sm px-5 py-4 flex items-center gap-1.5"
                       style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                      <Loader2 className="w-4 h-4 animate-spin" style={{ color: "rgba(255,255,255,0.5)" }} />
-                      <span className="text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
-                        {isGeneratingResearch ? tr.researching : tr.thinking}
-                      </span>
+                      {isGeneratingResearch ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "rgba(0,194,168,0.7)" }} />
+                          <span className="text-sm ml-2" style={{ color: "rgba(255,255,255,0.4)" }}>{tr.researching}</span>
+                        </>
+                      ) : (
+                        <>
+                          {[0, 1, 2].map(i => (
+                            <span
+                              key={i}
+                              className="w-2 h-2 rounded-full"
+                              style={{
+                                background: "rgba(0,194,168,0.75)",
+                                animation: "tw-dot-bounce 1.2s ease-in-out infinite",
+                                animationDelay: `${i * 0.18}s`,
+                              }}
+                            />
+                          ))}
+                        </>
+                      )}
                     </div>
                   </div>
                 )}

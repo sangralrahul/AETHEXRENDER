@@ -1,0 +1,60 @@
+Redesign the Aethex login and signup pages completely. Here is the exact design to implement:
+
+--- DESIGN SPEC ---
+
+OVERALL:
+- Full screen split layout — left panel 45% width, right panel 55%
+- Background: #050505 (near black)
+- Font: 'Outfit' (Google Fonts) for UI, 'Cormorant Garamond' (Google Fonts) for hero display text
+- Three decorative orbs (blurred circles) in background:
+  * Orb 1: 280px, #00C2A818, top-right area
+  * Orb 2: 200px, #00C2A810, bottom-left area
+  * Orb 3: 120px, #00C2A808, middle-left
+
+--- LEFT PANEL ---
+- Background: transparent (shows main bg)
+- Right border: 1px solid #111
+- Logo mark top-left: small 36x36px teal (#00C2A8) square with rounded corners, letter "A" inside in dark color, then "AETHEX" text next to it in white, Space Grotesk font
+- Hero headline (center of panel): Cormorant Garamond, 38px, font-weight 300, white, line-height 1.15:
+  Line 1: "Medicine meets"
+  Line 2: "intelligence" — in italic teal (#00C2A8)
+- Below headline: 12px description text in #555: "India's only medical platform with an AI clinical assistant, medical shop, and study hub — all in one place."
+- Bottom of panel — 4 feature rows with teal dot + text:
+  * CADUS AI — Clinical Co-Pilot
+  * Medical Shop — 500+ products
+  * Study Hub — NEET-PG Prep
+  * GST Invoices & Fast Delivery
+  Each row: 6px teal dot, 11px text in #444
+
+--- RIGHT PANEL ---
+- Centered card: background #0D0D0D, border 1px solid #1a1a1a, border-radius 20px, padding 32px
+- Max width 300px
+- Card title: "Welcome back" — 18px, font-weight 600, white
+- Card subtitle: "Sign in to your Aethex account" — 11px, #444
+- Input fields with labels above (9px uppercase, letter-spacing, color #555):
+  * Label: EMAIL, Input placeholder: doctor@hospital.com
+  * Label: PASSWORD, Input placeholder: ••••••••
+- Input style: background #0a0a0a, border 1px solid #1a1a1a, border-radius 10px, padding 12px 14px, color #e0e0e0
+- "Forgot password?" link right-aligned below password, 10px teal color
+- Primary button: "Sign In to Aethex" — background #00C2A8, color #050505, border-radius 10px, full width, font-weight 600
+- Divider: "or continue with" text between two lines
+- Google button: transparent background, border 1px solid #1a1a1a, border-radius 10px, full width
+- Bottom text: "No account? Create one free" — "Create one free" in teal
+
+--- SIGNUP PAGE ---
+Same layout and design. Change:
+- Card title: "Create your account"
+- Card subtitle: "Join thousands of doctors on Aethex"
+- Add a Name field at the top
+- Add a Role selector: Doctor / Medical Student / Patient
+- Button: "Create Account"
+- Bottom: "Already have an account? Sign in" — Sign in in teal
+
+--- RULES ---
+- Only show AETHEX branding — no mention of CADUS or SYNAPSE on login/signup pages
+- Mobile responsive — on small screens stack panels vertically (left panel becomes top banner, right panel becomes form below)
+- No white backgrounds anywhere
+- Smooth CSS transitions on input focus (border color changes to teal)
+- Import Google Fonts: Outfit, Cormorant Garamond, Space Grotesk
+
+Confirm when done.

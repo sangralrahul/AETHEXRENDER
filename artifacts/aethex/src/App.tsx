@@ -30,6 +30,8 @@ import MedicalNews from "@/pages/News";
 import AdminBlog from "@/pages/AdminBlog";
 import ClinicalTools from "@/pages/ClinicalTools";
 import Contact from "@/pages/Contact";
+import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
 
 import SellerRegister from "@/pages/seller/Register";
 import SellerLogin from "@/pages/seller/Login";
@@ -68,6 +70,8 @@ function Router() {
     <Switch>
       {/* Full-screen pages (no Navbar/Footer) */}
       <Route path="/ai-assistant" component={AiAssistant} />
+      <Route path="/login" component={Login} />
+      <Route path="/signup" component={Signup} />
       <Route path="/seller/register" component={SellerRegister} />
       <Route path="/seller/login">{() => <SellerLogin onLogin={handleSellerLogin} />}</Route>
 

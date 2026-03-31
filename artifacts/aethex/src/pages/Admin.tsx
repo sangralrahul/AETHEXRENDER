@@ -3,8 +3,6 @@ import { Link } from "wouter";
 import { ShieldCheck, LayoutDashboard, Package, Users, ShoppingBag, FileText, BarChart3, Settings, Lock, Eye, EyeOff, ChevronRight, TrendingUp, IndianRupee, Star, CheckCircle2, XCircle, Clock, AlertTriangle } from "lucide-react";
 import { useListProducts, useListCategories } from "@workspace/api-client-react";
 
-const ADMIN_PASSWORD = "aethex@admin2026";
-
 type AdminTab = "dashboard" | "products" | "orders" | "users" | "sellers" | "blog" | "analytics" | "settings";
 
 const TABS: { id: AdminTab; label: string; icon: typeof LayoutDashboard }[] = [
@@ -91,28 +89,44 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function Admin() {
-  const [authed, setAuthed] = useState(() => localStorage.getItem("aethex_admin_auth") === "true");
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem("aethex_admin_auth") === "true");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState<AdminTab>("dashboard");
 
   const { data: productsData } = useListProducts({ limit: 50 });
   const products = productsData?.products || [];
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      localStorage.setItem("aethex_admin_auth", "true");
-      setAuthed(true);
-      setError("");
-    } else {
-      setError("Incorrect admin password.");
+    setLoading(true);
+    setError("");
+    try {
+      const apiBase = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
+      const resp = await fetch(`${apiBase}/api/admin/auth`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await resp.json();
+      if (resp.ok && data.ok) {
+        sessionStorage.setItem("aethex_admin_auth", "true");
+        setAuthed(true);
+        setError("");
+      } else {
+        setError(data.error ?? "Incorrect admin password.");
+      }
+    } catch {
+      setError("Could not reach server. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("aethex_admin_auth");
+    sessionStorage.removeItem("aethex_admin_auth");
     setAuthed(false);
     setPassword("");
   };
@@ -142,10 +156,10 @@ export default function Admin() {
               </div>
             </div>
             {error && <p className="text-sm text-red-400">{error}</p>}
-            <button type="submit" className="w-full py-3 bg-[#00C2A8] text-[#0D1117] font-bold rounded-xl hover:bg-[#00D4B8] transition-colors">
-              Access Admin Panel
+            <button type="submit" disabled={loading}
+              className="w-full py-3 bg-[#00C2A8] text-[#0D1117] font-bold rounded-xl hover:bg-[#00D4B8] transition-colors disabled:opacity-60">
+              {loading ? "Verifying…" : "Access Admin Panel"}
             </button>
-            <p className="text-center text-xs text-[#aeaeb2]">Hint: aethex@admin2026</p>
           </form>
         </div>
       </div>

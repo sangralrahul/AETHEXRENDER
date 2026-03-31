@@ -4,8 +4,32 @@ import Anthropic from "@anthropic-ai/sdk";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
 import { jsonrepair } from "jsonrepair";
+import rateLimit from "express-rate-limit";
 
 const router: IRouter = Router();
+
+// Rate limiting for AI endpoints — prevents abuse and cost spikes
+const aiChatLimiter = rateLimit({
+  windowMs: 60 * 1000,      // 1-minute window
+  max: 20,                  // 20 chat requests/min per IP
+  message: { error: "Too many requests. Please slow down." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+const aiImageLimiter = rateLimit({
+  windowMs: 60 * 1000,      // 1-minute window
+  max: 5,                   // 5 image generations/min per IP
+  message: { error: "Image generation rate limit reached. Please wait a moment." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+const aiHeavyLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,  // 5-minute window
+  max: 3,                   // 3 deep-research/presentation/slides per 5 min
+  message: { error: "Heavy AI task rate limit reached. Please wait before running another." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
@@ -123,7 +147,7 @@ FORMATTING RULES (always follow):
 };
 
 // ── DEEP RESEARCH ────────────────────────────────────────────────────────────
-router.post("/ai/deep-research", async (req, res) => {
+router.post("/ai/deep-research", aiHeavyLimiter, async (req, res) => {
   try {
     const { query, agent = "cadus" } = req.body;
     if (!query) { res.status(400).json({ error: "query is required" }); return; }
@@ -333,7 +357,7 @@ For any symptoms/vitals/history the user provides, generate:
 Format as a structured clinical assessment. Always recommend senior review for complex cases.`,
 };
 
-router.post("/ai/chat", async (req, res) => {
+router.post("/ai/chat", aiChatLimiter, async (req, res) => {
   try {
     const { message, conversationHistory = [], agent = "cadus", language = "en", mode = "normal", specialty = "General" } = req.body;
 
@@ -474,7 +498,7 @@ router.post("/ai/export-pdf", async (req, res) => {
   }
 });
 
-router.post("/ai/analyze-image", async (req, res) => {
+router.post("/ai/analyze-image", aiImageLimiter, async (req, res) => {
   try {
     const { imageBase64, imageType = "image/jpeg", query = "Please analyze this medical image.", specialty = "General" } = req.body;
     if (!imageBase64) { res.status(400).json({ error: "imageBase64 is required" }); return; }
@@ -524,7 +548,7 @@ Caveat at the end: "This is AI-assisted analysis — always correlate clinically
   }
 });
 
-router.post("/ai/generate-image", async (req, res) => {
+router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
   try {
     const { prompt, labeled, imageStyle } = req.body;
     if (!prompt) {
@@ -588,7 +612,7 @@ router.post("/ai/generate-image", async (req, res) => {
 });
 
 // ── /api/ai/generate-slides — returns JSON slide data for in-browser viewer ──
-router.post("/ai/generate-slides", async (req, res) => {
+router.post("/ai/generate-slides", aiHeavyLimiter, async (req, res) => {
   try {
     const { prompt, slideCount } = req.body;
     if (!prompt) { res.status(400).json({ error: "prompt is required" }); return; }
@@ -758,7 +782,7 @@ RULES:
   }
 });
 
-router.post("/ai/generate-presentation", async (req, res) => {
+router.post("/ai/generate-presentation", aiHeavyLimiter, async (req, res) => {
   try {
     const { prompt, slideCount } = req.body;
     if (!prompt) { res.status(400).json({ error: "prompt is required" }); return; }

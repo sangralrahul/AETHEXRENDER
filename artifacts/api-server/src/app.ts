@@ -25,9 +25,27 @@ app.use(
     },
   }),
 );
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+// Restrict CORS to same Replit domain + localhost (not open wildcard)
+const allowedOrigins = [
+  /\.replit\.dev$/,
+  /\.repl\.co$/,
+  /\.sisko\.replit\.dev$/,
+  /^http:\/\/localhost(:\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+];
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true); // same-origin / server-to-server
+    const ok = allowedOrigins.some(p => p.test(origin));
+    cb(ok ? null : new Error("CORS: origin not allowed"), ok);
+  },
+  credentials: true,
+}));
+
+// Increase body limit for base64 image uploads (max ~6 MB encoded)
+app.use(express.json({ limit: "8mb" }));
+app.use(express.urlencoded({ extended: true, limit: "8mb" }));
 
 app.use("/api", router);
 

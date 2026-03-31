@@ -1,0 +1,86 @@
+Perform a COMPLETE END-TO-END AUDIT of my entire website and AI assistant system.
+
+Your task is to act like a senior QA engineer + security auditor + performance tester.
+
+Check EVERYTHING in detail and give a structured report.
+
+---
+
+🔍 1. CORE WEBSITE FUNCTIONALITY
+- Verify all pages load correctly (Home, About, Contact, Login, etc.)
+- Check navigation links (no broken links or routing issues)
+- Ensure responsive design (mobile, tablet, desktop)
+- Validate forms (signup, login, contact, etc.)
+- Check error handling (invalid inputs, empty fields)
+
+---
+
+🤖 2. AI ASSISTANT VALIDATION
+- Test if AI assistant responds correctly to different queries
+- Check for:
+  - Slow responses
+  - गलत answers (incorrect responses)
+  - Crashes or freezes
+- Verify API connections (OpenAI or any backend)
+- Test edge cases (empty input, long input, abusive input)
+
+---
+
+🔐 3. SECURITY CHECK
+- Check for:
+  - Exposed API keys
+  - कमजोर authentication system
+  - SQL injection or input vulnerabilities
+- Ensure HTTPS and secure requests
+- Validate authentication (login/signup protection)
+
+---
+
+⚡ 4. PERFORMANCE TEST
+- Measure page load speed
+- Detect heavy scripts slowing down website
+- Check API response time
+- Suggest optimizations (lazy loading, caching, etc.)
+
+---
+
+📱 5. UI/UX REVIEW
+- Identify bad design areas
+- Check alignment, spacing, readability
+- Suggest improvements for better user experience
+
+---
+
+🌐 6. DEPLOYMENT READINESS (VERCEL)
+- Ensure project is production-ready
+- Check environment variables setup
+- Detect build errors or warnings
+- Confirm no dev-only code is present
+
+---
+
+🧪 7. BUG DETECTION
+- Find ALL bugs (minor + major)
+- Clearly explain:
+  - What is the issue
+  - Why it happens
+  - How to fix it (step-by-step)
+
+---
+
+📊 FINAL OUTPUT FORMAT:
+Give response in this format:
+
+1. ✅ Working Features
+2. ⚠️ Issues Found
+3. ❌ Critical Errors
+4. 🔧 Fix Recommendations (step-by-step)
+5. 🚀 Final Verdict (Is it ready for launch or not?)
+
+---
+
+IMPORTANT:
+- Do NOT skip anything
+- Be strict like a real production audit
+- Think like a real user AND a hacker
+- If something is missing, suggest what should be added

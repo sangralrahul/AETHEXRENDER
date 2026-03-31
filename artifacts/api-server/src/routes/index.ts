@@ -10,11 +10,13 @@ import sellerRouter from "./seller";
 import blogRouter from "./blog";
 import authRouter from "./auth";
 import contactRouter from "./contact";
+import adminRouter from "./admin";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
 router.use(authRouter);
+router.use(adminRouter);
 router.use(contactRouter);
 router.use(productsRouter);
 router.use(cartRouter);

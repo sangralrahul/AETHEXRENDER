@@ -1,0 +1,123 @@
+Update my AETHEX landing page to improve clarity, conversion, and structure. Do NOT change the AI name (keep "Cadus AI").
+
+Make the following changes:
+
+1. HERO SECTION IMPROVEMENTS
+- Replace headline:
+  "Medicine Made Effortless"
+  → "Study, Diagnose, and Source — All in One Medical Platform"
+
+- Replace subheading with:
+  "AI-powered clinical tools, exam prep, and medical supplies—built for Indian medical students and doctors."
+
+- Update CTA buttons:
+  - Primary button: "Start Free AI Consultation"
+  - Secondary button: "Explore Tools"
+  - Remove or demote "Shop Now" from hero
+
+- Add a right-side visual:
+  - Show a UI mockup (AI chat + dashboard preview)
+  - If no image available, create a placeholder card with:
+    "Cadus AI Chat Preview"
+
+---
+
+2. NAVBAR SIMPLIFICATION
+- Update navbar items to:
+  - AI Assistant
+  - Study
+  - Tools
+  - Store
+  - Blog
+
+- Remove "News" or merge it under Blog
+
+---
+
+3. TRUST SECTION IMPROVEMENT
+- Update stats text:
+  "50,000+ Doctors Trust Us"
+  → "50,000+ Medical Students & Doctors Across India"
+
+- Add a small line below stats:
+  "Trusted by learners from top medical colleges"
+
+---
+
+4. PLATFORM BREAKDOWN SECTION
+Create a new section below hero:
+
+Title: "Everything Medicine. One Platform"
+
+Add 3 feature cards:
+
+1. "AI Clinical Assistant (Cadus AI)"
+   - "Get instant clinical insights, diagnoses, and explanations"
+
+2. "NEET PG Study Hub"
+   - "Structured notes, PYQs, and smart revision tools"
+
+3. "Medical Supplies Store"
+   - "Order essential tools and equipment in one place"
+
+---
+
+5. WHY AETHEX SECTION
+Add a new section:
+
+Title: "Why AETHEX?"
+
+Add 4 bullet points:
+- Built for Indian medical students
+- AI-powered clinical assistance
+- All-in-one ecosystem (no multiple apps needed)
+- Fast, mobile-first experience
+
+---
+
+6. TESTIMONIAL SECTION
+Add a testimonials section:
+
+- Add 3 cards with:
+  Name + Role (Student/Doctor)
+  Short feedback text
+
+Example:
+"Helped me revise faster for NEET PG" – Medical Student
+
+---
+
+7. AI DEMO PREVIEW SECTION
+Add section:
+
+Title: "See Cadus AI in Action"
+
+- Show a mock chat UI:
+  Example message:
+  "Patient with chest pain, what are possible diagnoses?"
+
+- Add CTA button:
+  "Try Cadus AI Now"
+
+---
+
+8. MOBILE OPTIMIZATION
+- Ensure:
+  - Hero text is not too large
+  - Buttons are stacked vertically
+  - Add sticky bottom button:
+    "Start AI Consultation"
+
+---
+
+9. VISUAL IMPROVEMENTS
+- Reduce empty whitespace on right side
+- Add soft gradients or light background variations
+- Improve spacing between sections
+
+---
+
+10. GENERAL
+- Keep design clean, modern, medical-tech style
+- Use blue/teal color palette
+- Maintain fast loading and responsiveness

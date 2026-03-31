@@ -118,11 +118,11 @@ export function Navbar() {
               </Link>
 
               {[
-                { href: "/shop", label: "Shop" },
-                { href: "/study-hub", label: "Study Hub", lg: true },
-                { href: "/blog", label: "Blog", lg: true },
+                { href: "/ai-assistant", label: "AI Assistant" },
+                { href: "/study-hub", label: "Study", lg: true },
                 { href: "/tools", label: "Tools", lg: true },
-                { href: "/news", label: "News", xl: true },
+                { href: "/shop", label: "Store", lg: true },
+                { href: "/blog", label: "Blog", xl: true },
               ].map((item) => (
                 <Link
                   key={item.href}

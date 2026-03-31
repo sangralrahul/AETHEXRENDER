@@ -26,11 +26,13 @@ app.use(
   }),
 );
 
-// Restrict CORS to same Replit domain + localhost (not open wildcard)
+// Restrict CORS to same Replit domain + production domains + localhost
 const allowedOrigins = [
   /\.replit\.dev$/,
+  /\.replit\.app$/,
   /\.repl\.co$/,
   /\.sisko\.replit\.dev$/,
+  /^https?:\/\/(www\.)?aethex\.in$/,
   /^http:\/\/localhost(:\d+)?$/,
   /^http:\/\/127\.0\.0\.1(:\d+)?$/,
 ];

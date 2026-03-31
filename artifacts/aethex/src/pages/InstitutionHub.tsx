@@ -2,34 +2,17 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import {
   Building2, GraduationCap, HeartPulse, ShieldCheck, Truck, BadgePercent,
-  Users, ClipboardList, Phone, Mail, ArrowRight, CheckCircle2, Star,
+  Users, ClipboardList, Phone, Mail, ArrowRight, CheckCircle2,
   Package, Headphones, CreditCard, FileText, BookOpen, Stethoscope,
-  Building, MapPin, Award, ChevronRight
+  Building, MapPin, Award, ChevronRight, Search, ChevronDown, SlidersHorizontal,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { medicalColleges, majorHospitals, ALL_STATES, type InstitutionTier } from "@/data/medicalColleges";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
-  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5, ease: "easeOut" } }),
+  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.04, duration: 0.5, ease: "easeOut" } }),
 };
-
-const colleges = [
-  { name: "AIIMS New Delhi", type: "Medical College", city: "New Delhi", tier: "Premier" },
-  { name: "JIPMER Puducherry", type: "Medical College", city: "Puducherry", tier: "Premier" },
-  { name: "CMC Vellore", type: "Medical College", city: "Vellore", tier: "Premier" },
-  { name: "MAMC Delhi", type: "Medical College", city: "New Delhi", tier: "Govt" },
-  { name: "KGMU Lucknow", type: "Medical College", city: "Lucknow", tier: "Govt" },
-  { name: "Grant Medical College", type: "Medical College", city: "Mumbai", tier: "Govt" },
-];
-
-const hospitals = [
-  { name: "Apollo Hospitals", type: "Hospital Chain", city: "Pan-India", tier: "Corporate" },
-  { name: "Fortis Healthcare", type: "Hospital Chain", city: "Pan-India", tier: "Corporate" },
-  { name: "Max Healthcare", type: "Hospital Chain", city: "North India", tier: "Corporate" },
-  { name: "Manipal Hospitals", type: "Hospital Chain", city: "Pan-India", tier: "Corporate" },
-  { name: "Kokilaben Hospital", type: "Hospital", city: "Mumbai", tier: "Corporate" },
-  { name: "Medanta – The Medicity", type: "Hospital", city: "Gurugram", tier: "Corporate" },
-];
 
 const plans = [
   {
@@ -95,6 +78,15 @@ const benefits = [
   { icon: Package, title: "Custom Catalog", desc: "Curated product lists tailored to your specialty, formulary, or procurement policy.", color: "#34C759" },
 ];
 
+const TIER_COLORS: Record<string, { bg: string; text: string }> = {
+  Premier: { bg: "rgba(124,58,237,0.1)", text: "#7C3AED" },
+  Govt:    { bg: "rgba(0,122,255,0.1)", text: "#007AFF" },
+  Private: { bg: "rgba(0,194,168,0.1)", text: "#00A893" },
+  Corporate: { bg: "rgba(255,149,0,0.1)", text: "#CC7A00" },
+};
+
+const PAGE_SIZE = 24;
+
 export default function InstitutionHub() {
   const [formData, setFormData] = useState({
     institutionName: "",
@@ -107,10 +99,51 @@ export default function InstitutionHub() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [activeTab, setActiveTab] = useState<"colleges" | "hospitals">("colleges");
+  const [search, setSearch] = useState("");
+  const [selectedState, setSelectedState] = useState<string>("All States");
+  const [selectedTier, setSelectedTier] = useState<string>("All");
+  const [page, setPage] = useState(1);
+  const [stateOpen, setStateOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
+  };
+
+  const filteredColleges = useMemo(() => {
+    const q = search.toLowerCase();
+    return medicalColleges.filter(c => {
+      const matchSearch = !q || c.name.toLowerCase().includes(q) || c.city.toLowerCase().includes(q);
+      const matchState = selectedState === "All States" || c.state === selectedState;
+      const matchTier = selectedTier === "All" || c.tier === selectedTier;
+      return matchSearch && matchState && matchTier;
+    });
+  }, [search, selectedState, selectedTier]);
+
+  const filteredHospitals = useMemo(() => {
+    const q = search.toLowerCase();
+    return majorHospitals.filter(h => {
+      const matchSearch = !q || h.name.toLowerCase().includes(q) || h.city.toLowerCase().includes(q);
+      const matchState = selectedState === "All States" || h.state === selectedState;
+      return matchSearch && matchState;
+    });
+  }, [search, selectedState]);
+
+  const activeList = activeTab === "colleges" ? filteredColleges : filteredHospitals;
+  const totalCount = activeList.length;
+  const visibleItems = activeList.slice(0, page * PAGE_SIZE);
+  const hasMore = visibleItems.length < totalCount;
+
+  const resetFilters = () => {
+    setSearch("");
+    setSelectedState("All States");
+    setSelectedTier("All");
+    setPage(1);
+  };
+
+  const handleTabChange = (tab: "colleges" | "hospitals") => {
+    setActiveTab(tab);
+    setPage(1);
   };
 
   return (
@@ -118,82 +151,71 @@ export default function InstitutionHub() {
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden pt-20 pb-24" style={{ background: "linear-gradient(135deg, #0A1628 0%, #0D2137 50%, #0A1628 100%)" }}>
-        <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: "radial-gradient(circle at 20% 50%, rgba(0,122,255,0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0,194,168,0.12) 0%, transparent 45%)",
-        }} />
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }} />
-
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div initial="hidden" animate="visible" custom={0} variants={fadeUp}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-6"
-            style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.3)", color: "#00C2A8" }}>
-            <Building2 className="w-3.5 h-3.5" />
-            Institutional Partnerships
+        <div className="absolute inset-0">
+          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" style={{ background: "rgba(0,122,255,0.1)" }} />
+          <div className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full blur-3xl translate-y-1/2" style={{ background: "rgba(0,194,168,0.08)" }} />
+        </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6"
+              style={{ background: "rgba(0,122,255,0.15)", border: "1px solid rgba(0,122,255,0.25)", color: "#60A5FA" }}>
+              <Building2 className="w-3.5 h-3.5" /> Institutional Partnerships
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-black text-white mb-5 leading-tight" style={{ letterSpacing: "-1px" }}>
+              Medical Colleges &<br />Hospitals — Covered
+            </h1>
+            <p className="text-lg mb-8 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+              Special bulk pricing, GST invoicing, priority delivery, and dedicated account management for every NMC-recognized institution across India.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <a href="#inquiry"
+                className="px-7 py-3.5 rounded-full font-bold text-sm transition-all hover:scale-105"
+                style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF", boxShadow: "0 4px 20px rgba(0,122,255,0.3)" }}>
+                Request Institutional Access
+              </a>
+              <a href="#institutions"
+                className="px-7 py-3.5 rounded-full font-bold text-sm border transition-all hover:bg-white/5"
+                style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.85)" }}>
+                Browse Institutions
+              </a>
+            </div>
           </motion.div>
 
-          <motion.h1 initial="hidden" animate="visible" custom={1} variants={fadeUp}
-            className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6"
-            style={{ color: "#FFFFFF", letterSpacing: "-1.5px" }}>
-            Built for <span style={{ color: "#00C2A8" }}>Colleges</span>
-            <br />& <span style={{ color: "#007AFF" }}>Hospitals</span>
-          </motion.h1>
-
-          <motion.p initial="hidden" animate="visible" custom={2} variants={fadeUp}
-            className="text-lg sm:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
-            style={{ color: "rgba(255,255,255,0.6)" }}>
-            Trusted by AIIMS, Apollo, Fortis and 200+ institutions across India. Bulk pricing, GST billing, dedicated account managers — all in one platform.
-          </motion.p>
-
-          <motion.div initial="hidden" animate="visible" custom={3} variants={fadeUp}
-            className="flex flex-wrap justify-center gap-4">
-            <a href="#inquiry"
-              className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
-              style={{ background: "#00C2A8", color: "#FFFFFF" }}>
-              Get Institutional Access <ArrowRight className="w-4 h-4" />
-            </a>
-            <a href="#plans"
-              className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all"
-              style={{ background: "rgba(255,255,255,0.08)", color: "#FFFFFF", border: "1px solid rgba(255,255,255,0.15)" }}>
-              View Plans
-            </a>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div initial="hidden" animate="visible" custom={4} variants={fadeUp}
-            className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto">
+          {/* Stats row */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16">
             {[
-              { value: "200+", label: "Partner Institutions" },
-              { value: "50,000+", label: "Student Users" },
-              { value: "35%", label: "Avg. Bulk Discount" },
-              { value: "24h", label: "SLA Delivery" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-3xl font-black mb-1" style={{ color: "#FFFFFF" }}>{stat.value}</div>
-                <div className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{stat.label}</div>
-              </div>
+              { value: "757+", label: "NMC Colleges" },
+              { value: "50+", label: "Major Hospitals" },
+              { value: "34", label: "States & UTs" },
+              { value: "35%", label: "Bulk Discount" },
+            ].map((stat, i) => (
+              <motion.div key={stat.label} initial="hidden" animate="visible" variants={fadeUp} custom={i + 1}
+                className="text-center py-5 px-4 rounded-2xl"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <div className="text-2xl font-black text-white mb-1">{stat.value}</div>
+                <div className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>{stat.label}</div>
+              </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* ── Benefits ── */}
       <section className="py-20" style={{ background: "#FFFFFF" }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#AEAEB2" }}>Why institutions choose us</p>
-            <h2 className="text-3xl font-black" style={{ color: "#1C1C1E", letterSpacing: "-0.5px" }}>
-              Everything your institution needs
+          <div className="text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#AEAEB2" }}>Why Aethex</p>
+            <h2 className="text-3xl font-black mb-3" style={{ color: "#1C1C1E", letterSpacing: "-0.5px" }}>
+              Built for Institutions
             </h2>
+            <p className="text-base" style={{ color: "#636366" }}>Purpose-built features for medical colleges and hospitals across India</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {benefits.map((b, i) => (
               <motion.div key={b.title} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i} variants={fadeUp}
-                className="p-6 rounded-2xl border" style={{ background: "#FAFAFA", border: "1px solid rgba(60,60,67,0.08)" }}>
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-                  style={{ background: `${b.color}18` }}>
+                className="p-6 rounded-2xl"
+                style={{ background: "#F5F5F7", border: "1px solid rgba(60,60,67,0.06)" }}>
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style={{ background: `${b.color}15` }}>
                   <b.icon className="w-5 h-5" style={{ color: b.color }} />
                 </div>
                 <h3 className="font-bold text-base mb-2" style={{ color: "#1C1C1E" }}>{b.title}</h3>
@@ -204,55 +226,154 @@ export default function InstitutionHub() {
         </div>
       </section>
 
-      {/* ── Partner Institutions ── */}
-      <section className="py-20" style={{ background: "#F5F5F7" }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ── Institution Browser ── */}
+      <section id="institutions" className="py-20" style={{ background: "#F5F5F7" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#AEAEB2" }}>Our Partners</p>
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#AEAEB2" }}>NMC Recognized</p>
             <h2 className="text-3xl font-black mb-3" style={{ color: "#1C1C1E", letterSpacing: "-0.5px" }}>
-              Trusted across India
+              All Institutions across India
             </h2>
-            <p className="text-base" style={{ color: "#636366" }}>From premier medical colleges to leading hospital chains</p>
+            <p className="text-base" style={{ color: "#636366" }}>
+              Browse {medicalColleges.length} NMC-recognized medical colleges and {majorHospitals.length} major hospitals
+            </p>
           </div>
 
-          <div className="flex gap-2 justify-center mb-8">
+          {/* Tab switcher */}
+          <div className="flex gap-2 justify-center mb-6">
             {(["colleges", "hospitals"] as const).map((tab) => (
-              <button key={tab} onClick={() => setActiveTab(tab)}
+              <button key={tab} onClick={() => handleTabChange(tab)}
                 className="px-5 py-2 rounded-full text-sm font-semibold transition-all capitalize"
                 style={activeTab === tab
                   ? { background: "#1C1C1E", color: "#FFFFFF" }
                   : { background: "#FFFFFF", color: "#636366", border: "1px solid rgba(60,60,67,0.12)" }}>
-                {tab === "colleges" ? "Medical Colleges" : "Hospitals"}
+                {tab === "colleges" ? `Medical Colleges (${medicalColleges.length})` : `Hospitals (${majorHospitals.length})`}
               </button>
             ))}
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {(activeTab === "colleges" ? colleges : hospitals).map((inst, i) => (
-              <motion.div key={inst.name} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i} variants={fadeUp}
-                className="flex items-center gap-4 p-4 rounded-2xl"
-                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.08)" }}>
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: activeTab === "colleges" ? "rgba(0,122,255,0.08)" : "rgba(255,59,48,0.08)" }}>
-                  {activeTab === "colleges"
-                    ? <GraduationCap className="w-6 h-6" style={{ color: "#007AFF" }} />
-                    : <HeartPulse className="w-6 h-6" style={{ color: "#FF3B30" }} />}
+          {/* Filters */}
+          <div className="flex flex-wrap gap-3 mb-6">
+            {/* Search */}
+            <div className="flex items-center gap-2 flex-1 min-w-[200px] px-4 py-2.5 rounded-xl"
+              style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)" }}>
+              <Search className="w-4 h-4 shrink-0" style={{ color: "#AEAEB2" }} />
+              <input
+                value={search}
+                onChange={e => { setSearch(e.target.value); setPage(1); }}
+                placeholder={activeTab === "colleges" ? "Search college name or city…" : "Search hospital name or city…"}
+                className="flex-1 text-sm outline-none bg-transparent"
+                style={{ color: "#1C1C1E" }}
+              />
+            </div>
+
+            {/* State filter */}
+            <div className="relative">
+              <button
+                onClick={() => setStateOpen(v => !v)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
+                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)", color: "#1C1C1E", minWidth: 160 }}>
+                <MapPin className="w-4 h-4" style={{ color: "#007AFF" }} />
+                <span className="flex-1 text-left truncate">{selectedState}</span>
+                <ChevronDown className="w-4 h-4 shrink-0" style={{ color: "#AEAEB2" }} />
+              </button>
+              {stateOpen && (
+                <div className="absolute top-full mt-1 left-0 z-50 rounded-xl overflow-auto shadow-xl"
+                  style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", width: 220, maxHeight: 300 }}>
+                  {["All States", ...Array.from(ALL_STATES)].map(s => (
+                    <button key={s} onClick={() => { setSelectedState(s); setStateOpen(false); setPage(1); }}
+                      className="w-full text-left text-sm px-4 py-2.5 hover:bg-gray-50 transition-colors truncate"
+                      style={{ color: selectedState === s ? "#007AFF" : "#1C1C1E", fontWeight: selectedState === s ? 600 : 400 }}>
+                      {s}
+                    </button>
+                  ))}
                 </div>
-                <div className="min-w-0">
-                  <div className="font-semibold text-sm truncate" style={{ color: "#1C1C1E" }}>{inst.name}</div>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs" style={{ color: "#AEAEB2" }}>{inst.city}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold"
-                      style={{ background: "rgba(0,194,168,0.1)", color: "#00A893" }}>{inst.tier}</span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+              )}
+            </div>
+
+            {/* Tier filter — only for colleges */}
+            {activeTab === "colleges" && (
+              <div className="flex gap-2">
+                {["All", "Premier", "Govt", "Private"].map(tier => (
+                  <button key={tier} onClick={() => { setSelectedTier(tier); setPage(1); }}
+                    className="px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all"
+                    style={selectedTier === tier
+                      ? { background: "#1C1C1E", color: "#FFFFFF" }
+                      : { background: "#FFFFFF", color: "#636366", border: "1px solid rgba(60,60,67,0.12)" }}>
+                    {tier}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          <p className="text-center text-sm mt-6" style={{ color: "#AEAEB2" }}>
-            + 190 more institutions across 22 states
-          </p>
+          {/* Results count */}
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm" style={{ color: "#AEAEB2" }}>
+              Showing <span className="font-semibold" style={{ color: "#1C1C1E" }}>{Math.min(visibleItems.length, totalCount)}</span> of{" "}
+              <span className="font-semibold" style={{ color: "#1C1C1E" }}>{totalCount}</span>{" "}
+              {activeTab === "colleges" ? "colleges" : "hospitals"}
+              {search || selectedState !== "All States" || selectedTier !== "All" ? " (filtered)" : ""}
+            </p>
+            {(search || selectedState !== "All States" || selectedTier !== "All") && (
+              <button onClick={resetFilters}
+                className="text-xs font-semibold transition-colors hover:opacity-70"
+                style={{ color: "#007AFF" }}>
+                Clear filters
+              </button>
+            )}
+          </div>
+
+          {/* Grid */}
+          {visibleItems.length === 0 ? (
+            <div className="text-center py-16">
+              <GraduationCap className="w-12 h-12 mx-auto mb-3" style={{ color: "#AEAEB2" }} />
+              <p className="font-semibold mb-1" style={{ color: "#1C1C1E" }}>No results found</p>
+              <p className="text-sm" style={{ color: "#AEAEB2" }}>Try adjusting your search or filters</p>
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              {visibleItems.map((inst, i) => {
+                const tier = (inst as any).tier as string;
+                const tc = TIER_COLORS[tier] ?? TIER_COLORS.Private;
+                return (
+                  <motion.div key={`${inst.name}-${inst.city}-${i}`}
+                    initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i % 24} variants={fadeUp}
+                    className="flex items-center gap-3 p-3.5 rounded-2xl"
+                    style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.08)" }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                      style={{ background: activeTab === "colleges" ? "rgba(0,122,255,0.08)" : "rgba(255,59,48,0.08)" }}>
+                      {activeTab === "colleges"
+                        ? <GraduationCap className="w-5 h-5" style={{ color: "#007AFF" }} />
+                        : <HeartPulse className="w-5 h-5" style={{ color: "#FF3B30" }} />}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-semibold text-xs leading-snug line-clamp-2" style={{ color: "#1C1C1E" }}>{inst.name}</div>
+                      <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                        <span className="text-[10px]" style={{ color: "#AEAEB2" }}>{inst.city}</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold"
+                          style={{ background: tc.bg, color: tc.text }}>{tier}</span>
+                      </div>
+                      {(inst as any).state && (
+                        <div className="text-[9px] mt-0.5" style={{ color: "#C7C7CC" }}>{(inst as any).state}</div>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Load more */}
+          {hasMore && (
+            <div className="text-center mt-8">
+              <button onClick={() => setPage(p => p + 1)}
+                className="px-8 py-3 rounded-full text-sm font-semibold transition-all hover:scale-105"
+                style={{ background: "#1C1C1E", color: "#FFFFFF" }}>
+                Load more ({totalCount - visibleItems.length} remaining)
+              </button>
+            </div>
+          )}
         </div>
       </section>
 

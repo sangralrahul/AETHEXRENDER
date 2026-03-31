@@ -7,7 +7,9 @@ import {
   Microscope, PenLine, Trophy, ShieldCheck, Truck, RotateCcw, Receipt, Send,
   MessageSquare, Search, Image, Zap, Wrench, ClipboardList, CheckCircle2,
   Smartphone, Users, CheckCheck, Bot, ChevronRight, Pill, Plus, Syringe,
-  Bone, Thermometer, Eye, Baby, Brain
+  Bone, Thermometer, Eye, Baby, Brain,
+  Wind, Droplets, Waves, ScanLine, Heart, AlertTriangle, Scan, Dna,
+  Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2
 } from "lucide-react";
 import { useListProducts, useListCategories } from "@workspace/api-client-react";
 import { ProductCard } from "@/components/ProductCard";
@@ -18,7 +20,9 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const categoryIconMap: Record<string, React.ElementType> = {
   Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield, HeartPulse,
-  Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain, Microscope
+  Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain, Microscope,
+  Wind, Droplets, Waves, ScanLine, Heart, AlertTriangle, Scan, Dna,
+  Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2, Trophy, Zap
 };
 
 const trustedBrands = [

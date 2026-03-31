@@ -50,9 +50,11 @@ export const DEFAULT_SETTINGS: CadusSettings = {
   referenceChatHistory: true,
 };
 
-const LS_KEY = "cadus-settings-v1";
+const LS_KEY = "cadus-settings-v2";
+const LS_KEY_OLD = "cadus-settings-v1";
 export function loadSettings(): CadusSettings {
   try {
+    localStorage.removeItem(LS_KEY_OLD);
     const raw = localStorage.getItem(LS_KEY);
     if (!raw) return DEFAULT_SETTINGS;
     return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };

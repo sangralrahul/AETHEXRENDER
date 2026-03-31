@@ -731,79 +731,22 @@ export default function Home() {
       <section className="py-10" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs font-semibold uppercase tracking-widest mb-7" style={{ color: "#aeaeb2" }}>Secure Payments via</p>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-            {/* UPI */}
-            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm min-w-[88px]">
-              <svg viewBox="0 0 120 44" className="h-7" xmlns="http://www.w3.org/2000/svg">
-                <rect width="120" height="44" rx="6" fill="white"/>
-                {/* UPI logo - NPCI official style */}
-                <polygon points="18,8 10,36 22,36 30,8" fill="#006FAF"/>
-                <polygon points="30,8 22,36 34,36 42,8" fill="#F37021"/>
-                <line x1="18" y1="22" x2="42" y2="22" stroke="white" strokeWidth="2"/>
-                <text x="50" y="29" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="17" fill="#006FAF">UPI</text>
-                <text x="52" y="39" fontFamily="Arial, sans-serif" fontWeight="400" fontSize="7" fill="#888">Unified Payments</text>
-              </svg>
-            </div>
-            {/* Visa */}
-            <div className="flex items-center justify-center h-11 px-5 rounded-xl border border-black/[0.07] bg-white shadow-sm min-w-[88px]">
-              <svg viewBox="0 0 85 28" className="h-7" xmlns="http://www.w3.org/2000/svg">
-                <rect width="85" height="28" rx="4" fill="white"/>
-                {/* Official Visa italic bold style */}
-                <text x="3" y="22" fontFamily="'Times New Roman', Georgia, serif" fontWeight="900" fontSize="26" fill="#1A1F71" fontStyle="italic" letterSpacing="-1">VISA</text>
-              </svg>
-            </div>
-            {/* Mastercard */}
-            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm min-w-[110px] gap-2">
-              <svg viewBox="0 0 46 30" className="h-7" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="15" r="13" fill="#EB001B"/>
-                <circle cx="30" cy="15" r="13" fill="#F79E1B"/>
-                <path d="M23 5.2C26.1 7.7 28 11.6 28 15C28 18.4 26.1 22.3 23 24.8C19.9 22.3 18 18.4 18 15C18 11.6 19.9 7.7 23 5.2Z" fill="#FF5F00"/>
-              </svg>
-              <span className="text-[11px] font-semibold tracking-tight" style={{ color: "#1A1F71", fontFamily: "'Helvetica Neue', Arial, sans-serif" }}>mastercard</span>
-            </div>
-            {/* RuPay */}
-            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm min-w-[88px]">
-              <svg viewBox="0 0 100 36" className="h-7" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100" height="36" rx="4" fill="white"/>
-                {/* RuPay arc stripe */}
-                <path d="M4 18 Q50 2 96 18" stroke="#E5872B" strokeWidth="3" fill="none" strokeLinecap="round"/>
-                <text x="5" y="30" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="16" fill="#00529B">Ru</text>
-                <text x="33" y="30" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="16" fill="#E5872B">Pay</text>
-              </svg>
-            </div>
-            {/* PhonePe */}
-            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm min-w-[100px] gap-1.5">
-              <svg viewBox="0 0 22 22" className="h-6 w-6" xmlns="http://www.w3.org/2000/svg">
-                <rect width="22" height="22" rx="6" fill="#5F259F"/>
-                {/* PhonePe P logo */}
-                <text x="4" y="17" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="15" fill="white">P</text>
-                <circle cx="15" cy="10" r="3.5" fill="none" stroke="white" strokeWidth="1.5"/>
-                <line x1="15" y1="13.5" x2="15" y2="18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-              <span className="text-[12px] font-bold" style={{ color: "#5F259F" }}>PhonePe</span>
-            </div>
-            {/* Google Pay */}
-            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm min-w-[100px] gap-1.5">
-              <svg viewBox="0 0 24 24" className="h-6 w-6" xmlns="http://www.w3.org/2000/svg">
-                {/* Google G logo */}
-                <path d="M22.5 12.2c0-.8-.07-1.56-.2-2.3H12v4.36h5.9c-.25 1.36-1.02 2.51-2.18 3.28v2.72h3.53C21.2 18.33 22.5 15.5 22.5 12.2z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-1 7.28-2.7l-3.53-2.73c-.98.66-2.24 1.05-3.75 1.05-2.89 0-5.33-1.95-6.2-4.57H2.17v2.82C3.98 20.54 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.8 14.05A6.8 6.8 0 0 1 5.4 12c0-.7.12-1.38.4-2.05V7.13H2.17A11.05 11.05 0 0 0 1 12c0 1.77.42 3.44 1.17 4.87l3.63-2.82z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.63 0 3.09.56 4.24 1.67l3.18-3.18C17.45 2.1 14.96 1 12 1 7.7 1 3.98 3.46 2.17 7.13l3.63 2.82C6.67 7.33 9.11 5.38 12 5.38z" fill="#EA4335"/>
-              </svg>
-              <span className="text-[13px] font-semibold" style={{ color: "#1c1c1e" }}>Pay</span>
-            </div>
-            {/* Paytm */}
-            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm min-w-[88px]">
-              <svg viewBox="0 0 80 28" className="h-7" xmlns="http://www.w3.org/2000/svg">
-                <rect width="80" height="28" rx="4" fill="#00BAF2"/>
-                <text x="6" y="21" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="17" fill="white">Pay</text>
-                <rect x="42" y="4" width="30" height="20" rx="3" fill="#002E6E"/>
-                <text x="46" y="19" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="14" fill="white">tm</text>
-              </svg>
-            </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
+            {[
+              { src: `${import.meta.env.BASE_URL}images/payments/upi.svg`, alt: "UPI", w: "w-16" },
+              { src: `${import.meta.env.BASE_URL}images/payments/visa.svg`, alt: "Visa", w: "w-14" },
+              { src: `${import.meta.env.BASE_URL}images/payments/mastercard.svg`, alt: "Mastercard", w: "w-14" },
+              { src: `${import.meta.env.BASE_URL}images/payments/rupay.svg`, alt: "RuPay", w: "w-16" },
+              { src: `${import.meta.env.BASE_URL}images/payments/phonepe.svg`, alt: "PhonePe", w: "w-20" },
+              { src: `${import.meta.env.BASE_URL}images/payments/gpay.svg`, alt: "Google Pay", w: "w-20" },
+              { src: `${import.meta.env.BASE_URL}images/payments/paytm.svg`, alt: "Paytm", w: "w-16" },
+            ].map((logo) => (
+              <div key={logo.alt} className="flex items-center justify-center h-11 px-3 rounded-xl border border-black/[0.07] bg-white shadow-sm">
+                <img src={logo.src} alt={logo.alt} className={`${logo.w} h-7 object-contain`} />
+              </div>
+            ))}
             {/* Net Banking */}
-            <div className="flex items-center justify-center h-11 px-5 rounded-xl border border-black/[0.07] bg-white shadow-sm gap-2">
+            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm gap-2">
               <svg viewBox="0 0 24 24" className="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
                 <rect x="2" y="11" width="20" height="10" rx="1.5" fill="#1A1F71"/>
                 <rect x="4" y="13" width="3" height="6" rx="0.5" fill="white" opacity="0.8"/>
@@ -814,7 +757,7 @@ export default function Home() {
               <span className="text-[12px] font-semibold text-[#1A1F71]">Net Banking</span>
             </div>
             {/* COD */}
-            <div className="flex items-center justify-center h-11 px-5 rounded-xl border border-black/[0.07] bg-white shadow-sm gap-2">
+            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm gap-2">
               <svg viewBox="0 0 24 24" className="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
                 <rect x="1" y="7" width="22" height="14" rx="2" fill="#2E7D32"/>
                 <ellipse cx="12" cy="14" rx="4" ry="4" fill="#A5D6A7"/>

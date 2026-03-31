@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" role="img" aria-label="UPI">
+  <rect width="200" height="80" fill="white" rx="6"/>
+  <!-- UPI arrow logo -->
+  <polygon points="30,10 14,60 32,60 48,10" fill="#006FAF"/>
+  <polygon points="52,10 36,60 54,60 70,10" fill="#F37021"/>
+  <line x1="28" y1="35" x2="72" y2="35" stroke="white" stroke-width="3.5"/>
+  <!-- UPI text -->
+  <text x="90" y="48" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="32" fill="#006FAF">UPI</text>
+  <!-- Tagline -->
+  <text x="90" y="64" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#888">Unified Payments Interface</text>
+</svg>

@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { useLocation, useSearch } from "wouter";
-import { Filter, X, Search as SearchIcon, SlidersHorizontal } from "lucide-react";
+import {
+  Filter, X, Search as SearchIcon, SlidersHorizontal,
+  Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield,
+  HeartPulse, Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain,
+  Microscope, Wind, Droplets, Waves, ScanLine, Heart, AlertTriangle, Scan,
+  Dna, Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2,
+  Trophy, Zap, type LucideIcon
+} from "lucide-react";
 import { useListProducts, useListCategories } from "@workspace/api-client-react";
 import { ProductCard } from "@/components/ProductCard";
 import { useSession } from "@/hooks/use-session";
@@ -8,6 +15,47 @@ import { useAddToCart } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
+
+const categoryIconMap: Record<string, LucideIcon> = {
+  Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield,
+  HeartPulse, Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain,
+  Microscope, Wind, Droplets, Waves, ScanLine, Heart, AlertTriangle, Scan,
+  Dna, Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2,
+  Trophy, Zap,
+};
+
+const categoryGradients: Record<string, string> = {
+  medicines:          "from-blue-600 to-blue-800",
+  "surgical-instruments": "from-slate-600 to-slate-800",
+  diagnostics:        "from-teal-600 to-teal-800",
+  stethoscopes:       "from-indigo-600 to-indigo-800",
+  "lab-research":     "from-emerald-600 to-emerald-800",
+  "scrubs-clothing":  "from-sky-600 to-sky-800",
+  books:              "from-amber-600 to-amber-800",
+  "ppe-safety":       "from-gray-600 to-gray-800",
+  "cardiac-care":     "from-rose-600 to-rose-800",
+  "first-aid":        "from-red-600 to-red-800",
+  orthopaedic:        "from-stone-600 to-stone-800",
+  ophthalmology:      "from-cyan-600 to-cyan-800",
+  paediatric:         "from-pink-600 to-pink-800",
+  neurology:          "from-violet-600 to-violet-800",
+  pulmonology:        "from-sky-500 to-blue-700",
+  nephrology:         "from-blue-500 to-blue-800",
+  gastroenterology:   "from-orange-500 to-orange-800",
+  dermatology:        "from-fuchsia-500 to-fuchsia-800",
+  ent:                "from-purple-600 to-purple-800",
+  gynaecology:        "from-pink-500 to-rose-700",
+  endocrinology:      "from-yellow-500 to-yellow-700",
+  emergency:          "from-red-500 to-red-800",
+  radiology:          "from-zinc-600 to-zinc-900",
+  oncology:           "from-teal-700 to-teal-900",
+  anaesthesia:        "from-slate-500 to-slate-700",
+  physiotherapy:      "from-green-500 to-green-800",
+  "sports-medicine":  "from-lime-600 to-green-700",
+  psychiatry:         "from-indigo-500 to-purple-700",
+  urology:            "from-amber-500 to-orange-700",
+  nutrition:          "from-green-400 to-teal-600",
+};
 
 export default function Products() {
   const [, setLocation] = useLocation();
@@ -68,42 +116,92 @@ export default function Products() {
     );
   };
 
+  const activeCategory = categoryFilter ? categories?.find(c => c.slug === categoryFilter) : null;
+  const CategoryIcon = activeCategory ? (categoryIconMap[activeCategory.iconName] ?? Activity) : null;
+  const gradient = categoryFilter ? (categoryGradients[categoryFilter] ?? "from-primary to-primary/80") : "";
+
   return (
     <div className="min-h-screen pt-[72px] bg-slate-50">
-      {/* Page Header */}
-      <div className="bg-white border-b border-border shadow-sm relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-display font-extrabold text-foreground tracking-tight">
-                {categoryFilter ? (categories?.find(c => c.slug === categoryFilter)?.name || "Products") : "All Products"}
-              </h1>
-              <div className="flex items-center gap-3 mt-4">
-                <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-sm">
-                  {productsData?.total || 0} Products
-                </span>
-                {searchFilter && (
-                  <span className="text-muted-foreground text-sm">
-                    Results for "{searchFilter}"
-                  </span>
-                )}
+
+      {/* ── Category banner (shown when a category is selected) ── */}
+      {activeCategory && CategoryIcon ? (
+        <div className={`bg-gradient-to-r ${gradient} relative overflow-hidden`}>
+          {/* decorative blobs */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white" />
+            <div className="absolute -bottom-20 -left-12 w-80 h-80 rounded-full bg-white" />
+          </div>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="flex items-center gap-6">
+                {/* Icon circle */}
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 shadow-lg">
+                  <CategoryIcon className="w-10 h-10 md:w-12 md:h-12 text-white" />
+                </div>
+                <div>
+                  <div className="text-white/70 text-sm font-semibold uppercase tracking-widest mb-1">Category</div>
+                  <h1 className="text-3xl md:text-5xl font-display font-extrabold text-white tracking-tight leading-tight">
+                    {activeCategory.name}
+                  </h1>
+                  <p className="text-white/75 mt-2 text-sm md:text-base max-w-xl leading-relaxed">
+                    {activeCategory.description}
+                  </p>
+                  <div className="flex items-center gap-3 mt-4">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-white font-bold text-sm backdrop-blur-sm">
+                      {productsData?.total || 0} Products
+                    </span>
+                    <button
+                      onClick={() => setCategory("")}
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white text-xs font-medium transition-all"
+                    >
+                      <X className="w-3 h-3" /> Clear filter
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-            
-            {/* Sort Dropdown UI */}
-            <div className="flex items-center gap-3 bg-slate-100 px-4 py-2 rounded-xl">
-              <SlidersHorizontal className="w-4 h-4 text-slate-500" />
-              <span className="text-sm font-medium text-slate-600">Sort by:</span>
-              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="bg-transparent text-sm font-bold text-foreground focus:outline-none cursor-pointer">
-                <option>Featured</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Highest Rated</option>
-              </select>
+              {/* Sort */}
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-xl shrink-0 self-start md:self-auto">
+                <SlidersHorizontal className="w-4 h-4 text-white/70" />
+                <span className="text-sm font-medium text-white/70">Sort by:</span>
+                <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="bg-transparent text-sm font-bold text-white focus:outline-none cursor-pointer">
+                  <option className="text-foreground">Featured</option>
+                  <option className="text-foreground">Price: Low to High</option>
+                  <option className="text-foreground">Price: High to Low</option>
+                  <option className="text-foreground">Highest Rated</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        /* ── Default "All Products" header ── */
+        <div className="bg-white border-b border-border shadow-sm relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-display font-extrabold text-foreground tracking-tight">
+                  {searchFilter ? `Results for "${searchFilter}"` : "All Products"}
+                </h1>
+                <div className="flex items-center gap-3 mt-4">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-sm">
+                    {productsData?.total || 0} Products
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-slate-100 px-4 py-2 rounded-xl">
+                <SlidersHorizontal className="w-4 h-4 text-slate-500" />
+                <span className="text-sm font-medium text-slate-600">Sort by:</span>
+                <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="bg-transparent text-sm font-bold text-foreground focus:outline-none cursor-pointer">
+                  <option>Featured</option>
+                  <option>Price: Low to High</option>
+                  <option>Price: High to Low</option>
+                  <option>Highest Rated</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col lg:flex-row gap-10">

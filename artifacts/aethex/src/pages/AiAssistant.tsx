@@ -421,6 +421,7 @@ export default function AiAssistant() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [chatMode, setChatMode] = useState<ChatMode>("normal");
   const [showProModal, setShowProModal] = useState(false);
+  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   const [settings, setSettings] = useState<CadusSettings>(loadSettings);
@@ -1172,20 +1173,25 @@ export default function AiAssistant() {
         </div>
 
         {/* Pro referral card */}
-        <div className="mx-3 mb-2 mt-2 p-3 rounded-xl shrink-0"
-          style={{ background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.2)" }}>
-          <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-sm">🎁</span>
-            <span className="text-xs font-bold" style={{ color: "rgba(255,255,255,0.85)" }}>Cadus AI Pro</span>
+        <div className="mx-3 mb-2 mt-2 rounded-xl shrink-0 overflow-hidden"
+          style={{ background: "linear-gradient(135deg, rgba(109,40,217,0.22) 0%, rgba(30,58,138,0.18) 100%)", border: "1px solid rgba(139,92,246,0.22)" }}>
+          <div className="px-3 pt-3 pb-2.5">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <div className="w-4 h-4 rounded flex items-center justify-center" style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)" }}>
+                <Crown className="w-2.5 h-2.5 text-white" />
+              </div>
+              <span className="text-[11px] font-bold" style={{ color: "rgba(220,210,255,0.95)" }}>Cadus Magnus</span>
+              <span className="ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(139,92,246,0.3)", color: "#c4b5fd" }}>PRO</span>
+            </div>
+            <p className="text-[10px] leading-relaxed mb-2.5" style={{ color: "rgba(180,170,220,0.65)" }}>
+              Advanced diagnosis, deep research &amp; image analysis.
+            </p>
+            <button onClick={() => setShowProModal(true)}
+              className="w-full text-[10px] font-bold py-1.5 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-1"
+              style={{ background: "linear-gradient(to right,#7c3aed,#9333ea)", color: "white" }}>
+              <Crown className="w-3 h-3" /> View Plans
+            </button>
           </div>
-          <p className="text-[10px] leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>
-            Upgrade to unlock Cadus Magnus — advanced diagnosis, image analysis and unlimited queries.
-          </p>
-          <button onClick={() => setShowProModal(true)}
-            className="mt-2 text-[10px] font-bold px-3 py-1 rounded-lg transition-all hover:opacity-80"
-            style={{ background: "rgba(59,130,246,0.25)", color: "rgba(147,197,253,0.9)", border: "1px solid rgba(59,130,246,0.3)" }}>
-            Upgrade →
-          </button>
         </div>
 
         {/* Footer links */}
@@ -1215,19 +1221,24 @@ export default function AiAssistant() {
       ══════════════════════════════════════════════════════════════ */}
       <div className="flex-1 flex flex-col min-h-0 relative">
 
-        {/* ── Top Banner (like Replit's "Need more credits?" bar) ── */}
+        {/* ── Top Banner ── */}
         {showBanner && !hasMessages && (
-          <div className="shrink-0 flex items-center justify-center gap-3 px-4 py-2.5 text-sm relative"
-            style={{ background: "rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-            <span style={{ color: "rgba(255,255,255,0.55)" }}>Need more context?</span>
+          <div className="shrink-0 flex items-center justify-center gap-3 px-4 py-2 text-sm relative"
+            style={{ background: "linear-gradient(90deg, rgba(109,40,217,0.12) 0%, rgba(30,58,138,0.1) 50%, rgba(109,40,217,0.12) 100%)", borderBottom: "1px solid rgba(139,92,246,0.15)" }}>
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)" }}>
+                <Crown className="w-3 h-3 text-white" />
+              </div>
+              <span className="text-xs font-medium" style={{ color: "rgba(200,185,255,0.75)" }}>Unlock Cadus Magnus for advanced diagnosis &amp; unlimited queries</span>
+            </div>
             <button onClick={() => setShowProModal(true)}
               className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all hover:opacity-90"
-              style={{ background: "#1a73e8", color: "white" }}>
-              🎁 Upgrade to Pro
+              style={{ background: "linear-gradient(to right,#7c3aed,#9333ea)", color: "white" }}>
+              See plans
             </button>
             <button onClick={() => setShowBanner(false)}
               className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-white/5"
-              style={{ color: "rgba(255,255,255,0.4)" }}>
+              style={{ color: "rgba(255,255,255,0.3)" }}>
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -2066,45 +2077,148 @@ export default function AiAssistant() {
         )}
       </div>
 
-      {/* ── Pro Modal ── */}
+      {/* ── Pricing Modal ── */}
       {showProModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4"
           onClick={() => setShowProModal(false)}>
-          <div className="rounded-3xl shadow-2xl max-w-md w-full p-8 text-center"
-            style={{ background: "rgba(5,15,40,0.97)", border: "1px solid rgba(167,139,250,0.3)", backdropFilter: "blur(20px)" }}
+          <div className="rounded-2xl shadow-2xl w-full overflow-hidden"
+            style={{ maxWidth: 860, background: "rgba(8,10,28,0.98)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(32px)" }}
             onClick={(e) => e.stopPropagation()}>
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #9333ea)" }}>
-              <Crown className="w-8 h-8 text-white" />
+
+            {/* Modal header */}
+            <div className="relative px-8 pt-7 pb-5 text-center" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <button onClick={() => setShowProModal(false)}
+                className="absolute top-4 right-4 p-2 rounded-lg transition-colors hover:bg-white/6"
+                style={{ color: "rgba(255,255,255,0.28)" }}>
+                <X className="w-4 h-4" />
+              </button>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold mb-3"
+                style={{ background: "rgba(139,92,246,0.14)", border: "1px solid rgba(139,92,246,0.22)", color: "#a78bfa" }}>
+                <Crown className="w-3 h-3" /> Cadus AI Plans
+              </div>
+              <h2 className="text-[22px] font-bold mb-1" style={{ color: "rgba(225,235,255,0.95)" }}>Choose your plan</h2>
+              <p className="text-sm" style={{ color: "rgba(140,160,210,0.6)" }}>Elevate your clinical practice with the right tier</p>
+              {/* Billing toggle */}
+              <div className="inline-flex items-center gap-1 mt-4 p-1 rounded-xl" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                <button onClick={() => setBillingPeriod("monthly")}
+                  className="px-4 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                  style={billingPeriod === "monthly"
+                    ? { background: "rgba(255,255,255,0.1)", color: "rgba(220,235,255,0.9)" }
+                    : { color: "rgba(140,160,210,0.5)" }}>
+                  Monthly
+                </button>
+                <button onClick={() => setBillingPeriod("yearly")}
+                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                  style={billingPeriod === "yearly"
+                    ? { background: "rgba(255,255,255,0.1)", color: "rgba(220,235,255,0.9)" }
+                    : { color: "rgba(140,160,210,0.5)" }}>
+                  Yearly
+                  <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold" style={{ background: "rgba(16,185,129,0.2)", color: "#34d399" }}>Save 44%</span>
+                </button>
+              </div>
             </div>
-            <h2 className="font-display font-bold text-2xl mb-2" style={{ color: "rgba(220,235,255,0.95)" }}>{tr.upgradeTitle}</h2>
-            <p className="mb-6 text-sm leading-relaxed" style={{ color: "rgba(150,190,250,0.7)" }}>
-              Upgrade to unlock <span className="font-bold" style={{ color: "#a78bfa" }}>Cadus Magnus</span> — advanced diagnosis, image analysis and unlimited queries.
-            </p>
-            <ul className="text-left space-y-3 mb-8 text-sm" style={{ color: "rgba(170,210,255,0.8)" }}>
-              {[
-                "Full access to Cadus Magnus advanced reasoning",
-                "Complex differential diagnosis & rare diseases",
-                "Deep literature synthesis & research summaries",
-                "Multispecialty second opinion on demand",
-                "Priority responses & no rate limits",
-              ].map((f) => (
-                <li key={f} className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-                    style={{ background: "rgba(109,40,217,0.4)" }}>
-                    <span className="text-xs font-bold" style={{ color: "#a78bfa" }}>✓</span>
-                  </span>
-                  {f}
-                </li>
+
+            {/* Plan cards */}
+            <div className="grid grid-cols-3 divide-x" style={{ divideColor: "rgba(255,255,255,0.06)" }}>
+
+              {/* ── Cadus Minor (Free) ── */}
+              {([
+                {
+                  name: "Cadus Minor", badge: null, badgeBg: "", badgeColor: "",
+                  price: "Free", priceNote: "Forever free",
+                  highlight: false,
+                  desc: "For individuals getting started with medical AI.",
+                  features: [
+                    "20 queries per day",
+                    "Basic diagnosis support",
+                    "General medical Q&A",
+                    "Standard response speed",
+                    "Community access",
+                  ],
+                  cta: "Your current plan", ctaDisabled: true,
+                  ctaBg: "rgba(255,255,255,0.06)", ctaColor: "rgba(180,200,240,0.5)", ctaBorder: "1px solid rgba(255,255,255,0.08)",
+                },
+                {
+                  name: "Cadus Medius", badge: "Standard", badgeBg: "rgba(59,130,246,0.18)", badgeColor: "#93c5fd",
+                  price: "Free", priceNote: "Always free",
+                  highlight: false,
+                  desc: "For students and everyday clinical practice.",
+                  features: [
+                    "50 queries per day",
+                    "DDx Generator",
+                    "Research summaries",
+                    "Study Hub access",
+                    "Faster response speed",
+                  ],
+                  cta: "Get started free", ctaDisabled: false,
+                  ctaBg: "rgba(59,130,246,0.18)", ctaColor: "#93c5fd", ctaBorder: "1px solid rgba(59,130,246,0.3)",
+                },
+                {
+                  name: "Cadus Magnus", badge: "Most Popular", badgeBg: "linear-gradient(90deg,#7c3aed,#9333ea)", badgeColor: "white",
+                  price: billingPeriod === "monthly" ? "₹299" : "₹166",
+                  priceNote: billingPeriod === "monthly" ? "/month" : "/month · billed ₹1,999/yr",
+                  highlight: true,
+                  desc: "For advanced clinical work and complex cases.",
+                  features: [
+                    "200 queries per day (Pro) / Unlimited (Max)",
+                    "Cadus Magnus advanced reasoning model",
+                    "Complex DDx & rare disease analysis",
+                    "Deep Research with web augmentation",
+                    "Medical image analysis",
+                    "Multispecialty second opinion",
+                    "PDF export & presentations",
+                    "Priority support",
+                  ],
+                  cta: "Upgrade to Magnus", ctaDisabled: false,
+                  ctaBg: "linear-gradient(to right,#7c3aed,#9333ea)", ctaColor: "white", ctaBorder: "none",
+                },
+              ] as Array<{
+                name: string; badge: string|null; badgeBg: string; badgeColor: string;
+                price: string; priceNote: string; highlight: boolean; desc: string;
+                features: string[]; cta: string; ctaDisabled: boolean;
+                ctaBg: string; ctaColor: string; ctaBorder: string;
+              }>).map((plan) => (
+                <div key={plan.name} className="relative flex flex-col px-6 py-6"
+                  style={plan.highlight ? { background: "rgba(109,40,217,0.08)" } : {}}>
+                  {plan.badge && (
+                    <div className="inline-flex self-start items-center px-2.5 py-1 rounded-full text-[10px] font-bold mb-3"
+                      style={{ background: plan.badgeBg, color: plan.badgeColor }}>
+                      {plan.badge}
+                    </div>
+                  )}
+                  {!plan.badge && <div className="h-7 mb-3" />}
+                  <h3 className="text-base font-bold mb-0.5" style={{ color: plan.highlight ? "#c4b5fd" : "rgba(210,225,255,0.9)" }}>{plan.name}</h3>
+                  <p className="text-[11px] mb-4" style={{ color: "rgba(130,155,210,0.6)" }}>{plan.desc}</p>
+                  <div className="flex items-end gap-1 mb-1">
+                    <span className="text-3xl font-extrabold" style={{ color: plan.highlight ? "#c4b5fd" : "rgba(210,225,255,0.9)" }}>{plan.price}</span>
+                    {plan.price !== "Free" && <span className="text-xs mb-1.5" style={{ color: "rgba(130,155,210,0.55)" }}>{plan.priceNote}</span>}
+                  </div>
+                  {plan.price === "Free" && <p className="text-xs mb-5" style={{ color: "rgba(130,155,210,0.5)" }}>{plan.priceNote}</p>}
+                  {plan.price !== "Free" && <p className="text-[10px] mb-5" style={{ color: "rgba(130,155,210,0.45)" }}>{plan.priceNote}</p>}
+                  <button disabled={plan.ctaDisabled}
+                    className="w-full py-2.5 rounded-xl text-xs font-bold transition-all mb-5 disabled:cursor-not-allowed"
+                    style={{ background: plan.ctaBg, color: plan.ctaColor, border: plan.ctaBorder }}>
+                    {plan.cta}
+                  </button>
+                  <div className="space-y-2.5 flex-1">
+                    {plan.features.map((f) => (
+                      <div key={f} className="flex items-start gap-2">
+                        <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                          style={{ background: plan.highlight ? "rgba(139,92,246,0.3)" : "rgba(255,255,255,0.07)" }}>
+                          <span className="text-[9px] font-bold" style={{ color: plan.highlight ? "#a78bfa" : "rgba(120,150,210,0.7)" }}>✓</span>
+                        </div>
+                        <span className="text-[11px] leading-relaxed" style={{ color: plan.highlight ? "rgba(200,185,255,0.8)" : "rgba(130,155,210,0.65)" }}>{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ))}
-            </ul>
-            <button className="w-full font-bold py-4 rounded-2xl transition-all shadow-lg mb-3 flex items-center justify-center gap-2 text-base"
-              style={{ background: "linear-gradient(to right, #7c3aed, #9333ea)", color: "white" }}>
-              <Crown className="w-5 h-5" /> {tr.upgradePro}
-            </button>
-            <button onClick={() => setShowProModal(false)} className="text-sm" style={{ color: "rgba(150,180,240,0.5)" }}>
-              {tr.maybeLater}
-            </button>
+            </div>
+
+            {/* Footer note */}
+            <div className="px-8 py-3 text-center text-[11px]" style={{ borderTop: "1px solid rgba(255,255,255,0.05)", color: "rgba(100,120,170,0.5)" }}>
+              All plans include HIPAA-aligned privacy. Cancel anytime. Prices in Indian Rupees (INR).
+            </div>
           </div>
         </div>
       )}

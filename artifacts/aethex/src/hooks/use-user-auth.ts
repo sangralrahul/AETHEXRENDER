@@ -132,6 +132,32 @@ export function useUserAuth() {
     saveUser(profile);
   };
 
+  const phoneLogin = (phone: string, jwt: string): void => {
+    localStorage.setItem(JWT_KEY, jwt);
+    const phoneKey = `phone:${phone}`;
+    const users = getUsers();
+    let profile: UserProfile;
+    if (users[phoneKey]) {
+      const { passwordHash: _ph, ...existing } = users[phoneKey];
+      profile = existing;
+    } else {
+      profile = {
+        id: Date.now().toString(),
+        name: "Doctor",
+        email: "",
+        phone,
+        isPro: false,
+        addresses: [],
+        wishlist: [],
+        cadusDailyCount: 0,
+        cadusLastDate: "",
+      };
+      users[phoneKey] = { ...profile, passwordHash: "" };
+      saveUsers(users);
+    }
+    saveUser(profile);
+  };
+
   const getJwt = (): string | null => localStorage.getItem(JWT_KEY);
 
   const logout = () => {
@@ -191,6 +217,7 @@ export function useUserAuth() {
     signup,
     login,
     otpLogin,
+    phoneLogin,
     getJwt,
     logout,
     updateProfile,

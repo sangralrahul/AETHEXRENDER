@@ -29,9 +29,11 @@ function FooterNewsletter() {
   return (
     <form className="flex w-full md:w-auto gap-2" onSubmit={handleSubmit}>
       <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter your email" required
-        className="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary flex-1 md:w-64" />
+        className="rounded-xl px-4 py-3 flex-1 md:w-64 focus:outline-none"
+        style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.9)" }} />
       <button type="submit" disabled={loading}
-        className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-colors disabled:opacity-60">
+        className="px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-60"
+        style={{ background: "#007AFF", color: "#FFFFFF" }}>
         {loading ? "..." : <><Send className="w-4 h-4" /> Subscribe</>}
       </button>
     </form>
@@ -42,14 +44,15 @@ export function Footer() {
   const [location] = useLocation();
   if (location === "/ai-assistant") return null;
   return (
-    <footer className="bg-slate-900 pt-16 pb-8 border-t border-slate-800">
+    <footer style={{ background: "#1C1C1E", color: "rgba(255,255,255,0.9)" }} className="pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Newsletter Section */}
-        <div className="bg-slate-800/50 rounded-2xl p-8 mb-16 flex flex-col md:flex-row items-center justify-between gap-8 border border-slate-700/50">
+        <div className="rounded-2xl p-8 mb-16 flex flex-col md:flex-row items-center justify-between gap-8"
+          style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
           <div className="text-center md:text-left flex-1">
             <h3 className="text-2xl font-display font-bold text-white mb-2">Weekly Medical Insights + NEET-PG Tips</h3>
-            <p className="text-slate-400">Subscribe for the latest clinical tips, medical news, exam updates, and exclusive deals. 12,000+ subscribers.</p>
+            <p style={{ color: "rgba(255,255,255,0.45)" }}>Subscribe for clinical tips, medical news, exam updates, and exclusive deals. 12,000+ subscribers.</p>
           </div>
           <FooterNewsletter />
         </div>
@@ -67,14 +70,14 @@ export function Footer() {
                 aethex
               </span>
             </Link>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              India's #1 premier destination for medical professionals and students. Elevating healthcare practice with top-tier equipment, books, scrubs, and AI assistance.
+            <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
+              Medicine Made Effortless. India's #1 destination for medical professionals and students — top-tier equipment, books, scrubs, and AI assistance.
             </p>
             <div className="flex items-center gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-colors">
+              <a href="#" className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:opacity-90" style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.45)" }}>
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-colors">
+              <a href="#" className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:opacity-90" style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.45)" }}>
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>
@@ -83,74 +86,70 @@ export function Footer() {
           {/* Categories */}
           <div>
             <h3 className="font-display font-bold text-white text-lg mb-6">Shop Categories</h3>
-            <ul className="space-y-4 text-sm text-slate-400">
-              <li><Link href="/category/stethoscopes" className="hover:text-primary transition-colors">Premium Stethoscopes</Link></li>
-              <li><Link href="/category/scrubs" className="hover:text-primary transition-colors">Medical Scrubs & Aprons</Link></li>
-              <li><Link href="/category/books" className="hover:text-primary transition-colors">Books & Study Material</Link></li>
-              <li><Link href="/category/surgical" className="hover:text-primary transition-colors">Surgical Instruments</Link></li>
-              <li><Link href="/category/equipment" className="hover:text-primary transition-colors">Medical Equipment</Link></li>
+            <ul className="space-y-4 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
+              {[
+                { href: "/category/stethoscopes", label: "Premium Stethoscopes" },
+                { href: "/category/scrubs", label: "Medical Scrubs & Aprons" },
+                { href: "/category/books", label: "Books & Study Material" },
+                { href: "/category/surgical", label: "Surgical Instruments" },
+                { href: "/category/equipment", label: "Medical Equipment" },
+              ].map(({ href, label }) => (
+                <li key={href}><Link href={href} className="hover:text-white transition-colors">{label}</Link></li>
+              ))}
             </ul>
           </div>
 
           {/* Resources */}
           <div>
             <h3 className="font-display font-bold text-white text-lg mb-6">Resources</h3>
-            <ul className="space-y-4 text-sm text-slate-400">
-              <li><Link href="/ai-assistant" className="hover:text-primary transition-colors">ZYRA AI Assistant</Link></li>
-              <li><Link href="/blog" className="hover:text-primary transition-colors">Medical Blog</Link></li>
-              <li><Link href="/news" className="hover:text-primary transition-colors">Medical News</Link></li>
-              <li><Link href="/orders/track" className="hover:text-primary transition-colors">Track Order</Link></li>
-              <li><a href="#" className="hover:text-primary transition-colors">FAQs for Doctors</a></li>
+            <ul className="space-y-4 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
+              <li><Link href="/ai-assistant" className="hover:text-white transition-colors">Cadus AI Assistant</Link></li>
+              <li><Link href="/blog" className="hover:text-white transition-colors">Medical Blog</Link></li>
+              <li><Link href="/news" className="hover:text-white transition-colors">Medical News</Link></li>
+              <li><Link href="/orders/track" className="hover:text-white transition-colors">Track Order</Link></li>
+              <li><a href="#" className="hover:text-white transition-colors">FAQs for Doctors</a></li>
             </ul>
           </div>
 
           {/* Features */}
           <div>
             <h3 className="font-display font-bold text-white text-lg mb-6">Why aethex?</h3>
-            <ul className="space-y-4 text-sm text-slate-400">
-              <li className="flex items-center gap-3">
-                <ShieldCheck className="w-5 h-5 text-primary" />
-                <span>100% Genuine Products</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Truck className="w-5 h-5 text-primary" />
-                <span>Pan-India Fast Delivery</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Heart className="w-5 h-5 text-primary" />
-                <span>Trusted by 50k+ Doctors</span>
-              </li>
+            <ul className="space-y-4 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
+              <li className="flex items-center gap-3"><ShieldCheck className="w-5 h-5" style={{ color: "#00C2A8" }} /><span>100% Genuine Products</span></li>
+              <li className="flex items-center gap-3"><Truck className="w-5 h-5" style={{ color: "#00C2A8" }} /><span>Pan-India Fast Delivery</span></li>
+              <li className="flex items-center gap-3"><Heart className="w-5 h-5" style={{ color: "#00C2A8" }} /><span>Trusted by 50k+ Doctors</span></li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-slate-500 text-sm flex flex-col sm:flex-row gap-2 sm:gap-6 text-center sm:text-left">
+        <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-6" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="text-sm flex flex-col sm:flex-row gap-2 sm:gap-6 text-center sm:text-left" style={{ color: "rgba(255,255,255,0.35)" }}>
             <span>© {new Date().getFullYear()} aethex. All rights reserved.</span>
+            <span className="hidden sm:inline">•</span>
+            <span>Medicine Made Effortless.</span>
             <span className="hidden sm:inline">•</span>
             <span>Registered in India</span>
           </div>
-
-          <div className="flex gap-6 text-sm text-slate-500">
+          <div className="flex gap-6 text-sm" style={{ color: "rgba(255,255,255,0.35)" }}>
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
           </div>
         </div>
 
-        <div className="mt-8 text-center text-xs text-slate-600">
+        <div className="mt-8 text-center text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
           Accepted Payments: VisaCard • Mastercard • UPI • Net Banking • COD
         </div>
 
         {/* Parent company */}
-        <div className="mt-8 pt-6 border-t border-slate-800/60 flex flex-col items-center gap-3">
-          <p className="text-xs text-slate-600 tracking-widest uppercase">A product of</p>
+        <div className="mt-8 pt-6 flex flex-col items-center gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.2)" }}>A product of</p>
           <div className="flex items-center gap-3">
             <img
               src={`${import.meta.env.BASE_URL}nexrya-logo.jpg`}
               alt="nexrya technologies logo"
-              className="w-8 h-8 object-contain brightness-0 invert opacity-50"
+              className="w-8 h-8 object-contain brightness-0 invert opacity-40"
             />
-            <span className="text-slate-500 text-sm font-semibold tracking-wide">nexrya technologies pvt ltd</span>
+            <span className="text-sm font-semibold tracking-wide" style={{ color: "rgba(255,255,255,0.3)" }}>nexrya technologies pvt ltd</span>
           </div>
         </div>
       </div>

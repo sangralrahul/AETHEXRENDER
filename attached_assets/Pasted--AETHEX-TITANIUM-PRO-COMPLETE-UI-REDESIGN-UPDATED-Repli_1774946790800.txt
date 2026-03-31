@@ -1,0 +1,279 @@
+# AETHEX — TITANIUM PRO COMPLETE UI REDESIGN (UPDATED)
+## Replit Agent Prompt v2.0
+
+---
+
+> **STRICT SCOPE:**
+> - ✅ Change ONLY visual UI — colors, typography, spacing, components, layout styling
+> - ❌ Do NOT touch ZYRA AI (already redesigned separately in Cadu's AI)
+> - ❌ Do NOT touch backend, APIs, Razorpay, auth logic, database, or any server code
+> - ❌ Do NOT change the AETHEX logo anywhere — preserve it exactly as-is on every page
+
+---
+
+## STEP 1 — CREATE THEME FILE
+
+Create `/src/styles/theme.css` (or add to existing `globals.css`) with these tokens:
+
+```css
+:root {
+  /* Backgrounds */
+  --bg-primary:    #F2F2F7;
+  --bg-secondary:  #FFFFFF;
+  --bg-tertiary:   #E5E5EA;
+
+  /* Accents */
+  --accent-blue:   #007AFF;
+  --accent-teal:   #00C2A8;
+  --accent-gradient: linear-gradient(135deg, #007AFF 0%, #00C2A8 100%);
+
+  /* Text */
+  --text-primary:   #1C1C1E;
+  --text-secondary: #636366;
+  --text-tertiary:  #AEAEB2;
+  --text-on-accent: #FFFFFF;
+
+  /* UI Elements */
+  --separator:      rgba(60, 60, 67, 0.12);
+  --fill:           rgba(120, 120, 128, 0.16);
+
+  /* Shadows */
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg:   0 12px 40px rgba(0,0,0,0.12);
+  --shadow-card: 0 2px 20px rgba(0,122,255,0.08);
+
+  /* Border Radius */
+  --r-sm:   8px;
+  --r-md:   12px;
+  --r-lg:   16px;
+  --r-xl:   20px;
+  --r-2xl:  28px;
+  --r-pill: 999px;
+
+  /* Font */
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Transitions */
+  --ease: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+```
+
+---
+
+## STEP 2 — GLOBAL COMPONENT STYLES
+
+Apply these styles globally across all pages:
+
+### Body & Page
+```css
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+```
+
+### Navbar
+```css
+nav, .navbar, header {
+  background: rgba(242, 242, 247, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--separator);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+```
+
+### Cards
+```css
+.card, [class*="card"] {
+  background: var(--bg-secondary);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--separator);
+  box-shadow: var(--shadow-card);
+  transition: var(--ease);
+}
+.card:hover, [class*="card"]:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+```
+
+### Buttons
+```css
+/* Primary */
+.btn-primary, button[type="submit"], .btn-blue {
+  background: var(--accent-blue);
+  color: var(--text-on-accent);
+  border-radius: var(--r-pill);
+  padding: 12px 24px;
+  font-weight: 600;
+  border: none;
+  transition: var(--ease);
+}
+.btn-primary:hover { opacity: 0.88; }
+.btn-primary:active { transform: scale(0.97); }
+
+/* Secondary */
+.btn-secondary {
+  background: var(--fill);
+  color: var(--text-primary);
+  border-radius: var(--r-pill);
+  padding: 12px 24px;
+  font-weight: 600;
+  border: none;
+  transition: var(--ease);
+}
+```
+
+### Inputs & Forms
+```css
+input, textarea, select {
+  background: var(--bg-secondary);
+  border: 1px solid var(--separator);
+  border-radius: var(--r-md);
+  color: var(--text-primary);
+  font-family: var(--font);
+  transition: var(--ease);
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.20);
+}
+```
+
+### Section Alternation
+```css
+section:nth-child(odd)  { background: var(--bg-primary); }
+section:nth-child(even) { background: var(--bg-secondary); }
+```
+
+### Footer
+```css
+footer {
+  background: #1C1C1E;
+  color: rgba(255, 255, 255, 0.90);
+}
+footer p, footer span, footer small {
+  color: rgba(255, 255, 255, 0.55);
+}
+footer a:hover { color: var(--accent-blue); }
+```
+
+---
+
+## STEP 3 — PAGE-BY-PAGE UI UPDATES
+
+### 🏠 Homepage
+- Hero background: `var(--bg-primary)` + radial blue glow:
+  `background: radial-gradient(ellipse at 50% 0%, rgba(0,122,255,0.08), transparent 65%), var(--bg-primary)`
+- Hero headline: bold, `--text-primary`, large font-size
+- **Tagline text: "Medicine Made Effortless."** — update this text in the hero subheading
+- Hero CTAs: "Shop Now" = primary blue pill, "Meet ZYRA AI" = secondary pill
+- Stats bar: inline row, blue icons, `--separator` dividers between items
+- Feature section cards: white card grid, blue icon, bold title, `--text-secondary` desc
+- Category grid: rounded image cards, blue pill badge label overlay
+- CTA banner: `var(--accent-gradient)` background, white headline + white secondary button
+
+### 🛍️ Products / Marketplace
+- Page background: `var(--bg-primary)`
+- Sidebar filters: white card, blue-accented checkboxes and range slider
+- Product cards: white bg, price in `var(--accent-blue)`, "Add to Cart" = blue pill button
+- Filter chips: active = `var(--accent-blue)` fill + white text / inactive = `var(--fill)` + `--text-secondary`
+- Pagination: current page = blue filled circle
+
+### 📦 Product Detail
+- Layout: image left (white bg card, `--r-lg`), info right
+- Price: `var(--accent-blue)`, large
+- "Add to Cart" + "Buy Now": full-width blue pill buttons
+- Specs list: rows with `1px solid var(--separator)` dividers
+
+### 🛒 Cart & Checkout
+- Cart item rows: white cards, quantity stepper styled with `var(--fill)`
+- Order summary: white card, bold total line, blue "Proceed to Payment" full-width pill
+- Checkout form: white card grouped sections, blue focus ring on all inputs
+
+### 🔐 Login / Register
+- White card centered on `var(--bg-primary)`
+- Card: `border-radius: var(--r-2xl)`, `box-shadow: var(--shadow-lg)`
+- All inputs: standard themed style
+- Submit: full-width blue pill
+- Toggle link (Login ↔ Register): `var(--accent-blue)` color
+
+### 📊 Dashboard / Account
+- Sidebar: white card, active nav item = `var(--accent-blue)` background pill
+- Stat cards: white, blue icon, bold number, `--text-secondary` label
+- Order status badges:
+  - Delivered → green pill
+  - Processing → blue pill (`var(--accent-blue)`)
+  - Pending → orange pill
+- Profile avatar: `3px solid var(--accent-blue)` ring
+
+### 📚 Study Hub
+- Comparison table: white card container, `--bg-primary`/`--bg-secondary` alternating rows, blue column headers
+- Tab switcher: pill tabs — active = `var(--accent-blue)`, inactive = `var(--fill)`
+- Platform cards: white card, yellow star ratings, blue dot bullet highlights
+
+### 📋 About / Contact
+- Contact form: white grouped card, blue submit button
+- Any team/info cards: white bg, `var(--r-lg)`
+
+---
+
+## STEP 4 — TAGLINE UPDATE
+
+Find and replace the site tagline on:
+1. Hero section subtext → `"Medicine Made Effortless."`
+2. `<title>` tag → `AETHEX — Medicine Made Effortless`
+3. `<meta name="description">` → `"AETHEX — Medicine Made Effortless. India's medical marketplace for doctors and healthcare professionals."`
+4. Footer brand line → `"Medicine Made Effortless."`
+
+---
+
+## STEP 5 — RESPONSIVE RULES
+
+```css
+/* Desktop */
+@media (min-width: 1024px) { /* Multi-column layouts */ }
+
+/* Tablet */
+@media (max-width: 1023px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .sidebar { display: none; }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .grid { grid-template-columns: 1fr; }
+  .btn-primary, .btn-secondary { width: 100%; }
+  /* All touch targets min 44x44px */
+}
+```
+
+---
+
+## ✅ COMPLETION CHECKLIST
+
+- [ ] `theme.css` created with all CSS tokens
+- [ ] All pages use `var(--bg-primary)` as base background
+- [ ] Navbar is frosted glass + sticky on all pages
+- [ ] Footer is dark `#1C1C1E` with "Medicine Made Effortless." on all pages
+- [ ] All buttons are pill-shaped, iOS blue
+- [ ] All cards: white bg, blue shadow, hover lift
+- [ ] All inputs have blue focus ring
+- [ ] Tagline updated in hero, title tag, meta, footer
+- [ ] Logo untouched on every page
+- [ ] ZYRA AI page/components untouched
+- [ ] No backend/API/payment code changed
+- [ ] Mobile layout works at 375px
+- [ ] No console errors
+- [ ] Site deploys successfully on Replit
+
+---
+
+*AETHEX Titanium Pro v2.0 — UI Only | aethex-med-supply.replit.app*

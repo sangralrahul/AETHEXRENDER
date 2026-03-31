@@ -20,14 +20,25 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 - **Navbar entry point** — account dropdown → "Cadus AI Settings" → navigates to `/settings`
 - **No more modal** — old SettingsModal and all its state removed from Navbar; `SettingsModal.tsx` still exists for legacy exports only
 
+### Titanium Pro Light Theme (March 2026)
+- **Full light redesign** — iOS-style Titanium Pro theme applied to all main pages
+- **CSS tokens**: `--bg-primary:#F2F2F7`, `--accent-blue:#007AFF`, `--accent-teal:#00C2A8`, `--text-primary:#1C1C1E`
+- **Body**: #F2F2F7 background, #1C1C1E text (replaces dark #0D1117)
+- **Navbar**: frosted glass `rgba(242,242,247,0.88)` with `backdrop-filter:blur(20px)`, dark text, blue-to-teal gradient "Start Chat" pill
+- **Footer**: stays dark `#1C1C1E` by design — includes "Medicine Made Effortless." in copyright bar
+- **Hero**: "Medicine Made Effortless." headline with blue-to-teal gradient, rounded pill CTA buttons
+- **Stats bar**: white bg, blue numbers (#007AFF)
+- **Feature cards, category cards**: white bg, subtle shadow, hover lift
+- **Cadus AI banner**: full blue-to-teal gradient block
+- **AiAssistant.tsx stays dark** — manages its own inline theme, completely untouched
+- **HTML title**: "AETHEX — Medicine Made Effortless"
+
 ### New (2026 Audit Pass)
-- **Dark theme** — #0D1117 background, #161B22 cards, #00C2A8 teal. Applied globally via CSS variables
 - **User Auth** — email signup/login + Google placeholder. `AuthModal.tsx` + `use-user-auth.ts` hook (localStorage)
 - **CADUS AI Pro subscription** — ₹299/month, ₹1999/year. UI in `/account`. Admin hint: `aethex@admin2026`
 - **New pages**: `/shop` (alias for /products), `/study-hub`, `/checkout`, `/orders`, `/account`, `/admin`
 - **Trust badges** on Home — GST Invoice, Fast Delivery, Verified Brands, Easy Returns
 - **Newsletter section** on Home
-- **Navbar** — dark theme, auth dropdown with Pro Crown badge, Study Hub/Shop/Blog/News links
 - **sitemap.xml** and **robots.txt** in `/public/`
 - **DB tables created** and seeded with 6 categories, 19 products
 

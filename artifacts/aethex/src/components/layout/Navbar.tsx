@@ -57,9 +57,15 @@ export function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
           isScrolled
-            ? "bg-[#0D1117]/95 backdrop-blur-xl border-white/8 shadow-lg shadow-black/30 py-3"
-            : "bg-[#0D1117] border-white/5 py-4"
+            ? "backdrop-blur-xl shadow-sm py-3"
+            : "py-4"
         )}
+        style={{
+          background: "rgba(242,242,247,0.88)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          borderBottom: "1px solid rgba(60,60,67,0.12)",
+        }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-4 md:gap-8">
@@ -70,11 +76,11 @@ export function Navbar() {
                 alt="aethex logo"
                 className="w-9 h-9 object-contain rounded-lg"
               />
-              <span className="font-display font-bold text-xl tracking-tight text-white leading-none">
+              <span className="font-display font-bold text-xl tracking-tight leading-none" style={{ color: "#1C1C1E" }}>
                 aethex
               </span>
               {isPro && (
-                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 bg-[#00C2A8]/20 border border-[#00C2A8]/40 rounded-full text-[#00C2A8] text-xs font-bold">
+                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.3)", color: "#00A893" }}>
                   <Crown className="w-3 h-3" />PRO
                 </span>
               )}
@@ -83,13 +89,19 @@ export function Navbar() {
             {/* Search Bar */}
             <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xs relative group">
               <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
-                <Search className="h-3.5 w-3.5 text-white/30 group-focus-within:text-[#00C2A8] transition-colors" />
+                <Search className="h-3.5 w-3.5 transition-colors" style={{ color: "#AEAEB2" }} />
               </div>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-8 pr-3 py-2 border border-white/10 rounded-lg leading-5 bg-white/5 placeholder-white/25 text-white focus:outline-none focus:bg-white/8 focus:border-[#00C2A8]/50 focus:ring-1 focus:ring-[#00C2A8]/15 transition-all text-xs"
+                className="block w-full pl-8 pr-3 py-2 rounded-xl leading-5 text-xs transition-all focus:outline-none"
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(60,60,67,0.15)",
+                  color: "#1C1C1E",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                }}
                 placeholder="Search products..."
               />
             </form>
@@ -99,53 +111,39 @@ export function Navbar() {
               <Link
                 href="/ai-assistant"
                 className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl font-semibold text-sm transition-all hover:opacity-90 hover:scale-105"
-                style={{ background: "#00C2A8", color: "#0D1117" }}
+                style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF" }}
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Start Chat</span>
               </Link>
 
-              <Link
-                href="/shop"
-                className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden md:block px-2 py-1"
-              >
-                Shop
-              </Link>
-
-              <Link
-                href="/study-hub"
-                className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden lg:block px-2 py-1"
-              >
-                Study Hub
-              </Link>
-
-              <Link
-                href="/blog"
-                className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden lg:block px-2 py-1"
-              >
-                Blog
-              </Link>
-
-              <Link
-                href="/tools"
-                className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden lg:block px-2 py-1"
-              >
-                Tools
-              </Link>
-
-              <Link
-                href="/news"
-                className="text-sm font-medium text-white/60 hover:text-white transition-colors hidden xl:block px-2 py-1"
-              >
-                News
-              </Link>
+              {[
+                { href: "/shop", label: "Shop" },
+                { href: "/study-hub", label: "Study Hub", lg: true },
+                { href: "/blog", label: "Blog", lg: true },
+                { href: "/tools", label: "Tools", lg: true },
+                { href: "/news", label: "News", xl: true },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors px-2 py-1",
+                    item.xl ? "hidden xl:block" : item.lg ? "hidden lg:block" : "hidden md:block"
+                  )}
+                  style={{ color: location === item.href ? "#007AFF" : "#636366" }}
+                >
+                  {item.label}
+                </Link>
+              ))}
 
               {/* Account Dropdown */}
               <div ref={accountRef} className="relative hidden md:block">
                 <button onClick={() => setAccountOpen(o => !o)}
-                  className="flex items-center gap-1.5 p-2 rounded-xl text-white/50 hover:text-white hover:bg-white/8 transition-all">
+                  className="flex items-center gap-1.5 p-2 rounded-xl transition-all hover:bg-black/5"
+                  style={{ color: "#636366" }}>
                   {isLoggedIn ? (
-                    <div className="w-7 h-7 rounded-full bg-[#00C2A8]/20 border border-[#00C2A8]/40 flex items-center justify-center text-[#00C2A8] text-xs font-bold">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: "rgba(0,122,255,0.12)", border: "1px solid rgba(0,122,255,0.25)", color: "#007AFF" }}>
                       {user?.name?.[0]?.toUpperCase() || "U"}
                     </div>
                   ) : (
@@ -155,78 +153,77 @@ export function Navbar() {
                 </button>
 
                 {accountOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-[#161B22] border border-white/10 rounded-2xl shadow-2xl shadow-black/50 py-2 z-50">
+                  <div className="absolute right-0 mt-2 w-56 rounded-2xl shadow-xl py-2 z-50" style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
                     {isLoggedIn ? (
                       <>
-                        <div className="px-4 py-3 border-b border-white/8">
-                          <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
-                          <p className="text-xs text-white/40 truncate">{user?.email}</p>
+                        <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
+                          <p className="text-sm font-semibold truncate" style={{ color: "#1C1C1E" }}>{user?.name}</p>
+                          <p className="text-xs truncate" style={{ color: "#AEAEB2" }}>{user?.email}</p>
                           {isPro && (
-                            <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-[#00C2A8]/15 border border-[#00C2A8]/30 rounded-full text-[#00C2A8] text-xs font-bold">
+                            <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00A893" }}>
                               <Crown className="w-3 h-3" />PRO
                             </span>
                           )}
                         </div>
-                        <Link href="/account" onClick={() => setAccountOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
-                          <Settings className="w-4 h-4" /> My Account
-                        </Link>
-                        <Link href="/settings" onClick={() => setAccountOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
-                          <Brain className="w-4 h-4" /> Cadus AI Settings
-                        </Link>
-                        <Link href="/orders" onClick={() => setAccountOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
-                          <Package className="w-4 h-4" /> My Orders
-                        </Link>
-                        <Link href="/my-reviews" onClick={() => setAccountOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
-                          <Star className="w-4 h-4" /> My Reviews
-                        </Link>
-                        <Link href="/orders/track" onClick={() => setAccountOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
-                          <MapPin className="w-4 h-4" /> Track Order
-                        </Link>
-                        <div className="border-t border-white/8 my-1" />
+                        {[
+                          { href: "/account", icon: Settings, label: "My Account" },
+                          { href: "/settings", icon: Brain, label: "Cadus AI Settings" },
+                          { href: "/orders", icon: Package, label: "My Orders" },
+                          { href: "/my-reviews", icon: Star, label: "My Reviews" },
+                          { href: "/orders/track", icon: MapPin, label: "Track Order" },
+                        ].map(({ href, icon: Icon, label }) => (
+                          <Link key={href} href={href} onClick={() => setAccountOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors hover:bg-gray-50"
+                            style={{ color: "#636366" }}>
+                            <Icon className="w-4 h-4" /> {label}
+                          </Link>
+                        ))}
+                        <div style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }} className="my-1" />
                         <div className="flex items-center gap-2 px-4 py-1.5">
                           <Link href="/seller/dashboard" onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white/60 transition-colors">
+                            className="flex items-center gap-1.5 text-xs transition-colors hover:text-gray-600"
+                            style={{ color: "#AEAEB2" }}>
                             <Store className="w-3 h-3" /> Seller
                           </Link>
-                          <span className="text-white/15">·</span>
+                          <span style={{ color: "#AEAEB2" }}>·</span>
                           <Link href="/admin" onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white/60 transition-colors">
+                            className="flex items-center gap-1.5 text-xs transition-colors hover:text-gray-600"
+                            style={{ color: "#AEAEB2" }}>
                             <ShieldCheck className="w-3 h-3" /> Admin
                           </Link>
                         </div>
-                        <div className="border-t border-white/8 my-1" />
+                        <div style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }} className="my-1" />
                         <button onClick={() => { logout(); setAccountOpen(false); }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors">
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
                           <LogOut className="w-4 h-4" /> Sign Out
                         </button>
                       </>
                     ) : (
                       <>
-                        <div className="px-4 py-3 border-b border-white/8">
-                          <p className="text-sm text-white/50">Sign in to access your account, orders, and Cadus AI.</p>
+                        <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
+                          <p className="text-sm" style={{ color: "#636366" }}>Sign in to access your account, orders, and Cadus AI.</p>
                         </div>
                         <button onClick={openLogin}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors"
+                          style={{ color: "#636366" }}>
                           <User className="w-4 h-4" /> Sign In
                         </button>
                         <button onClick={openSignup}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#00C2A8] hover:bg-[#00C2A8]/10 transition-colors font-medium">
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium hover:bg-blue-50 transition-colors"
+                          style={{ color: "#007AFF" }}>
                           <Sparkles className="w-4 h-4" /> Create Account
                         </button>
-                        <div className="border-t border-white/8 my-1" />
+                        <div style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }} className="my-1" />
                         <div className="flex items-center gap-2 px-4 py-1.5">
                           <Link href="/seller/register" onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/55 transition-colors">
+                            className="flex items-center gap-1.5 text-xs hover:text-gray-600 transition-colors"
+                            style={{ color: "#AEAEB2" }}>
                             <Store className="w-3 h-3" /> Sell
                           </Link>
-                          <span className="text-white/15">·</span>
+                          <span style={{ color: "#AEAEB2" }}>·</span>
                           <Link href="/admin" onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/55 transition-colors">
+                            className="flex items-center gap-1.5 text-xs hover:text-gray-600 transition-colors"
+                            style={{ color: "#AEAEB2" }}>
                             <ShieldCheck className="w-3 h-3" /> Admin
                           </Link>
                         </div>
@@ -238,17 +235,17 @@ export function Navbar() {
 
               <NotificationBell />
 
-              <Link href="/cart" className="relative p-2 text-white/60 hover:text-white hover:bg-white/8 rounded-xl transition-all">
+              <Link href="/cart" className="relative p-2 rounded-xl transition-all hover:bg-black/5" style={{ color: "#636366" }}>
                 <ShoppingCart className="w-5 h-5" />
                 {cart && cart.itemCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold leading-none text-[#0D1117] bg-[#00C2A8] rounded-full">
+                  <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold leading-none text-white rounded-full" style={{ background: "#007AFF" }}>
                     {cart.itemCount}
                   </span>
                 )}
               </Link>
 
               {/* Mobile menu button */}
-              <button onClick={() => setMobileOpen(o => !o)} className="md:hidden p-2 text-white/60 hover:text-white hover:bg-white/8 rounded-xl transition-all">
+              <button onClick={() => setMobileOpen(o => !o)} className="md:hidden p-2 rounded-xl transition-all hover:bg-black/5" style={{ color: "#636366" }}>
                 {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
@@ -256,11 +253,12 @@ export function Navbar() {
 
           {/* Mobile Menu */}
           {mobileOpen && (
-            <div className="md:hidden border-t border-white/8 mt-3 pt-3 pb-4 space-y-1">
+            <div className="md:hidden mt-3 pt-3 pb-4 space-y-1" style={{ borderTop: "1px solid rgba(60,60,67,0.1)" }}>
               <form onSubmit={handleSearch} className="relative mb-3">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#AEAEB2" }} />
                 <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 text-sm focus:outline-none focus:border-[#00C2A8]/50"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl text-sm focus:outline-none"
+                  style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.15)", color: "#1C1C1E" }}
                   placeholder="Search products..." />
               </form>
               {[
@@ -273,19 +271,21 @@ export function Navbar() {
                 { href: "/orders/track", label: "Track Order" },
               ].map(item => (
                 <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
-                  className="flex items-center px-3 py-2.5 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                  className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors hover:bg-black/5"
+                  style={{ color: "#636366" }}>
                   {item.label}
                 </Link>
               ))}
-              <div className="border-t border-white/8 pt-2 mt-2">
+              <div className="pt-2 mt-2" style={{ borderTop: "1px solid rgba(60,60,67,0.1)" }}>
                 {isLoggedIn ? (
                   <button onClick={() => { logout(); setMobileOpen(false); }}
-                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                     <LogOut className="w-4 h-4" /> Sign Out ({user?.name})
                   </button>
                 ) : (
                   <button onClick={() => { openLogin(); setMobileOpen(false); }}
-                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-white/70 hover:bg-white/5 rounded-lg transition-colors">
+                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm rounded-lg transition-colors hover:bg-black/5"
+                    style={{ color: "#636366" }}>
                     <User className="w-4 h-4" /> Sign In / Sign Up
                   </button>
                 )}

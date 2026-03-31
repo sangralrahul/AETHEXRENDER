@@ -20,7 +20,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const categoryIconMap: Record<string, React.ElementType> = {
   Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield, HeartPulse,
-  Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain, Microscope,
+  Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain, BrainCircuit, Microscope,
   Wind, Droplets, Waves, ScanLine, Heart, AlertTriangle, Scan, Dna,
   Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2, Trophy, Zap
 };
@@ -572,7 +572,7 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {(categories || []).map((cat: any) => {
-                const Icon = categoryIconMap[cat.icon as string] || Activity;
+                const Icon = categoryIconMap[cat.iconName as string] || Activity;
                 return (
                   <Link
                     key={cat.slug}

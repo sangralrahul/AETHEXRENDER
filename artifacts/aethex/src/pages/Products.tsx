@@ -3,7 +3,7 @@ import { useLocation, useSearch } from "wouter";
 import {
   Filter, X, Search as SearchIcon, SlidersHorizontal,
   Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield,
-  HeartPulse, Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain,
+  HeartPulse, Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain, BrainCircuit,
   Microscope, Wind, Droplets, Waves, ScanLine, Heart, AlertTriangle, Scan,
   Dna, Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2,
   Trophy, Zap, type LucideIcon
@@ -18,7 +18,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const categoryIconMap: Record<string, LucideIcon> = {
   Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield,
-  HeartPulse, Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain,
+  HeartPulse, Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain, BrainCircuit,
   Microscope, Wind, Droplets, Waves, ScanLine, Heart, AlertTriangle, Scan,
   Dna, Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2,
   Trophy, Zap,

@@ -8,13 +8,13 @@ const categories = [
   { name: "Books & Study Material", slug: "books",            description: "Medical textbooks, NEET-PG guides, and study resources",                      productCount: 0, iconName: "BookOpen" },
   { name: "Stethoscopes",           slug: "stethoscopes",     description: "High-quality stethoscopes from leading brands",                               productCount: 0, iconName: "Stethoscope" },
   { name: "Surgical Instruments",   slug: "surgical",         description: "Precision surgical instruments and tools",                                    productCount: 0, iconName: "Scissors" },
-  { name: "Medical Equipment",      slug: "equipment",        description: "BP machines, oximeters, thermometers and diagnostic devices",                 productCount: 0, iconName: "Activity" },
+  { name: "Medical Equipment",      slug: "equipment",        description: "BP machines, oximeters, thermometers and diagnostic devices",                 productCount: 0, iconName: "Thermometer" },
 
   // Medical specialty categories
   { name: "Cardiology",             slug: "cardiac-care",     description: "Cardiac monitors, ECG machines, and heart care equipment for cardiologists",  productCount: 0, iconName: "HeartPulse" },
   { name: "Orthopaedics",           slug: "orthopaedic",      description: "Braces, orthopaedic tools, implants and rehabilitation devices",             productCount: 0, iconName: "Bone" },
   { name: "Neurology",              slug: "neurology",        description: "Neurological diagnostic tools, reflex hammers, EEG consumables and books",    productCount: 0, iconName: "Brain" },
-  { name: "Gastroenterology",       slug: "gastroenterology", description: "GI diagnostic kits, endoscopy accessories and hepatology equipment",          productCount: 0, iconName: "Activity" },
+  { name: "Gastroenterology",       slug: "gastroenterology", description: "GI diagnostic kits, endoscopy accessories and hepatology equipment",          productCount: 0, iconName: "FlaskConical" },
   { name: "Nephrology",             slug: "nephrology",       description: "Kidney function test kits, dialysis supplies and renal care equipment",       productCount: 0, iconName: "Droplets" },
   { name: "Pulmonology",            slug: "pulmonology",      description: "Peak flow meters, nebulizers, spirometers and respiratory care devices",      productCount: 0, iconName: "Wind" },
   { name: "Ophthalmology",          slug: "ophthalmology",    description: "Ophthalmoscopes, vision charts, slit-lamp accessories and eye-care tools",   productCount: 0, iconName: "Eye" },
@@ -29,8 +29,8 @@ const categories = [
   { name: "Anaesthesia",            slug: "anaesthesia",      description: "Laryngoscopes, airway management kits, regional anaesthesia equipment",       productCount: 0, iconName: "Pipette" },
   { name: "Physiotherapy",          slug: "physiotherapy",    description: "TENS units, therabands, hot-cold packs and rehabilitation equipment",         productCount: 0, iconName: "Dumbbell" },
   { name: "Sports Medicine",        slug: "sports-medicine",  description: "Athletic taping, compression gear, sports injury diagnosis and rehab tools",  productCount: 0, iconName: "Gauge" },
-  { name: "Psychiatry",             slug: "psychiatry",       description: "Mental health assessment scales, DSM-5, cognitive therapy tools and books",   productCount: 0, iconName: "Brain" },
-  { name: "Urology",                slug: "urology",          description: "Urodynamic consumables, catheter kits, urinalysis strips and renal tools",   productCount: 0, iconName: "Droplets" },
+  { name: "Psychiatry",             slug: "psychiatry",       description: "Mental health assessment scales, DSM-5, cognitive therapy tools and books",   productCount: 0, iconName: "BrainCircuit" },
+  { name: "Urology",                slug: "urology",          description: "Urodynamic consumables, catheter kits, urinalysis strips and renal tools",   productCount: 0, iconName: "TestTube2" },
   { name: "Nutrition & Dietetics",  slug: "nutrition",        description: "Body composition scales, skinfold callipers, diet planning and nutrition books", productCount: 0, iconName: "Apple" },
 ];
 

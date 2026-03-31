@@ -118,9 +118,8 @@ export function Navbar() {
               </Link>
 
               {[
-                { href: "/ai-assistant", label: "AI Assistant" },
+                { href: "/tools", label: "Tools" },
                 { href: "/study-hub", label: "Study", lg: true },
-                { href: "/tools", label: "Tools", lg: true },
                 { href: "/shop", label: "Store", lg: true },
                 { href: "/blog", label: "Blog", xl: true },
               ].map((item) => (

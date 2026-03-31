@@ -133,22 +133,22 @@ function NewsletterSection() {
   };
 
   return (
-    <section className="py-16" style={{ background: "#1C1C1E", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+    <section className="py-16" style={{ background: "#F2F2F7", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-5"
-          style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.25)", color: "#00C2A8" }}>
+          style={{ background: "rgba(0,122,255,0.1)", border: "1px solid rgba(0,122,255,0.2)", color: "#007AFF" }}>
           <Send className="w-3.5 h-3.5" />
           Newsletter
         </div>
-        <h2 className="text-3xl font-display font-bold text-white mb-3">
+        <h2 className="text-3xl font-display font-bold mb-3" style={{ color: "#1C1C1E" }}>
           Weekly Medical Insights + NEET-PG Tips
         </h2>
-        <p className="mb-8 max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.45)" }}>
+        <p className="mb-8 max-w-xl mx-auto" style={{ color: "#636366" }}>
           Get the latest clinical tips, medical news, exam updates, and exclusive deals — direct to your inbox. Join 12,000+ Indian doctors.
         </p>
         {done ? (
           <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold"
-            style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.3)", color: "#00C2A8" }}>
+            style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00A893" }}>
             <CheckCircle2 className="w-5 h-5" />
             You're subscribed! Weekly updates incoming.
           </div>
@@ -157,16 +157,16 @@ function NewsletterSection() {
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
               placeholder="doctor@hospital.in"
               className="flex-1 px-5 py-3.5 rounded-xl text-sm focus:outline-none"
-              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", color: "#FFFFFF" }} />
+              style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.15)", color: "#1C1C1E", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }} />
             <button type="submit" disabled={loading}
-              className="px-6 py-3.5 font-bold rounded-xl transition-all disabled:opacity-60 flex items-center gap-2 justify-center whitespace-nowrap"
-              style={{ background: "#007AFF", color: "#FFFFFF" }}>
+              className="px-6 py-3.5 font-bold rounded-xl transition-all disabled:opacity-60 flex items-center gap-2 justify-center whitespace-nowrap hover:opacity-90"
+              style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF", boxShadow: "0 2px 12px rgba(0,122,255,0.25)" }}>
               <Send className="w-4 h-4" />
               {loading ? "Subscribing..." : "Subscribe Free"}
             </button>
           </form>
         )}
-        <p className="mt-4 text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>No spam. Unsubscribe any time.</p>
+        <p className="mt-4 text-xs" style={{ color: "#AEAEB2" }}>No spam. Unsubscribe any time.</p>
       </div>
     </section>
   );

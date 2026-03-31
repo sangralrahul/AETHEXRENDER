@@ -89,6 +89,7 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 - **Notification Bell** in Navbar — real-time dropdown, unread count badge, mark-all-read, dismiss per item, auto-polls every 30s
 - **Email notifications** via Resend API (`RESEND_API_KEY` env var) — graceful fallback when credentials absent
 - **SMS notifications** via Twilio — 5 SMS types, auto-prefixes `+91`; graceful fallback without creds
+- **Phone OTP authentication** — `POST /api/auth/send-phone-otp` + `POST /api/auth/verify-phone-otp` routes using Twilio SMS. Requires 3 secrets: `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`. The Replit Twilio integration was dismissed by the user — must be added manually as secrets. Without these secrets, phone OTP returns a 503 error and users are prompted to use Email OTP instead.
 - **Reviews & Ratings System**:
   - Product reviews: star rating (1–5), title, body, photos (up to 3, resized client-side), Verified Purchase badge
   - One review per session per product; 7-day edit window; helpful voting; report flagging

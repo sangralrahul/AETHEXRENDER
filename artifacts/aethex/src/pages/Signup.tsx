@@ -1,10 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Sparkles, GraduationCap, ShoppingBag, BrainCircuit, ShieldCheck } from "lucide-react";
 import { useUserAuth } from "@/hooks/use-user-auth";
 
 type Role = "Doctor" | "Medical Student" | "Patient";
 const ROLES: Role[] = ["Doctor", "Medical Student", "Patient"];
+
+const LOGO = `${import.meta.env.BASE_URL}aethex-logo.jpg`;
+
+const features = [
+  { icon: BrainCircuit, label: "Cadus AI", desc: "AI clinical assistant, 20 queries/day free" },
+  { icon: ShoppingBag, label: "Medical Store", desc: "1,000+ genuine products, fast delivery" },
+  { icon: GraduationCap, label: "Study Hub", desc: "NEET PG, NEXT, FMGE & USMLE prep" },
+  { icon: ShieldCheck, label: "GST Invoices", desc: "Tax invoices included with every order" },
+];
 
 export default function Signup() {
   const [, setLocation] = useLocation();
@@ -36,211 +45,240 @@ export default function Signup() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh", background: "#050505", display: "flex",
-      fontFamily: "'Outfit', sans-serif", position: "relative", overflow: "hidden",
-    }}>
-      {/* Background orbs */}
-      <div style={{ position: "absolute", top: "8%", right: "10%", width: 280, height: 280, borderRadius: "50%", background: "#00C2A818", filter: "blur(80px)", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", bottom: "12%", left: "5%", width: 200, height: 200, borderRadius: "50%", background: "#00C2A810", filter: "blur(60px)", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", top: "45%", left: "22%", width: 120, height: 120, borderRadius: "50%", background: "#00C2A808", filter: "blur(40px)", pointerEvents: "none" }} />
+    <div style={{ minHeight: "100vh", display: "flex", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", background: "#F2F2F7" }}>
 
-      {/* ── Left panel ── */}
-      <div style={{
-        width: "45%", minHeight: "100vh", borderRight: "1px solid #111",
-        display: "flex", flexDirection: "column", padding: "32px 40px",
-      }} className="auth-left-panel">
-        {/* Logo mark */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: 8, background: "#00C2A8",
-            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-          }}>
-            <span style={{ color: "#050505", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 18 }}>A</span>
+      {/* ── Left panel — gradient brand panel ── */}
+      <div
+        className="auth-left-panel"
+        style={{
+          width: "45%", minHeight: "100vh", position: "relative", overflow: "hidden",
+          display: "flex", flexDirection: "column", padding: "36px 44px",
+          background: "linear-gradient(145deg, #0A1628 0%, #0D2144 40%, #0A3060 100%)",
+        }}
+      >
+        {/* Ambient orbs */}
+        <div style={{ position: "absolute", top: "5%", right: "-10%", width: 320, height: 320, borderRadius: "50%", background: "rgba(0,122,255,0.18)", filter: "blur(90px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: "10%", left: "-5%", width: 250, height: 250, borderRadius: "50%", background: "rgba(0,194,168,0.15)", filter: "blur(80px)", pointerEvents: "none" }} />
+
+        {/* Logo */}
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", position: "relative", zIndex: 1 }}>
+          <img
+            src={LOGO}
+            alt="aethex"
+            style={{ width: 40, height: 40, borderRadius: 10, objectFit: "contain", background: "#FFFFFF" }}
+          />
+          <span style={{ color: "#FFFFFF", fontWeight: 700, fontSize: 20, letterSpacing: "-0.03em" }}>aethex</span>
+        </Link>
+
+        {/* Headline */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", position: "relative", zIndex: 1 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 99, background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.3)", marginBottom: 20, width: "fit-content" }}>
+            <Sparkles style={{ width: 12, height: 12, color: "#00C2A8" }} />
+            <span style={{ fontSize: 11, fontWeight: 600, color: "#00C2A8", letterSpacing: "0.02em" }}>Free to start</span>
           </div>
-          <span style={{ color: "#fff", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 17, letterSpacing: "-0.02em" }}>AETHEX</span>
-        </div>
 
-        {/* Hero headline */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", marginTop: -40 }}>
-          <h1 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 38, fontWeight: 300, lineHeight: 1.15,
-            color: "#fff", margin: 0,
-          }}>
-            Medicine meets<br />
-            <em style={{ color: "#00C2A8", fontStyle: "italic" }}>intelligence</em>
+          <h1 style={{ fontSize: 36, fontWeight: 800, lineHeight: 1.15, color: "#FFFFFF", margin: "0 0 16px", letterSpacing: "-0.02em" }}>
+            Join 50,000+<br />
+            <span style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              Indian Doctors
+            </span>
           </h1>
-          <p style={{ fontSize: 12, color: "#555", marginTop: 16, lineHeight: 1.65, maxWidth: 340 }}>
-            India's only medical platform with an AI clinical assistant, medical shop, and study hub — all in one place.
+
+          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 340, margin: "0 0 36px" }}>
+            AI-powered clinical tools, exam prep, and medical supplies — built for Indian medical students and doctors.
           </p>
 
           {/* Feature list */}
-          <div style={{ marginTop: 40, display: "flex", flexDirection: "column", gap: 14 }}>
-            {[
-              "Cadus AI — Clinical Co-Pilot",
-              "Medical Shop — 500+ products",
-              "Study Hub — NEET-PG Prep",
-              "GST Invoices & Fast Delivery",
-            ].map(feat => (
-              <div key={feat} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#00C2A8", flexShrink: 0 }} />
-                <span style={{ fontSize: 11, color: "#444" }}>{feat}</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {features.map(({ icon: Icon, label, desc }) => (
+              <div key={label} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 16px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <div style={{ width: 34, height: 34, borderRadius: 9, background: "rgba(0,122,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Icon style={{ width: 16, height: 16, color: "#60B4FF" }} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#FFFFFF" }}>{label}</div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 1 }}>{desc}</div>
+                </div>
               </div>
             ))}
           </div>
         </div>
+
+        <p style={{ fontSize: 10, color: "rgba(255,255,255,0.2)", textAlign: "center", position: "relative", zIndex: 1 }}>
+          Free to start · No credit card required
+        </p>
       </div>
 
-      {/* ── Right panel ── */}
-      <div style={{
-        width: "55%", minHeight: "100vh",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "32px 24px",
-      }} className="auth-right-panel">
-        <div style={{
-          background: "#0D0D0D", border: "1px solid #1a1a1a",
-          borderRadius: 20, padding: 32, width: "100%", maxWidth: 300,
-        }}>
-          <h2 style={{ fontSize: 18, fontWeight: 600, color: "#fff", margin: "0 0 4px" }}>Create your account</h2>
-          <p style={{ fontSize: 11, color: "#444", margin: "0 0 24px" }}>Join thousands of doctors on Aethex</p>
+      {/* ── Right panel — form ── */}
+      <div
+        className="auth-right-panel"
+        style={{
+          width: "55%", minHeight: "100vh", background: "#F2F2F7",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: "32px 24px",
+        }}
+      >
+        <div style={{ width: "100%", maxWidth: 400 }}>
+          {/* Mobile logo */}
+          <div className="auth-mobile-logo" style={{ display: "none", alignItems: "center", gap: 10, marginBottom: 28, justifyContent: "center" }}>
+            <img src={LOGO} alt="aethex" style={{ width: 36, height: 36, borderRadius: 8, objectFit: "contain" }} />
+            <span style={{ fontWeight: 700, fontSize: 18, color: "#1C1C1E" }}>aethex</span>
+          </div>
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {/* Name */}
-            <div>
-              <label style={labelStyle}>NAME</label>
-              <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                placeholder="Dr. Priya Sharma" style={inputStyle}
-                onFocus={e => (e.target.style.borderColor = "#00C2A8")}
-                onBlur={e => (e.target.style.borderColor = "#1a1a1a")} />
-            </div>
+          <div style={{ background: "#FFFFFF", borderRadius: 20, padding: "36px 32px", boxShadow: "0 4px 24px rgba(0,0,0,0.07)", border: "1px solid rgba(60,60,67,0.1)" }}>
+            <h2 style={headingStyle}>Create your account</h2>
+            <p style={subStyle}>Join thousands of medical professionals on aethex</p>
 
-            {/* Role */}
-            <div>
-              <label style={labelStyle}>ROLE</label>
-              <div style={{ display: "flex", gap: 6 }}>
-                {ROLES.map(r => (
-                  <button key={r} type="button" onClick={() => setRole(r)}
-                    style={{
-                      flex: 1, padding: "9px 4px",
-                      background: role === r ? "#00C2A820" : "#0a0a0a",
-                      border: `1px solid ${role === r ? "#00C2A8" : "#1a1a1a"}`,
-                      borderRadius: 8, color: role === r ? "#00C2A8" : "#555",
-                      fontSize: 10, cursor: "pointer", transition: "all 0.2s",
-                      fontFamily: "'Outfit', sans-serif", fontWeight: role === r ? 600 : 400,
-                    }}>
-                    {r}
+            <form onSubmit={handleSubmit} style={formStyle}>
+              {/* Name */}
+              <div>
+                <label style={labelStyle}>FULL NAME</label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)} required
+                  placeholder="Dr. Priya Sharma" style={inputStyle}
+                  onFocus={e => { e.target.style.borderColor = "#007AFF"; e.target.style.boxShadow = "0 0 0 3px rgba(0,122,255,0.14)"; }}
+                  onBlur={e => { e.target.style.borderColor = "rgba(60,60,67,0.2)"; e.target.style.boxShadow = "none"; }} />
+              </div>
+
+              {/* Role */}
+              <div>
+                <label style={labelStyle}>I AM A</label>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {ROLES.map(r => (
+                    <button key={r} type="button" onClick={() => setRole(r)}
+                      style={{
+                        flex: 1, padding: "10px 4px",
+                        background: role === r ? "rgba(0,122,255,0.08)" : "#F2F2F7",
+                        border: `1.5px solid ${role === r ? "#007AFF" : "rgba(60,60,67,0.2)"}`,
+                        borderRadius: 10, color: role === r ? "#007AFF" : "#636366",
+                        fontSize: 11, cursor: "pointer", transition: "all 0.18s",
+                        fontWeight: role === r ? 700 : 400,
+                      }}>
+                      {r}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Email */}
+              <div>
+                <label style={labelStyle}>EMAIL</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                  placeholder="doctor@hospital.in" style={inputStyle}
+                  onFocus={e => { e.target.style.borderColor = "#007AFF"; e.target.style.boxShadow = "0 0 0 3px rgba(0,122,255,0.14)"; }}
+                  onBlur={e => { e.target.style.borderColor = "rgba(60,60,67,0.2)"; e.target.style.boxShadow = "none"; }} />
+              </div>
+
+              {/* Password */}
+              <div>
+                <label style={labelStyle}>PASSWORD</label>
+                <div style={{ position: "relative" }}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password} onChange={e => setPassword(e.target.value)} required
+                    placeholder="Min. 6 characters" autoComplete="new-password"
+                    style={{ ...inputStyle, paddingRight: 44 }}
+                    onFocus={e => { e.target.style.borderColor = "#007AFF"; e.target.style.boxShadow = "0 0 0 3px rgba(0,122,255,0.14)"; }}
+                    onBlur={e => { e.target.style.borderColor = "rgba(60,60,67,0.2)"; e.target.style.boxShadow = "none"; }}
+                  />
+                  <button type="button" onClick={() => setShowPassword(s => !s)}
+                    style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#AEAEB2", cursor: "pointer", display: "flex", padding: 0 }}>
+                    {showPassword ? <EyeOff style={{ width: 15, height: 15 }} /> : <Eye style={{ width: 15, height: 15 }} />}
                   </button>
-                ))}
+                </div>
               </div>
-            </div>
 
-            {/* Email */}
-            <div>
-              <label style={labelStyle}>EMAIL</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                placeholder="doctor@hospital.com" style={inputStyle}
-                onFocus={e => (e.target.style.borderColor = "#00C2A8")}
-                onBlur={e => (e.target.style.borderColor = "#1a1a1a")} />
-            </div>
+              {error && <div style={errorStyle}>{error}</div>}
 
-            {/* Password */}
-            <div>
-              <label style={labelStyle}>PASSWORD</label>
-              <div style={{ position: "relative" }}>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password} onChange={e => setPassword(e.target.value)} required
-                  placeholder="••••••••" style={{ ...inputStyle, paddingRight: 40 }}
-                  onFocus={e => (e.target.style.borderColor = "#00C2A8")}
-                  onBlur={e => (e.target.style.borderColor = "#1a1a1a")}
-                />
-                <button type="button" onClick={() => setShowPassword(s => !s)}
-                  style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#444", cursor: "pointer", display: "flex" }}>
-                  {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
-                </button>
+              <button type="submit" disabled={loading} style={primaryBtnStyle}>
+                {loading ? "Creating account…" : "Create Free Account"}
+              </button>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ flex: 1, height: 1, background: "rgba(60,60,67,0.12)" }} />
+                <span style={{ fontSize: 11, color: "#AEAEB2" }}>or</span>
+                <div style={{ flex: 1, height: 1, background: "rgba(60,60,67,0.12)" }} />
               </div>
-            </div>
 
-            {error && <div style={errorStyle}>{error}</div>}
+              <button type="button" style={ghostBtnStyle} onClick={() => window.location.href = "/login"}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                <span>Sign up with Google</span>
+              </button>
 
-            <button type="submit" disabled={loading} style={primaryBtnStyle}>
-              {loading ? "Creating account…" : "Create Account"}
-            </button>
+              <p style={{ fontSize: 12, color: "#AEAEB2", textAlign: "center", margin: 0 }}>
+                Already have an account?{" "}
+                <Link href="/login" style={{ color: "#007AFF", textDecoration: "none", fontWeight: 600 }}>
+                  Sign in
+                </Link>
+              </p>
 
-            <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "2px 0" }}>
-              <div style={{ flex: 1, height: 1, background: "#1a1a1a" }} />
-              <span style={{ fontSize: 10, color: "#333" }}>or continue with</span>
-              <div style={{ flex: 1, height: 1, background: "#1a1a1a" }} />
-            </div>
-
-            <button type="button" style={ghostBtnStyle}
-              onClick={() => window.location.href = "/login"}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-              <span>Sign up with Google</span>
-            </button>
-
-            <p style={{ fontSize: 10, color: "#444", textAlign: "center", margin: 0 }}>
-              Already have an account?{" "}
-              <Link href="/login" style={{ color: "#00C2A8", textDecoration: "none" }}>
-                Sign in
-              </Link>
-            </p>
-          </form>
+              <p style={{ fontSize: 10, color: "#AEAEB2", textAlign: "center", margin: "4px 0 0", lineHeight: 1.5 }}>
+                By creating an account, you agree to our{" "}
+                <a href="#" style={{ color: "#007AFF", textDecoration: "none" }}>Terms</a>
+                {" "}and{" "}
+                <a href="#" style={{ color: "#007AFF", textDecoration: "none" }}>Privacy Policy</a>.
+              </p>
+            </form>
+          </div>
         </div>
       </div>
 
       <style>{`
         @media (max-width: 700px) {
-          .auth-left-panel { width: 100% !important; min-height: auto !important; border-right: none !important; border-bottom: 1px solid #111; padding: 24px 20px !important; }
-          .auth-right-panel { width: 100% !important; min-height: auto !important; }
+          .auth-left-panel { display: none !important; }
+          .auth-right-panel { width: 100% !important; min-height: 100vh; }
+          .auth-mobile-logo { display: flex !important; }
         }
       `}</style>
     </div>
   );
 }
 
+const headingStyle: React.CSSProperties = {
+  fontSize: 22, fontWeight: 700, color: "#1C1C1E",
+  margin: "0 0 5px", letterSpacing: "-0.02em",
+};
+const subStyle: React.CSSProperties = {
+  fontSize: 13, color: "#636366", margin: "0 0 24px",
+};
+const formStyle: React.CSSProperties = {
+  display: "flex", flexDirection: "column", gap: 16,
+};
 const labelStyle: React.CSSProperties = {
-  display: "block", fontSize: 9, fontWeight: 500,
-  letterSpacing: "0.1em", textTransform: "uppercase",
-  color: "#555", marginBottom: 6,
+  display: "block", fontSize: 10, fontWeight: 600,
+  letterSpacing: "0.08em", textTransform: "uppercase",
+  color: "#AEAEB2", marginBottom: 7,
 };
-
 const inputStyle: React.CSSProperties = {
-  width: "100%", background: "#0a0a0a",
-  border: "1px solid #1a1a1a", borderRadius: 10,
-  padding: "12px 14px", color: "#e0e0e0",
-  fontSize: 13, outline: "none",
-  transition: "border-color 0.2s ease",
+  width: "100%", background: "#F2F2F7",
+  border: "1.5px solid rgba(60,60,67,0.2)", borderRadius: 12,
+  padding: "13px 15px", color: "#1C1C1E",
+  fontSize: 14, outline: "none",
+  transition: "border-color 0.18s ease, box-shadow 0.18s ease",
   boxSizing: "border-box",
-  fontFamily: "'Outfit', sans-serif",
 };
-
 const primaryBtnStyle: React.CSSProperties = {
-  width: "100%", background: "#00C2A8", color: "#050505",
-  border: "none", borderRadius: 10, padding: "13px 0",
-  fontSize: 13, fontWeight: 600, cursor: "pointer",
-  transition: "opacity 0.2s ease",
-  fontFamily: "'Outfit', sans-serif",
+  width: "100%", background: "linear-gradient(135deg,#007AFF,#00C2A8)",
+  color: "#FFFFFF", border: "none", borderRadius: 12,
+  padding: "14px 0", fontSize: 14, fontWeight: 700,
+  cursor: "pointer", transition: "opacity 0.18s ease",
+  letterSpacing: "-0.01em",
 };
-
 const ghostBtnStyle: React.CSSProperties = {
-  width: "100%", background: "transparent",
-  border: "1px solid #1a1a1a", borderRadius: 10,
-  padding: "12px 0", fontSize: 12, color: "#e0e0e0",
+  width: "100%", background: "#FFFFFF",
+  border: "1.5px solid rgba(60,60,67,0.15)", borderRadius: 12,
+  padding: "13px 0", fontSize: 13, color: "#1C1C1E",
   cursor: "pointer", display: "flex",
   alignItems: "center", justifyContent: "center", gap: 8,
-  transition: "border-color 0.2s ease",
-  fontFamily: "'Outfit', sans-serif",
+  transition: "border-color 0.18s ease",
+  boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
 };
-
 const errorStyle: React.CSSProperties = {
-  background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)",
-  borderRadius: 8, padding: "10px 12px",
-  fontSize: 11, color: "#f87171",
+  background: "rgba(255,59,48,0.06)", border: "1px solid rgba(255,59,48,0.2)",
+  borderRadius: 10, padding: "11px 14px",
+  fontSize: 12, color: "#FF3B30",
 };

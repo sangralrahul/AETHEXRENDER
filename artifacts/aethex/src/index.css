@@ -234,6 +234,16 @@
   0%, 100% { opacity: 0.72; stroke-width: 2.2; }
   50%       { opacity: 1;    stroke-width: 2.8; }
 }
+@keyframes cadus-snake-bob {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-7px); }
+  100% { transform: translateY(0px); }
+}
+@keyframes cadus-snake-bob-down {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(7px); }
+  100% { transform: translateY(0px); }
+}
 @keyframes cadus-orbit-cw {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }

@@ -24,9 +24,6 @@ export default function CadusLogo({
       className={cn("relative flex items-center justify-center shrink-0", className)}
       style={{
         width: box, height: box,
-        animation: thinking
-          ? `cadus-think-spin-pulse 5s linear infinite`
-          : undefined,
         filter: thinking
           ? "drop-shadow(0 0 10px rgba(0,194,168,0.7)) drop-shadow(0 0 22px rgba(168,85,247,0.45))"
           : "drop-shadow(0 0 3px rgba(0,194,168,0.3))",
@@ -144,68 +141,58 @@ export default function CadusLogo({
         />
 
         {/* ── Serpent 1 (left coil — teal) ─────────────────────── */}
-        <path
-          d="M44,34 C36,40 36,46 44,50 C52,54 52,60 44,64 C38,68 36,74 42,80 C44,82 47,84 50,85"
-          fill="none"
-          stroke="#22D3EE"
-          strokeWidth={thinking ? "2.8" : "2.2"}
-          strokeLinecap="round"
-          filter={`url(#${uid}-glow)`}
-          style={{
-            opacity: thinking ? 0.92 : 0.72,
-            animation: thinking ? "cadus-serpent-pulse 1.6s ease-in-out infinite alternate" : undefined,
-          }}
-        />
-        {/* Serpent 1 head */}
-        <ellipse cx="43" cy="33" rx={thinking ? "3.5" : "2.8"} ry={thinking ? "2.2" : "1.8"}
-          fill="#22D3EE" transform="rotate(-20 43 33)"
-          filter={`url(#${uid}-glow)`}
-          style={{
-            opacity: thinking ? 1 : 0.8,
-            animation: thinking ? "cadus-think-pulse 1s ease-in-out 0.2s infinite alternate" : undefined,
-          }}
-        />
-        {/* Serpent 1 eye */}
-        {thinking && (
-          <circle cx="42" cy="32" r="0.9" fill="white" opacity="0.9"
-            style={{ animation: "cadus-think-pulse 0.8s ease-in-out infinite alternate" }} />
-        )}
-        {/* Serpent 1 tongue */}
-        <path d="M40,34 L37,35 M40,34 L37,33"
-          stroke="#22D3EE" strokeWidth="1" strokeLinecap="round"
-          style={{ opacity: thinking ? 0.8 : 0 }} />
+        <g style={{ animation: thinking ? "cadus-snake-bob 0.4s ease-in-out infinite" : undefined }}>
+          <path
+            d="M44,34 C36,40 36,46 44,50 C52,54 52,60 44,64 C38,68 36,74 42,80 C44,82 47,84 50,85"
+            fill="none"
+            stroke="#22D3EE"
+            strokeWidth={thinking ? "2.8" : "2.2"}
+            strokeLinecap="round"
+            filter={`url(#${uid}-glow)`}
+            style={{ opacity: thinking ? 0.92 : 0.72 }}
+          />
+          {/* Serpent 1 head */}
+          <ellipse cx="43" cy="33" rx={thinking ? "3.5" : "2.8"} ry={thinking ? "2.2" : "1.8"}
+            fill="#22D3EE" transform="rotate(-20 43 33)"
+            filter={`url(#${uid}-glow)`}
+            style={{ opacity: thinking ? 1 : 0.8 }}
+          />
+          {/* Serpent 1 eye */}
+          {thinking && (
+            <circle cx="42" cy="32" r="0.9" fill="white" opacity="0.9" />
+          )}
+          {/* Serpent 1 tongue */}
+          <path d="M40,34 L37,35 M40,34 L37,33"
+            stroke="#22D3EE" strokeWidth="1" strokeLinecap="round"
+            style={{ opacity: thinking ? 0.8 : 0 }} />
+        </g>
 
         {/* ── Serpent 2 (right coil — purple) ──────────────────── */}
-        <path
-          d="M56,34 C64,40 64,46 56,50 C48,54 48,60 56,64 C62,68 64,74 58,80 C56,82 53,84 50,85"
-          fill="none"
-          stroke="#A855F7"
-          strokeWidth={thinking ? "2.8" : "2.2"}
-          strokeLinecap="round"
-          filter={`url(#${uid}-glow)`}
-          style={{
-            opacity: thinking ? 0.92 : 0.72,
-            animation: thinking ? "cadus-serpent-pulse 1.6s ease-in-out 0.4s infinite alternate" : undefined,
-          }}
-        />
-        {/* Serpent 2 head */}
-        <ellipse cx="57" cy="33" rx={thinking ? "3.5" : "2.8"} ry={thinking ? "2.2" : "1.8"}
-          fill="#A855F7" transform="rotate(20 57 33)"
-          filter={`url(#${uid}-glow)`}
-          style={{
-            opacity: thinking ? 1 : 0.8,
-            animation: thinking ? "cadus-think-pulse 1s ease-in-out 0.4s infinite alternate" : undefined,
-          }}
-        />
-        {/* Serpent 2 eye */}
-        {thinking && (
-          <circle cx="58" cy="32" r="0.9" fill="white" opacity="0.9"
-            style={{ animation: "cadus-think-pulse 0.8s ease-in-out 0.2s infinite alternate" }} />
-        )}
-        {/* Serpent 2 tongue */}
-        <path d="M60,34 L63,35 M60,34 L63,33"
-          stroke="#A855F7" strokeWidth="1" strokeLinecap="round"
-          style={{ opacity: thinking ? 0.8 : 0 }} />
+        <g style={{ animation: thinking ? "cadus-snake-bob 0.4s ease-in-out 0.2s infinite" : undefined }}>
+          <path
+            d="M56,34 C64,40 64,46 56,50 C48,54 48,60 56,64 C62,68 64,74 58,80 C56,82 53,84 50,85"
+            fill="none"
+            stroke="#A855F7"
+            strokeWidth={thinking ? "2.8" : "2.2"}
+            strokeLinecap="round"
+            filter={`url(#${uid}-glow)`}
+            style={{ opacity: thinking ? 0.92 : 0.72 }}
+          />
+          {/* Serpent 2 head */}
+          <ellipse cx="57" cy="33" rx={thinking ? "3.5" : "2.8"} ry={thinking ? "2.2" : "1.8"}
+            fill="#A855F7" transform="rotate(20 57 33)"
+            filter={`url(#${uid}-glow)`}
+            style={{ opacity: thinking ? 1 : 0.8 }}
+          />
+          {/* Serpent 2 eye */}
+          {thinking && (
+            <circle cx="58" cy="32" r="0.9" fill="white" opacity="0.9" />
+          )}
+          {/* Serpent 2 tongue */}
+          <path d="M60,34 L63,35 M60,34 L63,33"
+            stroke="#A855F7" strokeWidth="1" strokeLinecap="round"
+            style={{ opacity: thinking ? 0.8 : 0 }} />
+        </g>
 
         {/* ── Coil crossing diamonds ────────────────────────────── */}
         {/* Where the two serpents cross — subtle markers */}

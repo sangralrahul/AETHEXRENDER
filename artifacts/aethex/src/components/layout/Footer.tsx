@@ -126,7 +126,7 @@ export function Footer() {
             <h3 className="font-display font-semibold text-white text-sm uppercase tracking-wider mb-5">Support</h3>
             <ul className="space-y-3 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
               <li><Link href="/orders/track" className="hover:text-white transition-colors">Track Order</Link></li>
-              <li><a href="mailto:support@clavixtech.in" className="hover:text-white transition-colors">support@clavixtech.in</a></li>
+              <li><a href="mailto:email@aethex.in" className="hover:text-white transition-colors">email@aethex.in</a></li>
               <li><Link href="/medical-disclaimer" className="hover:text-white transition-colors">Medical Disclaimer</Link></li>
             </ul>
           </div>

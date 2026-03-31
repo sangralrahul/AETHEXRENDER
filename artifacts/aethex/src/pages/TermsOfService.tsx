@@ -100,7 +100,7 @@ const SECTIONS = [
     title: "10. Contact",
     content: [
       "Clavix Technologies Pvt Ltd",
-      "Email: support@clavixtech.in",
+      "Email: email@aethex.in",
       "For legal queries: legal@clavixtech.in",
       "Response time: within 5 business days.",
     ],

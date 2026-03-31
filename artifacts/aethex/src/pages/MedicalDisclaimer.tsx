@@ -112,7 +112,7 @@ export default function MedicalDisclaimer() {
           {
             title: "Contact & Concerns",
             items: [
-              "If you have concerns about the accuracy of medical information on our platform, please contact us at support@clavixtech.in.",
+              "If you have concerns about the accuracy of medical information on our platform, please contact us at email@aethex.in.",
               "We are committed to maintaining the highest standards of clinical accuracy and will respond within 5 business days.",
             ],
           },

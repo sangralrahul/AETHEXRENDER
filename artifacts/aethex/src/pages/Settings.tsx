@@ -590,7 +590,7 @@ function SectionAbout() {
         </p>
         <div className="mt-4 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
           <p className="text-xs mb-1" style={{ color: "rgba(180,215,255,0.6)" }}>Feedback & Support</p>
-          <p className="text-sm" style={{ color: "rgba(0,200,255,0.55)" }}>support@clavixtech.in</p>
+          <p className="text-sm" style={{ color: "rgba(0,200,255,0.55)" }}>email@aethex.in</p>
         </div>
       </Card>
 

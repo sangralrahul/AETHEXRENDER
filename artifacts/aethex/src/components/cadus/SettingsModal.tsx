@@ -653,7 +653,7 @@ function SectionAbout() {
       {/* Feedback */}
       <div>
         <p className="text-xs font-semibold mb-1" style={{ color: "rgba(180,215,255,0.7)" }}>Feedback email</p>
-        <p className="text-xs" style={{ color: "rgba(0,200,255,0.55)" }}>support@clavixtech.in</p>
+        <p className="text-xs" style={{ color: "rgba(0,200,255,0.55)" }}>email@aethex.in</p>
       </div>
 
       {/* Status */}

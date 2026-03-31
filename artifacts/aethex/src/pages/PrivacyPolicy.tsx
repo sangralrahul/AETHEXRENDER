@@ -61,7 +61,7 @@ const SECTIONS = [
       "**Right to Deletion:** Request deletion of your account and associated data.",
       "**Right to Portability:** Receive your data in a structured, machine-readable format.",
       "**Right to Opt-Out:** Unsubscribe from marketing communications at any time.",
-      "To exercise any of these rights, email us at support@clavixtech.in.",
+      "To exercise any of these rights, email us at email@aethex.in.",
     ],
   },
   {
@@ -93,7 +93,7 @@ const SECTIONS = [
     title: "9. Contact",
     content: [
       "Data Controller: Clavix Technologies Pvt Ltd",
-      "Email: support@clavixtech.in",
+      "Email: email@aethex.in",
       "Registered Address: India",
       "For any privacy concerns, please contact us within 30 days of an incident.",
     ],

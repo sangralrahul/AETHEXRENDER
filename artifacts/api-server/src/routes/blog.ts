@@ -150,10 +150,20 @@ router.get("/news", async (req: Request, res: Response) => {
     if (apiKey && (now - newsCache.fetchedAt > NEWS_TTL || newsCache.data.length === 0)) {
       try {
         const q = encodeURIComponent("medical health doctor hospital India");
-        const resp = await fetch(`https://newsapi.org/v2/everything?q=${q}&language=en&sortBy=publishedAt&pageSize=20&apiKey=${apiKey}`);
+        const resp = await fetch(
+          `https://newsapi.org/v2/everything?q=${q}&language=en&sortBy=publishedAt&pageSize=20&apiKey=${apiKey}`,
+          { headers: { "User-Agent": "AETHEX-Medical-Platform/1.0" } }
+        );
         const json = await resp.json() as any;
-        if (json.articles) { newsCache = { data: json.articles, fetchedAt: now }; }
-      } catch { /* fallback to mock */ }
+        if (json.status === "error") {
+          req.log.warn({ code: json.code, message: json.message }, "NewsAPI error");
+        }
+        if (json.articles && json.articles.length > 0) {
+          newsCache = { data: json.articles, fetchedAt: now };
+        }
+      } catch (err) {
+        req.log.warn({ err }, "NewsAPI fetch failed — using demo news");
+      }
     }
 
     let items = newsCache.data.length > 0 ? newsCache.data : MOCK_NEWS;

@@ -145,7 +145,9 @@ export function Footer() {
               style={{ background: "linear-gradient(135deg,rgba(0,122,255,0.35),rgba(0,194,168,0.35))", border: "1px solid rgba(255,255,255,0.12)" }}>
               <span className="text-[11px] font-bold tracking-tight" style={{ color: "rgba(255,255,255,0.6)" }}>CT</span>
             </div>
-            <span className="text-sm font-semibold tracking-wide" style={{ color: "rgba(255,255,255,0.3)" }}>Clavix Technologies Pvt Ltd</span>
+            <a href="https://clavix.in" target="_blank" rel="noopener noreferrer"
+              className="text-sm font-semibold tracking-wide hover:opacity-70 transition-opacity"
+              style={{ color: "rgba(255,255,255,0.3)" }}>Clavix Technologies Pvt Ltd</a>
           </div>
         </div>
       </div>

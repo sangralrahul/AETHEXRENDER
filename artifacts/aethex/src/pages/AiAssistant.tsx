@@ -898,98 +898,116 @@ export default function AiAssistant() {
       const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const pageW = doc.internal.pageSize.getWidth();
       const pageH = doc.internal.pageSize.getHeight();
-      const margin = 14;
+      const margin = 16;
       const contentW = pageW - margin * 2;
       let y = 0;
 
-      // Header bar
-      doc.setFillColor(8, 20, 58);
-      doc.rect(0, 0, pageW, 22, "F");
+      // White page background
+      doc.setFillColor(255, 255, 255);
+      doc.rect(0, 0, pageW, pageH, "F");
+
+      // Header bar — dark navy with white text (readable on dark bg)
+      doc.setFillColor(10, 24, 70);
+      doc.rect(0, 0, pageW, 24, "F");
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
-      doc.setTextColor(100, 200, 255);
-      doc.text("Cadus AI", margin, 14);
+      doc.setTextColor(255, 255, 255);
+      doc.text("Cadus AI", margin, 15);
       const modeLabel = chatMode && chatMode !== "normal"
         ? chatMode.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())
         : "Clinical Report";
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
-      doc.setTextColor(160, 190, 230);
-      doc.text(`AI ${modeLabel}`, margin + 30, 14);
+      doc.setTextColor(180, 210, 255);
+      doc.text(`· AI ${modeLabel}`, margin + 28, 15);
       const dateStr = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
-      doc.text(dateStr, pageW - margin, 14, { align: "right" });
+      doc.setTextColor(200, 220, 255);
+      doc.text(dateStr, pageW - margin, 15, { align: "right" });
 
-      y = 30;
-      const firstUserMsg = messages.find(m => m.role === ChatMessageRole.user)?.content?.slice(0, 80) ?? "Clinical Report";
+      // Teal accent stripe under header
+      doc.setFillColor(0, 188, 168);
+      doc.rect(0, 24, pageW, 1.5, "F");
+
+      y = 34;
+      const firstUserMsg = messages.find(m => m.role === ChatMessageRole.user)?.content?.slice(0, 90) ?? "Clinical Report";
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(13);
-      doc.setTextColor(235, 245, 255);
-      const titleLines = doc.splitTextToSize(`Cadus AI — ${firstUserMsg}`, contentW);
+      doc.setFontSize(14);
+      doc.setTextColor(10, 24, 70);
+      const titleLines = doc.splitTextToSize(firstUserMsg, contentW);
       doc.text(titleLines, margin, y);
-      y += titleLines.length * 6 + 3;
+      y += titleLines.length * 6.5 + 2;
 
-      doc.setDrawColor(50, 100, 200);
-      doc.setLineWidth(0.4);
+      doc.setDrawColor(0, 188, 168);
+      doc.setLineWidth(0.5);
       doc.line(margin, y, pageW - margin, y);
-      y += 6;
+      y += 7;
 
       const checkNewPage = (needed: number) => {
-        if (y + needed > pageH - 20) {
+        if (y + needed > pageH - 18) {
           doc.addPage();
-          doc.setFillColor(8, 20, 58);
-          doc.rect(0, 0, pageW, 10, "F");
-          y = 18;
+          // White background on new page
+          doc.setFillColor(255, 255, 255);
+          doc.rect(0, 0, pageW, pageH, "F");
+          // Thin header strip
+          doc.setFillColor(10, 24, 70);
+          doc.rect(0, 0, pageW, 8, "F");
+          doc.setFillColor(0, 188, 168);
+          doc.rect(0, 8, pageW, 1, "F");
+          y = 16;
         }
       };
 
       const lines = content.split("\n");
       for (const line of lines) {
         const stripped = line.trimStart();
-        if (stripped === "") { y += 2; continue; }
+        if (stripped === "") { y += 3; continue; }
 
         if (stripped.startsWith("# ")) {
+          checkNewPage(12);
+          y += 4;
+          doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(10, 24, 70);
+          const wrapped = doc.splitTextToSize(stripped.slice(2), contentW);
+          doc.text(wrapped, margin, y); y += wrapped.length * 6.5 + 2;
+        } else if (stripped.startsWith("## ")) {
           checkNewPage(10);
           y += 3;
-          doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(160, 210, 255);
-          const wrapped = doc.splitTextToSize(stripped.slice(2), contentW);
-          doc.text(wrapped, margin, y); y += wrapped.length * 6 + 2;
-        } else if (stripped.startsWith("## ")) {
+          doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(0, 100, 130);
+          const wrapped = doc.splitTextToSize(stripped.slice(3), contentW);
+          doc.text(wrapped, margin, y); y += wrapped.length * 5.8 + 2;
+        } else if (stripped.startsWith("### ")) {
           checkNewPage(9);
           y += 2;
-          doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(120, 185, 255);
-          const wrapped = doc.splitTextToSize(stripped.slice(3), contentW);
-          doc.text(wrapped, margin, y); y += wrapped.length * 5.5 + 2;
-        } else if (stripped.startsWith("### ")) {
-          checkNewPage(8);
-          y += 1;
-          doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(160, 210, 255);
+          doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(30, 80, 140);
           const wrapped = doc.splitTextToSize(stripped.slice(4), contentW);
-          doc.text(wrapped, margin, y); y += wrapped.length * 5 + 1;
+          doc.text(wrapped, margin, y); y += wrapped.length * 5.2 + 1;
         } else if (stripped.startsWith("- ") || stripped.startsWith("• ") || stripped.match(/^\d+\.\s/)) {
           checkNewPage(6);
           const bulletText = stripped.startsWith("- ") ? stripped.slice(2) : stripped.startsWith("• ") ? stripped.slice(2) : stripped.replace(/^\d+\.\s/, "");
           const clean = bulletText.replace(/\*\*(.*?)\*\*/g, "$1");
-          doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(210, 230, 255);
-          const wrapped = doc.splitTextToSize(`  •  ${clean}`, contentW - 4);
-          doc.text(wrapped, margin + 2, y); y += wrapped.length * 4.8 + 0.5;
+          doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(25, 35, 55);
+          const wrapped = doc.splitTextToSize(`• ${clean}`, contentW - 5);
+          doc.text(wrapped, margin + 3, y); y += wrapped.length * 5 + 0.8;
         } else {
           checkNewPage(6);
           const clean = stripped.replace(/\*\*(.*?)\*\*/g, "$1");
-          doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(210, 230, 255);
+          doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(25, 35, 55);
           const wrapped = doc.splitTextToSize(clean, contentW);
-          doc.text(wrapped, margin, y); y += wrapped.length * 4.8 + 0.5;
+          doc.text(wrapped, margin, y); y += wrapped.length * 5 + 0.8;
         }
       }
 
-      // Footer on last page
+      // Footer on every page
       const totalPages = doc.getNumberOfPages();
       for (let p = 1; p <= totalPages; p++) {
         doc.setPage(p);
-        doc.setFillColor(10, 18, 48);
-        doc.rect(0, pageH - 12, pageW, 12, "F");
-        doc.setFont("helvetica", "normal"); doc.setFontSize(6.5); doc.setTextColor(90, 120, 170);
-        doc.text("Generated by Cadus AI — AETHEX Medical Platform  |  For clinical reference only. Not a substitute for professional medical judgment.", margin, pageH - 5);
-        doc.text(`Page ${p} of ${totalPages}`, pageW - margin, pageH - 5, { align: "right" });
+        doc.setFillColor(240, 243, 250);
+        doc.rect(0, pageH - 11, pageW, 11, "F");
+        doc.setDrawColor(200, 210, 230);
+        doc.setLineWidth(0.3);
+        doc.line(0, pageH - 11, pageW, pageH - 11);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(6.5); doc.setTextColor(60, 80, 120);
+        doc.text("Generated by Cadus AI — AETHEX Medical Platform  |  For clinical reference only. Not a substitute for professional medical judgment.", margin, pageH - 4.5);
+        doc.text(`Page ${p} of ${totalPages}`, pageW - margin, pageH - 4.5, { align: "right" });
       }
 
       doc.save(`cadus-report-${Date.now()}.pdf`);
@@ -1796,12 +1814,30 @@ export default function AiAssistant() {
                         </div>
                       )}
                       {(msg as ExtendedMessage).isDeepResearch && (msg as ExtendedMessage).researchReport && (
-                        <ResearchReportCard
-                          report={(msg as ExtendedMessage).researchReport!}
-                          sources={(msg as ExtendedMessage).researchSources ?? []}
-                          queries={(msg as ExtendedMessage).researchQueries ?? []}
-                          hasGoogleSearch={(msg as ExtendedMessage).hasGoogleSearch ?? false}
-                        />
+                        <div>
+                          <ResearchReportCard
+                            report={(msg as ExtendedMessage).researchReport!}
+                            sources={(msg as ExtendedMessage).researchSources ?? []}
+                            queries={(msg as ExtendedMessage).researchQueries ?? []}
+                            hasGoogleSearch={(msg as ExtendedMessage).hasGoogleSearch ?? false}
+                          />
+                          <div className="flex items-center gap-2 px-4 py-3">
+                            <button type="button"
+                              onClick={() => navigator.clipboard.writeText((msg as ExtendedMessage).researchReport!)}
+                              className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-white/8"
+                              style={{ color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                              <RefreshCw className="w-3 h-3" /> Copy Report
+                            </button>
+                            <button type="button"
+                              onClick={() => handleDownloadPdf((msg as ExtendedMessage).researchReport!, String(idx))}
+                              disabled={isExportingPdf === String(idx)}
+                              className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-white/8"
+                              style={{ color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                              {isExportingPdf === String(idx) ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
+                              {isExportingPdf === String(idx) ? "Generating..." : "Export PDF"}
+                            </button>
+                          </div>
+                        </div>
                       )}
                       {(msg as ExtendedMessage).imageUrl && (
                         <div className="px-4 pb-4 pt-2">

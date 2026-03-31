@@ -9,9 +9,9 @@ interface CadusLogoProps {
 }
 
 const SIZES = {
-  sm: { box: 32, orbit: 13, orb: 2.5 },
-  md: { box: 80, orbit: 33, orb: 3.5 },
-  lg: { box: 112, orbit: 46, orb: 4.5 },
+  sm: { box: 40, orbit: 16, orb: 2.5 },
+  md: { box: 88, orbit: 36, orb: 3.5 },
+  lg: { box: 120, orbit: 50, orb: 4.5 },
 };
 
 export default function CadusLogo({
@@ -26,49 +26,34 @@ export default function CadusLogo({
       className={cn("relative flex items-center justify-center shrink-0", className)}
       style={{ width: box, height: box }}
     >
-      {/* Outer ambient glow ring (thinking only) */}
+      {/* Ambient glow ring when thinking */}
       {thinking && (
         <div style={{
           position: "absolute",
-          inset: -6,
+          inset: -8,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(0,194,168,0.22) 0%, transparent 68%)",
+          background: "radial-gradient(circle, rgba(0,194,168,0.2) 0%, transparent 68%)",
           animation: "cadus-glow-ring-pulse 2s ease-in-out infinite",
           pointerEvents: "none",
         }} />
       )}
 
-      {/* Dark pill background so the gold image renders crisply on any bg */}
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        borderRadius: "50%",
-        background: thinking
-          ? "radial-gradient(circle, rgba(0,20,30,0.92) 55%, rgba(0,180,150,0.08) 100%)"
-          : "radial-gradient(circle, rgba(0,15,25,0.88) 55%, rgba(0,0,0,0.0) 100%)",
-        boxShadow: thinking
-          ? "0 0 12px rgba(0,194,168,0.35), 0 0 28px rgba(168,85,247,0.18)"
-          : "0 0 4px rgba(0,194,168,0.12)",
-        transition: "box-shadow 0.4s ease, background 0.4s ease",
-      }} />
-
-      {/* Golden caduceus image */}
+      {/* Golden caduceus — mix-blend-mode:screen removes the black background */}
       <img
         src={cadusGoldenImg}
         alt="Cadus AI"
         draggable={false}
         style={{
-          position: "relative",
-          zIndex: 1,
-          width: box * 0.78,
-          height: box * 0.78,
+          width: box,
+          height: box,
           objectFit: "contain",
+          mixBlendMode: "screen",
           animation: thinking
             ? "cadus-golden-think 1.8s ease-in-out infinite"
             : "cadus-golden-idle 5s ease-in-out infinite",
           filter: thinking
-            ? "drop-shadow(0 0 6px rgba(255,200,60,0.75)) drop-shadow(0 0 14px rgba(0,194,168,0.5)) brightness(1.25)"
-            : "drop-shadow(0 0 2px rgba(255,200,60,0.4)) brightness(1.0)",
+            ? "drop-shadow(0 0 8px rgba(255,200,60,0.8)) drop-shadow(0 0 18px rgba(0,194,168,0.55)) brightness(1.3) saturate(1.2)"
+            : "drop-shadow(0 0 3px rgba(255,200,60,0.5)) brightness(1.05)",
           transition: "filter 0.4s ease",
           userSelect: "none",
         }}

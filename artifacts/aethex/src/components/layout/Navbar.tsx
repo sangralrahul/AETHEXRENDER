@@ -133,7 +133,7 @@ export function Navbar() {
                 { href: "/shop", label: "Shop" },
                 { href: "/study-hub", label: "Study Hub", lg: true },
                 { href: "/blog", label: "Blog", lg: true },
-                { href: "/tools", label: "Tools", xl: true },
+                { href: "/tools", label: "Tools", lg: true },
                 { href: "/news", label: "News", xl: true },
               ].map((item) => (
                 <Link

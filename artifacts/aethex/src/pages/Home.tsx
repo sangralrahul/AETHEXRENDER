@@ -25,6 +25,36 @@ const categoryIconMap: Record<string, React.ElementType> = {
   Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2, Trophy, Zap
 };
 
+const categoryGradients: Record<string, string> = {
+  scrubs:           "from-sky-500 to-sky-700",
+  aprons:           "from-slate-500 to-slate-700",
+  books:            "from-amber-600 to-amber-800",
+  stethoscopes:     "from-indigo-600 to-indigo-800",
+  surgical:         "from-red-600 to-red-800",
+  equipment:        "from-teal-500 to-teal-700",
+  "cardiac-care":   "from-rose-600 to-rose-800",
+  orthopaedic:      "from-stone-600 to-stone-800",
+  neurology:        "from-violet-600 to-violet-800",
+  gastroenterology: "from-orange-500 to-orange-800",
+  nephrology:       "from-blue-500 to-blue-800",
+  pulmonology:      "from-sky-500 to-blue-700",
+  ophthalmology:    "from-cyan-600 to-cyan-800",
+  paediatric:       "from-pink-600 to-pink-800",
+  dermatology:      "from-fuchsia-500 to-fuchsia-800",
+  ent:              "from-purple-600 to-purple-800",
+  gynaecology:      "from-pink-500 to-rose-700",
+  endocrinology:    "from-yellow-500 to-yellow-700",
+  emergency:        "from-red-500 to-red-800",
+  radiology:        "from-zinc-600 to-zinc-900",
+  oncology:         "from-teal-700 to-teal-900",
+  anaesthesia:      "from-slate-500 to-slate-700",
+  physiotherapy:    "from-green-500 to-green-800",
+  "sports-medicine":"from-lime-600 to-green-700",
+  psychiatry:       "from-indigo-500 to-purple-700",
+  urology:          "from-amber-500 to-orange-700",
+  nutrition:        "from-green-400 to-teal-600",
+};
+
 const trustedBrands = [
   { name: "3M Littmann",      url: "https://www.littmann.com" },
   { name: "OMRON",            url: "https://www.omron-healthcare.com/in/" },
@@ -573,20 +603,20 @@ export default function Home() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {(categories || []).map((cat: any) => {
                 const Icon = categoryIconMap[cat.iconName as string] || Activity;
+                const gradient = categoryGradients[cat.slug] ?? "from-blue-500 to-blue-700";
                 return (
                   <Link
                     key={cat.slug}
                     href={`/shop?category=${cat.slug}`}
-                    className="group flex flex-col items-center p-5 rounded-2xl transition-all hover:-translate-y-1"
+                    className="group flex flex-col items-center p-5 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-md"
                     style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.1)" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,122,255,0.3)"; (e.currentTarget as HTMLElement).style.background = "#FFFFFF"; }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,122,255,0.2)"; (e.currentTarget as HTMLElement).style.background = "#FFFFFF"; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(60,60,67,0.1)"; (e.currentTarget as HTMLElement).style.background = "#F2F2F7"; }}
                   >
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-all group-hover:scale-110"
-                      style={{ background: "#FFFFFF", color: "#007AFF" }}>
-                      <Icon className="w-7 h-7" />
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-all group-hover:scale-110 bg-gradient-to-br ${gradient}`}>
+                      <Icon className="w-7 h-7 text-white" />
                     </div>
-                    <span className="text-sm font-semibold text-center" style={{ color: "#1C1C1E" }}>{cat.name}</span>
+                    <span className="text-sm font-semibold text-center leading-tight" style={{ color: "#1C1C1E" }}>{cat.name}</span>
                   </Link>
                 );
               })}

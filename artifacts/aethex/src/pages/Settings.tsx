@@ -586,11 +586,11 @@ function SectionAbout() {
       <Card>
         <SectionTitle>About</SectionTitle>
         <p className="text-sm leading-relaxed" style={{ color: "rgba(120,170,220,0.55)" }}>
-          A product of nexrya technologies pvt ltd. Cadus provides AI-powered clinical assistance including diagnostic support, drug interaction checking, and medical image generation. All outputs must be verified by qualified medical professionals before clinical use.
+          A product of Clavix Technologies Pvt Ltd. Cadus provides AI-powered clinical assistance including diagnostic support, drug interaction checking, and medical image generation. All outputs must be verified by qualified medical professionals before clinical use.
         </p>
         <div className="mt-4 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
           <p className="text-xs mb-1" style={{ color: "rgba(180,215,255,0.6)" }}>Feedback & Support</p>
-          <p className="text-sm" style={{ color: "rgba(0,200,255,0.55)" }}>support@nexrya.in</p>
+          <p className="text-sm" style={{ color: "rgba(0,200,255,0.55)" }}>support@clavixtech.in</p>
         </div>
       </Card>
 
@@ -756,7 +756,7 @@ export default function SettingsPage() {
               })}
             </nav>
             <div className="px-5 pt-4 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-              <p className="text-[10px]" style={{ color: "rgba(0,200,255,0.2)" }}>Cadus AI · v3.0.0 · nexrya technologies</p>
+              <p className="text-[10px]" style={{ color: "rgba(0,200,255,0.2)" }}>Cadus AI · v3.0.0 · Clavix Technologies</p>
             </div>
           </aside>
 

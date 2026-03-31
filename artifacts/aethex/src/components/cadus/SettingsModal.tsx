@@ -619,14 +619,14 @@ function SectionAbout() {
       <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
         <p className="text-sm font-semibold mb-2" style={{ color: "rgba(200,235,255,0.9)" }}>About</p>
         <p className="text-xs leading-relaxed" style={{ color: "rgba(120,170,220,0.55)" }}>
-          A product of nexrya technologies pvt ltd. Cadus provides AI-powered clinical assistance including diagnostic support, drug interaction checking, and medical image generation. All outputs must be verified by qualified medical professionals before clinical use.
+          A product of Clavix Technologies Pvt Ltd. Cadus provides AI-powered clinical assistance including diagnostic support, drug interaction checking, and medical image generation. All outputs must be verified by qualified medical professionals before clinical use.
         </p>
       </div>
 
       {/* Feedback */}
       <div>
         <p className="text-xs font-semibold mb-1" style={{ color: "rgba(180,215,255,0.7)" }}>Feedback email</p>
-        <p className="text-xs" style={{ color: "rgba(0,200,255,0.55)" }}>support@nexrya.in</p>
+        <p className="text-xs" style={{ color: "rgba(0,200,255,0.55)" }}>support@clavixtech.in</p>
       </div>
 
       {/* Status */}

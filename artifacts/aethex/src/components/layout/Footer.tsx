@@ -144,12 +144,11 @@ export function Footer() {
         <div className="mt-8 pt-6 flex flex-col items-center gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.2)" }}>A product of</p>
           <div className="flex items-center gap-3">
-            <img
-              src={`${import.meta.env.BASE_URL}nexrya-logo.jpg`}
-              alt="nexrya technologies logo"
-              className="w-8 h-8 object-contain brightness-0 invert opacity-40"
-            />
-            <span className="text-sm font-semibold tracking-wide" style={{ color: "rgba(255,255,255,0.3)" }}>nexrya technologies pvt ltd</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+              style={{ background: "linear-gradient(135deg,rgba(0,122,255,0.35),rgba(0,194,168,0.35))", border: "1px solid rgba(255,255,255,0.12)" }}>
+              <span className="text-[11px] font-bold tracking-tight" style={{ color: "rgba(255,255,255,0.6)" }}>CT</span>
+            </div>
+            <span className="text-sm font-semibold tracking-wide" style={{ color: "rgba(255,255,255,0.3)" }}>Clavix Technologies Pvt Ltd</span>
           </div>
         </div>
       </div>

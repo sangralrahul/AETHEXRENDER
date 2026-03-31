@@ -123,16 +123,13 @@ export function Footer() {
         </div>
 
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-6" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-          <div className="text-sm flex flex-col sm:flex-row gap-2 sm:gap-6 text-center sm:text-left" style={{ color: "rgba(255,255,255,0.35)" }}>
-            <span>© {new Date().getFullYear()} aethex. All rights reserved.</span>
-            <span className="hidden sm:inline">•</span>
-            <span>Medicine Made Effortless.</span>
-            <span className="hidden sm:inline">•</span>
-            <span>Registered in India</span>
+          <div className="text-sm text-center sm:text-left" style={{ color: "rgba(255,255,255,0.35)" }}>
+            © 2026 Clavix Technologies Pvt Ltd. All rights reserved.
           </div>
-          <div className="flex gap-6 text-sm" style={{ color: "rgba(255,255,255,0.35)" }}>
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm" style={{ color: "rgba(255,255,255,0.35)" }}>
+            <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link href="/medical-disclaimer" className="hover:text-white transition-colors">Medical Disclaimer</Link>
           </div>
         </div>
 

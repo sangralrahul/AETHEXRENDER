@@ -1,0 +1,168 @@
+Upgrade my AETHEX website by implementing the following modules in order of priority: **Conversion Layer (10), Legal Pages (9), Advanced Features (8), Branding (7), SEO/Blog (6)**.
+
+Maintain a clean, medical-grade UI (blue/green palette), responsive design, and do not break existing features.
+
+---
+
+# 1) CONVERSION LAYER (HIGH PRIORITY)
+
+Add strong CTAs across the website:
+
+**Global CTA buttons:**
+
+* "Try AI Assistant"
+* "Explore Clinical Tools"
+* "Search Drugs"
+* "Upgrade to Pro"
+
+**Placement:**
+
+* Hero section
+* Navbar (highlighted button)
+* After every major section
+* Footer
+
+**Behavior:**
+
+* Smooth scroll or route to relevant section/page
+* Add hover effects and subtle animations
+
+---
+
+# 2) LEGAL PAGES (REQUIRED)
+
+Create 3 new pages:
+
+### Privacy Policy
+
+### Terms of Service
+
+### Medical Disclaimer
+
+**Medical Disclaimer content:**
+"This platform provides AI-generated medical information for educational purposes only and is not a substitute for professional medical advice."
+
+**Footer update:**
+Add links:
+
+* Privacy Policy
+* Terms
+* Disclaimer
+
+Footer text:
+"© 2026 Clavix Technologies Pvt Ltd. All rights reserved."
+
+---
+
+# 3) ADVANCED FEATURES
+
+### (A) Symptom → Disease Predictor
+
+* Input: symptoms (multi-select or text)
+* Output:
+
+  * Possible conditions
+  * Confidence level
+  * Suggested next steps
+
+### (B) Drug Interaction Checker
+
+* Input: multiple drugs
+* Output:
+
+  * Interaction warnings
+  * Severity level
+
+### (C) User Accounts
+
+* Sign up / login system
+* Save:
+
+  * Search history
+  * AI chats
+  * Bookmarked drugs/tools
+
+### (D) Voice Input
+
+* Add mic button in AI chat
+* Convert speech → text input
+
+---
+
+# 4) BRANDING IMPROVEMENT
+
+### Visual system:
+
+* Primary color: Medical blue (#0A84FF or similar)
+* Secondary: green accents
+* Clean, minimal UI
+
+### Add:
+
+* Logo area (top-left)
+* Tagline under logo:
+  "AI-powered clinical intelligence platform"
+
+### Consistency:
+
+* Same font across pages
+* Consistent button styles
+* Card-based layout
+
+---
+
+# 5) SEO + BLOG SYSTEM
+
+### Create Blog Section
+
+**Routes:**
+/blog
+/blog/[slug]
+
+### Features:
+
+* Blog listing page
+* Individual article page
+* Search + categories
+
+### SEO optimization:
+
+* Dynamic meta titles/descriptions
+* Open Graph tags
+* Structured headings (H1, H2)
+
+### Add 3 starter articles:
+
+1. "Symptoms of Dengue (2026 Guide)"
+2. "Paracetamol vs Ibuprofen"
+3. "Common Causes of Fever"
+
+### Internal linking:
+
+* Link articles → tools and drug pages
+
+---
+
+# TECHNICAL REQUIREMENTS
+
+* Use modular components (React if applicable)
+* Create reusable components:
+
+  * CTAButton
+  * ToolCard
+  * BlogCard
+* Ensure fast load (optimize images, lazy load)
+* Mobile-first responsive design
+* Add basic animations (fade/slide)
+
+---
+
+# FINAL CHECK
+
+* No UI breakage
+* All links working
+* No leftover placeholder text
+* Consistent branding across all pages
+* Fully responsive (mobile + desktop)
+
+After implementation, test navigation, forms, and feature flows.

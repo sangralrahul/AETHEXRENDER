@@ -46,6 +46,9 @@ import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import Onboarding from "@/pages/Onboarding";
 import SettingsPage from "@/pages/Settings";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsOfService from "@/pages/TermsOfService";
+import MedicalDisclaimer from "@/pages/MedicalDisclaimer";
 
 import SellerRegister from "@/pages/seller/Register";
 import SellerLogin from "@/pages/seller/Login";
@@ -158,6 +161,11 @@ function Router() {
 
                 {/* Contact */}
                 <Route path="/contact" component={Contact} />
+
+                {/* Legal */}
+                <Route path="/privacy-policy" component={PrivacyPolicy} />
+                <Route path="/terms-of-service" component={TermsOfService} />
+                <Route path="/medical-disclaimer" component={MedicalDisclaimer} />
 
                 {/* Blog & News */}
                 <Route path="/blog/:slug" component={BlogPost} />

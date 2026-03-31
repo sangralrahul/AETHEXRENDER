@@ -3,8 +3,8 @@ import { Link } from "wouter";
 import {
   Pill, Calculator, Weight, BookOpen, Brain, Stethoscope,
   ClipboardList, FlaskConical, Activity, Scan, FileText,
-  GraduationCap, Heart, MessageSquare, Search, X,
-  ChevronRight, Zap, Lock, ArrowUpRight,
+  GraduationCap, Heart, Search, X,
+  Zap, Lock, ArrowUpRight,
 } from "lucide-react";
 
 /* ── Tool data ────────────────────────────────────────────────────── */
@@ -134,17 +134,6 @@ const TOOLS: Tool[] = [
     desc: "ASCVD, CHADS2, Wells, CURB-65 and 20+ validated clinical risk scoring tools.",
     category: "calculator",
   },
-  {
-    id: "medical-chat",
-    icon: <MessageSquare className="w-6 h-6" />,
-    title: "Medical Chat Assistant",
-    desc: "Quick-access ZYRA AI for clinical queries, drug info, and patient education.",
-    category: "ai",
-    badge: "ZYRA",
-    badgeColor: "#00C2A8",
-    href: "/ai-assistant",
-    action: "ai-chat",
-  },
 ];
 
 const CATEGORIES = [
@@ -251,7 +240,7 @@ export default function ClinicalTools() {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
             style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)" }}>
             <Zap className="w-3.5 h-3.5 text-[#00C2A8]" />
-            <span className="text-[12px] font-medium text-[#00C2A8]">14 clinical tools available</span>
+            <span className="text-[12px] font-medium text-[#00C2A8]">13 clinical tools available</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight"
@@ -340,27 +329,6 @@ export default function ClinicalTools() {
           </div>
         )}
 
-        {/* ZYRA CTA Banner */}
-        <div className="mt-12 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={{
-            background: "linear-gradient(135deg, rgba(0,194,168,0.12) 0%, rgba(124,58,237,0.10) 100%)",
-            border: "1px solid rgba(0,194,168,0.2)",
-          }}>
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Brain className="w-5 h-5 text-[#00C2A8]" />
-              <span className="text-[13px] font-semibold text-[#00C2A8]">ZYRA AI Assistant</span>
-            </div>
-            <h3 className="text-xl font-bold text-white/90 mb-1">Need a deeper clinical answer?</h3>
-            <p className="text-sm text-white/45">Ask ZYRA any medical question — diagnoses, drug info, study help and more.</p>
-          </div>
-          <Link href="/ai-assistant">
-            <button className="shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105"
-              style={{ background: "#00C2A8", color: "#0D1117" }}>
-              Open ZYRA <ChevronRight className="w-4 h-4" />
-            </button>
-          </Link>
-        </div>
       </div>
     </div>
   );

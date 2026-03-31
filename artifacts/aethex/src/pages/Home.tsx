@@ -26,7 +26,14 @@ const categoryIconMap: Record<string, React.ElementType> = {
 };
 
 const trustedBrands = [
-  "3M Littmann", "OMRON", "Accu-Chek", "Grey's Anatomy", "DAMS", "MDF Instruments", "Dr. Trust", "SurgiMed"
+  { name: "3M Littmann",      url: "https://www.littmann.com" },
+  { name: "OMRON",            url: "https://www.omron-healthcare.com/in/" },
+  { name: "Accu-Chek",        url: "https://www.accu-chek.in" },
+  { name: "Grey's Anatomy",   url: "https://www.barco.com/en/greys-anatomy" },
+  { name: "DAMS",             url: "https://www.damsdelhi.com" },
+  { name: "MDF Instruments",  url: "https://mdfinstruments.com" },
+  { name: "Dr. Trust",        url: "https://www.drtrust.in" },
+  { name: "SurgiMed",         url: "https://surgimed.in" },
 ];
 
 const testimonials = [
@@ -584,10 +591,21 @@ export default function Home() {
           <p className="text-center text-xs uppercase tracking-widest mb-6" style={{ color: "#AEAEB2" }}>Trusted brands on aethex</p>
           <div className="flex flex-wrap justify-center gap-3">
             {trustedBrands.map((brand, idx) => (
-              <div key={idx} className="px-5 py-2.5 rounded-xl text-sm transition-all cursor-default"
-                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)", color: "#636366" }}>
-                {brand}
-              </div>
+              <a key={idx} href={brand.url} target="_blank" rel="noopener noreferrer"
+                className="px-5 py-2.5 rounded-xl text-sm transition-all"
+                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)", color: "#636366", textDecoration: "none" }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "#007AFF";
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#007AFF";
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 2px 12px rgba(0,122,255,0.12)";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(60,60,67,0.12)";
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#636366";
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "none";
+                }}>
+                {brand.name}
+              </a>
             ))}
           </div>
         </div>

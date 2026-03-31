@@ -107,11 +107,11 @@ export default function Products() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col lg:flex-row gap-10">
-          
-          {/* Mobile Filter Toggle */}
+
+          {/* ── Mobile filter toggle button ── */}
           <div className="lg:hidden flex gap-4">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="flex-1 rounded-xl bg-white shadow-sm border-border/60 h-12"
               onClick={() => setIsMobileFiltersOpen(true)}
             >
@@ -119,62 +119,76 @@ export default function Products() {
             </Button>
           </div>
 
-          {/* Sidebar / Filters - Sticky */}
-          <div className={`
-            fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm lg:static lg:bg-transparent lg:z-auto lg:block lg:w-64 shrink-0
-            ${isMobileFiltersOpen ? 'block' : 'hidden'}
-          `}>
-            <div className="absolute inset-y-0 left-0 w-[280px] bg-white shadow-2xl p-6 lg:sticky lg:top-[100px] lg:w-auto lg:shadow-none lg:p-0 h-full overflow-y-auto lg:overflow-visible lg:h-auto rounded-r-3xl lg:rounded-none">
-              <div className="flex justify-between items-center mb-8 lg:hidden">
-                <h2 className="font-display font-bold text-2xl">Filters</h2>
-                <Button variant="ghost" size="icon" onClick={() => setIsMobileFiltersOpen(false)} className="rounded-full bg-slate-100">
-                  <X className="w-5 h-5" />
-                </Button>
+          {/* ── Mobile drawer overlay (portal-like fixed layer) ── */}
+          {isMobileFiltersOpen && (
+            <div className="fixed inset-0 z-50 lg:hidden" onClick={() => setIsMobileFiltersOpen(false)}>
+              <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+              <div
+                className="absolute inset-y-0 left-0 w-[300px] bg-white shadow-2xl p-6 overflow-y-auto rounded-r-3xl z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex justify-between items-center mb-8">
+                  <h2 className="font-display font-bold text-2xl">Filters</h2>
+                  <Button variant="ghost" size="icon" onClick={() => setIsMobileFiltersOpen(false)} className="rounded-full bg-slate-100">
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
+                {/* Search */}
+                <div className="mb-10">
+                  <h3 className="font-bold text-sm uppercase tracking-widest text-slate-400 mb-4">Search</h3>
+                  <form onSubmit={handleSearchSubmit} className="relative">
+                    <input type="text" value={localSearch} onChange={(e) => setLocalSearch(e.target.value)} placeholder="Search products..."
+                      className="w-full pl-10 pr-4 py-3 bg-white border border-border/80 shadow-sm rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-sm font-medium" />
+                    <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  </form>
+                </div>
+                {/* Categories */}
+                <div className="mb-8">
+                  <h3 className="font-bold text-sm uppercase tracking-widest text-slate-400 mb-4">Categories</h3>
+                  <div className="space-y-2">
+                    <button onClick={() => setCategory("")} className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all font-medium flex items-center justify-between group ${!categoryFilter ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white border border-slate-200 text-slate-600 hover:border-primary/50 hover:bg-slate-50'}`}>
+                      <span>All Categories</span>
+                    </button>
+                    {categories?.map((cat) => (
+                      <button key={cat.id} onClick={() => setCategory(cat.slug)} className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all font-medium flex items-center justify-between group ${categoryFilter === cat.slug ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white border border-slate-200 text-slate-600 hover:border-primary/50 hover:bg-slate-50'}`}>
+                        <span>{cat.name}</span>
+                        <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${categoryFilter === cat.slug ? 'bg-white/20' : 'bg-slate-100 group-hover:bg-primary/10'}`}>{cat.productCount}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
+            </div>
+          )}
 
+          {/* ── Desktop sidebar — sticky, independently scrollable ── */}
+          <div className="hidden lg:block w-64 shrink-0">
+            <div className="sticky top-[88px] max-h-[calc(100vh-100px)] overflow-y-auto pr-1 pb-10">
               {/* Search */}
-              <div className="mb-10">
+              <div className="mb-8">
                 <h3 className="font-bold text-sm uppercase tracking-widest text-slate-400 mb-4">Search</h3>
                 <form onSubmit={handleSearchSubmit} className="relative">
-                  <input
-                    type="text"
-                    value={localSearch}
-                    onChange={(e) => setLocalSearch(e.target.value)}
-                    placeholder="Search products..."
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-border/80 shadow-sm rounded-xl focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-sm font-medium"
-                  />
+                  <input type="text" value={localSearch} onChange={(e) => setLocalSearch(e.target.value)} placeholder="Search products..."
+                    className="w-full pl-10 pr-4 py-3 bg-white border border-border/80 shadow-sm rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-sm font-medium" />
                   <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 </form>
               </div>
-
               {/* Categories */}
-              <div className="mb-8">
+              <div>
                 <h3 className="font-bold text-sm uppercase tracking-widest text-slate-400 mb-4">Categories</h3>
                 <div className="space-y-2">
-                  <button
-                    onClick={() => setCategory("")}
-                    className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all font-medium flex items-center justify-between group ${!categoryFilter ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white border border-slate-200 text-slate-600 hover:border-primary/50 hover:bg-slate-50'}`}
-                  >
+                  <button onClick={() => setCategory("")} className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all font-medium flex items-center justify-between group ${!categoryFilter ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white border border-slate-200 text-slate-600 hover:border-primary/50 hover:bg-slate-50'}`}>
                     <span>All Categories</span>
                   </button>
                   {categories?.map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => setCategory(cat.slug)}
-                      className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all font-medium flex items-center justify-between group ${categoryFilter === cat.slug ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white border border-slate-200 text-slate-600 hover:border-primary/50 hover:bg-slate-50'}`}
-                    >
+                    <button key={cat.id} onClick={() => setCategory(cat.slug)} className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all font-medium flex items-center justify-between group ${categoryFilter === cat.slug ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white border border-slate-200 text-slate-600 hover:border-primary/50 hover:bg-slate-50'}`}>
                       <span>{cat.name}</span>
-                      <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${categoryFilter === cat.slug ? 'bg-white/20' : 'bg-slate-100 group-hover:bg-primary/10'}`}>
-                        {cat.productCount}
-                      </span>
+                      <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${categoryFilter === cat.slug ? 'bg-white/20' : 'bg-slate-100 group-hover:bg-primary/10'}`}>{cat.productCount}</span>
                     </button>
                   ))}
                 </div>
               </div>
             </div>
-            
-            {/* Backdrop click to close */}
-            <div className="absolute inset-0 z-[-1] lg:hidden" onClick={() => setIsMobileFiltersOpen(false)} />
           </div>
 
           {/* Product Grid */}

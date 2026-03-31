@@ -761,13 +761,43 @@ export default function Home() {
       <section className="py-10" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs font-semibold uppercase tracking-widest mb-7" style={{ color: "#aeaeb2" }}>Secure Payments via</p>
-          <div className="flex items-center justify-center">
-            <img
-              src={`${import.meta.env.BASE_URL}images/payments/payment-methods.jpg`}
-              alt="UPI, Visa, Mastercard, RuPay, PhonePe, Google Pay, Paytm, Net Banking, Cash on Delivery"
-              className="max-w-full h-auto object-contain"
-              style={{ maxHeight: "90px" }}
-            />
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
+            {[
+              { src: `${import.meta.env.BASE_URL}images/payments/upi.svg`, alt: "UPI", w: "w-16" },
+              { src: `${import.meta.env.BASE_URL}images/payments/visa.svg`, alt: "Visa", w: "w-14" },
+              { src: `${import.meta.env.BASE_URL}images/payments/mastercard.svg`, alt: "Mastercard", w: "w-14" },
+              { src: `${import.meta.env.BASE_URL}images/payments/rupay.svg`, alt: "RuPay", w: "w-16" },
+              { src: `${import.meta.env.BASE_URL}images/payments/phonepe.svg`, alt: "PhonePe", w: "w-20" },
+              { src: `${import.meta.env.BASE_URL}images/payments/gpay.svg`, alt: "Google Pay", w: "w-20" },
+              { src: `${import.meta.env.BASE_URL}images/payments/paytm.svg`, alt: "Paytm", w: "w-16" },
+            ].map((logo) => (
+              <div key={logo.alt} className="flex items-center justify-center h-11 px-3 rounded-xl border border-black/[0.07] bg-white shadow-sm">
+                <img src={logo.src} alt={logo.alt} className={`${logo.w} h-7 object-contain`} />
+              </div>
+            ))}
+            {/* Net Banking */}
+            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm gap-2">
+              <svg viewBox="0 0 24 24" className="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="11" width="20" height="10" rx="1.5" fill="#1A1F71"/>
+                <rect x="4" y="13" width="3" height="6" rx="0.5" fill="white" opacity="0.8"/>
+                <rect x="10.5" y="13" width="3" height="6" rx="0.5" fill="white" opacity="0.8"/>
+                <rect x="17" y="13" width="3" height="6" rx="0.5" fill="white" opacity="0.8"/>
+                <polygon points="12,2 22,11 2,11" fill="#1A1F71"/>
+              </svg>
+              <span className="text-[12px] font-semibold text-[#1A1F71]">Net Banking</span>
+            </div>
+            {/* COD */}
+            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm gap-2">
+              <svg viewBox="0 0 24 24" className="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="7" width="22" height="14" rx="2" fill="#2E7D32"/>
+                <ellipse cx="12" cy="14" rx="4" ry="4" fill="#A5D6A7"/>
+                <ellipse cx="12" cy="14" rx="2.2" ry="2.2" fill="#2E7D32"/>
+                <circle cx="4" cy="14" r="1.5" fill="#A5D6A7"/>
+                <circle cx="20" cy="14" r="1.5" fill="#A5D6A7"/>
+                <rect x="6" y="4" width="12" height="4" rx="1" fill="#1B5E20"/>
+              </svg>
+              <span className="text-[12px] font-semibold text-[#2E7D32]">Cash on Delivery</span>
+            </div>
           </div>
           <p className="text-center text-xs mt-6 flex items-center justify-center gap-1.5" style={{ color: "#aeaeb2" }}>
             <ShieldCheck className="w-3.5 h-3.5 text-[#00C2A8]" />

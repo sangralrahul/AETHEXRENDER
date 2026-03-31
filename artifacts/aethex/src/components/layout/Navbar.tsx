@@ -134,7 +134,7 @@ export function Navbar() {
                 { href: "/study-hub", label: "Study Hub", lg: true },
                 { href: "/blog", label: "Blog", lg: true },
                 { href: "/tools", label: "Tools", lg: true },
-                { href: "/institutions", label: "Colleges & Hospitals", xl: true },
+                { href: "/institutions", label: "Colleges & Hospitals", lg: true },
                 { href: "/news", label: "News", xl: true },
               ].map((item) => (
                 <Link

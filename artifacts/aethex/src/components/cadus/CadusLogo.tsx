@@ -1,4 +1,4 @@
-import cadusGoldenImg from "@assets/2_1774982436152.webp";
+import cadusImg from "@assets/2_1774983076859.png";
 import { cn } from "@/lib/utils";
 
 interface CadusLogoProps {
@@ -9,9 +9,9 @@ interface CadusLogoProps {
 }
 
 const SIZES = {
-  sm: { box: 40, orbit: 16, orb: 2.5 },
-  md: { box: 88, orbit: 36, orb: 3.5 },
-  lg: { box: 120, orbit: 50, orb: 4.5 },
+  sm: { box: 52, orbit: 20, orb: 2.8 },
+  md: { box: 96, orbit: 40, orb: 4 },
+  lg: { box: 136, orbit: 56, orb: 5 },
 };
 
 export default function CadusLogo({
@@ -26,21 +26,25 @@ export default function CadusLogo({
       className={cn("relative flex items-center justify-center shrink-0", className)}
       style={{ width: box, height: box }}
     >
-      {/* Ambient glow ring when thinking */}
-      {thinking && (
-        <div style={{
-          position: "absolute",
-          inset: -8,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(0,194,168,0.2) 0%, transparent 68%)",
-          animation: "cadus-glow-ring-pulse 2s ease-in-out infinite",
-          pointerEvents: "none",
-        }} />
-      )}
+      {/* Outer glow halo — pulses when thinking */}
+      <div style={{
+        position: "absolute",
+        inset: -10,
+        borderRadius: "50%",
+        background: thinking
+          ? "radial-gradient(circle, rgba(255,190,40,0.18) 0%, rgba(0,194,168,0.12) 50%, transparent 72%)"
+          : "radial-gradient(circle, rgba(255,190,40,0.06) 0%, transparent 65%)",
+        animation: thinking
+          ? "cadus-glow-ring-pulse 1.6s ease-in-out infinite"
+          : "cadus-logo-idle-glow 4s ease-in-out infinite",
+        transition: "background 0.5s ease",
+        pointerEvents: "none",
+      }} />
 
-      {/* Golden caduceus — mix-blend-mode:screen removes the black background */}
+      {/* The caduceus image — contrast+brightness pushes bg to pure black,
+          then mix-blend-mode:screen makes pure black transparent */}
       <img
-        src={cadusGoldenImg}
+        src={cadusImg}
         alt="Cadus AI"
         draggable={false}
         style={{
@@ -48,18 +52,19 @@ export default function CadusLogo({
           height: box,
           objectFit: "contain",
           mixBlendMode: "screen",
-          animation: thinking
-            ? "cadus-golden-think 1.8s ease-in-out infinite"
-            : "cadus-golden-idle 5s ease-in-out infinite",
           filter: thinking
-            ? "drop-shadow(0 0 8px rgba(255,200,60,0.8)) drop-shadow(0 0 18px rgba(0,194,168,0.55)) brightness(1.3) saturate(1.2)"
-            : "drop-shadow(0 0 3px rgba(255,200,60,0.5)) brightness(1.05)",
-          transition: "filter 0.4s ease",
+            ? "brightness(1.6) contrast(8) saturate(1.4) drop-shadow(0 0 10px rgba(255,200,50,0.9)) drop-shadow(0 0 24px rgba(255,160,0,0.55))"
+            : "brightness(1.3) contrast(8) saturate(1.1) drop-shadow(0 0 4px rgba(255,190,30,0.4))",
+          animation: thinking
+            ? "cadus-logo-think 1.8s ease-in-out infinite"
+            : "cadus-logo-breathe 3.5s ease-in-out infinite",
+          transition: "filter 0.5s ease",
           userSelect: "none",
+          pointerEvents: "none",
         }}
       />
 
-      {/* Orbiting particles (thinking only, md/lg) */}
+      {/* Orbiting glow particles when thinking (md / lg only) */}
       {thinking && size !== "sm" && (
         <svg
           style={{
@@ -73,24 +78,24 @@ export default function CadusLogo({
           }}
           viewBox={`0 0 ${box} ${box}`}
         >
-          <circle r={orb} fill="#00E5FF"
-            style={{ filter: `drop-shadow(0 0 ${orb}px #00E5FF)`, opacity: 0.9 }}>
-            <animateMotion dur="2.8s" repeatCount="indefinite">
-              <mpath href={`#cadus-orbit-cw-${size}`} />
+          <circle r={orb} fill="#FFD54F"
+            style={{ filter: `drop-shadow(0 0 ${orb + 2}px rgba(255,210,60,0.9))`, opacity: 0.95 }}>
+            <animateMotion dur="2.6s" repeatCount="indefinite">
+              <mpath href={`#cadus-cw-${size}`} />
             </animateMotion>
           </circle>
-          <circle r={orb * 0.7} fill="#C084FC"
-            style={{ filter: `drop-shadow(0 0 ${orb * 0.8}px #C084FC)`, opacity: 0.85 }}>
-            <animateMotion dur="4.2s" begin="1.4s" repeatCount="indefinite">
-              <mpath href={`#cadus-orbit-ccw-${size}`} />
+          <circle r={orb * 0.7} fill="#00E5FF"
+            style={{ filter: `drop-shadow(0 0 ${orb}px rgba(0,229,255,0.85))`, opacity: 0.88 }}>
+            <animateMotion dur="4s" begin="1.3s" repeatCount="indefinite">
+              <mpath href={`#cadus-ccw-${size}`} />
             </animateMotion>
           </circle>
           <defs>
-            <path id={`cadus-orbit-cw-${size}`}
+            <path id={`cadus-cw-${size}`}
               d={`M${cx},${cy - orbit} A${orbit},${orbit} 0 1,1 ${cx - 0.01},${cy - orbit} Z`}
               fill="none" />
-            <path id={`cadus-orbit-ccw-${size}`}
-              d={`M${cx},${cy - orbit * 0.75} A${orbit * 0.75},${orbit * 0.75} 0 1,0 ${cx - 0.01},${cy - orbit * 0.75} Z`}
+            <path id={`cadus-ccw-${size}`}
+              d={`M${cx},${cy - orbit * 0.72} A${orbit * 0.72},${orbit * 0.72} 0 1,0 ${cx - 0.01},${cy - orbit * 0.72} Z`}
               fill="none" />
           </defs>
         </svg>

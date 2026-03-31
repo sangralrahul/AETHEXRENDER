@@ -46,7 +46,7 @@ import SellerSettings from "@/pages/seller/Settings";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { refetchOnWindowFocus: false, staleTime: 1000 * 60 * 5 },
+    queries: { refetchOnWindowFocus: true, staleTime: 1000 * 30 },
   },
 });
 

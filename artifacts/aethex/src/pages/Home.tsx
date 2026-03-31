@@ -6,7 +6,8 @@ import {
   Stethoscope, Scissors, HeartPulse, Shield, Quote, GraduationCap, FileText,
   Microscope, PenLine, Trophy, ShieldCheck, Truck, RotateCcw, Receipt, Send,
   MessageSquare, Search, Image, Zap, Wrench, ClipboardList, CheckCircle2,
-  Smartphone, Users, CheckCheck, Bot, ChevronRight
+  Smartphone, Users, CheckCheck, Bot, ChevronRight, Pill, Plus, Syringe,
+  Bone, Thermometer, Eye, Baby, Brain
 } from "lucide-react";
 import { useListProducts, useListCategories } from "@workspace/api-client-react";
 import { ProductCard } from "@/components/ProductCard";
@@ -15,7 +16,8 @@ import { useAddToCart } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 
 const categoryIconMap: Record<string, React.ElementType> = {
-  Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield, HeartPulse
+  Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield, HeartPulse,
+  Pill, Plus, Syringe, Bone, Thermometer, Eye, Baby, Brain, Microscope
 };
 
 const trustedBrands = [

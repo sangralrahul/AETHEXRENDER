@@ -31,7 +31,7 @@ export interface CadusSettings {
 }
 
 export const DEFAULT_SETTINGS: CadusSettings = {
-  theme: "dark",
+  theme: "light",
   fontSize: "md",
   compactMode: false,
   showTimestamps: true,

@@ -116,43 +116,44 @@ export default function Signup() {
       <div className="auth-left-panel" style={{
         width: "45%", minHeight: "100vh", position: "relative", overflow: "hidden",
         display: "flex", flexDirection: "column", padding: "36px 44px",
-        background: "linear-gradient(145deg, #0A1628 0%, #0D2144 40%, #0A3060 100%)",
+        background: "linear-gradient(145deg, #EBF4FF 0%, #F0F8FF 40%, #E8F5F3 100%)",
+        borderRight: "1px solid rgba(60,60,67,0.1)",
       }}>
-        <div style={{ position: "absolute", top: "5%", right: "-10%", width: 320, height: 320, borderRadius: "50%", background: "rgba(0,122,255,0.18)", filter: "blur(90px)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: "10%", left: "-5%", width: 250, height: 250, borderRadius: "50%", background: "rgba(0,194,168,0.15)", filter: "blur(80px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: "5%", right: "-10%", width: 320, height: 320, borderRadius: "50%", background: "rgba(0,122,255,0.08)", filter: "blur(90px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: "10%", left: "-5%", width: 250, height: 250, borderRadius: "50%", background: "rgba(0,194,168,0.07)", filter: "blur(80px)", pointerEvents: "none" }} />
 
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", position: "relative", zIndex: 1 }}>
           <img src={LOGO} alt="aethex" style={{ width: 40, height: 40, borderRadius: 10, objectFit: "contain", background: "#FFFFFF" }} />
-          <span style={{ color: "#FFFFFF", fontWeight: 700, fontSize: 20, letterSpacing: "-0.03em" }}>aethex</span>
+          <span style={{ color: "#1C1C1E", fontWeight: 700, fontSize: 20, letterSpacing: "-0.03em" }}>aethex</span>
         </Link>
 
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 99, background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.3)", marginBottom: 20, width: "fit-content" }}>
-            <Sparkles style={{ width: 12, height: 12, color: "#00C2A8" }} />
-            <span style={{ fontSize: 11, fontWeight: 600, color: "#00C2A8", letterSpacing: "0.02em" }}>Free to start</span>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 99, background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", marginBottom: 20, width: "fit-content" }}>
+            <Sparkles style={{ width: 12, height: 12, color: "#00A893" }} />
+            <span style={{ fontSize: 11, fontWeight: 600, color: "#00A893", letterSpacing: "0.02em" }}>Free to start</span>
           </div>
-          <h1 style={{ fontSize: 36, fontWeight: 800, lineHeight: 1.15, color: "#FFFFFF", margin: "0 0 16px", letterSpacing: "-0.02em" }}>
+          <h1 style={{ fontSize: 36, fontWeight: 800, lineHeight: 1.15, color: "#1C1C1E", margin: "0 0 16px", letterSpacing: "-0.02em" }}>
             Join 50,000+<br />
             <span style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Indian Doctors</span>
           </h1>
-          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 340, margin: "0 0 36px" }}>
+          <p style={{ fontSize: 13, color: "#636366", lineHeight: 1.7, maxWidth: 340, margin: "0 0 36px" }}>
             AI-powered clinical tools, exam prep, and medical supplies — built for Indian medical students and doctors.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {features.map(({ icon: Icon, label, desc }) => (
-              <div key={label} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 16px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <div style={{ width: 34, height: 34, borderRadius: 9, background: "rgba(0,122,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <Icon style={{ width: 16, height: 16, color: "#60B4FF" }} />
+              <div key={label} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 16px", borderRadius: 14, background: "rgba(255,255,255,0.7)", border: "1px solid rgba(60,60,67,0.1)" }}>
+                <div style={{ width: 34, height: 34, borderRadius: 9, background: "rgba(0,122,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Icon style={{ width: 16, height: 16, color: "#007AFF" }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "#FFFFFF" }}>{label}</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 1 }}>{desc}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#1C1C1E" }}>{label}</div>
+                  <div style={{ fontSize: 11, color: "#636366", marginTop: 1 }}>{desc}</div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-        <p style={{ fontSize: 10, color: "rgba(255,255,255,0.2)", textAlign: "center", position: "relative", zIndex: 1 }}>Free to start · No credit card required</p>
+        <p style={{ fontSize: 10, color: "#AEAEB2", textAlign: "center", position: "relative", zIndex: 1 }}>Free to start · No credit card required</p>
       </div>
 
       {/* ── Right panel ── */}

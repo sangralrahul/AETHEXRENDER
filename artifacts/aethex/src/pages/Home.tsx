@@ -67,20 +67,20 @@ const mockChatMessages = [
 function AIChatPreview() {
   return (
     <div className="relative w-full max-w-md mx-auto lg:mx-0">
-      <div className="rounded-2xl overflow-hidden shadow-2xl"
-        style={{ background: "#16213E", border: "1px solid rgba(255,255,255,0.1)" }}>
+      <div className="rounded-2xl overflow-hidden shadow-xl"
+        style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)" }}>
         {/* Chat Header */}
-        <div className="px-4 py-3 flex items-center gap-3" style={{ background: "#0F172A", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="px-4 py-3 flex items-center gap-3" style={{ background: "#F9F9FB", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
           <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>
             <Bot className="w-4 h-4 text-white" />
           </div>
           <div>
-            <p className="text-white text-sm font-semibold leading-none">Cadus AI</p>
-            <p className="text-xs mt-0.5" style={{ color: "#00C2A8" }}>● Online · Clinical Mode</p>
+            <p className="text-sm font-semibold leading-none" style={{ color: "#1C1C1E" }}>Cadus AI</p>
+            <p className="text-xs mt-0.5" style={{ color: "#00A893" }}>● Online · Clinical Mode</p>
           </div>
         </div>
         {/* Messages */}
-        <div className="p-4 space-y-3 text-sm">
+        <div className="p-4 space-y-3 text-sm" style={{ background: "#F9F9FB" }}>
           {mockChatMessages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
@@ -88,7 +88,7 @@ function AIChatPreview() {
                 style={
                   msg.role === "user"
                     ? { background: "#007AFF", color: "#FFFFFF", borderBottomRightRadius: "6px" }
-                    : { background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.88)", borderBottomLeftRadius: "6px" }
+                    : { background: "#FFFFFF", color: "#1C1C1E", borderBottomLeftRadius: "6px", border: "1px solid rgba(60,60,67,0.1)" }
                 }
               >
                 {msg.text}
@@ -97,19 +97,19 @@ function AIChatPreview() {
           ))}
           {/* Typing indicator */}
           <div className="flex justify-start">
-            <div className="px-4 py-3 rounded-2xl" style={{ background: "rgba(255,255,255,0.07)", borderBottomLeftRadius: "6px" }}>
+            <div className="px-4 py-3 rounded-2xl" style={{ background: "#FFFFFF", borderBottomLeftRadius: "6px", border: "1px solid rgba(60,60,67,0.1)" }}>
               <div className="flex gap-1.5 items-center h-3">
                 {[0,1,2].map(i => (
-                  <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#00C2A8", animation: `bounce 1.2s ${i * 0.2}s infinite` }} />
+                  <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#007AFF", animation: `bounce 1.2s ${i * 0.2}s infinite` }} />
                 ))}
               </div>
             </div>
           </div>
         </div>
         {/* Input bar */}
-        <div className="px-4 pb-4">
-          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-            <span className="text-sm flex-1" style={{ color: "rgba(255,255,255,0.3)" }}>Ask a clinical question…</span>
+        <div className="px-4 pb-4 pt-3" style={{ background: "#FFFFFF" }}>
+          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl" style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.12)" }}>
+            <span className="text-sm flex-1" style={{ color: "#AEAEB2" }}>Ask a clinical question…</span>
             <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "#007AFF" }}>
               <Send className="w-3.5 h-3.5 text-white" />
             </div>

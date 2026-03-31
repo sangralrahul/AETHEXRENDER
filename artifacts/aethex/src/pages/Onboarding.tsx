@@ -175,7 +175,7 @@ export default function Onboarding() {
           {STEPS.map((_, i) => (
             <div key={i} style={{
               width: i === step ? 24 : 8, height: 8, borderRadius: 4,
-              background: i < step ? "#00C2A8" : i === step ? "#00C2A8" : "#1a1a1a",
+              background: i < step ? "#00C2A8" : i === step ? "#00C2A8" : "#E5E5EA",
               opacity: i > step ? 0.5 : 1,
               transition: "all 0.3s ease",
             }} />
@@ -187,13 +187,13 @@ export default function Onboarding() {
           <div style={{ width: 30, height: 30, borderRadius: 7, background: "#00C2A8", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ color: "#050505", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 15 }}>A</span>
           </div>
-          <span style={{ color: "#fff", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 15 }}>AETHEX</span>
+          <span style={{ color: "#1C1C1E", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 15 }}>AETHEX</span>
         </div>
 
         {/* Question */}
         <h1 style={{
           fontFamily: "'Outfit', sans-serif", fontWeight: 700,
-          fontSize: 24, color: "#fff", margin: "0 0 8px", textAlign: "center",
+          fontSize: 24, color: "#1C1C1E", margin: "0 0 8px", textAlign: "center",
         }}>
           {currentStep.question}
         </h1>
@@ -212,8 +212,8 @@ export default function Onboarding() {
             return (
               <button key={opt.value} onClick={() => select(opt.value)}
                 style={{
-                  background: sel ? "rgba(0,194,168,0.1)" : "#0D0D0D",
-                  border: `1px solid ${sel ? "#00C2A8" : "#1a1a1a"}`,
+                  background: sel ? "rgba(0,194,168,0.1)" : "#FFFFFF",
+                  border: `1px solid ${sel ? "#00C2A8" : "rgba(60,60,67,0.15)"}`,
                   borderRadius: 12, padding: "14px 16px",
                   cursor: "pointer", textAlign: "left",
                   display: "flex", alignItems: "center", gap: 12,
@@ -222,11 +222,11 @@ export default function Onboarding() {
                 }}>
                 <span style={{ fontSize: 22, flexShrink: 0 }}>{opt.emoji}</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 600, fontSize: 13, color: sel ? "#00C2A8" : "#e0e0e0" }}>
+                  <div style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 600, fontSize: 13, color: sel ? "#00A893" : "#1C1C1E" }}>
                     {opt.label}
                   </div>
                   {opt.sub && (
-                    <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, color: "#444", marginTop: 2 }}>
+                    <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, color: "#AEAEB2", marginTop: 2 }}>
                       {opt.sub}
                     </div>
                   )}
@@ -247,11 +247,11 @@ export default function Onboarding() {
         {/* Continue button */}
         <button onClick={next} disabled={!canContinue()}
           style={{
-            width: "100%", background: canContinue() ? "#00C2A8" : "#0D0D0D",
-            border: canContinue() ? "none" : "1px solid #1a1a1a",
+            width: "100%", background: canContinue() ? "#007AFF" : "#E5E5EA",
+            border: "none",
             borderRadius: 12, padding: "14px 0",
             fontFamily: "'Outfit', sans-serif", fontWeight: 600, fontSize: 14,
-            color: canContinue() ? "#050505" : "#333",
+            color: canContinue() ? "#FFFFFF" : "#AEAEB2",
             cursor: canContinue() ? "pointer" : "not-allowed",
             transition: "all 0.2s ease",
             marginBottom: 14,
@@ -262,7 +262,7 @@ export default function Onboarding() {
         {/* Skip */}
         <div style={{ textAlign: "center" }}>
           <button onClick={skip} style={{
-            background: "none", border: "none", color: "#333",
+            background: "none", border: "none", color: "#AEAEB2",
             fontFamily: "'Outfit', sans-serif", fontSize: 11,
             cursor: "pointer", padding: "4px 8px",
           }}>
@@ -309,7 +309,7 @@ function AnimationStyles() {
 }
 
 const pageStyle: React.CSSProperties = {
-  minHeight: "100vh", background: "#050505",
+  minHeight: "100vh", background: "#F2F2F7",
   display: "flex", alignItems: "center", justifyContent: "center",
   flexDirection: "column", position: "relative", overflow: "hidden",
   padding: "40px 0",

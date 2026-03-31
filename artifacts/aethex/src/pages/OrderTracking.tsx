@@ -137,15 +137,15 @@ export default function OrderTracking() {
   const isCancelled = order?.status === "cancelled";
 
   return (
-    <div className="min-h-screen" style={{ background: "#0D1117", color: "#C9D1D9" }}>
+    <div className="min-h-screen" style={{ background: "#F2F2F7", color: "#1C1C1E" }}>
       <div className="max-w-3xl mx-auto px-4 py-10">
         {/* Header */}
         <div className="mb-8">
-          <a href="/products" className="inline-flex items-center gap-1 text-sm mb-6 hover:opacity-80 transition-opacity" style={{ color: "#8B949E" }}>
+          <a href="/products" className="inline-flex items-center gap-1 text-sm mb-6 hover:opacity-80 transition-opacity" style={{ color: "#636366" }}>
             <ArrowLeft className="w-4 h-4" /> Back to Store
           </a>
-          <h1 className="text-2xl font-bold" style={{ color: "#E6EDF3" }}>Track Your Order</h1>
-          <p className="text-sm mt-1" style={{ color: "#8B949E" }}>Enter your order details to see live status</p>
+          <h1 className="text-2xl font-bold" style={{ color: "#1C1C1E" }}>Track Your Order</h1>
+          <p className="text-sm mt-1" style={{ color: "#636366" }}>Enter your order details to see live status</p>
         </div>
 
         {/* Tabs */}
@@ -154,9 +154,9 @@ export default function OrderTracking() {
             <button key={tab} onClick={() => setActiveTab(tab)}
               className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
               style={{
-                background: activeTab === tab ? "rgba(34,211,238,0.12)" : "rgba(255,255,255,0.04)",
-                color: activeTab === tab ? "#22D3EE" : "#8B949E",
-                border: `1px solid ${activeTab === tab ? "rgba(34,211,238,0.3)" : "rgba(255,255,255,0.08)"}`,
+                background: activeTab === tab ? "rgba(0,122,255,0.1)" : "rgba(60,60,67,0.06)",
+                color: activeTab === tab ? "#007AFF" : "#636366",
+                border: `1px solid ${activeTab === tab ? "rgba(0,122,255,0.25)" : "rgba(60,60,67,0.15)"}`,
               }}>
               {tab === "track" ? "Track by Order ID" : "My Orders"}
             </button>
@@ -166,38 +166,38 @@ export default function OrderTracking() {
         {activeTab === "track" && (
           <>
             {/* Search Form */}
-            <form onSubmit={handleTrack} className="rounded-xl p-5 mb-6" style={{ background: "#161B22", border: "1px solid #21262D" }}>
+            <form onSubmit={handleTrack} className="rounded-xl p-5 mb-6" style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1">
-                  <label className="block text-xs font-medium mb-1.5" style={{ color: "#8B949E" }}>Order ID *</label>
+                  <label className="block text-xs font-medium mb-1.5" style={{ color: "#636366" }}>Order ID *</label>
                   <input
                     value={orderId} onChange={e => setOrderId(e.target.value)}
                     placeholder="e.g. AX-2025-4821"
                     className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none"
-                    style={{ background: "#0D1117", border: "1px solid #21262D", color: "#E6EDF3" }}
+                    style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.15)", color: "#1C1C1E" }}
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-xs font-medium mb-1.5" style={{ color: "#8B949E" }}>Email (optional)</label>
+                  <label className="block text-xs font-medium mb-1.5" style={{ color: "#636366" }}>Email (optional)</label>
                   <input
                     value={email} onChange={e => setEmail(e.target.value)}
                     placeholder="Registered email"
                     type="email"
                     className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none"
-                    style={{ background: "#0D1117", border: "1px solid #21262D", color: "#E6EDF3" }}
+                    style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.15)", color: "#1C1C1E" }}
                   />
                 </div>
                 <div className="flex items-end">
                   <button type="submit" disabled={loading || !orderId.trim()}
                     className="w-full sm:w-auto px-5 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all disabled:opacity-50"
-                    style={{ background: "#22D3EE", color: "#0D1117" }}>
+                    style={{ background: "#007AFF", color: "#FFFFFF" }}>
                     {loading ? <RotateCcw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                     {loading ? "Searching..." : "Track"}
                   </button>
                 </div>
               </div>
               {error && (
-                <div className="mt-3 flex items-center gap-2 text-sm" style={{ color: "#F87171" }}>
+                <div className="mt-3 flex items-center gap-2 text-sm" style={{ color: "#FF3B30" }}>
                   <AlertCircle className="w-4 h-4" /> {error}
                 </div>
               )}
@@ -205,51 +205,50 @@ export default function OrderTracking() {
 
             {/* Order Card */}
             {order && (
-              <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #21262D" }}>
+              <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(60,60,67,0.12)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
                 {/* Order Header */}
-                <div className="px-5 py-4 flex flex-wrap items-start justify-between gap-3" style={{ background: "#161B22", borderBottom: "1px solid #21262D" }}>
+                <div className="px-5 py-4 flex flex-wrap items-start justify-between gap-3" style={{ background: "#FFFFFF", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-lg" style={{ color: "#E6EDF3" }}>#{order.id}</span>
+                      <span className="font-bold text-lg" style={{ color: "#1C1C1E" }}>#{order.id}</span>
                       <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                         style={{
-                          background: isCancelled ? "rgba(248,113,113,0.15)" : order.status === "delivered" ? "rgba(34,197,94,0.15)" : "rgba(34,211,238,0.1)",
-                          color: isCancelled ? "#F87171" : order.status === "delivered" ? "#4ADE80" : "#22D3EE",
-                          border: `1px solid ${isCancelled ? "rgba(248,113,113,0.3)" : order.status === "delivered" ? "rgba(74,222,128,0.3)" : "rgba(34,211,238,0.2)"}`,
+                          background: isCancelled ? "rgba(255,59,48,0.1)" : order.status === "delivered" ? "rgba(52,199,89,0.12)" : "rgba(0,122,255,0.1)",
+                          color: isCancelled ? "#FF3B30" : order.status === "delivered" ? "#34C759" : "#007AFF",
+                          border: `1px solid ${isCancelled ? "rgba(255,59,48,0.25)" : order.status === "delivered" ? "rgba(52,199,89,0.25)" : "rgba(0,122,255,0.2)"}`,
                         }}>
                         {order.status.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
                       </span>
                     </div>
-                    <div className="text-xs mt-1" style={{ color: "#8B949E" }}>Placed on {formatDate(order.createdAt)}</div>
+                    <div className="text-xs mt-1" style={{ color: "#636366" }}>Placed on {formatDate(order.createdAt)}</div>
                   </div>
                   {order.estimatedDelivery && !isCancelled && (
                     <div className="text-right">
-                      <div className="text-xs" style={{ color: "#8B949E" }}>
+                      <div className="text-xs" style={{ color: "#636366" }}>
                         {order.status === "delivered" ? "Delivered on" : "Est. Delivery"}
                       </div>
-                      <div className="font-semibold text-sm" style={{ color: "#22D3EE" }}>{formatDate(order.estimatedDelivery)}</div>
+                      <div className="font-semibold text-sm" style={{ color: "#007AFF" }}>{formatDate(order.estimatedDelivery)}</div>
                     </div>
                   )}
                 </div>
 
                 {/* Cancelled Banner */}
                 {isCancelled && (
-                  <div className="px-5 py-3 flex items-start gap-3" style={{ background: "rgba(248,113,113,0.08)", borderBottom: "1px solid rgba(248,113,113,0.2)" }}>
-                    <XCircle className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: "#F87171" }} />
+                  <div className="px-5 py-3 flex items-start gap-3" style={{ background: "rgba(255,59,48,0.06)", borderBottom: "1px solid rgba(255,59,48,0.15)" }}>
+                    <XCircle className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: "#FF3B30" }} />
                     <div>
-                      <div className="text-sm font-semibold" style={{ color: "#F87171" }}>Order Cancelled</div>
-                      {order.cancellationReason && <div className="text-xs mt-0.5" style={{ color: "#8B949E" }}>{order.cancellationReason}</div>}
-                      {order.refundStatus && <div className="text-xs mt-1" style={{ color: "#8B949E" }}>Refund: {order.refundStatus} (5-7 business days)</div>}
+                      <div className="text-sm font-semibold" style={{ color: "#FF3B30" }}>Order Cancelled</div>
+                      {order.cancellationReason && <div className="text-xs mt-0.5" style={{ color: "#636366" }}>{order.cancellationReason}</div>}
+                      {order.refundStatus && <div className="text-xs mt-1" style={{ color: "#636366" }}>Refund: {order.refundStatus} (5-7 business days)</div>}
                     </div>
                   </div>
                 )}
 
                 {/* Progress Stepper */}
                 {!isCancelled && (
-                  <div className="px-5 py-6" style={{ background: "#0D1117", borderBottom: "1px solid #21262D" }}>
+                  <div className="px-5 py-6" style={{ background: "#F9F9FB", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
                     <div className="relative">
-                      {/* Track line */}
-                      <div className="absolute left-4 top-4 bottom-4 w-0.5" style={{ background: "#21262D" }} />
+                      <div className="absolute left-4 top-4 bottom-4 w-0.5" style={{ background: "rgba(60,60,67,0.12)" }} />
                       <div className="space-y-0">
                         {STATUS_STEPS.map((step, i) => {
                           const stepStatus = getStepStatus(step.key, order.status);
@@ -257,25 +256,23 @@ export default function OrderTracking() {
                           const Icon = step.icon;
                           return (
                             <div key={step.key} className="flex gap-4 relative pb-0">
-                              {/* Icon */}
                               <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center z-10 transition-all"
                                 style={{
-                                  background: stepStatus === "completed" ? "#0E7490" : stepStatus === "active" ? "#22D3EE" : "#21262D",
-                                  border: `2px solid ${stepStatus === "completed" ? "#0E7490" : stepStatus === "active" ? "#22D3EE" : "#21262D"}`,
+                                  background: stepStatus === "completed" ? "#00A893" : stepStatus === "active" ? "#007AFF" : "#E5E5EA",
+                                  border: `2px solid ${stepStatus === "completed" ? "#00A893" : stepStatus === "active" ? "#007AFF" : "#E5E5EA"}`,
                                 }}>
-                                <Icon className="w-4 h-4" style={{ color: stepStatus === "pending" ? "#8B949E" : "#fff" }} />
+                                <Icon className="w-4 h-4" style={{ color: stepStatus === "pending" ? "#AEAEB2" : "#fff" }} />
                               </div>
-                              {/* Content */}
                               <div className={`flex-1 pb-6 ${i === STATUS_STEPS.length - 1 ? "pb-0" : ""}`}>
                                 <div className="flex items-center justify-between">
-                                  <div className="font-medium text-sm" style={{ color: stepStatus === "pending" ? "#8B949E" : "#E6EDF3" }}>
+                                  <div className="font-medium text-sm" style={{ color: stepStatus === "pending" ? "#AEAEB2" : "#1C1C1E" }}>
                                     {step.label}
                                   </div>
                                   {historyEntry && (
-                                    <div className="text-xs" style={{ color: "#8B949E" }}>{formatDateTime(historyEntry.timestamp)}</div>
+                                    <div className="text-xs" style={{ color: "#AEAEB2" }}>{formatDateTime(historyEntry.timestamp)}</div>
                                   )}
                                 </div>
-                                <div className="text-xs mt-0.5" style={{ color: "#8B949E" }}>{step.desc}</div>
+                                <div className="text-xs mt-0.5" style={{ color: "#AEAEB2" }}>{step.desc}</div>
                               </div>
                             </div>
                           );
@@ -287,22 +284,22 @@ export default function OrderTracking() {
 
                 {/* Courier Info */}
                 {order.courierName && order.trackingNumber && (
-                  <div className="px-5 py-4" style={{ background: "#161B22", borderBottom: "1px solid #21262D" }}>
-                    <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "#8B949E" }}>Shipping Details</div>
+                  <div className="px-5 py-4" style={{ background: "#FFFFFF", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
+                    <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "#AEAEB2" }}>Shipping Details</div>
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
-                        <div className="text-sm font-medium" style={{ color: "#E6EDF3" }}>{order.courierName}</div>
+                        <div className="text-sm font-medium" style={{ color: "#1C1C1E" }}>{order.courierName}</div>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs font-mono" style={{ color: "#22D3EE" }}>{order.trackingNumber}</span>
+                          <span className="text-xs font-mono" style={{ color: "#007AFF" }}>{order.trackingNumber}</span>
                           <button onClick={copyTracking} className="p-0.5 rounded hover:opacity-80 transition-opacity">
-                            {copied ? <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#4ADE80" }} /> : <Copy className="w-3.5 h-3.5" style={{ color: "#8B949E" }} />}
+                            {copied ? <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#34C759" }} /> : <Copy className="w-3.5 h-3.5" style={{ color: "#AEAEB2" }} />}
                           </button>
                         </div>
                       </div>
                       {order.courierUrl && (
                         <a href={order.courierUrl} target="_blank" rel="noopener noreferrer"
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:opacity-80"
-                          style={{ background: "rgba(34,211,238,0.12)", color: "#22D3EE", border: "1px solid rgba(34,211,238,0.25)" }}>
+                          style={{ background: "rgba(0,122,255,0.1)", color: "#007AFF", border: "1px solid rgba(0,122,255,0.2)" }}>
                           <ExternalLink className="w-3.5 h-3.5" /> Track on Courier Site
                         </a>
                       )}
@@ -311,49 +308,49 @@ export default function OrderTracking() {
                 )}
 
                 {/* Order Items */}
-                <div className="px-5 py-4" style={{ borderBottom: "1px solid #21262D" }}>
-                  <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "#8B949E" }}>Items Ordered</div>
+                <div className="px-5 py-4" style={{ background: "#FFFFFF", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
+                  <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "#AEAEB2" }}>Items Ordered</div>
                   <div className="space-y-2">
                     {order.items.map((item, i) => (
                       <div key={i} className="flex items-center justify-between">
                         <div>
-                          <div className="text-sm font-medium" style={{ color: "#E6EDF3" }}>{item.name}</div>
-                          <div className="text-xs" style={{ color: "#8B949E" }}>Qty: {item.quantity}</div>
+                          <div className="text-sm font-medium" style={{ color: "#1C1C1E" }}>{item.name}</div>
+                          <div className="text-xs" style={{ color: "#636366" }}>Qty: {item.quantity}</div>
                         </div>
-                        <div className="text-sm font-semibold" style={{ color: "#22D3EE" }}>{formatCurrency(Number(item.price) * item.quantity)}</div>
+                        <div className="text-sm font-semibold" style={{ color: "#007AFF" }}>{formatCurrency(Number(item.price) * item.quantity)}</div>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Bill Summary */}
-                <div className="px-5 py-4" style={{ background: "#161B22", borderBottom: "1px solid #21262D" }}>
+                <div className="px-5 py-4" style={{ background: "#F9F9FB", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
                   <div className="space-y-1.5">
-                    <div className="flex justify-between text-sm" style={{ color: "#8B949E" }}>
-                      <span>Subtotal</span><span style={{ color: "#E6EDF3" }}>{formatCurrency(order.subtotal)}</span>
+                    <div className="flex justify-between text-sm" style={{ color: "#636366" }}>
+                      <span>Subtotal</span><span style={{ color: "#1C1C1E" }}>{formatCurrency(order.subtotal)}</span>
                     </div>
-                    <div className="flex justify-between text-sm" style={{ color: "#8B949E" }}>
-                      <span>Tax</span><span style={{ color: "#E6EDF3" }}>{formatCurrency(order.tax)}</span>
+                    <div className="flex justify-between text-sm" style={{ color: "#636366" }}>
+                      <span>Tax</span><span style={{ color: "#1C1C1E" }}>{formatCurrency(order.tax)}</span>
                     </div>
-                    <div className="flex justify-between text-sm" style={{ color: "#8B949E" }}>
-                      <span>Delivery</span><span style={{ color: "#E6EDF3" }}>{formatCurrency(order.deliveryFee)}</span>
+                    <div className="flex justify-between text-sm" style={{ color: "#636366" }}>
+                      <span>Delivery</span><span style={{ color: "#1C1C1E" }}>{formatCurrency(order.deliveryFee)}</span>
                     </div>
-                    <div className="flex justify-between text-sm font-bold pt-1.5" style={{ borderTop: "1px solid #21262D" }}>
-                      <span style={{ color: "#E6EDF3" }}>Total</span><span style={{ color: "#22D3EE", fontSize: "16px" }}>{formatCurrency(order.total)}</span>
+                    <div className="flex justify-between text-sm font-bold pt-1.5" style={{ borderTop: "1px solid rgba(60,60,67,0.12)" }}>
+                      <span style={{ color: "#1C1C1E" }}>Total</span><span style={{ color: "#007AFF", fontSize: "16px" }}>{formatCurrency(order.total)}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Delivery Address */}
-                <div className="px-5 py-4">
-                  <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#8B949E" }}>Delivery Address</div>
-                  <div className="text-sm" style={{ color: "#E6EDF3" }}>
+                <div className="px-5 py-4" style={{ background: "#FFFFFF" }}>
+                  <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#AEAEB2" }}>Delivery Address</div>
+                  <div className="text-sm" style={{ color: "#1C1C1E" }}>
                     <div className="font-medium">{order.customerName}</div>
-                    <div style={{ color: "#8B949E" }}>
+                    <div style={{ color: "#636366" }}>
                       {order.deliveryAddress.line1}{order.deliveryAddress.line2 ? `, ${order.deliveryAddress.line2}` : ""},
                       {" "}{order.deliveryAddress.city}, {order.deliveryAddress.state} - {order.deliveryAddress.pincode}
                     </div>
-                    {order.customerPhone && <div style={{ color: "#8B949E" }}>{order.customerPhone}</div>}
+                    {order.customerPhone && <div style={{ color: "#636366" }}>{order.customerPhone}</div>}
                   </div>
                 </div>
               </div>
@@ -365,29 +362,29 @@ export default function OrderTracking() {
         {activeTab === "my-orders" && (
           <div className="space-y-3">
             {myOrders.length === 0 ? (
-              <div className="text-center py-16 rounded-xl" style={{ background: "#161B22", border: "1px solid #21262D" }}>
-                <Package className="w-12 h-12 mx-auto mb-3" style={{ color: "#8B949E" }} />
-                <div className="font-semibold" style={{ color: "#E6EDF3" }}>No orders yet</div>
-                <div className="text-sm mt-1" style={{ color: "#8B949E" }}>Your orders will appear here once placed.</div>
-                <a href="/products" className="inline-block mt-4 px-5 py-2 rounded-lg text-sm font-semibold" style={{ background: "#22D3EE", color: "#0D1117" }}>
+              <div className="text-center py-16 rounded-xl" style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)" }}>
+                <Package className="w-12 h-12 mx-auto mb-3" style={{ color: "#AEAEB2" }} />
+                <div className="font-semibold" style={{ color: "#1C1C1E" }}>No orders yet</div>
+                <div className="text-sm mt-1" style={{ color: "#636366" }}>Your orders will appear here once placed.</div>
+                <a href="/products" className="inline-block mt-4 px-5 py-2 rounded-lg text-sm font-semibold" style={{ background: "#007AFF", color: "#FFFFFF" }}>
                   Browse Products
                 </a>
               </div>
             ) : myOrders.map(o => (
               <button key={o.id} onClick={() => { setOrderId(o.id); setEmail(o.customerEmail); setActiveTab("track"); setTimeout(handleTrack, 100); }}
-                className="w-full text-left rounded-xl px-5 py-4 transition-all hover:border-cyan-800/50"
-                style={{ background: "#161B22", border: "1px solid #21262D" }}>
+                className="w-full text-left rounded-xl px-5 py-4 transition-all hover:shadow-md"
+                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)" }}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-semibold text-sm" style={{ color: "#E6EDF3" }}>#{o.id}</div>
-                    <div className="text-xs mt-0.5" style={{ color: "#8B949E" }}>{o.items.length} item{o.items.length !== 1 ? "s" : ""} · {formatDate(o.createdAt)}</div>
+                    <div className="font-semibold text-sm" style={{ color: "#1C1C1E" }}>#{o.id}</div>
+                    <div className="text-xs mt-0.5" style={{ color: "#636366" }}>{o.items.length} item{o.items.length !== 1 ? "s" : ""} · {formatDate(o.createdAt)}</div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold" style={{ color: "#22D3EE" }}>{formatCurrency(o.total)}</span>
-                    <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(34,211,238,0.1)", color: "#22D3EE", border: "1px solid rgba(34,211,238,0.2)" }}>
+                    <span className="text-sm font-bold" style={{ color: "#007AFF" }}>{formatCurrency(o.total)}</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(0,122,255,0.08)", color: "#007AFF", border: "1px solid rgba(0,122,255,0.15)" }}>
                       {o.status.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
                     </span>
-                    <ChevronRight className="w-4 h-4" style={{ color: "#8B949E" }} />
+                    <ChevronRight className="w-4 h-4" style={{ color: "#AEAEB2" }} />
                   </div>
                 </div>
               </button>

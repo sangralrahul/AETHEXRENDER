@@ -244,25 +244,25 @@ export default function StudyHub() {
     <div className="min-h-screen pt-[72px]" style={{ background: "#F2F2F7" }}>
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, #0A1628 0%, #0D2144 50%, #0A3060 100%)" }}>
+      <section className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, #EBF4FF 0%, #F0F8FF 50%, #E8F5F3 100%)", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse, rgba(0,122,255,0.2) 0%, transparent 70%)" }} />
+          style={{ background: "radial-gradient(ellipse, rgba(0,122,255,0.1) 0%, transparent 70%)" }} />
         <div className="absolute top-10 right-1/4 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse, rgba(0,194,168,0.15) 0%, transparent 70%)" }} />
+          style={{ background: "radial-gradient(ellipse, rgba(0,194,168,0.08) 0%, transparent 70%)" }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
-            style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.3)" }}>
-            <GraduationCap className="w-4 h-4" style={{ color: "#00C2A8" }} />
-            <span className="text-sm font-semibold" style={{ color: "#00C2A8" }}>AETHEX STUDY HUB</span>
+            style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.25)" }}>
+            <GraduationCap className="w-4 h-4" style={{ color: "#00A893" }} />
+            <span className="text-sm font-semibold" style={{ color: "#00A893" }}>AETHEX STUDY HUB</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-5 leading-tight" style={{ letterSpacing: "-0.02em" }}>
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-5 leading-tight" style={{ color: "#1C1C1E", letterSpacing: "-0.02em" }}>
             Your Medical Exam<br />
             <span style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Prep Guide
             </span>
           </h1>
-          <p className="text-lg max-w-2xl mx-auto mb-10" style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.7 }}>
+          <p className="text-lg max-w-2xl mx-auto mb-10" style={{ color: "#636366", lineHeight: 1.7 }}>
             Compare top coaching platforms, discover essential books, and access free YouTube resources — all in one place for NEET PG, NEXT, FMGE, and USMLE.
           </p>
           <div className="flex flex-wrap justify-center gap-8 text-sm">
@@ -271,8 +271,8 @@ export default function StudyHub() {
               { icon: Award, label: "Real Student Reviews" },
               { icon: Zap, label: "Updated 2026" },
             ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2" style={{ color: "rgba(255,255,255,0.5)" }}>
-                <item.icon className="w-4 h-4" style={{ color: "#00C2A8" }} />
+              <div key={i} className="flex items-center gap-2" style={{ color: "#636366" }}>
+                <item.icon className="w-4 h-4" style={{ color: "#00A893" }} />
                 {item.label}
               </div>
             ))}

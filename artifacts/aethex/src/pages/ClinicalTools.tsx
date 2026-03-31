@@ -256,34 +256,34 @@ export default function ClinicalTools() {
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, #0A1628 0%, #0D2144 50%, #0A3060 100%)" }}>
+      <div className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, #EBF4FF 0%, #F0F8FF 50%, #E8F5F3 100%)", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
         {/* Ambient orbs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[350px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse, rgba(0,122,255,0.2) 0%, transparent 70%)" }} />
+          style={{ background: "radial-gradient(ellipse, rgba(0,122,255,0.1) 0%, transparent 70%)" }} />
         <div className="absolute top-10 right-1/4 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse, rgba(0,194,168,0.15) 0%, transparent 70%)" }} />
+          style={{ background: "radial-gradient(ellipse, rgba(0,194,168,0.08) 0%, transparent 70%)" }} />
 
         <div className="max-w-5xl mx-auto px-4 pt-20 pb-14 text-center relative z-10">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
-            style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.3)" }}>
-            <Zap className="w-3.5 h-3.5" style={{ color: "#00C2A8" }} />
-            <span className="text-[12px] font-semibold" style={{ color: "#00C2A8" }}>13 clinical tools available</span>
+            style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.25)" }}>
+            <Zap className="w-3.5 h-3.5" style={{ color: "#00A893" }} />
+            <span className="text-[12px] font-semibold" style={{ color: "#00A893" }}>13 clinical tools available</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 tracking-tight" style={{ color: "#FFFFFF", letterSpacing: "-0.02em" }}>
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 tracking-tight" style={{ color: "#1C1C1E", letterSpacing: "-0.02em" }}>
             Clinical{" "}
             <span style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Tools
             </span>
           </h1>
-          <p className="text-base max-w-xl mx-auto mb-10" style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.7 }}>
+          <p className="text-base max-w-xl mx-auto mb-10" style={{ color: "#636366", lineHeight: 1.7 }}>
             Essential tools for daily clinical practice — from drug checks to AI-powered diagnostics.
           </p>
 
           {/* Search */}
           <div className="relative max-w-md mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "rgba(255,255,255,0.4)" }} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#AEAEB2" }} />
             <input
               type="text"
               placeholder="Search tools..."
@@ -291,16 +291,16 @@ export default function ClinicalTools() {
               onChange={e => setQuery(e.target.value)}
               className="w-full pl-11 pr-10 py-3.5 rounded-2xl text-sm outline-none"
               style={{
-                background: "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.15)",
-                color: "#FFFFFF",
-                backdropFilter: "blur(12px)",
+                background: "#FFFFFF",
+                border: "1px solid rgba(60,60,67,0.15)",
+                color: "#1C1C1E",
+                boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
               }}
             />
             {query && (
               <button onClick={() => setQuery("")}
                 className="absolute right-4 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-100 opacity-60">
-                <X className="w-4 h-4" style={{ color: "#FFFFFF" }} />
+                <X className="w-4 h-4" style={{ color: "#636366" }} />
               </button>
             )}
           </div>

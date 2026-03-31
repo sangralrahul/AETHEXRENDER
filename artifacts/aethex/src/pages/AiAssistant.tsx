@@ -449,6 +449,7 @@ export default function AiAssistant() {
   const specialtyPickerRef = useRef<HTMLDivElement>(null);
   const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState<string | null>(null);
+  const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("demo") === "slides") {
@@ -1842,14 +1843,12 @@ export default function AiAssistant() {
                       {(msg as ExtendedMessage).imageUrl && (
                         <div className="px-4 pb-4 pt-2">
                           {msg.content && <div className="px-1 pb-3 text-[14px]">{msg.content}</div>}
-                          <img src={(msg as ExtendedMessage).imageUrl} alt="Cadus AI generated"
-                            className="w-full rounded-xl object-contain max-h-[480px]"
-                            style={{ border: "1px solid rgba(0,188,212,0.2)" }} />
-                          <a href={(msg as ExtendedMessage).imageUrl} download="cadus-image.png" target="_blank" rel="noreferrer"
-                            className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold hover:underline"
-                            style={{ color: "#00E5FF" }}>
-                            <Download className="w-3.5 h-3.5" /> {tr.downloadImage}
-                          </a>
+                          <ImageMessageCard
+                            imageUrl={(msg as ExtendedMessage).imageUrl!}
+                            prompt={pendingImagePrompt || "anatomical illustration"}
+                            onZoom={setZoomedImageUrl}
+                            downloadLabel={tr.downloadImage}
+                          />
                         </div>
                       )}
                       {(msg as ExtendedMessage).isImageTypeSelection && (
@@ -1986,13 +1985,7 @@ export default function AiAssistant() {
                               }}
                             />
                           ))}
-                          <span className="text-xs ml-1" style={{
-                            color: "rgba(255,255,255,0.28)",
-                            letterSpacing: "0.04em",
-                            animation: "cadus-think-pulse 2s ease-in-out infinite",
-                          }}>
-                            Cadus AI is thinking...
-                          </span>
+                          <ThinkingTextRotator chatMode={chatMode} />
                         </>
                       )}
                     </div>
@@ -2339,6 +2332,249 @@ export default function AiAssistant() {
           onClose={() => setShowCamera(false)}
         />
       )}
+
+      {/* ── Image Zoom Modal ── */}
+      {zoomedImageUrl && (
+        <div
+          role="dialog"
+          aria-label="Zoomed image"
+          style={{
+            position: "fixed", inset: 0, zIndex: 9999,
+            background: "rgba(0,0,0,0.92)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "zoom-out",
+            animation: "tw-fade-in 0.18s ease-out",
+          }}
+          onClick={() => setZoomedImageUrl(null)}
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => setZoomedImageUrl(null)}
+            style={{
+              position: "absolute", top: 20, right: 20,
+              width: 40, height: 40,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.12)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer",
+              color: "rgba(255,255,255,0.8)",
+              fontSize: 20,
+              lineHeight: 1,
+            }}
+          >
+            ×
+          </button>
+          <img
+            src={zoomedImageUrl}
+            alt="Zoomed medical illustration"
+            onClick={e => e.stopPropagation()}
+            style={{
+              maxWidth: "92vw",
+              maxHeight: "90vh",
+              objectFit: "contain",
+              borderRadius: 16,
+              boxShadow: "0 8px 60px rgba(0,194,168,0.25), 0 0 0 1px rgba(0,188,212,0.15)",
+              animation: "cadus-img-fade-in 0.22s ease-out",
+              cursor: "default",
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Rotating thinking text component ─────────────────────────────────── */
+const THINKING_MESSAGES: Record<string, string[]> = {
+  "create-image": [
+    "Generating clinical illustration…",
+    "Rendering anatomical diagram…",
+    "Composing medical visual…",
+    "Applying textbook-style detail…",
+    "Finalising medical artwork…",
+  ],
+  "deep-research": [
+    "Searching medical literature…",
+    "Analysing clinical data…",
+    "Cross-referencing guidelines…",
+    "Compiling research report…",
+    "Verifying evidence base…",
+  ],
+  "create-presentation": [
+    "Building slide structure…",
+    "Composing medical content…",
+    "Designing clinical slides…",
+    "Formatting presentation…",
+    "Assembling slide deck…",
+  ],
+  default: [
+    "Analysing symptoms…",
+    "Processing medical data…",
+    "Reviewing clinical guidelines…",
+    "Consulting medical knowledge…",
+    "Preparing response…",
+  ],
+};
+
+function ThinkingTextRotator({ chatMode }: { chatMode: ChatMode }) {
+  const messages = THINKING_MESSAGES[chatMode] ?? THINKING_MESSAGES.default;
+  const [idx, setIdx] = useState(0);
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIdx(i => (i + 1) % messages.length);
+      setKey(k => k + 1);
+    }, 2800);
+    return () => clearInterval(id);
+  }, [messages.length]);
+
+  return (
+    <span
+      key={key}
+      style={{
+        fontSize: 11,
+        color: "rgba(255,255,255,0.35)",
+        letterSpacing: "0.04em",
+        marginLeft: 4,
+        display: "inline-block",
+        animation: "cadus-think-text-fade 2.8s ease-in-out forwards",
+        minWidth: 170,
+      }}
+    >
+      {messages[idx]}
+    </span>
+  );
+}
+
+/* ── Image message card with skeleton + fade-in + zoom ─────────────────── */
+function ImageMessageCard({
+  imageUrl, prompt, onZoom, downloadLabel,
+}: {
+  imageUrl: string;
+  prompt: string;
+  onZoom: (url: string) => void;
+  downloadLabel: string;
+}) {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div style={{ maxWidth: 420 }}>
+      {/* Medical Anatomy Reference badge */}
+      <div style={{
+        display: "flex", alignItems: "center", gap: 6,
+        marginBottom: 8,
+        fontSize: 10,
+        fontWeight: 700,
+        letterSpacing: "0.08em",
+        color: "rgba(0,194,168,0.75)",
+        textTransform: "uppercase",
+      }}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+        Medical Anatomy Reference · Cadus AI
+      </div>
+
+      {/* Image wrapper */}
+      <div style={{ position: "relative", borderRadius: 14, overflow: "hidden" }}>
+        {/* Skeleton shown until image loads */}
+        {!loaded && (
+          <div style={{
+            width: "100%",
+            paddingBottom: "75%",
+            background: "linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(0,194,168,0.07) 50%, rgba(255,255,255,0.04) 100%)",
+            backgroundSize: "800px 100%",
+            animation: "cadus-skeleton-shimmer 1.5s linear infinite",
+            borderRadius: 14,
+          }} />
+        )}
+
+        {/* Actual image */}
+        <img
+          src={imageUrl}
+          alt="Cadus AI medical illustration"
+          onLoad={() => setLoaded(true)}
+          style={{
+            display: loaded ? "block" : "none",
+            width: "100%",
+            borderRadius: 14,
+            objectFit: "contain",
+            maxHeight: 480,
+            border: "1px solid rgba(0,188,212,0.2)",
+            animation: loaded ? "cadus-img-fade-in 0.35s ease-out" : undefined,
+          }}
+        />
+
+        {/* Zoom button (top-right overlay) */}
+        {loaded && (
+          <button
+            type="button"
+            title="View full size"
+            onClick={() => onZoom(imageUrl)}
+            style={{
+              position: "absolute", top: 10, right: 10,
+              width: 32, height: 32,
+              borderRadius: "50%",
+              background: "rgba(0,0,0,0.55)",
+              border: "1px solid rgba(0,194,168,0.35)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "zoom-in",
+              backdropFilter: "blur(6px)",
+              transition: "background 0.2s",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,194,168,0.25)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(0,0,0,0.55)")}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(0,194,168,0.9)" strokeWidth="2" strokeLinecap="round">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+              <path d="M11 8v6M8 11h6"/>
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* Caption / AI note */}
+      {loaded && (
+        <div style={{
+          marginTop: 8,
+          padding: "8px 10px",
+          borderRadius: 8,
+          background: "rgba(0,194,168,0.06)",
+          border: "1px solid rgba(0,194,168,0.12)",
+          fontSize: 11,
+          color: "rgba(255,255,255,0.45)",
+          lineHeight: 1.5,
+        }}>
+          <span style={{ color: "rgba(0,194,168,0.7)", fontWeight: 600 }}>Note: </span>
+          This is an educational medical illustration. For any symptoms or clinical decisions, always consult a licensed doctor.
+        </div>
+      )}
+
+      {/* Download link */}
+      <a
+        href={imageUrl}
+        download="cadus-medical-illustration.png"
+        target="_blank"
+        rel="noreferrer"
+        style={{
+          marginTop: 8,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 5,
+          fontSize: 11,
+          fontWeight: 600,
+          color: "#00E5FF",
+          textDecoration: "none",
+        }}
+        onMouseEnter={e => ((e.currentTarget as HTMLElement).style.textDecoration = "underline")}
+        onMouseLeave={e => ((e.currentTarget as HTMLElement).style.textDecoration = "none")}
+      >
+        <Download className="w-3 h-3" /> {downloadLabel}
+      </a>
     </div>
   );
 }

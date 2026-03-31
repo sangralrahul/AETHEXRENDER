@@ -1,0 +1,79 @@
+You are building a medical AI feature for AETHEX (a healthcare platform). Implement a system that generates medically accurate anatomical visuals and provides a professional AI experience.
+
+-------------------------------------
+PART 1: MEDICAL IMAGE GENERATION
+-------------------------------------
+
+Generate high-quality, clinically accurate anatomical illustrations of the human reproductive system for educational and healthcare use.
+
+Requirements:
+- Style: clean, textbook-style medical illustration (not realistic photography)
+- Content: male and female reproductive anatomy (external and internal where appropriate)
+- Include clear labels (e.g., uterus, ovaries, penis, testicles, urethra, etc.)
+- Neutral background (white or light gradient)
+- High resolution (1024x1024 or higher)
+- Suitable for a healthcare platform (AETHEX)
+
+Strict rules:
+- No sexualized, explicit, or suggestive content
+- Only educational and medical representation
+- Keep visuals respectful and clinical
+
+-------------------------------------
+PART 2: CADUS AI EXPERIENCE (UI + UX)
+-------------------------------------
+
+Enhance the Cadus AI interface with a professional medical AI experience:
+
+1. Thinking Animation:
+   - Show animated loading while AI processes requests
+   - Use smooth pulse / dots / neural wave animation
+   - Display dynamic text:
+     “Analyzing symptoms…”
+     “Processing medical data…”
+     “Generating clinical illustration…”
+
+2. Logo Animation:
+   - Replace static Cadus AI logo with animated version
+   - Subtle glow or rotating neural icon
+   - Color theme: medical blue / cyan gradient
+   - Smooth transitions (fade / scale)
+
+3. Image Loading UX:
+   - Show skeleton preview placeholder before image loads
+   - Smooth fade-in when image is ready
+   - Add zoom-in view option for diagrams
+
+-------------------------------------
+PART 3: AETHEX MEDICAL CONTEXT
+-------------------------------------
+
+Integrate the feature into AETHEX platform:
+
+- Section title: “Medical Anatomy Reference”
+- Use cases:
+  - Symptom understanding
+  - Patient education
+  - Treatment awareness
+
+- Add short AI explanation below image:
+  Example:
+  “This diagram shows the male reproductive system. If you are experiencing pain or swelling, consult a licensed doctor.”
+
+- Maintain professional healthcare tone
+- Avoid casual or entertainment-style UI
+
+-------------------------------------
+PART 4: OUTPUT & DESIGN
+-------------------------------------
+
+- Mobile responsive design
+- Clean UI (minimal, modern, medical-grade)
+- Use soft shadows, rounded cards, and readable typography
+- Ensure accessibility and clarity
+
+-------------------------------------
+GOAL
+-------------------------------------
+
+Build a trustworthy, educational, AI-powered medical visualization system for AETHEX that helps users understand anatomy safely and professionally.

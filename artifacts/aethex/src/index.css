@@ -1,9 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
-
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: hsl(var(--background));
@@ -47,6 +48,8 @@
 
 /* ── TITANIUM PRO THEME TOKENS ── */
 :root {
+  color-scheme: light;
+
   /* Backgrounds */
   --bg-primary:    #F2F2F7;
   --bg-secondary:  #FFFFFF;
@@ -119,6 +122,34 @@
   --ring: 211 100% 50%;           /* #007AFF */
 
   --radius: 0.75rem;
+}
+
+/* Force light mode even when OS is in dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light;
+    --background: 240 17% 96%;
+    --foreground: 240 6% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 6% 11%;
+    --card-border: 240 6% 91%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 6% 11%;
+    --popover-border: 240 6% 91%;
+    --primary: 173 100% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 6% 91%;
+    --secondary-foreground: 240 6% 11%;
+    --muted: 240 6% 93%;
+    --muted-foreground: 240 4% 39%;
+    --accent: 211 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 6% 91%;
+    --input: 0 0% 100%;
+    --ring: 211 100% 50%;
+  }
 }
 
 @layer base {

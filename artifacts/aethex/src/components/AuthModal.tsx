@@ -59,7 +59,7 @@ function InstitutionCombobox({
   return (
     <div className="relative">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
         <input
           ref={inputRef}
           type="text"
@@ -70,7 +70,7 @@ function InstitutionCombobox({
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           onKeyDown={handleKeyDown}
           autoComplete="off"
-          className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all text-sm"
+          className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all text-sm"
         />
       </div>
       {open && filtered.length > 0 && (
@@ -93,7 +93,7 @@ function InstitutionCombobox({
         </ul>
       )}
       {open && query.length >= 2 && filtered.length === 0 && (
-        <div className="absolute z-50 w-full mt-1 px-4 py-3 rounded-xl text-sm text-white/40"
+        <div className="absolute z-50 w-full mt-1 px-4 py-3 rounded-xl text-sm text-[#6c6c70]"
           style={{ background: "#1A2035", border: "1px solid rgba(255,255,255,0.1)" }}>
           No results — you can type your own
         </div>
@@ -247,10 +247,10 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-[#161B22] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-md bg-white border border-black/10 rounded-2xl shadow-2xl overflow-hidden">
 
         <div className="relative p-6 pb-0">
-          <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-xl text-white/40 hover:text-white hover:bg-white/10 transition-all">
+          <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-xl text-[#6c6c70] hover:text-[#1c1c1e] hover:bg-black/10 transition-all">
             <X className="w-5 h-5" />
           </button>
 
@@ -259,10 +259,10 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
               {tab === "otp" ? <ShieldCheck className="w-5 h-5 text-[#00C2A8]" /> : <Sparkles className="w-5 h-5 text-[#00C2A8]" />}
             </div>
             <div>
-              <h2 className="text-xl font-display font-bold text-white">
+              <h2 className="text-xl font-display font-bold text-[#1c1c1e]">
                 {tab === "login" ? "Welcome back" : tab === "signup" ? "Create account" : "Email OTP Login"}
               </h2>
-              <p className="text-sm text-white/50">
+              <p className="text-sm text-[#6c6c70]">
                 {tab === "login" ? "Sign in to your aethex account"
                   : tab === "signup" ? "Join 50,000+ medical professionals"
                   : "Passwordless · Secure · Instant"}
@@ -270,11 +270,11 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
             </div>
           </div>
 
-          <div className="flex rounded-xl bg-white/5 p-1 mb-6">
+          <div className="flex rounded-xl bg-black/5 p-1 mb-6">
             {(["login", "signup", "otp"] as const).map(t => (
               <button key={t} onClick={() => switchTab(t)}
                 className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-                  tab === t ? "bg-[#00C2A8] text-[#0D1117]" : "text-white/50 hover:text-white"
+                  tab === t ? "bg-[#00C2A8] text-[#0D1117]" : "text-[#6c6c70] hover:text-[#1c1c1e]"
                 }`}>
                 {t === "login" ? "Sign In" : t === "signup" ? "Sign Up" : "OTP"}
               </button>
@@ -289,18 +289,18 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
                 <div className="w-16 h-16 rounded-full bg-[#00C2A8]/20 flex items-center justify-center mx-auto mb-4">
                   <ShieldCheck className="w-8 h-8 text-[#00C2A8]" />
                 </div>
-                <p className="text-white font-bold text-lg">Verified!</p>
-                <p className="text-white/50 text-sm mt-1">Logging you in…</p>
+                <p className="text-[#1c1c1e] font-bold text-lg">Verified!</p>
+                <p className="text-[#6c6c70] text-sm mt-1">Logging you in…</p>
               </div>
             ) : otpStep === "email" ? (
               <form onSubmit={handleSendOtp} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1.5">Email Address</label>
+                  <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
                     <input type="email" value={otpEmail} onChange={e => setOtpEmail(e.target.value)} required
                       placeholder="doctor@hospital.in"
-                      className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                      className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
                   </div>
                 </div>
                 {error && <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-400">{error}</div>}
@@ -308,7 +308,7 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
                   className="w-full py-3 bg-[#00C2A8] hover:bg-[#00D4B8] text-[#0D1117] font-bold rounded-xl transition-all disabled:opacity-60">
                   {loading ? "Sending OTP…" : "Send OTP"}
                 </button>
-                <p className="text-center text-xs text-white/30">A 6-digit code will be sent to your email</p>
+                <p className="text-center text-xs text-[#8e8e93]">A 6-digit code will be sent to your email</p>
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} className="space-y-4">
@@ -316,11 +316,11 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
                   OTP sent to <strong>{otpEmail}</strong>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1.5">Enter 6-digit OTP</label>
+                  <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Enter 6-digit OTP</label>
                   <input type="text" inputMode="numeric" pattern="\d{6}" maxLength={6}
                     value={otpCode} onChange={e => setOtpCode(e.target.value.replace(/\D/g, ""))} required
                     placeholder="• • • • • •"
-                    className="w-full text-center text-2xl font-mono tracking-[0.5em] py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                    className="w-full text-center text-2xl font-mono tracking-[0.5em] py-4 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
                 </div>
                 {error && <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-400">{error}</div>}
                 <button type="submit" disabled={loading || otpCode.length !== 6}
@@ -328,11 +328,11 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
                   {loading ? "Verifying…" : "Verify & Login"}
                 </button>
                 <div className="flex items-center justify-between text-xs">
-                  <button type="button" onClick={() => { resetOtp(); }} className="text-white/40 hover:text-white transition-colors">
+                  <button type="button" onClick={() => { resetOtp(); }} className="text-[#6c6c70] hover:text-[#1c1c1e] transition-colors">
                     ← Change email
                   </button>
                   <button type="button" onClick={handleResendOtp} disabled={otpTimer > 0 || loading}
-                    className="flex items-center gap-1 text-white/40 hover:text-[#00C2A8] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                    className="flex items-center gap-1 text-[#6c6c70] hover:text-[#00C2A8] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                     <RefreshCw className="w-3 h-3" />
                     {otpTimer > 0 ? `Resend in ${otpTimer}s` : "Resend OTP"}
                   </button>
@@ -346,18 +346,18 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
               <>
                 {/* Full Name */}
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1.5">Full Name</label>
+                  <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Full Name</label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
                     <input type="text" value={name} onChange={e => setName(e.target.value)} required
                       placeholder="Dr. Priya Sharma"
-                      className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                      className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
                   </div>
                 </div>
 
                 {/* Role Selector */}
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">I am a</label>
+                  <label className="block text-sm font-medium text-[#3c3c43] mb-2">I am a</label>
                   <div className="grid grid-cols-3 gap-2">
                     {roleOptions.map(r => (
                       <button key={r.value} type="button" onClick={() => setRole(r.value)}
@@ -382,10 +382,10 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
                 {/* College (for students) */}
                 {role === "student" && (
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-1.5">
+                    <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">
                       <GraduationCap className="inline w-3.5 h-3.5 mr-1.5 opacity-60" />
                       Medical College
-                      <span className="text-white/30 font-normal ml-1">(optional)</span>
+                      <span className="text-[#8e8e93] font-normal ml-1">(optional)</span>
                     </label>
                     <InstitutionCombobox
                       placeholder="Search your college…"
@@ -399,10 +399,10 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
                 {/* Hospital (for doctors) */}
                 {role === "doctor" && (
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-1.5">
+                    <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">
                       <Building2 className="inline w-3.5 h-3.5 mr-1.5 opacity-60" />
                       Hospital / Institution
-                      <span className="text-white/30 font-normal ml-1">(optional)</span>
+                      <span className="text-[#8e8e93] font-normal ml-1">(optional)</span>
                     </label>
                     <InstitutionCombobox
                       placeholder="Search your hospital…"
@@ -417,26 +417,26 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-white/70 mb-1.5">Email Address</label>
+              <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
                   placeholder="doctor@hospital.in"
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                  className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-white/70 mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
                 <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required
                   placeholder={tab === "signup" ? "Min. 6 characters" : "Your password"}
                   minLength={tab === "signup" ? 6 : 1}
-                  className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                  className="w-full pl-10 pr-12 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
                 <button type="button" onClick={() => setShowPassword(s => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8e8e93] hover:text-[#3c3c43] transition-colors">
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
@@ -451,20 +451,20 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/10" />
+                <div className="w-full border-t border-black/10" />
               </div>
-              <div className="relative flex justify-center text-xs text-white/30">
-                <span className="px-2 bg-[#161B22]">or</span>
+              <div className="relative flex justify-center text-xs text-[#8e8e93]">
+                <span className="px-2 bg-white">or</span>
               </div>
             </div>
 
             <button type="button" onClick={() => switchTab("otp")}
-              className="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white font-medium transition-all flex items-center justify-center gap-2">
+              className="w-full py-3 bg-black/5 hover:bg-black/10 border border-black/10 rounded-xl text-[#1c1c1e] font-medium transition-all flex items-center justify-center gap-2">
               <ShieldCheck className="w-4 h-4 text-[#00C2A8]" />
               Login with Email OTP (Passwordless)
             </button>
 
-            <p className="text-center text-xs text-white/30">
+            <p className="text-center text-xs text-[#8e8e93]">
               {tab === "login" ? (
                 <>Don't have an account? <button type="button" onClick={() => switchTab("signup")} className="text-[#00C2A8] hover:underline">Sign up free</button></>
               ) : (

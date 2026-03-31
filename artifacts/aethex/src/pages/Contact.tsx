@@ -51,7 +51,7 @@ export default function Contact() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0D1117] pt-20 pb-16">
+    <div className="min-h-screen bg-[#F2F2F7] pb-16">
       <div className="max-w-3xl mx-auto px-4">
 
         <div className="text-center mb-10">
@@ -59,42 +59,42 @@ export default function Contact() {
             <Bot className="w-4 h-4" />
             AI-Powered Support
           </div>
-          <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-3">
+          <h1 className="text-3xl md:text-4xl font-display font-bold text-[#1c1c1e] mb-3">
             Contact AETHEX
           </h1>
-          <p className="text-white/50 text-base max-w-lg mx-auto">
+          <p className="text-[#6c6c70] text-base max-w-lg mx-auto">
             Submit your query and Cadus AI will respond instantly. You'll also receive the response in your email.
           </p>
         </div>
 
         {result ? (
-          <div className="bg-[#161B22] border border-white/10 rounded-2xl p-8">
+          <div className="bg-white border border-black/10 rounded-2xl p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-[#00C2A8]/20 flex items-center justify-center">
                 <CheckCircle className="w-5 h-5 text-[#00C2A8]" />
               </div>
               <div>
-                <h2 className="text-white font-bold text-lg">Cadus AI Response</h2>
-                <p className="text-white/40 text-sm">
+                <h2 className="text-[#1c1c1e] font-bold text-lg">Cadus AI Response</h2>
+                <p className="text-[#6c6c70] text-sm">
                   {result.emailSent ? "A copy has been sent to your email." : "Response generated below."}
                 </p>
               </div>
             </div>
-            <div className="bg-[#0D1117] border-l-2 border-[#00C2A8] rounded-r-xl p-5 text-white/80 text-sm leading-relaxed whitespace-pre-wrap mb-6">
+            <div className="bg-[#F2F2F7] border-l-2 border-[#00C2A8] rounded-r-xl p-5 text-[#1c1c1e] text-sm leading-relaxed whitespace-pre-wrap mb-6">
               {result.aiResponse}
             </div>
-            <div className="text-xs text-white/30 mb-6">
+            <div className="text-xs text-[#8e8e93] mb-6">
               Cadus AI responses are for informational purposes only. Always consult a licensed medical professional for clinical decisions.
             </div>
             <button onClick={() => setResult(null)}
-              className="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white font-medium transition-all">
+              className="w-full py-3 bg-black/5 hover:bg-black/10 border border-black/10 rounded-xl text-[#1c1c1e] font-medium transition-all">
               Submit Another Query
             </button>
           </div>
         ) : (
-          <div className="bg-[#161B22] border border-white/10 rounded-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-[#0D2137] to-[#161B22] px-8 py-5 border-b border-white/5">
-              <div className="flex items-center gap-2 text-white/60 text-sm">
+          <div className="bg-white border border-black/10 rounded-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-[#007AFF] to-[#00C2A8] px-8 py-5 border-b border-black/5">
+              <div className="flex items-center gap-2 text-[#3c3c43] text-sm">
                 <Bot className="w-4 h-4 text-[#00C2A8]" />
                 Cadus AI will analyse your query and respond immediately
               </div>
@@ -103,47 +103,47 @@ export default function Contact() {
             <form onSubmit={handleSubmit} className="p-8 space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1.5">Full Name</label>
+                  <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Full Name</label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
                     <input name="name" type="text" value={form.name} onChange={handleChange} required
                       placeholder="Dr. Priya Sharma"
-                      className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                      className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1.5">Email Address</label>
+                  <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
                     <input name="email" type="email" value={form.email} onChange={handleChange} required
                       placeholder="doctor@hospital.in"
-                      className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                      className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-1.5">Subject</label>
+                <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Subject</label>
                 <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
                   <select name="subject" value={form.subject} onChange={handleChange} required
-                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all appearance-none">
-                    <option value="" className="bg-[#161B22]">Select a subject…</option>
-                    {subjects.map(s => <option key={s} value={s} className="bg-[#161B22]">{s}</option>)}
+                    className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all appearance-none">
+                    <option value="" className="bg-white">Select a subject…</option>
+                    {subjects.map(s => <option key={s} value={s} className="bg-white">{s}</option>)}
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-1.5">
-                  Your Query <span className="text-white/30 font-normal">({form.message.length}/2000)</span>
+                <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">
+                  Your Query <span className="text-[#8e8e93] font-normal">({form.message.length}/2000)</span>
                 </label>
                 <div className="relative">
-                  <MessageSquare className="absolute left-3 top-3.5 w-4 h-4 text-white/30" />
+                  <MessageSquare className="absolute left-3 top-3.5 w-4 h-4 text-[#8e8e93]" />
                   <textarea name="message" value={form.message} onChange={handleChange} required rows={5}
                     maxLength={2000}
                     placeholder="Describe your question or issue in detail…"
-                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all resize-none" />
+                    className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all resize-none" />
                 </div>
               </div>
 
@@ -155,7 +155,7 @@ export default function Contact() {
                 className="w-full py-3.5 bg-[#00C2A8] hover:bg-[#00D4B8] text-[#0D1117] font-bold rounded-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                 {loading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-[#0D1117]/30 border-t-[#0D1117] rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-[#0D1117]/30 border-t-white rounded-full animate-spin" />
                     Cadus AI is thinking…
                   </>
                 ) : (
@@ -166,7 +166,7 @@ export default function Contact() {
                 )}
               </button>
 
-              <p className="text-center text-xs text-white/30">
+              <p className="text-center text-xs text-[#8e8e93]">
                 Response delivered via Cadus AI + email confirmation. Usually instant.
               </p>
             </form>

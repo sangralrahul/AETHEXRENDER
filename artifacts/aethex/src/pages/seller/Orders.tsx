@@ -76,7 +76,7 @@ Your Earnings: ${formatINR(parseFloat(order.netAmount))}
         <div className="flex gap-1 mb-6 bg-[#141821] border border-white/5 rounded-xl p-1 w-fit">
           {TABS.map(t => (
             <button key={t} onClick={() => setTab(t)}
-              className={cn("px-4 py-1.5 rounded-lg text-sm font-semibold capitalize transition-all", tab === t ? "bg-primary text-white" : "text-slate-400 hover:text-white")}>
+              className={cn("px-4 py-1.5 rounded-lg text-sm font-semibold capitalize transition-all", tab === t ? "bg-primary text-[#1c1c1e]" : "text-slate-400 hover:text-[#1c1c1e]")}>
               {t}
             </button>
           ))}
@@ -92,16 +92,16 @@ Your Earnings: ${formatINR(parseFloat(order.netAmount))}
         ) : (
           <div className="space-y-4">
             {orders.map(order => {
-              const sc = STATUS_CONFIG[order.status] ?? { label: order.status, color: "text-slate-400 bg-white/5" };
+              const sc = STATUS_CONFIG[order.status] ?? { label: order.status, color: "text-slate-400 bg-black/5" };
               return (
                 <div key={order.id} className="bg-[#141821] border border-white/5 rounded-2xl p-5">
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-bold text-white text-sm">#{order.orderId}</span>
+                        <span className="font-bold text-[#1c1c1e] text-sm">#{order.orderId}</span>
                         <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full", sc.color)}>{sc.label}</span>
                       </div>
-                      <div className="font-semibold text-white">{order.productName} × {order.quantity}</div>
+                      <div className="font-semibold text-[#1c1c1e]">{order.productName} × {order.quantity}</div>
                     </div>
                     <div className="text-right shrink-0">
                       <div className="font-bold text-emerald-400">{formatINR(parseFloat(order.netAmount))}</div>
@@ -110,7 +110,7 @@ Your Earnings: ${formatINR(parseFloat(order.netAmount))}
                   </div>
 
                   {/* Delivery Info */}
-                  <div className="bg-white/5 rounded-xl p-3 mb-3 space-y-1">
+                  <div className="bg-black/5 rounded-xl p-3 mb-3 space-y-1">
                     <div className="flex items-center gap-1.5 text-sm text-slate-300">
                       <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" /> {order.customerName}, {order.customerAddress}
                     </div>
@@ -151,7 +151,7 @@ Your Earnings: ${formatINR(parseFloat(order.netAmount))}
                       </button>
                     )}
                     <button onClick={() => downloadPackingSlip(order)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-400 bg-white/5 rounded-lg hover:bg-white/10 transition-all">
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-400 bg-black/5 rounded-lg hover:bg-black/10 transition-all">
                       <Download className="w-3 h-3" /> Packing Slip
                     </button>
                   </div>
@@ -164,24 +164,24 @@ Your Earnings: ${formatINR(parseFloat(order.netAmount))}
         {/* Ship Modal */}
         {shippingModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-[#141821] border border-white/10 rounded-2xl p-6 w-full max-w-sm">
-              <h3 className="font-bold text-white mb-4">Mark as Shipped</h3>
+            <div className="bg-[#141821] border border-black/10 rounded-2xl p-6 w-full max-w-sm">
+              <h3 className="font-bold text-[#1c1c1e] mb-4">Mark as Shipped</h3>
               <div className="space-y-3 mb-5">
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-1.5">Courier Name</label>
                   <input value={courierName} onChange={e => setCourierName(e.target.value)} placeholder="e.g. Delhivery, Blue Dart"
-                    className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all" />
+                    className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-1.5">Tracking Number</label>
                   <input value={trackingNumber} onChange={e => setTrackingNumber(e.target.value)} placeholder="AWB / Tracking ID"
-                    className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all" />
+                    className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all" />
                 </div>
               </div>
               <div className="flex gap-3">
                 <button onClick={() => doAction(shippingModal.id, "ship", { trackingNumber, courierName })}
-                  className="flex-1 py-2.5 bg-primary text-white rounded-xl font-semibold text-sm hover:bg-primary/90 transition-all">Confirm Shipment</button>
-                <button onClick={() => setShippingModal(null)} className="px-4 py-2.5 text-slate-400 border border-white/10 rounded-xl text-sm">Cancel</button>
+                  className="flex-1 py-2.5 bg-primary text-[#1c1c1e] rounded-xl font-semibold text-sm hover:bg-primary/90 transition-all">Confirm Shipment</button>
+                <button onClick={() => setShippingModal(null)} className="px-4 py-2.5 text-slate-400 border border-black/10 rounded-xl text-sm">Cancel</button>
               </div>
             </div>
           </div>

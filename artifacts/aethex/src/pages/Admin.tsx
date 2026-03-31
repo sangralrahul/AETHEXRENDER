@@ -65,15 +65,15 @@ const STATUS_COLORS: Record<string, string> = {
 
 function StatCard({ label, value, sub, icon: Icon, color }: { label: string; value: string | number; sub?: string; icon: typeof TrendingUp; color: string }) {
   return (
-    <div className="bg-[#161B22] border border-white/8 rounded-2xl p-5">
+    <div className="bg-white border border-black/[0.08] rounded-2xl p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: color + "20" }}>
           <Icon className="w-5 h-5" style={{ color }} />
         </div>
-        <span className="text-xs text-white/30 bg-white/5 px-2 py-1 rounded-lg">24h</span>
+        <span className="text-xs text-[#8e8e93] bg-black/5 px-2 py-1 rounded-lg">24h</span>
       </div>
-      <div className="text-2xl font-display font-bold text-white mb-1">{value}</div>
-      <div className="text-sm text-white/40">{label}</div>
+      <div className="text-2xl font-display font-bold text-[#1c1c1e] mb-1">{value}</div>
+      <div className="text-sm text-[#6c6c70]">{label}</div>
       {sub && <div className="text-xs text-[#00C2A8] mt-1">{sub}</div>}
     </div>
   );
@@ -119,24 +119,24 @@ export default function Admin() {
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-[#0D1117] flex items-center justify-center p-4 ">
+      <div className="min-h-screen bg-[#F2F2F7] flex items-center justify-center p-4 ">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-2xl bg-[#00C2A8]/15 border border-[#00C2A8]/30 flex items-center justify-center mx-auto mb-4">
               <ShieldCheck className="w-8 h-8 text-[#00C2A8]" />
             </div>
-            <h1 className="text-2xl font-display font-bold text-white">Admin Access</h1>
-            <p className="text-sm text-white/40 mt-1">AETHEX Administration Panel</p>
+            <h1 className="text-2xl font-display font-bold text-[#1c1c1e]">Admin Access</h1>
+            <p className="text-sm text-[#6c6c70] mt-1">AETHEX Administration Panel</p>
           </div>
-          <form onSubmit={handleLogin} className="bg-[#161B22] border border-white/8 rounded-2xl p-6 space-y-4">
+          <form onSubmit={handleLogin} className="bg-white border border-black/[0.08] rounded-2xl p-6 space-y-4">
             <div>
-              <label className="block text-sm text-white/60 mb-1.5">Admin Password</label>
+              <label className="block text-sm text-[#3c3c43] mb-1.5">Admin Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
                 <input type={showPw ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required
                   placeholder="Enter admin password"
-                  className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8]/50" />
-                <button type="button" onClick={() => setShowPw(s => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60">
+                  className="w-full pl-10 pr-12 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8]/50" />
+                <button type="button" onClick={() => setShowPw(s => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8e8e93] hover:text-[#3c3c43]">
                   {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
@@ -145,7 +145,7 @@ export default function Admin() {
             <button type="submit" className="w-full py-3 bg-[#00C2A8] text-[#0D1117] font-bold rounded-xl hover:bg-[#00D4B8] transition-colors">
               Access Admin Panel
             </button>
-            <p className="text-center text-xs text-white/20">Hint: aethex@admin2026</p>
+            <p className="text-center text-xs text-[#aeaeb2]">Hint: aethex@admin2026</p>
           </form>
         </div>
       </div>
@@ -153,21 +153,21 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0D1117] ">
+    <div className="min-h-screen bg-[#F2F2F7] ">
       <div className="flex">
         {/* Admin Sidebar */}
-        <aside className="fixed left-0 top-[72px] bottom-0 w-56 bg-[#161B22] border-r border-white/8 flex flex-col z-40 hidden lg:flex">
-          <div className="p-4 border-b border-white/8">
+        <aside className="fixed left-0 top-[72px] bottom-0 w-56 bg-white border-r border-black/[0.08] flex flex-col z-40 hidden lg:flex">
+          <div className="p-4 border-b border-black/[0.08]">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-[#00C2A8]" />
-              <span className="font-display font-bold text-white text-sm">Admin Panel</span>
+              <span className="font-display font-bold text-[#1c1c1e] text-sm">Admin Panel</span>
             </div>
           </div>
           <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
             {TABS.map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                  tab === t.id ? "bg-[#00C2A8]/15 text-[#00C2A8]" : "text-white/60 hover:text-white hover:bg-white/5"
+                  tab === t.id ? "bg-[#00C2A8]/15 text-[#00C2A8]" : "text-[#3c3c43] hover:text-[#1c1c1e] hover:bg-black/5"
                 }`}>
                 <t.icon className="w-4 h-4" />
                 {t.label}
@@ -179,7 +179,7 @@ export default function Admin() {
               </button>
             ))}
           </nav>
-          <div className="p-3 border-t border-white/8">
+          <div className="p-3 border-t border-black/[0.08]">
             <button onClick={handleLogout}
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
               <Lock className="w-4 h-4" />
@@ -189,11 +189,11 @@ export default function Admin() {
         </aside>
 
         {/* Mobile tab bar */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#161B22] border-t border-white/8 z-40 flex overflow-x-auto">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-black/[0.08] z-40 flex overflow-x-auto">
           {TABS.slice(0, 5).map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
               className={`flex-1 min-w-0 flex flex-col items-center gap-1 py-2.5 text-[10px] font-medium transition-colors ${
-                tab === t.id ? "text-[#00C2A8]" : "text-white/40"
+                tab === t.id ? "text-[#00C2A8]" : "text-[#6c6c70]"
               }`}>
               <t.icon className="w-4 h-4" />
               {t.label}
@@ -209,8 +209,8 @@ export default function Admin() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-2xl font-display font-bold text-white">Dashboard</h1>
-                  <p className="text-white/40 text-sm">AETHEX platform overview</p>
+                  <h1 className="text-2xl font-display font-bold text-[#1c1c1e]">Dashboard</h1>
+                  <p className="text-[#6c6c70] text-sm">AETHEX platform overview</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {DEMO_STATS.pendingSellers > 0 && (
@@ -231,21 +231,21 @@ export default function Admin() {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Orders */}
-                <div className="bg-[#161B22] border border-white/8 rounded-2xl p-5">
+                <div className="bg-white border border-black/[0.08] rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-display font-bold text-white">Recent Orders</h3>
+                    <h3 className="font-display font-bold text-[#1c1c1e]">Recent Orders</h3>
                     <button onClick={() => setTab("orders")} className="text-xs text-[#00C2A8] hover:underline">View all</button>
                   </div>
                   <div className="space-y-3">
                     {DEMO_ORDERS.map(order => (
                       <div key={order.id} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-white truncate">{order.id}</p>
-                          <p className="text-xs text-white/40 truncate">{order.user}</p>
+                          <p className="text-sm font-medium text-[#1c1c1e] truncate">{order.id}</p>
+                          <p className="text-xs text-[#6c6c70] truncate">{order.user}</p>
                         </div>
                         <div className="text-right shrink-0 ml-3">
                           <StatusBadge status={order.status} />
-                          <p className="text-xs text-white/60 mt-1">₹{order.amount.toLocaleString()}</p>
+                          <p className="text-xs text-[#3c3c43] mt-1">₹{order.amount.toLocaleString()}</p>
                         </div>
                       </div>
                     ))}
@@ -253,8 +253,8 @@ export default function Admin() {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="bg-[#161B22] border border-white/8 rounded-2xl p-5">
-                  <h3 className="font-display font-bold text-white mb-4">Quick Actions</h3>
+                <div className="bg-white border border-black/[0.08] rounded-2xl p-5">
+                  <h3 className="font-display font-bold text-[#1c1c1e] mb-4">Quick Actions</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {[
                       { label: "Approve Sellers", count: 4, color: "#FBBF24", tab: "sellers" as AdminTab },
@@ -263,8 +263,8 @@ export default function Admin() {
                       { label: "View Analytics", count: null, color: "#00C2A8", tab: "analytics" as AdminTab },
                     ].map((action, i) => (
                       <button key={i} onClick={() => setTab(action.tab)}
-                        className="p-4 bg-white/4 border border-white/6 rounded-xl text-left hover:bg-white/8 transition-all">
-                        <p className="text-sm font-semibold text-white mb-1">{action.label}</p>
+                        className="p-4 bg-white/4 border border-white/6 rounded-xl text-left hover:bg-black/[0.08] transition-all">
+                        <p className="text-sm font-semibold text-[#1c1c1e] mb-1">{action.label}</p>
                         {action.count !== null && (
                           <p className="text-xs" style={{ color: action.color }}>{action.count} pending</p>
                         )}
@@ -272,17 +272,17 @@ export default function Admin() {
                     ))}
                   </div>
                   <div className="mt-4 space-y-2">
-                    <Link href="/admin/sellers" className="flex items-center justify-between p-3 bg-white/4 border border-white/6 rounded-xl hover:bg-white/8 transition-all text-sm">
-                      <span className="text-white/70">Full Seller Management</span>
-                      <ChevronRight className="w-4 h-4 text-white/30" />
+                    <Link href="/admin/sellers" className="flex items-center justify-between p-3 bg-white/4 border border-white/6 rounded-xl hover:bg-black/[0.08] transition-all text-sm">
+                      <span className="text-[#3c3c43]">Full Seller Management</span>
+                      <ChevronRight className="w-4 h-4 text-[#8e8e93]" />
                     </Link>
-                    <Link href="/admin/blog" className="flex items-center justify-between p-3 bg-white/4 border border-white/6 rounded-xl hover:bg-white/8 transition-all text-sm">
-                      <span className="text-white/70">Blog Content Management</span>
-                      <ChevronRight className="w-4 h-4 text-white/30" />
+                    <Link href="/admin/blog" className="flex items-center justify-between p-3 bg-white/4 border border-white/6 rounded-xl hover:bg-black/[0.08] transition-all text-sm">
+                      <span className="text-[#3c3c43]">Blog Content Management</span>
+                      <ChevronRight className="w-4 h-4 text-[#8e8e93]" />
                     </Link>
-                    <Link href="/admin/reviews" className="flex items-center justify-between p-3 bg-white/4 border border-white/6 rounded-xl hover:bg-white/8 transition-all text-sm">
-                      <span className="text-white/70">Product Review Moderation</span>
-                      <ChevronRight className="w-4 h-4 text-white/30" />
+                    <Link href="/admin/reviews" className="flex items-center justify-between p-3 bg-white/4 border border-white/6 rounded-xl hover:bg-black/[0.08] transition-all text-sm">
+                      <span className="text-[#3c3c43]">Product Review Moderation</span>
+                      <ChevronRight className="w-4 h-4 text-[#8e8e93]" />
                     </Link>
                   </div>
                 </div>
@@ -294,16 +294,16 @@ export default function Admin() {
           {tab === "products" && (
             <div className="space-y-5">
               <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-display font-bold text-white">Products</h1>
+                <h1 className="text-2xl font-display font-bold text-[#1c1c1e]">Products</h1>
                 <span className="px-3 py-1.5 bg-[#00C2A8]/15 border border-[#00C2A8]/30 text-[#00C2A8] text-sm font-medium rounded-xl">{products.length} products</span>
               </div>
-              <div className="bg-[#161B22] border border-white/8 rounded-2xl overflow-hidden">
+              <div className="bg-white border border-black/[0.08] rounded-2xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-white/8">
+                      <tr className="border-b border-black/[0.08]">
                         {["Product", "Category", "Price", "Stock", "Rating"].map(h => (
-                          <th key={h} className="px-4 py-3 text-left text-xs text-white/40 font-medium uppercase tracking-widest">{h}</th>
+                          <th key={h} className="px-4 py-3 text-left text-xs text-[#6c6c70] font-medium uppercase tracking-widest">{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -311,10 +311,10 @@ export default function Admin() {
                       {products.slice(0, 20).map((p: any) => (
                         <tr key={p.id} className="border-b border-white/5 hover:bg-white/3 transition-colors">
                           <td className="px-4 py-3">
-                            <p className="text-sm font-medium text-white truncate max-w-[200px]">{p.name}</p>
+                            <p className="text-sm font-medium text-[#1c1c1e] truncate max-w-[200px]">{p.name}</p>
                           </td>
-                          <td className="px-4 py-3 text-sm text-white/50">{p.categorySlug || "—"}</td>
-                          <td className="px-4 py-3 text-sm text-white">₹{Number(p.price).toLocaleString()}</td>
+                          <td className="px-4 py-3 text-sm text-[#6c6c70]">{p.categorySlug || "—"}</td>
+                          <td className="px-4 py-3 text-sm text-[#1c1c1e]">₹{Number(p.price).toLocaleString()}</td>
                           <td className="px-4 py-3">
                             <span className={`text-xs font-medium px-2 py-0.5 rounded-lg ${p.inStock ? "bg-green-500/15 text-green-400" : "bg-red-500/15 text-red-400"}`}>
                               {p.inStock ? "In Stock" : "Out of Stock"}
@@ -333,25 +333,25 @@ export default function Admin() {
           {/* Orders Tab */}
           {tab === "orders" && (
             <div className="space-y-5">
-              <h1 className="text-2xl font-display font-bold text-white">Orders</h1>
-              <div className="bg-[#161B22] border border-white/8 rounded-2xl overflow-hidden">
+              <h1 className="text-2xl font-display font-bold text-[#1c1c1e]">Orders</h1>
+              <div className="bg-white border border-black/[0.08] rounded-2xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-white/8">
+                      <tr className="border-b border-black/[0.08]">
                         {["Order ID", "Customer", "Amount", "Status", "Date"].map(h => (
-                          <th key={h} className="px-4 py-3 text-left text-xs text-white/40 font-medium uppercase tracking-widest">{h}</th>
+                          <th key={h} className="px-4 py-3 text-left text-xs text-[#6c6c70] font-medium uppercase tracking-widest">{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
                       {DEMO_ORDERS.map(order => (
                         <tr key={order.id} className="border-b border-white/5 hover:bg-white/3 transition-colors">
-                          <td className="px-4 py-3 text-sm font-mono text-white">{order.id}</td>
-                          <td className="px-4 py-3 text-sm text-white/70">{order.user}</td>
-                          <td className="px-4 py-3 text-sm text-white">₹{order.amount.toLocaleString()}</td>
+                          <td className="px-4 py-3 text-sm font-mono text-[#1c1c1e]">{order.id}</td>
+                          <td className="px-4 py-3 text-sm text-[#3c3c43]">{order.user}</td>
+                          <td className="px-4 py-3 text-sm text-[#1c1c1e]">₹{order.amount.toLocaleString()}</td>
                           <td className="px-4 py-3"><StatusBadge status={order.status} /></td>
-                          <td className="px-4 py-3 text-sm text-white/40">{new Date(order.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</td>
+                          <td className="px-4 py-3 text-sm text-[#6c6c70]">{new Date(order.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -365,31 +365,31 @@ export default function Admin() {
           {tab === "users" && (
             <div className="space-y-5">
               <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-display font-bold text-white">Users</h1>
-                <span className="px-3 py-1.5 bg-white/8 text-white/60 text-sm rounded-xl">{DEMO_STATS.users.toLocaleString()} total</span>
+                <h1 className="text-2xl font-display font-bold text-[#1c1c1e]">Users</h1>
+                <span className="px-3 py-1.5 bg-black/[0.08] text-[#3c3c43] text-sm rounded-xl">{DEMO_STATS.users.toLocaleString()} total</span>
               </div>
-              <div className="bg-[#161B22] border border-white/8 rounded-2xl overflow-hidden">
+              <div className="bg-white border border-black/[0.08] rounded-2xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-white/8">
+                      <tr className="border-b border-black/[0.08]">
                         {["Name", "Email", "Orders", "Plan", "Joined"].map(h => (
-                          <th key={h} className="px-4 py-3 text-left text-xs text-white/40 font-medium uppercase tracking-widest">{h}</th>
+                          <th key={h} className="px-4 py-3 text-left text-xs text-[#6c6c70] font-medium uppercase tracking-widest">{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
                       {DEMO_USERS.map(u => (
                         <tr key={u.id} className="border-b border-white/5 hover:bg-white/3 transition-colors">
-                          <td className="px-4 py-3 text-sm font-medium text-white">{u.name}</td>
-                          <td className="px-4 py-3 text-sm text-white/50">{u.email}</td>
-                          <td className="px-4 py-3 text-sm text-white">{u.orders}</td>
+                          <td className="px-4 py-3 text-sm font-medium text-[#1c1c1e]">{u.name}</td>
+                          <td className="px-4 py-3 text-sm text-[#6c6c70]">{u.email}</td>
+                          <td className="px-4 py-3 text-sm text-[#1c1c1e]">{u.orders}</td>
                           <td className="px-4 py-3">
-                            <span className={`text-xs font-bold px-2 py-0.5 rounded-lg ${u.isPro ? "bg-[#00C2A8]/15 text-[#00C2A8]" : "bg-white/8 text-white/40"}`}>
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded-lg ${u.isPro ? "bg-[#00C2A8]/15 text-[#00C2A8]" : "bg-black/[0.08] text-[#6c6c70]"}`}>
                               {u.isPro ? "PRO" : "FREE"}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-sm text-white/40">{new Date(u.joined).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</td>
+                          <td className="px-4 py-3 text-sm text-[#6c6c70]">{new Date(u.joined).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -402,14 +402,14 @@ export default function Admin() {
           {/* Sellers Tab */}
           {tab === "sellers" && (
             <div className="space-y-5">
-              <h1 className="text-2xl font-display font-bold text-white">Sellers</h1>
+              <h1 className="text-2xl font-display font-bold text-[#1c1c1e]">Sellers</h1>
               <div className="space-y-3">
                 {DEMO_SELLERS.map(seller => (
-                  <div key={seller.id} className="bg-[#161B22] border border-white/8 rounded-2xl p-5">
+                  <div key={seller.id} className="bg-white border border-black/[0.08] rounded-2xl p-5">
                     <div className="flex items-center justify-between mb-3">
                       <div>
-                        <h3 className="font-semibold text-white">{seller.name}</h3>
-                        <p className="text-xs text-white/40 font-mono">GST: {seller.gst}</p>
+                        <h3 className="font-semibold text-[#1c1c1e]">{seller.name}</h3>
+                        <p className="text-xs text-[#6c6c70] font-mono">GST: {seller.gst}</p>
                       </div>
                       <div className="flex items-center gap-3">
                         <StatusBadge status={seller.status} />
@@ -427,8 +427,8 @@ export default function Admin() {
                     </div>
                     {seller.status === "approved" && (
                       <div className="flex gap-4 text-sm">
-                        <div><span className="text-white/40">Products:</span> <span className="text-white">{seller.products}</span></div>
-                        <div><span className="text-white/40">Revenue:</span> <span className="text-[#00C2A8]">₹{(seller.revenue / 1000).toFixed(0)}k</span></div>
+                        <div><span className="text-[#6c6c70]">Products:</span> <span className="text-[#1c1c1e]">{seller.products}</span></div>
+                        <div><span className="text-[#6c6c70]">Revenue:</span> <span className="text-[#00C2A8]">₹{(seller.revenue / 1000).toFixed(0)}k</span></div>
                       </div>
                     )}
                   </div>
@@ -446,13 +446,13 @@ export default function Admin() {
           {tab === "blog" && (
             <div className="space-y-5">
               <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-display font-bold text-white">Blog</h1>
+                <h1 className="text-2xl font-display font-bold text-[#1c1c1e]">Blog</h1>
                 <Link href="/admin/blog" className="px-4 py-2.5 bg-[#00C2A8] text-[#0D1117] text-sm font-bold rounded-xl hover:bg-[#00D4B8] transition-colors">
                   Full Blog Editor →
                 </Link>
               </div>
-              <div className="bg-[#161B22] border border-white/8 rounded-2xl p-5">
-                <p className="text-white/50 text-sm">Manage blog posts, categories, and featured content. Click "Full Blog Editor" for complete CMS access.</p>
+              <div className="bg-white border border-black/[0.08] rounded-2xl p-5">
+                <p className="text-[#6c6c70] text-sm">Manage blog posts, categories, and featured content. Click "Full Blog Editor" for complete CMS access.</p>
                 <div className="mt-4 grid grid-cols-3 gap-4">
                   {[
                     { label: "Published Posts", value: "24", color: "#34D399" },
@@ -461,7 +461,7 @@ export default function Admin() {
                   ].map((stat, i) => (
                     <div key={i} className="text-center p-4 bg-white/4 rounded-xl">
                       <div className="text-2xl font-bold" style={{ color: stat.color }}>{stat.value}</div>
-                      <div className="text-xs text-white/40 mt-1">{stat.label}</div>
+                      <div className="text-xs text-[#6c6c70] mt-1">{stat.label}</div>
                     </div>
                   ))}
                 </div>
@@ -472,15 +472,15 @@ export default function Admin() {
           {/* Analytics Tab */}
           {tab === "analytics" && (
             <div className="space-y-5">
-              <h1 className="text-2xl font-display font-bold text-white">Analytics</h1>
+              <h1 className="text-2xl font-display font-bold text-[#1c1c1e]">Analytics</h1>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard label="Page Views" value="1.2M" sub="+8% vs last month" icon={TrendingUp} color="#60A5FA" />
                 <StatCard label="Conversion Rate" value="3.8%" sub="+0.4% improvement" icon={BarChart3} color="#00C2A8" />
                 <StatCard label="Avg Order Value" value="₹2,340" sub="+₹180 vs last month" icon={IndianRupee} color="#A78BFA" />
                 <StatCard label="Return Rate" value="2.1%" sub="-0.3% improvement" icon={Star} color="#34D399" />
               </div>
-              <div className="bg-[#161B22] border border-white/8 rounded-2xl p-6">
-                <h3 className="font-bold text-white mb-4">Top Performing Categories</h3>
+              <div className="bg-white border border-black/[0.08] rounded-2xl p-6">
+                <h3 className="font-bold text-[#1c1c1e] mb-4">Top Performing Categories</h3>
                 <div className="space-y-4">
                   {[
                     { cat: "Stethoscopes", pct: 85, revenue: "₹4.2L" },
@@ -490,11 +490,11 @@ export default function Admin() {
                     { cat: "Surgical Instruments", pct: 43, revenue: "₹1.8L" },
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-4">
-                      <div className="w-32 text-sm text-white/70 shrink-0">{item.cat}</div>
-                      <div className="flex-1 h-2 bg-white/8 rounded-full overflow-hidden">
+                      <div className="w-32 text-sm text-[#3c3c43] shrink-0">{item.cat}</div>
+                      <div className="flex-1 h-2 bg-black/[0.08] rounded-full overflow-hidden">
                         <div className="h-full bg-gradient-to-r from-[#00C2A8] to-[#00E5D0] rounded-full" style={{ width: `${item.pct}%` }} />
                       </div>
-                      <span className="text-sm text-white/60 shrink-0 w-16 text-right">{item.revenue}</span>
+                      <span className="text-sm text-[#3c3c43] shrink-0 w-16 text-right">{item.revenue}</span>
                     </div>
                   ))}
                 </div>
@@ -505,7 +505,7 @@ export default function Admin() {
           {/* Settings Tab */}
           {tab === "settings" && (
             <div className="space-y-5">
-              <h1 className="text-2xl font-display font-bold text-white">Settings</h1>
+              <h1 className="text-2xl font-display font-bold text-[#1c1c1e]">Settings</h1>
               <div className="grid grid-cols-1 gap-4">
                 {[
                   { title: "Store Settings", desc: "Store name, currency, timezone, GST number", action: "Configure" },
@@ -515,12 +515,12 @@ export default function Admin() {
                   { title: "SEO & Analytics", desc: "Google Analytics, sitemap, robots.txt, meta tags", action: "Configure" },
                   { title: "Admin Security", desc: "Change admin password, 2FA settings", action: "Configure" },
                 ].map((setting, i) => (
-                  <div key={i} className="flex items-center justify-between p-5 bg-[#161B22] border border-white/8 rounded-2xl hover:border-white/15 transition-all">
+                  <div key={i} className="flex items-center justify-between p-5 bg-white border border-black/[0.08] rounded-2xl hover:border-black/15 transition-all">
                     <div>
-                      <h3 className="font-semibold text-white text-sm">{setting.title}</h3>
-                      <p className="text-xs text-white/40 mt-0.5">{setting.desc}</p>
+                      <h3 className="font-semibold text-[#1c1c1e] text-sm">{setting.title}</h3>
+                      <p className="text-xs text-[#6c6c70] mt-0.5">{setting.desc}</p>
                     </div>
-                    <button className="px-4 py-2 bg-white/8 border border-white/10 text-white/70 text-sm font-medium rounded-xl hover:bg-white/12 transition-colors shrink-0 ml-4">
+                    <button className="px-4 py-2 bg-black/[0.08] border border-black/10 text-[#3c3c43] text-sm font-medium rounded-xl hover:bg-white/12 transition-colors shrink-0 ml-4">
                       {setting.action}
                     </button>
                   </div>

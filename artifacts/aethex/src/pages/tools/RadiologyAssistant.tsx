@@ -79,7 +79,7 @@ export default function RadiologyAssistant() {
             <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(124,58,237,0.2)" }}>
               <Scan className="w-5 h-5" style={{ color: "#7C3AED" }} />
             </div>
-            <h1 className="text-3xl font-bold text-white">Radiology Assistant</h1>
+            <h1 className="text-3xl font-bold text-[#1c1c1e]">Radiology Assistant</h1>
           </div>
           <p className="text-sm" style={{ color: "rgba(255,255,255,0.55)" }}>Radiological findings, descriptions, and clinical management guidance.</p>
         </div>

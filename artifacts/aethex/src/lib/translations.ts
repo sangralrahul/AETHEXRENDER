@@ -42,6 +42,9 @@ export interface CadusStrings {
   maybeLater: string;
   simpleImage: string;
   labeledDiagram: string;
+  diagram?: string;
+  realImage?: string;
+  realImageLabeled?: string;
   imageTypeQuestion: string;
   researchTypeQuestion?: string;
   quickSummary?: string;
@@ -102,7 +105,10 @@ const t: LangMap = {
     maybeLater: "Maybe later",
     simpleImage: "Simple Image",
     labeledDiagram: "Labeled Diagram",
-    imageTypeQuestion: "Would you like a simple image or a labeled diagram with annotations?",
+    diagram: "Diagram",
+    realImage: "Real Image",
+    realImageLabeled: "Real Image + Labels",
+    imageTypeQuestion: "Choose the type of medical image you'd like Cadus AI to generate:",
     researchTypeQuestion: "Would you like a quick summary or a full deep research report?",
     quickSummary: "Quick Summary",
     fullDeepResearch: "Full Deep Research",

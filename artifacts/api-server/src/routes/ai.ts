@@ -526,15 +526,24 @@ Caveat at the end: "This is AI-assisted analysis — always correlate clinically
 
 router.post("/ai/generate-image", async (req, res) => {
   try {
-    const { prompt, labeled } = req.body;
+    const { prompt, labeled, imageStyle } = req.body;
     if (!prompt) {
       res.status(400).json({ error: "prompt is required" });
       return;
     }
 
-    const medicalPrompt = labeled
-      ? `3D medical educational illustration, clinical textbook style, for healthcare professionals and medical students. Subject: ${prompt}. Render as a clean, detailed 3D anatomical model with clearly visible text labels and callout lines pointing to all key structures. Style: cross-section 3D render, no photorealism, pastel color-coded regions, white background, labeled annotations with arrows, like a Netter or Gray's Anatomy diagram. Educational, scientific, and professional.`
-      : `3D anatomical medical illustration for clinical education. Subject: ${prompt}. Render as a detailed, color-coded 3D anatomical model, non-photographic, stylized like a medical textbook or interactive anatomy atlas. Clean background, scientifically accurate structures, professional medical illustration style. Educational use only.`;
+    // Resolve effective style (backward-compat: labeled boolean → diagram)
+    const style: string = imageStyle ?? (labeled ? "diagram" : "simple");
+
+    const medicalPrompt =
+      style === "diagram"
+        ? `3D medical educational illustration, clinical textbook style, for healthcare professionals and medical students. Subject: ${prompt}. Render as a clean, detailed 3D anatomical model with clearly visible text labels and callout lines pointing to all key structures. Style: cross-section 3D render, no photorealism, pastel color-coded regions, white background, labeled annotations with arrows, like a Netter or Gray's Anatomy diagram. Educational, scientific, and professional.`
+      : style === "real"
+        ? `Photorealistic high-resolution medical photograph, clinical reference quality. Subject: ${prompt}. Style: actual medical imaging or clinical photography — realistic tissue textures, natural lighting, like a photo from a medical textbook or clinical journal. No illustrations, no diagrams, no text overlays. Hyperrealistic, scientifically accurate, professional medical quality.`
+      : style === "real-labeled"
+        ? `Photorealistic medical clinical photograph with anatomical annotations. Subject: ${prompt}. Style: hyperrealistic medical photograph with clean white label callout lines and bold text annotations identifying key anatomical structures — like a labeled clinical atlas photo. Realistic tissue, natural lighting, professional labels with arrows. Educational medical reference quality.`
+      : /* simple */
+        `3D anatomical medical illustration for clinical education. Subject: ${prompt}. Render as a detailed, color-coded 3D anatomical model, non-photographic, stylized like a medical textbook or interactive anatomy atlas. Clean background, scientifically accurate structures, professional medical illustration style. Educational use only.`;
 
     const response = await openai.images.generate({
       model: "gpt-image-1",

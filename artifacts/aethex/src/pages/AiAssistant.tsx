@@ -807,12 +807,24 @@ export default function AiAssistant() {
     } finally { setIsGeneratingPresentation(false); }
   };
 
-  const handleImageTypeSelect = async (labeled: boolean) => {
+  const handleImageTypeSelect = async (imageStyle: "simple" | "diagram" | "real" | "real-labeled") => {
     if (isGeneratingImage) return;
     const currentMsgs = activeSession.messages;
     const sessionId = activeSession.id;
     const prompt = pendingImagePrompt;
-    const typeLabel = labeled ? tr.labeledDiagram : tr.simpleImage;
+    const styleLabels: Record<string, string> = {
+      simple: tr.simpleImage,
+      diagram: tr.diagram ?? "Diagram",
+      real: tr.realImage ?? "Real Image",
+      "real-labeled": tr.realImageLabeled ?? "Real Image + Labels",
+    };
+    const contentLabels: Record<string, string> = {
+      simple: "medical illustration",
+      diagram: "anatomical diagram",
+      real: "real medical image",
+      "real-labeled": "labeled real medical image",
+    };
+    const typeLabel = styleLabels[imageStyle] ?? tr.simpleImage;
     const userEntry: ExtendedMessage = { role: ChatMessageRole.user, content: typeLabel };
     const newMsgs = [...currentMsgs, userEntry];
     updateSession(sessionId, newMsgs);
@@ -822,14 +834,14 @@ export default function AiAssistant() {
       const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
       const resp = await fetch(`${apiBase}/api/ai/generate-image`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, labeled }),
+        body: JSON.stringify({ prompt, imageStyle }),
       });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error ?? "Image generation failed. Please try again.");
       if (data.imageUrl) {
         updateSession(sessionId, [...newMsgs, {
           role: ChatMessageRole.assistant,
-          content: `Here is your generated ${labeled ? "labeled diagram" : "medical illustration"} for: "${prompt}"`,
+          content: `Here is your generated ${contentLabels[imageStyle] ?? "medical illustration"} for: "${prompt}"`,
           imageUrl: data.imageUrl, isImageGeneration: true,
         }]);
       } else throw new Error(data.error ?? "No image was returned.");
@@ -1854,18 +1866,40 @@ export default function AiAssistant() {
                       {(msg as ExtendedMessage).isImageTypeSelection && (
                         <div className="px-4 pb-4 pt-2">
                           {msg.content && <div className="px-1 pb-3 text-[14px]">{msg.content}</div>}
-                          <div className="flex flex-wrap gap-3">
-                            <button type="button" onClick={() => handleImageTypeSelect(false)}
+                          <div className="flex flex-wrap gap-2.5">
+                            {/* Simple Image */}
+                            <button type="button" onClick={() => handleImageTypeSelect("simple")}
                               disabled={isGeneratingImage}
-                              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
+                              className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40 hover:scale-[1.03]"
                               style={{ background: "rgba(0,180,220,0.18)", border: "1px solid rgba(0,229,255,0.4)", color: "#00e5ff" }}>
                               <ImagePlus className="w-4 h-4" /> {tr.simpleImage}
                             </button>
-                            <button type="button" onClick={() => handleImageTypeSelect(true)}
+                            {/* Diagram */}
+                            <button type="button" onClick={() => handleImageTypeSelect("diagram")}
                               disabled={isGeneratingImage}
-                              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
+                              className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40 hover:scale-[1.03]"
                               style={{ background: "rgba(130,0,220,0.18)", border: "1px solid rgba(168,85,247,0.5)", color: "#c084fc" }}>
-                              <Tag className="w-4 h-4" /> {tr.labeledDiagram}
+                              <Tag className="w-4 h-4" /> {tr.diagram ?? "Diagram"}
+                            </button>
+                            {/* Real Image */}
+                            <button type="button" onClick={() => handleImageTypeSelect("real")}
+                              disabled={isGeneratingImage}
+                              className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40 hover:scale-[1.03]"
+                              style={{ background: "rgba(20,160,80,0.18)", border: "1px solid rgba(52,211,153,0.45)", color: "#34d399" }}>
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="3"/><path d="M6.3 6.3A8 8 0 1 0 17.7 17.7"/><path d="M6 2v4h4"/><path d="M18 22v-4h-4"/>
+                              </svg>
+                              {tr.realImage ?? "Real Image"}
+                            </button>
+                            {/* Real Image + Labels */}
+                            <button type="button" onClick={() => handleImageTypeSelect("real-labeled")}
+                              disabled={isGeneratingImage}
+                              className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40 hover:scale-[1.03]"
+                              style={{ background: "rgba(220,120,0,0.18)", border: "1px solid rgba(251,146,60,0.45)", color: "#fb923c" }}>
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h4M7 11h2"/>
+                              </svg>
+                              {tr.realImageLabeled ?? "Real Image + Labels"}
                             </button>
                           </div>
                         </div>

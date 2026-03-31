@@ -43,6 +43,9 @@ export interface CadusStrings {
   simpleImage: string;
   labeledDiagram: string;
   imageTypeQuestion: string;
+  researchTypeQuestion?: string;
+  quickSummary?: string;
+  fullDeepResearch?: string;
   languageLabel: string;
   languageDesc: string;
   sectionGeneral: string;
@@ -100,6 +103,9 @@ const t: LangMap = {
     simpleImage: "Simple Image",
     labeledDiagram: "Labeled Diagram",
     imageTypeQuestion: "Would you like a simple image or a labeled diagram with annotations?",
+    researchTypeQuestion: "Would you like a quick summary or a full deep research report?",
+    quickSummary: "Quick Summary",
+    fullDeepResearch: "Full Deep Research",
     languageLabel: "Language",
     languageDesc: "Interface language",
     sectionGeneral: "General",
@@ -153,6 +159,9 @@ const t: LangMap = {
     simpleImage: "साधारण चित्र",
     labeledDiagram: "लेबल डायग्राम",
     imageTypeQuestion: "क्या आप साधारण चित्र या लेबल डायग्राम चाहते हैं?",
+    researchTypeQuestion: "क्या आप त्वरित सारांश या पूर्ण गहन शोध रिपोर्ट चाहते हैं?",
+    quickSummary: "त्वरित सारांश",
+    fullDeepResearch: "पूर्ण गहन शोध",
     languageLabel: "भाषा",
     languageDesc: "इंटरफ़ेस भाषा",
     sectionGeneral: "सामान्य",

@@ -125,6 +125,7 @@ interface ExtendedMessage extends ChatMessage {
   isPresentation?: boolean;
   slideCountOptions?: number[];
   isDeepResearch?: boolean;
+  isResearchTypeSelection?: boolean;
   researchReport?: string;
   researchSources?: ResearchSource[];
   researchQueries?: string[];
@@ -430,6 +431,8 @@ export default function AiAssistant() {
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isGeneratingResearch, setIsGeneratingResearch] = useState(false);
+  const [researchStage, setResearchStage] = useState<"idle" | "waiting-type">("idle");
+  const [pendingResearchQuery, setPendingResearchQuery] = useState("");
   const [isGeneratingPresentation, setIsGeneratingPresentation] = useState(false);
   const [presentationStage, setPresentationStage] = useState<"idle" | "waiting-slide-count">("idle");
   const [pendingPresentationPrompt, setPendingPresentationPrompt] = useState("");
@@ -619,6 +622,8 @@ export default function AiAssistant() {
     setPendingPresentationPrompt("");
     setImageStage("idle");
     setPendingImagePrompt("");
+    setResearchStage("idle");
+    setPendingResearchQuery("");
   };
 
   const handleModelSelect = (m: Model) => {
@@ -682,26 +687,13 @@ export default function AiAssistant() {
     }
 
     if (chatMode === "deep-research") {
-      setIsGeneratingResearch(true);
-      try {
-        const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
-        const resp = await fetch(`${apiBase}/api/ai/deep-research`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: userMsg, agent: activeModel }),
-        });
-        const data = await resp.json();
-        if (data.report) {
-          updateSession(sessionId, [...newMsgs, {
-            role: ChatMessageRole.assistant, content: "",
-            isDeepResearch: true, researchReport: data.report,
-            researchSources: data.sources ?? [], researchQueries: data.searchQueries ?? [],
-            hasGoogleSearch: data.hasGoogleSearch ?? false,
-          }]);
-        } else throw new Error(data.error ?? "Research failed");
-      } catch {
-        toast({ title: "Deep Research failed", description: "Please try again.", variant: "destructive" });
-        updateSession(sessionId, currentMsgs);
-      } finally { setIsGeneratingResearch(false); }
+      setPendingResearchQuery(userMsg);
+      setResearchStage("waiting-type");
+      updateSession(sessionId, [...newMsgs, {
+        role: ChatMessageRole.assistant,
+        content: tr.researchTypeQuestion ?? "Would you like a quick summary or a full deep research report?",
+        isResearchTypeSelection: true,
+      }]);
       return;
     }
 
@@ -845,6 +837,56 @@ export default function AiAssistant() {
       toast({ title: "Image generation failed", description, variant: "destructive" });
       updateSession(sessionId, currentMsgs);
     } finally { setIsGeneratingImage(false); }
+  };
+
+  const handleResearchTypeSelect = async (mode: "quick" | "full") => {
+    if (isGeneratingResearch) return;
+    const currentMsgs = activeSession.messages;
+    const sessionId = activeSession.id;
+    const query = pendingResearchQuery;
+    const typeLabel = mode === "quick"
+      ? (tr.quickSummary ?? "Quick Summary")
+      : (tr.fullDeepResearch ?? "Full Deep Research");
+    const userEntry: ExtendedMessage = { role: ChatMessageRole.user, content: typeLabel };
+    const newMsgs = [...currentMsgs, userEntry];
+    updateSession(sessionId, newMsgs);
+    setResearchStage("idle");
+    setIsGeneratingResearch(true);
+    try {
+      const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+      if (mode === "quick") {
+        const resp = await fetch(`${apiBase}/api/ai/chat`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: `Provide a concise clinical summary (3–5 paragraphs) on: ${query}. Cover key facts, clinical relevance, and management highlights.`,
+            agent: activeModel, mode: "normal",
+          }),
+        });
+        const data = await resp.json();
+        if (data.message) {
+          updateSession(sessionId, [...newMsgs, {
+            role: ChatMessageRole.assistant, content: data.message,
+          }]);
+        } else throw new Error("No response returned.");
+      } else {
+        const resp = await fetch(`${apiBase}/api/ai/deep-research`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, agent: activeModel }),
+        });
+        const data = await resp.json();
+        if (data.report) {
+          updateSession(sessionId, [...newMsgs, {
+            role: ChatMessageRole.assistant, content: "",
+            isDeepResearch: true, researchReport: data.report,
+            researchSources: data.sources ?? [], researchQueries: data.searchQueries ?? [],
+            hasGoogleSearch: data.hasGoogleSearch ?? false,
+          }]);
+        } else throw new Error(data.error ?? "Research failed");
+      }
+    } catch {
+      toast({ title: "Research failed", description: "Please try again.", variant: "destructive" });
+      updateSession(sessionId, currentMsgs);
+    } finally { setIsGeneratingResearch(false); }
   };
 
   const removeAttachment = (id: string) => setAttachments((prev) => prev.filter((a) => a.id !== id));
@@ -1789,6 +1831,25 @@ export default function AiAssistant() {
                               className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
                               style={{ background: "rgba(130,0,220,0.18)", border: "1px solid rgba(168,85,247,0.5)", color: "#c084fc" }}>
                               <Tag className="w-4 h-4" /> {tr.labeledDiagram}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {(msg as ExtendedMessage).isResearchTypeSelection && (
+                        <div className="px-4 pb-4 pt-2">
+                          {msg.content && <div className="px-1 pb-3 text-[14px]">{msg.content}</div>}
+                          <div className="flex flex-wrap gap-3">
+                            <button type="button" onClick={() => handleResearchTypeSelect("quick")}
+                              disabled={isGeneratingResearch}
+                              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
+                              style={{ background: "rgba(0,180,100,0.18)", border: "1px solid rgba(52,211,153,0.45)", color: "#34D399" }}>
+                              <Search className="w-4 h-4" /> {tr.quickSummary ?? "Quick Summary"}
+                            </button>
+                            <button type="button" onClick={() => handleResearchTypeSelect("full")}
+                              disabled={isGeneratingResearch}
+                              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
+                              style={{ background: "rgba(130,0,220,0.18)", border: "1px solid rgba(168,85,247,0.5)", color: "#c084fc" }}>
+                              <Microscope className="w-4 h-4" /> {tr.fullDeepResearch ?? "Full Deep Research"}
                             </button>
                           </div>
                         </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Star, ExternalLink, BookOpen, PlayCircle, CheckCircle2, Filter, Crown, GraduationCap, Award, Zap, Clock, Globe, Users } from "lucide-react";
+import { Star, ExternalLink, BookOpen, PlayCircle, CheckCircle2, Filter, Crown, GraduationCap, Award, Zap, Clock, Globe, Users, Sparkles, ArrowUpRight } from "lucide-react";
 
 const platforms = [
   {
@@ -79,7 +79,7 @@ const platforms = [
     id: "bhatia",
     name: "Bhatia Global",
     logo: "BG",
-    color: "#FDCB6E",
+    color: "#F59E0B",
     tagline: "Structured learning for aspirants",
     monthlyPrice: 2999,
     annualPrice: 7499,
@@ -210,13 +210,13 @@ function StarRating({ rating, count }: { rating: number; count: number }) {
     <div className="flex items-center gap-1.5">
       <div className="flex">
         {[1, 2, 3, 4, 5].map(s => (
-          <svg key={s} className={`w-4 h-4 ${s <= Math.round(rating) ? "text-amber-400 fill-current" : "text-white/20"}`} viewBox="0 0 24 24">
+          <svg key={s} className={`w-3.5 h-3.5 ${s <= Math.round(rating) ? "text-amber-400 fill-current" : "text-gray-200 fill-current"}`} viewBox="0 0 24 24">
             <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
           </svg>
         ))}
       </div>
-      <span className="text-sm font-semibold text-white">{rating}</span>
-      <span className="text-xs text-white/30">({count.toLocaleString()})</span>
+      <span className="text-sm font-semibold" style={{ color: "#1C1C1E" }}>{rating}</span>
+      <span className="text-xs" style={{ color: "#AEAEB2" }}>({count.toLocaleString()})</span>
     </div>
   );
 }
@@ -241,33 +241,38 @@ export default function StudyHub() {
   const comparePlatforms = platforms.filter(p => compareIds.includes(p.id));
 
   return (
-    <div className="min-h-screen pt-[72px] bg-[#0D1117]">
-      {/* Hero */}
-      <section className="relative py-16 overflow-hidden border-b border-white/5">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#00C2A8]/8 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-violet-500/8 rounded-full blur-3xl" />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00C2A8]/15 border border-[#00C2A8]/30 text-[#00C2A8] text-sm font-semibold mb-6">
-            <GraduationCap className="w-4 h-4" />
-            AETHEX STUDY HUB
+    <div className="min-h-screen pt-[72px]" style={{ background: "#F2F2F7" }}>
+
+      {/* ── Hero ─────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, #0A1628 0%, #0D2144 50%, #0A3060 100%)" }}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(0,122,255,0.2) 0%, transparent 70%)" }} />
+        <div className="absolute top-10 right-1/4 w-64 h-64 rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(0,194,168,0.15) 0%, transparent 70%)" }} />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
+            style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.3)" }}>
+            <GraduationCap className="w-4 h-4" style={{ color: "#00C2A8" }} />
+            <span className="text-sm font-semibold" style={{ color: "#00C2A8" }}>AETHEX STUDY HUB</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-display font-extrabold text-white mb-5 leading-tight">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-5 leading-tight" style={{ letterSpacing: "-0.02em" }}>
             Your Medical Exam<br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00C2A8] to-[#00E5D0]">Prep Guide</span>
+            <span style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              Prep Guide
+            </span>
           </h1>
-          <p className="text-white/60 text-lg max-w-2xl mx-auto mb-8">
+          <p className="text-lg max-w-2xl mx-auto mb-10" style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.7 }}>
             Compare top coaching platforms, discover essential books, and access free YouTube resources — all in one place for NEET PG, NEXT, FMGE, and USMLE.
           </p>
-          <div className="flex flex-wrap justify-center gap-6 text-sm">
+          <div className="flex flex-wrap justify-center gap-8 text-sm">
             {[
               { icon: Users, label: "10+ Platforms Compared" },
               { icon: Award, label: "Real Student Reviews" },
               { icon: Zap, label: "Updated 2026" },
             ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2 text-white/50">
-                <item.icon className="w-4 h-4 text-[#00C2A8]" />
+              <div key={i} className="flex items-center gap-2" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <item.icon className="w-4 h-4" style={{ color: "#00C2A8" }} />
                 {item.label}
               </div>
             ))}
@@ -275,19 +280,20 @@ export default function StudyHub() {
         </div>
       </section>
 
-      {/* Compare Bar */}
+      {/* ── Compare Bar ──────────────────────────────────────────────── */}
       {compareIds.length > 0 && (
-        <div className="sticky top-[72px] z-40 bg-[#161B22] border-b border-[#00C2A8]/30">
+        <div className="sticky top-[72px] z-40" style={{ background: "#FFFFFF", borderBottom: "1px solid rgba(0,194,168,0.25)", boxShadow: "0 2px 12px rgba(0,122,255,0.08)" }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-sm text-white/70">
-              <CheckCircle2 className="w-4 h-4 text-[#00C2A8]" />
+            <div className="flex items-center gap-2 text-sm" style={{ color: "#636366" }}>
+              <CheckCircle2 className="w-4 h-4" style={{ color: "#00C2A8" }} />
               <span>{compareIds.length}/3 platforms selected</span>
-              <span className="text-white/30">{comparePlatforms.map(p => p.name).join(", ")}</span>
+              <span style={{ color: "#AEAEB2" }}>{comparePlatforms.map(p => p.name).join(", ")}</span>
             </div>
             <div className="flex items-center gap-3">
-              <button onClick={() => setCompareIds([])} className="text-sm text-white/40 hover:text-white transition-colors">Clear</button>
+              <button onClick={() => setCompareIds([])} className="text-sm hover:underline" style={{ color: "#AEAEB2" }}>Clear</button>
               <button onClick={() => setShowCompare(true)}
-                className="px-4 py-2 bg-[#00C2A8] text-[#0D1117] text-sm font-bold rounded-lg hover:bg-[#00D4B8] transition-colors">
+                className="px-4 py-2 text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all"
+                style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>
                 Compare {compareIds.length} Platforms
               </button>
             </div>
@@ -295,27 +301,29 @@ export default function StudyHub() {
         </div>
       )}
 
-      {/* Compare Modal */}
+      {/* ── Compare Modal ────────────────────────────────────────────── */}
       {showCompare && comparePlatforms.length > 0 && (
         <div className="fixed inset-0 z-[100] flex items-start justify-center p-4 pt-16 overflow-y-auto">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowCompare(false)} />
-          <div className="relative w-full max-w-5xl bg-[#161B22] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-            <div className="p-6 border-b border-white/8 flex items-center justify-between">
-              <h3 className="text-xl font-display font-bold text-white">Platform Comparison</h3>
-              <button onClick={() => setShowCompare(false)} className="p-2 text-white/40 hover:text-white hover:bg-white/8 rounded-lg transition-all">✕</button>
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowCompare(false)} />
+          <div className="relative w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden" style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)" }}>
+            <div className="p-6 flex items-center justify-between" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
+              <h3 className="text-xl font-bold" style={{ color: "#1C1C1E" }}>Platform Comparison</h3>
+              <button onClick={() => setShowCompare(false)}
+                className="p-2 rounded-xl transition-colors hover:bg-gray-100"
+                style={{ color: "#636366" }}>✕</button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/8">
-                    <th className="p-4 text-left text-sm text-white/40 font-medium">Feature</th>
+                  <tr style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
+                    <th className="p-4 text-left text-sm font-medium" style={{ color: "#AEAEB2" }}>Feature</th>
                     {comparePlatforms.map(p => (
                       <th key={p.id} className="p-4 text-center">
-                        <div className="w-10 h-10 rounded-xl mx-auto mb-2 flex items-center justify-center text-white font-bold text-sm"
-                          style={{ background: p.color + "33", border: `1px solid ${p.color}55` }}>
+                        <div className="w-10 h-10 rounded-xl mx-auto mb-2 flex items-center justify-center font-bold text-sm"
+                          style={{ background: p.color + "18", border: `1px solid ${p.color}33`, color: p.color }}>
                           {p.logo}
                         </div>
-                        <span className="text-white font-semibold text-sm">{p.name}</span>
+                        <span className="font-semibold text-sm" style={{ color: "#1C1C1E" }}>{p.name}</span>
                       </th>
                     ))}
                   </tr>
@@ -323,12 +331,18 @@ export default function StudyHub() {
                 <tbody>
                   {[
                     { label: "Rating", key: "rating", render: (p: typeof platforms[0]) => <StarRating rating={p.rating} count={p.reviews} /> },
-                    { label: "Monthly Price", key: "price", render: (p: typeof platforms[0]) => <span className="text-white font-semibold">₹{p.monthlyPrice.toLocaleString()}</span> },
-                    { label: "Annual Price", key: "annual", render: (p: typeof platforms[0]) => <span className="text-[#00C2A8] font-semibold">₹{p.annualPrice.toLocaleString()}</span> },
-                    { label: "Exams Covered", key: "exams", render: (p: typeof platforms[0]) => <div className="flex flex-wrap gap-1 justify-center">{p.exams.map(e => <span key={e} className="px-2 py-0.5 bg-white/8 rounded text-xs text-white/70">{e}</span>)}</div> },
+                    { label: "Monthly Price", key: "price", render: (p: typeof platforms[0]) => <span className="font-semibold" style={{ color: "#1C1C1E" }}>₹{p.monthlyPrice.toLocaleString()}</span> },
+                    { label: "Annual Price", key: "annual", render: (p: typeof platforms[0]) => <span className="font-semibold" style={{ color: "#007AFF" }}>₹{p.annualPrice.toLocaleString()}</span> },
+                    { label: "Exams Covered", key: "exams", render: (p: typeof platforms[0]) => (
+                      <div className="flex flex-wrap gap-1 justify-center">
+                        {p.exams.map(e => (
+                          <span key={e} className="px-2 py-0.5 rounded text-xs" style={{ background: "rgba(0,122,255,0.08)", color: "#007AFF" }}>{e}</span>
+                        ))}
+                      </div>
+                    )},
                   ].map(row => (
-                    <tr key={row.key} className="border-b border-white/5">
-                      <td className="p-4 text-sm text-white/50">{row.label}</td>
+                    <tr key={row.key} style={{ borderBottom: "1px solid rgba(60,60,67,0.06)" }}>
+                      <td className="p-4 text-sm" style={{ color: "#636366" }}>{row.label}</td>
                       {comparePlatforms.map(p => (
                         <td key={p.id} className="p-4 text-center">{row.render(p)}</td>
                       ))}
@@ -341,79 +355,103 @@ export default function StudyHub() {
         </div>
       )}
 
-      {/* Platforms Section */}
-      <section className="py-16">
+      {/* ── Coaching Platforms ───────────────────────────────────────── */}
+      <section className="py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h2 className="text-2xl font-display font-bold text-white mb-1">Coaching Platforms</h2>
-              <p className="text-white/50 text-sm">Compare India's top medical coaching platforms side by side</p>
+              <h2 className="text-2xl font-bold mb-1" style={{ color: "#1C1C1E" }}>Coaching Platforms</h2>
+              <p className="text-sm" style={{ color: "#636366" }}>Compare India's top medical coaching platforms side by side</p>
             </div>
-            <div className="flex items-center gap-2 text-sm text-white/50">
+            <div className="flex items-center gap-2 text-sm" style={{ color: "#AEAEB2" }}>
               <Filter className="w-4 h-4" />
               <span>Filter by exam:</span>
             </div>
           </div>
 
-          {/* Exam Filter */}
+          {/* Exam Filters */}
           <div className="flex flex-wrap gap-2 mb-8">
             {examFilters.map(exam => (
               <button key={exam} onClick={() => setExamFilter(exam)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  examFilter === exam
-                    ? "bg-[#00C2A8] text-[#0D1117]"
-                    : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-white/10"
-                }`}>
+                className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                style={examFilter === exam ? {
+                  background: "linear-gradient(135deg,#007AFF,#00C2A8)",
+                  color: "#FFFFFF",
+                  boxShadow: "0 2px 8px rgba(0,122,255,0.3)",
+                  border: "1px solid transparent",
+                } : {
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(60,60,67,0.15)",
+                  color: "#636366",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                }}>
                 {exam}
               </button>
             ))}
           </div>
 
           {/* Platform Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {filtered.map(platform => (
-              <div key={platform.id} className={`bg-[#161B22] border rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/30 ${
-                compareIds.includes(platform.id) ? "border-[#00C2A8]/50 shadow-[#00C2A8]/10" : "border-white/8"
-              }`}>
+              <div key={platform.id}
+                className="rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5"
+                style={{
+                  background: "#FFFFFF",
+                  border: compareIds.includes(platform.id)
+                    ? "1.5px solid rgba(0,194,168,0.5)"
+                    : "1px solid rgba(60,60,67,0.1)",
+                  boxShadow: compareIds.includes(platform.id)
+                    ? "0 4px 20px rgba(0,194,168,0.12)"
+                    : "0 2px 8px rgba(0,0,0,0.05)",
+                }}>
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-lg shrink-0"
-                        style={{ background: platform.color + "25", border: `1.5px solid ${platform.color}45` }}>
-                        <span style={{ color: platform.color }}>{platform.logo}</span>
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg shrink-0"
+                        style={{ background: platform.color + "15", border: `1.5px solid ${platform.color}30`, color: platform.color }}>
+                        {platform.logo}
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-display font-bold text-white">{platform.name}</h3>
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <h3 className="text-lg font-bold" style={{ color: "#1C1C1E" }}>{platform.name}</h3>
                           {platform.badge && (
-                            <span className="px-2 py-0.5 rounded-full text-xs font-bold text-white"
-                              style={{ background: platform.badgeColor + "30", border: `1px solid ${platform.badgeColor}50`, color: platform.badgeColor }}>
+                            <span className="px-2 py-0.5 rounded-full text-xs font-bold"
+                              style={{ background: platform.badgeColor + "18", border: `1px solid ${platform.badgeColor}33`, color: platform.badgeColor }}>
                               {platform.badge}
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-white/50">{platform.tagline}</p>
+                        <p className="text-sm mb-1" style={{ color: "#636366" }}>{platform.tagline}</p>
                         <StarRating rating={platform.rating} count={platform.reviews} />
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="text-lg font-bold text-white">₹{platform.monthlyPrice.toLocaleString()}<span className="text-xs text-white/40">/mo</span></div>
-                      <div className="text-sm text-[#00C2A8]">₹{platform.annualPrice.toLocaleString()}<span className="text-xs text-white/40">/yr</span></div>
+                      <div className="text-lg font-bold" style={{ color: "#1C1C1E" }}>
+                        ₹{platform.monthlyPrice.toLocaleString()}
+                        <span className="text-xs font-normal" style={{ color: "#AEAEB2" }}>/mo</span>
+                      </div>
+                      <div className="text-sm font-semibold" style={{ color: "#007AFF" }}>
+                        ₹{platform.annualPrice.toLocaleString()}
+                        <span className="text-xs font-normal" style={{ color: "#AEAEB2" }}>/yr</span>
+                      </div>
                     </div>
                   </div>
 
                   {/* Exams */}
                   <div className="flex flex-wrap gap-1.5 mb-4">
                     {platform.exams.map(exam => (
-                      <span key={exam} className="px-2 py-0.5 bg-white/6 border border-white/8 rounded-lg text-xs text-white/60">{exam}</span>
+                      <span key={exam} className="px-2.5 py-0.5 rounded-lg text-xs font-medium"
+                        style={{ background: "rgba(0,122,255,0.07)", color: "#007AFF", border: "1px solid rgba(0,122,255,0.12)" }}>
+                        {exam}
+                      </span>
                     ))}
                   </div>
 
                   {/* Features */}
                   <div className="grid grid-cols-2 gap-1.5 mb-5">
                     {platform.features.slice(0, 4).map((feat, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs text-white/60">
-                        <CheckCircle2 className="w-3 h-3 text-[#00C2A8] shrink-0" />
+                      <div key={i} className="flex items-center gap-2 text-xs" style={{ color: "#636366" }}>
+                        <CheckCircle2 className="w-3 h-3 shrink-0" style={{ color: "#00C2A8" }} />
                         {feat}
                       </div>
                     ))}
@@ -421,16 +459,25 @@ export default function StudyHub() {
 
                   <div className="flex items-center gap-3">
                     <a href={platform.link} target="_blank" rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#00C2A8]/15 border border-[#00C2A8]/30 text-[#00C2A8] text-sm font-semibold rounded-xl hover:bg-[#00C2A8]/25 transition-colors">
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+                      style={{ background: "rgba(0,122,255,0.08)", border: "1px solid rgba(0,122,255,0.2)", color: "#007AFF" }}
+                      onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,122,255,0.14)"}
+                      onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,122,255,0.08)"}>
                       <ExternalLink className="w-4 h-4" />
                       Visit Platform
                     </a>
                     <button onClick={() => toggleCompare(platform.id)}
-                      className={`px-4 py-2.5 text-sm font-medium rounded-xl transition-all border ${
-                        compareIds.includes(platform.id)
-                          ? "bg-[#00C2A8]/20 border-[#00C2A8]/50 text-[#00C2A8]"
-                          : "bg-white/5 border-white/10 text-white/50 hover:text-white hover:bg-white/10"
-                      } ${compareIds.length >= 3 && !compareIds.includes(platform.id) ? "opacity-40 cursor-not-allowed" : ""}`}
+                      className="px-4 py-2.5 text-sm font-medium rounded-xl transition-all"
+                      style={compareIds.includes(platform.id) ? {
+                        background: "rgba(0,194,168,0.1)",
+                        border: "1px solid rgba(0,194,168,0.35)",
+                        color: "#00A893",
+                      } : {
+                        background: "#F2F2F7",
+                        border: "1px solid rgba(60,60,67,0.15)",
+                        color: "#636366",
+                        opacity: compareIds.length >= 3 && !compareIds.includes(platform.id) ? 0.4 : 1,
+                      }}
                       disabled={compareIds.length >= 3 && !compareIds.includes(platform.id)}>
                       {compareIds.includes(platform.id) ? "✓ Selected" : "Compare"}
                     </button>
@@ -442,32 +489,45 @@ export default function StudyHub() {
         </div>
       </section>
 
-      {/* Books Section */}
-      <section className="py-16 border-t border-white/5">
+      {/* ── Essential Books ───────────────────────────────────────────── */}
+      <section className="py-14" style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-display font-bold text-white mb-1">Essential Medical Books</h2>
-              <p className="text-white/50 text-sm">Standard textbooks trusted by top medical institutions</p>
+              <h2 className="text-2xl font-bold mb-1" style={{ color: "#1C1C1E" }}>Essential Medical Books</h2>
+              <p className="text-sm" style={{ color: "#636366" }}>Standard textbooks trusted by top medical institutions</p>
             </div>
-            <Link href="/shop?category=books" className="text-sm text-[#00C2A8] hover:underline flex items-center gap-1">
+            <Link href="/shop?category=books"
+              className="flex items-center gap-1.5 text-sm font-medium hover:underline"
+              style={{ color: "#007AFF" }}>
               <BookOpen className="w-4 h-4" />
               Browse all books
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {medicalBooks.map((book, i) => (
               <Link key={i} href={book.link}
-                className="flex items-start gap-4 p-5 bg-[#161B22] border border-white/8 rounded-2xl hover:border-[#00C2A8]/30 hover:-translate-y-0.5 transition-all">
-                <div className="w-12 h-16 bg-gradient-to-br from-[#00C2A8]/20 to-blue-500/20 border border-white/10 rounded-lg flex items-center justify-center shrink-0">
-                  <BookOpen className="w-6 h-6 text-[#00C2A8]" />
+                className="flex items-start gap-4 p-5 rounded-2xl transition-all hover:-translate-y-0.5"
+                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(0,122,255,0.25)";
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 16px rgba(0,122,255,0.1)";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(60,60,67,0.1)";
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)";
+                }}>
+                <div className="w-12 h-16 rounded-lg flex items-center justify-center shrink-0"
+                  style={{ background: "linear-gradient(135deg,rgba(0,122,255,0.1),rgba(0,194,168,0.1))", border: "1px solid rgba(0,122,255,0.15)" }}>
+                  <BookOpen className="w-6 h-6" style={{ color: "#007AFF" }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-white text-sm leading-snug mb-1 line-clamp-2">{book.title}</h4>
-                  <p className="text-xs text-white/40 mb-2">{book.authors}</p>
+                  <h4 className="font-semibold text-sm leading-snug mb-1 line-clamp-2" style={{ color: "#1C1C1E" }}>{book.title}</h4>
+                  <p className="text-xs mb-2" style={{ color: "#AEAEB2" }}>{book.authors}</p>
                   <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 bg-white/6 rounded text-xs text-white/50">{book.category}</span>
-                    <span className="text-sm font-bold text-[#00C2A8]">₹{book.price.toLocaleString()}</span>
+                    <span className="px-2 py-0.5 rounded text-xs font-medium"
+                      style={{ background: "rgba(0,122,255,0.07)", color: "#007AFF" }}>{book.category}</span>
+                    <span className="text-sm font-bold" style={{ color: "#00C2A8" }}>₹{book.price.toLocaleString()}</span>
                   </div>
                 </div>
               </Link>
@@ -476,62 +536,86 @@ export default function StudyHub() {
         </div>
       </section>
 
-      {/* YouTube Resources */}
-      <section className="py-16 border-t border-white/5">
+      {/* ── YouTube Resources ─────────────────────────────────────────── */}
+      <section className="py-14" style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-10">
-            <h2 className="text-2xl font-display font-bold text-white mb-1">Free YouTube Resources</h2>
-            <p className="text-white/50 text-sm">Top medical YouTube channels for learning — completely free</p>
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-1" style={{ color: "#1C1C1E" }}>Free YouTube Resources</h2>
+            <p className="text-sm" style={{ color: "#636366" }}>Top medical YouTube channels for learning — completely free</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {youtubeChannels.map((channel, i) => (
               <a key={i} href={channel.url} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 bg-[#161B22] border border-white/8 rounded-2xl hover:border-red-500/30 hover:-translate-y-0.5 transition-all group">
-                <div className="w-12 h-12 bg-red-500/20 border border-red-500/30 rounded-xl flex items-center justify-center shrink-0">
-                  <PlayCircle className="w-6 h-6 text-red-400" />
+                className="flex items-center gap-4 p-4 rounded-2xl transition-all hover:-translate-y-0.5 group"
+                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(239,68,68,0.25)";
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 16px rgba(239,68,68,0.1)";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(60,60,67,0.1)";
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)";
+                }}>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
+                  <PlayCircle className="w-6 h-6" style={{ color: "#EF4444" }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-semibold text-white text-sm truncate">{channel.name}</h4>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <h4 className="font-semibold text-sm truncate" style={{ color: "#1C1C1E" }}>{channel.name}</h4>
                     {channel.badge && (
-                      <span className="px-2 py-0.5 bg-amber-500/20 border border-amber-500/30 rounded text-amber-400 text-xs font-bold shrink-0">{channel.badge}</span>
+                      <span className="px-2 py-0.5 rounded text-xs font-bold shrink-0"
+                        style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.25)", color: "#F59E0B" }}>
+                        {channel.badge}
+                      </span>
                     )}
                   </div>
-                  <p className="text-xs text-white/40">{channel.topic}</p>
+                  <p className="text-xs" style={{ color: "#636366" }}>{channel.topic}</p>
                   <div className="flex items-center gap-1 mt-1">
-                    <Users className="w-3 h-3 text-white/30" />
-                    <span className="text-xs text-white/30">{channel.subs} subscribers</span>
+                    <Users className="w-3 h-3" style={{ color: "#AEAEB2" }} />
+                    <span className="text-xs" style={{ color: "#AEAEB2" }}>{channel.subs} subscribers</span>
                   </div>
                 </div>
-                <Globe className="w-4 h-4 text-white/20 group-hover:text-red-400 transition-colors shrink-0" />
+                <ArrowUpRight className="w-4 h-4 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#EF4444" }} />
               </a>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Cadus AI CTA */}
-      <section className="py-16 border-t border-white/5">
+      {/* ── Cadus AI CTA ─────────────────────────────────────────────── */}
+      <section className="py-14" style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-[#161B22] to-[#0D1117] border border-[#00C2A8]/20 rounded-2xl p-8 md:p-12 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-[#00C2A8]/15 border border-[#00C2A8]/30 flex items-center justify-center mx-auto mb-6">
-              <Crown className="w-8 h-8 text-[#00C2A8]" />
-            </div>
-            <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-4">
-              Supercharge your prep with Cadus AI
-            </h3>
-            <p className="text-white/60 max-w-xl mx-auto mb-8">
-              Generate MCQs, get DDx lists, analyze lab values, and get instant clinical references — all powered by AI specialized for Indian medical education.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/ai-assistant"
-                className="px-8 py-3 bg-[#00C2A8] text-[#0D1117] font-bold rounded-xl hover:bg-[#00D4B8] transition-all">
-                Try Cadus AI Free
-              </Link>
-              <Link href="/account"
-                className="px-8 py-3 bg-white/5 border border-white/15 text-white font-semibold rounded-xl hover:bg-white/10 transition-all">
-                View Pro Plans
-              </Link>
+          <div className="rounded-2xl p-8 md:p-12 text-center relative overflow-hidden"
+            style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: "radial-gradient(ellipse at top right, rgba(255,255,255,0.12) 0%, transparent 60%)" }} />
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+                style={{ background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.3)" }}>
+                <Sparkles className="w-3.5 h-3.5 text-white" />
+                <span className="text-xs font-semibold text-white">Powered by Cadus AI</span>
+              </div>
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                Supercharge your prep with Cadus AI
+              </h3>
+              <p className="text-white/75 max-w-xl mx-auto mb-8">
+                Generate MCQs, get DDx lists, analyze lab values, and get instant clinical references — all powered by AI specialized for Indian medical education.
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <Link href="/ai-assistant"
+                  className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90 hover:scale-105"
+                  style={{ background: "#FFFFFF", color: "#007AFF" }}>
+                  <Sparkles className="w-4 h-4" />
+                  Try Cadus AI Free
+                </Link>
+                <Link href="/account"
+                  className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
+                  style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.3)", color: "#FFFFFF" }}>
+                  <Crown className="w-4 h-4" />
+                  View Pro Plans
+                </Link>
+              </div>
             </div>
           </div>
         </div>

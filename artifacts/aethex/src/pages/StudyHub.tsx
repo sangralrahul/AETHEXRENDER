@@ -7,6 +7,7 @@ const platforms = [
     id: "prepladder",
     name: "PrepLadder",
     logo: "PL",
+    logoUrl: "https://www.google.com/s2/favicons?domain=prepladder.com&sz=128",
     color: "#FF6B35",
     tagline: "India's #1 NEET PG prep platform",
     monthlyPrice: 4999,
@@ -25,6 +26,7 @@ const platforms = [
     id: "marrow",
     name: "Marrow",
     logo: "MA",
+    logoUrl: "https://www.google.com/s2/favicons?domain=marrow.com&sz=128",
     color: "#6C63FF",
     tagline: "Smart learning for smarter doctors",
     monthlyPrice: 3999,
@@ -43,6 +45,7 @@ const platforms = [
     id: "pwmed",
     name: "PW Med",
     logo: "PW",
+    logoUrl: "https://www.google.com/s2/favicons?domain=physicswallah.live&sz=128",
     color: "#FF3F6C",
     tagline: "Physics Wallah enters medical with a bang",
     monthlyPrice: 1999,
@@ -61,6 +64,7 @@ const platforms = [
     id: "dams",
     name: "DAMS",
     logo: "DA",
+    logoUrl: "https://www.google.com/s2/favicons?domain=damsdelhi.com&sz=128",
     color: "#00B894",
     tagline: "Delhi Academy — trusted for decades",
     monthlyPrice: 3499,
@@ -79,6 +83,7 @@ const platforms = [
     id: "bhatia",
     name: "Bhatia Global",
     logo: "BG",
+    logoUrl: "https://www.google.com/s2/favicons?domain=bhatiaglobal.com&sz=128",
     color: "#F59E0B",
     tagline: "Structured learning for aspirants",
     monthlyPrice: 2999,
@@ -97,6 +102,7 @@ const platforms = [
     id: "amboss",
     name: "AMBOSS",
     logo: "AM",
+    logoUrl: "https://www.google.com/s2/favicons?domain=amboss.com&sz=128",
     color: "#0984E3",
     tagline: "The gold standard for international exams",
     monthlyPrice: 3800,
@@ -115,6 +121,7 @@ const platforms = [
     id: "lecturio",
     name: "Lecturio",
     logo: "LE",
+    logoUrl: "https://www.google.com/s2/favicons?domain=lecturio.com&sz=128",
     color: "#E17055",
     tagline: "Concept-based learning for global exams",
     monthlyPrice: 2500,
@@ -133,6 +140,7 @@ const platforms = [
     id: "osmosis",
     name: "Osmosis",
     logo: "OS",
+    logoUrl: "https://www.google.com/s2/favicons?domain=osmosis.org&sz=128",
     color: "#A29BFE",
     tagline: "Visual learning redefined",
     monthlyPrice: 2200,
@@ -151,6 +159,7 @@ const platforms = [
     id: "sketchy",
     name: "Sketchy Medical",
     logo: "SK",
+    logoUrl: "https://www.google.com/s2/favicons?domain=sketchy.com&sz=128",
     color: "#FD79A8",
     tagline: "Memory through storytelling & imagery",
     monthlyPrice: 2400,
@@ -169,6 +178,7 @@ const platforms = [
     id: "najeeb",
     name: "Dr. Najeeb",
     logo: "DN",
+    logoUrl: "https://www.google.com/s2/favicons?domain=drnajeeblectures.com&sz=128",
     color: "#00CEC9",
     tagline: "The professor everyone loves",
     monthlyPrice: 1200,
@@ -407,9 +417,24 @@ export default function StudyHub() {
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg shrink-0"
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg shrink-0 overflow-hidden"
                         style={{ background: platform.color + "15", border: `1.5px solid ${platform.color}30`, color: platform.color }}>
-                        {platform.logo}
+                        <img
+                          src={platform.logoUrl}
+                          alt={platform.name}
+                          className="w-10 h-10 object-contain"
+                          onError={e => {
+                            const img = e.currentTarget;
+                            img.style.display = "none";
+                            const parent = img.parentElement;
+                            if (parent && !parent.querySelector(".logo-fallback")) {
+                              const span = document.createElement("span");
+                              span.className = "logo-fallback font-bold text-lg";
+                              span.textContent = platform.logo;
+                              parent.appendChild(span);
+                            }
+                          }}
+                        />
                       </div>
                       <div>
                         <div className="flex items-center gap-2 mb-0.5">

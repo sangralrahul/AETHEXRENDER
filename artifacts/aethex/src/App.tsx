@@ -50,6 +50,7 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import MedicalDisclaimer from "@/pages/MedicalDisclaimer";
 
+import InstitutionHub from "@/pages/InstitutionHub";
 import SellerRegister from "@/pages/seller/Register";
 import SellerLogin from "@/pages/seller/Login";
 import SellerDashboard from "@/pages/seller/Dashboard";
@@ -149,6 +150,9 @@ function Router() {
 
                 {/* Study Hub */}
                 <Route path="/study-hub" component={StudyHub} />
+
+                {/* Institution Hub */}
+                <Route path="/institutions" component={InstitutionHub} />
 
                 {/* Reviews */}
                 <Route path="/my-reviews" component={MyReviews} />

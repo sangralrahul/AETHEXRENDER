@@ -134,6 +134,7 @@ export function Navbar() {
                 { href: "/study-hub", label: "Study Hub", lg: true },
                 { href: "/blog", label: "Blog", lg: true },
                 { href: "/tools", label: "Tools", lg: true },
+                { href: "/institutions", label: "Colleges & Hospitals", xl: true },
                 { href: "/news", label: "News", xl: true },
               ].map((item) => (
                 <Link
@@ -278,6 +279,7 @@ export function Navbar() {
                 { href: "/ai-assistant", label: "Start Chat (Cadus AI)" },
                 { href: "/tools", label: "Clinical Tools" },
                 { href: "/study-hub", label: "Study Hub" },
+                { href: "/institutions", label: "Colleges & Hospitals" },
                 { href: "/blog", label: "Blog" },
                 { href: "/news", label: "Medical News" },
                 { href: "/orders/track", label: "Track Order" },

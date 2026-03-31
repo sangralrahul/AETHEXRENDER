@@ -2579,126 +2579,257 @@ function ImageMessageCard({
   );
 }
 
+/* Deep-ocean particles config */
+const OCEAN_PARTICLES = [
+  { x: 12, y: 85, r: 2.2, delay: 0,    dur: 5.5, kind: 1 },
+  { x: 28, y: 78, r: 1.5, delay: 0.8,  dur: 7.2, kind: 2 },
+  { x: 42, y: 90, r: 3.0, delay: 1.6,  dur: 4.8, kind: 1 },
+  { x: 58, y: 82, r: 1.8, delay: 0.4,  dur: 6.3, kind: 2 },
+  { x: 70, y: 88, r: 2.5, delay: 2.1,  dur: 5.9, kind: 1 },
+  { x: 84, y: 76, r: 1.4, delay: 1.2,  dur: 8.0, kind: 2 },
+  { x: 20, y: 70, r: 2.0, delay: 3.0,  dur: 6.8, kind: 1 },
+  { x: 50, y: 95, r: 1.6, delay: 0.2,  dur: 5.2, kind: 2 },
+  { x: 65, y: 72, r: 2.8, delay: 1.9,  dur: 7.5, kind: 1 },
+  { x: 88, y: 91, r: 1.3, delay: 2.5,  dur: 6.1, kind: 2 },
+  { x: 35, y: 65, r: 1.9, delay: 0.7,  dur: 9.0, kind: 1 },
+  { x: 75, y: 60, r: 2.3, delay: 3.5,  dur: 7.8, kind: 2 },
+];
+
+/* Sunlight rays config */
+const OCEAN_RAYS = [
+  { left: "8%",  width: 44, rot: -12, delay: 0,   dur: 6 },
+  { left: "22%", width: 30, rot: -4,  delay: 1.2, dur: 8 },
+  { left: "38%", width: 55, rot: 2,   delay: 0.5, dur: 7 },
+  { left: "54%", width: 28, rot: 8,   delay: 2.1, dur: 9 },
+  { left: "68%", width: 40, rot: -6,  delay: 0.9, dur: 6.5 },
+  { left: "82%", width: 22, rot: 14,  delay: 1.7, dur: 7.5 },
+];
+
 function ImageGeneratingAnimation({ prompt }: { prompt: string }) {
   return (
     <div style={{ width: "320px" }}>
-      {/* Main placeholder square */}
+      {/* ── Ocean scene container ── */}
       <div style={{
         position: "relative",
         width: "100%",
         paddingBottom: "100%",
-        borderRadius: "14px",
+        borderRadius: "18px",
         overflow: "hidden",
-        background: "#0a0f2c",
+        background: "linear-gradient(180deg, #020c1b 0%, #011528 30%, #010d1f 65%, #000a15 100%)",
       }}>
-        {/* Neural network background image — pulsing slowly */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: `url(${neuralNetBg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center right",
-          animation: "cadus-img-bg-pulse 3.5s ease-in-out infinite",
-          opacity: 0.65,
-        }} />
 
-        {/* Dark overlay for depth */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(135deg, rgba(4,7,24,0.72) 0%, rgba(4,7,24,0.45) 60%, rgba(0,188,212,0.08) 100%)",
-        }} />
+        {/* ── Sunlight rays from surface ── */}
+        <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
+          {OCEAN_RAYS.map((r, i) => (
+            <div key={i} style={{
+              position: "absolute",
+              left: r.left,
+              top: "-10%",
+              width: r.width,
+              height: "130%",
+              background: "linear-gradient(180deg, rgba(100,200,255,0.22) 0%, rgba(50,150,220,0.08) 60%, transparent 100%)",
+              transformOrigin: "top center",
+              transform: `rotate(${r.rot}deg)`,
+              animation: `${i % 2 === 0 ? "ocean-ray-sway" : "ocean-ray-sway2"} ${r.dur}s ease-in-out ${r.delay}s infinite`,
+              filter: "blur(8px)",
+            }} />
+          ))}
+        </div>
 
-        {/* Perplexity-style shimmer sweep — kept from original */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(105deg, transparent 0%, transparent 30%, rgba(0,188,212,0.07) 50%, transparent 70%, transparent 100%)",
-          backgroundSize: "200% 100%",
-          animation: "plx-shimmer 1.6s ease-in-out infinite",
-        }} />
-
-        {/* Subtle teal grid lines */}
+        {/* ── Subtle AI grid overlay ── */}
         <div style={{
           position: "absolute",
           inset: 0,
           background: `
-            linear-gradient(rgba(0,188,212,0.07) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,188,212,0.07) 1px, transparent 1px)
+            linear-gradient(rgba(0,160,220,0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,160,220,0.05) 1px, transparent 1px)
           `,
-          backgroundSize: "40px 40px",
+          backgroundSize: "36px 36px",
+          pointerEvents: "none",
         }} />
 
-        {/* Center content */}
+        {/* ── Water caustics shimmer ── */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: `
+            radial-gradient(ellipse 120px 60px at 30% 20%, rgba(0,180,240,0.06) 0%, transparent 70%),
+            radial-gradient(ellipse 90px 45px  at 72% 15%, rgba(0,150,220,0.05) 0%, transparent 70%),
+            radial-gradient(ellipse 70px 35px  at 55% 35%, rgba(0,200,255,0.04) 0%, transparent 70%)
+          `,
+          animation: "ocean-depth-drift 5s ease-in-out infinite",
+          pointerEvents: "none",
+        }} />
+
+        {/* ── Floating particles / plankton ── */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+          {OCEAN_PARTICLES.map((p, i) => (
+            <div key={i} style={{
+              position: "absolute",
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              width: p.r * 2,
+              height: p.r * 2,
+              borderRadius: "50%",
+              background: p.kind === 1
+                ? `radial-gradient(circle, rgba(0,220,255,0.95) 0%, rgba(0,160,220,0.4) 70%)`
+                : `radial-gradient(circle, rgba(120,220,255,0.8) 0%, rgba(80,180,240,0.3) 70%)`,
+              boxShadow: p.kind === 1
+                ? `0 0 ${p.r * 3}px rgba(0,220,255,0.65)`
+                : `0 0 ${p.r * 2.5}px rgba(100,200,255,0.5)`,
+              animation: `${p.kind === 1 ? "ocean-bubble-rise" : "ocean-bubble-drift"} ${p.dur}s ease-in-out ${p.delay}s infinite`,
+            }} />
+          ))}
+        </div>
+
+        {/* ── Depth vignette ── */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "radial-gradient(ellipse 75% 75% at 50% 50%, transparent 40%, rgba(0,5,16,0.55) 100%)",
+          pointerEvents: "none",
+        }} />
+
+        {/* ── Glassmorphism center card ── */}
         <div style={{
           position: "absolute",
           inset: 0,
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: "12px",
         }}>
-          {/* Spinning ring */}
-          <div style={{ position: "relative", width: "56px", height: "56px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: "50%",
-              border: "2px solid rgba(0,188,212,0.15)",
-              borderTop: "2px solid #00BCD4",
-              animation: "spin 1.2s linear infinite",
-            }} />
-            <div style={{
-              position: "absolute",
-              inset: "8px",
-              borderRadius: "50%",
-              border: "1.5px solid rgba(0,188,212,0.08)",
-              borderBottom: "1.5px solid rgba(0,188,212,0.5)",
-              animation: "spin 2s linear infinite reverse",
-            }} />
-            {/* Inner icon */}
-            <div style={{
-              width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center",
-              animation: "plx-pulse 2s ease-in-out infinite",
-            }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(0,188,212,0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <circle cx="8.5" cy="8.5" r="1.5" />
-                <path d="m21 15-5-5L5 21" />
-              </svg>
-            </div>
-          </div>
+          <div style={{
+            width: "192px",
+            padding: "22px 20px 20px",
+            borderRadius: "18px",
+            background: "rgba(2, 18, 38, 0.62)",
+            backdropFilter: "blur(18px)",
+            WebkitBackdropFilter: "blur(18px)",
+            border: "1px solid rgba(0, 180, 230, 0.18)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "14px",
+            animation: "ocean-card-glow 3s ease-in-out infinite",
+          }}>
 
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
-            <span style={{ fontSize: "12px", color: "rgba(0,188,212,0.85)", fontWeight: 600, letterSpacing: "0.06em" }}>
-              GENERATING IMAGE
-            </span>
-            <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", letterSpacing: "0.04em" }}>
-              Cadus AI · DALL-E 3
-            </span>
+            {/* Circular progress loader */}
+            <div style={{
+              position: "relative",
+              width: "68px",
+              height: "68px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+              {/* Outer ring */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "50%",
+                border: "2px solid rgba(0,180,230,0.12)",
+                borderTop: "2.5px solid #00d4ff",
+                borderRight: "2.5px solid rgba(0,200,255,0.4)",
+                animation: "ocean-ring-rotate 1.4s linear infinite",
+                boxShadow: "0 0 12px rgba(0,212,255,0.4)",
+              }} />
+              {/* Middle ring */}
+              <div style={{
+                position: "absolute",
+                inset: "10px",
+                borderRadius: "50%",
+                border: "1.5px solid rgba(0,160,220,0.08)",
+                borderBottom: "2px solid rgba(0,180,240,0.55)",
+                borderLeft: "2px solid rgba(0,160,230,0.3)",
+                animation: "ocean-ring-rotate 2.2s linear infinite reverse",
+              }} />
+              {/* Inner pulsing orb */}
+              <div style={{
+                position: "absolute",
+                inset: "20px",
+                borderRadius: "50%",
+                background: "radial-gradient(circle, rgba(0,200,255,0.35) 0%, rgba(0,130,200,0.08) 100%)",
+                animation: "ocean-ring-glow 2s ease-in-out infinite",
+              }} />
+              {/* Icon */}
+              <div style={{ position: "relative", zIndex: 2, animation: "ocean-icon-pulse 2s ease-in-out infinite" }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(0,210,255,0.85)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2.5" />
+                  <circle cx="8.5" cy="8.5" r="1.5" fill="rgba(0,210,255,0.5)" stroke="none" />
+                  <path d="m21 15-5-5L5 21" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Text */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "5px" }}>
+              <span style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                color: "rgba(0,220,255,0.92)",
+                animation: "ocean-text-breathe 2s ease-in-out infinite",
+                textShadow: "0 0 10px rgba(0,200,255,0.4)",
+              }}>
+                GENERATING IMAGE
+              </span>
+              <span style={{
+                fontSize: "9.5px",
+                color: "rgba(140,210,255,0.5)",
+                letterSpacing: "0.06em",
+                animation: "ocean-text-breathe 2s ease-in-out 0.4s infinite",
+              }}>
+                Cadus AI  •  Processing…
+              </span>
+
+              {/* Progress dots */}
+              <div style={{ display: "flex", gap: "5px", marginTop: "4px" }}>
+                {[0, 1, 2, 3].map(i => (
+                  <div key={i} style={{
+                    width: "5px",
+                    height: "5px",
+                    borderRadius: "50%",
+                    background: `rgba(0,${180 + i * 18},${220 + i * 10},0.9)`,
+                    boxShadow: `0 0 6px rgba(0,200,255,0.6)`,
+                    animation: `ocean-text-breathe 1s ease-in-out ${i * 0.22}s infinite`,
+                  }} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Bottom gradient fade */}
+        {/* ── Surface highlight (top edge glow) ── */}
+        <div style={{
+          position: "absolute",
+          top: 0, left: 0, right: 0,
+          height: "3px",
+          background: "linear-gradient(90deg, transparent 0%, rgba(0,180,240,0.5) 40%, rgba(0,210,255,0.7) 50%, rgba(0,180,240,0.5) 60%, transparent 100%)",
+          animation: "ocean-text-breathe 3s ease-in-out infinite",
+          pointerEvents: "none",
+        }} />
+
+        {/* ── Bottom depth fade ── */}
         <div style={{
           position: "absolute",
           bottom: 0, left: 0, right: 0,
-          height: "60px",
-          background: "linear-gradient(transparent, rgba(4,7,24,0.7))",
+          height: "70px",
+          background: "linear-gradient(transparent, rgba(0,5,15,0.75))",
+          pointerEvents: "none",
         }} />
       </div>
 
-      {/* Prompt text below */}
+      {/* ── Prompt label below card ── */}
       <div style={{
         marginTop: "10px",
-        fontSize: "11px",
-        color: "rgba(0,188,212,0.45)",
+        fontSize: "10.5px",
+        color: "rgba(0,190,230,0.4)",
         overflow: "hidden",
         textOverflow: "ellipsis",
         whiteSpace: "nowrap",
-        letterSpacing: "0.02em",
+        letterSpacing: "0.03em",
         fontWeight: 500,
+        paddingLeft: "2px",
       }}>
         {prompt.length > 55 ? prompt.substring(0, 55) + "…" : prompt}
       </div>

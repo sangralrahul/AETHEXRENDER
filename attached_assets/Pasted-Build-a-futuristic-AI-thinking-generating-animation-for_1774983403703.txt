@@ -1,0 +1,95 @@
+Build a futuristic AI “thinking / generating” animation for my AETHEX (Cadus AI) image generator.
+
+Theme:
+- Deep ocean / underwater environment
+- Calm, dark blue sea with depth feeling
+- Sunlight rays entering from above water surface
+- Soft animated light beams moving slowly
+- Floating particles (like plankton or bubbles)
+
+-------------------------------------
+VISUAL DESIGN
+-------------------------------------
+
+- Background: deep sea gradient (dark blue → black)
+- Add subtle grid overlay (like AI interface)
+- Center card UI (glassmorphism style)
+- Rounded corners, soft glow borders
+
+-------------------------------------
+ANIMATION DETAILS
+-------------------------------------
+
+1. Sunlight Animation:
+   - Rays from top moving slowly downward
+   - Smooth wave-like motion
+   - Slight shimmer effect
+
+2. Water Motion:
+   - Gentle floating movement
+   - Depth illusion (parallax effect)
+
+3. Particles:
+   - Small glowing dots drifting randomly
+   - Slow upward/downward motion
+
+4. Center Loader:
+   - Circular progress animation
+   - Pulsing glow (cyan/blue)
+   - Smooth rotation
+
+-------------------------------------
+CENTER CONTENT (CARD)
+-------------------------------------
+
+Inside the card show:
+
+- Icon: image or AI symbol
+- Title: “GENERATING IMAGE”
+- Subtitle: “Cadus AI • Processing…”
+
+Add animation:
+- Text fades in/out slightly
+- Loader syncs with glow pulse
+
+-------------------------------------
+LOGO ANIMATION
+-------------------------------------
+
+- Place Cadus AI logo top-left
+- Add glowing pulse effect
+- Slight breathing animation (scale up/down)
+- Color: cyan / medical blue
+
+-------------------------------------
+UI STYLE
+-------------------------------------
+
+- Glassmorphism card (blur + transparency)
+- Neon blue highlights
+- Soft shadows
+- Minimal and premium (like AI startup UI)
+
+-------------------------------------
+TECH STACK
+-------------------------------------
+
+- Use HTML + CSS + JavaScript
+- Use CSS animations or canvas (preferred for water/light)
+- Optional: use Three.js for advanced effect
+
+-------------------------------------
+OUTPUT
+-------------------------------------
+
+- Fully responsive
+- Smooth performance
+- Looks like futuristic medical AI system
+- Similar feel to deep ocean + AI intelligence
+
+-------------------------------------
+GOAL
+-------------------------------------
+
+Create a visually stunning “AI thinking” screen that feels like:
+Deep sea intelligence + futuristic medical AI (Cadus AI)

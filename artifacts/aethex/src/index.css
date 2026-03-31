@@ -420,6 +420,58 @@
   50%       { opacity: 1;   transform: scale(1.06); }
 }
 
+/* ── Deep Ocean AI animation keyframes ─────────────────────────────── */
+@keyframes ocean-ray-sway {
+  0%   { transform: rotate(-6deg) scaleX(1);   opacity: 0.18; }
+  50%  { transform: rotate(4deg)  scaleX(1.15); opacity: 0.32; }
+  100% { transform: rotate(-6deg) scaleX(1);   opacity: 0.18; }
+}
+@keyframes ocean-ray-sway2 {
+  0%   { transform: rotate(5deg)  scaleX(1);   opacity: 0.12; }
+  50%  { transform: rotate(-3deg) scaleX(1.2); opacity: 0.25; }
+  100% { transform: rotate(5deg)  scaleX(1);   opacity: 0.12; }
+}
+@keyframes ocean-bubble-rise {
+  0%   { transform: translateY(0)   translateX(0)    scale(1);   opacity: 0; }
+  10%  { opacity: 0.9; }
+  80%  { opacity: 0.7; }
+  100% { transform: translateY(-280px) translateX(20px) scale(0.6); opacity: 0; }
+}
+@keyframes ocean-bubble-drift {
+  0%   { transform: translateY(0)   translateX(0)    scale(1);   opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateY(-200px) translateX(-18px) scale(0.7); opacity: 0; }
+}
+@keyframes ocean-water-shimmer {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 200px; }
+}
+@keyframes ocean-ring-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes ocean-ring-glow {
+  0%, 100% { box-shadow: 0 0 14px rgba(0,200,220,0.35), 0 0 30px rgba(0,150,200,0.15); opacity: 0.85; }
+  50%       { box-shadow: 0 0 24px rgba(0,230,255,0.6),  0 0 50px rgba(0,180,220,0.3);  opacity: 1; }
+}
+@keyframes ocean-card-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,160,200,0.15), 0 8px 32px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(0,200,230,0.14); }
+  50%       { box-shadow: 0 0 36px rgba(0,180,220,0.28), 0 8px 40px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(0,210,240,0.22); }
+}
+@keyframes ocean-text-breathe {
+  0%, 100% { opacity: 0.65; }
+  50%       { opacity: 1; }
+}
+@keyframes ocean-icon-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.7; }
+  50%       { transform: scale(1.12); opacity: 1; }
+}
+@keyframes ocean-depth-drift {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+
 /* Cadus image generation animation */
 @keyframes cadus-ring-spin {
   0%   { transform: rotate(0deg); }

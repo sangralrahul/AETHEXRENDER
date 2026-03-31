@@ -4,9 +4,11 @@ import { useGetCart, useAddToCart, useRemoveFromCart } from "@workspace/api-clie
 import { useSession } from "@/hooks/use-session";
 import { formatINR } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Cart() {
   const sessionId = useSession();
+  const queryClient = useQueryClient();
   
   const { data: cart, isLoading } = useGetCart(
     { sessionId }, 
@@ -18,16 +20,17 @@ export default function Cart() {
 
   const updateQuantity = (productId: number, newQuantity: number) => {
     if (newQuantity < 1) return;
-    addToCartMutation.mutate({
-      data: { productId, sessionId, quantity: newQuantity }
-    });
+    addToCartMutation.mutate(
+      { data: { productId, sessionId, quantity: newQuantity } },
+      { onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/cart"] }) }
+    );
   };
 
   const removeItem = (itemId: number) => {
-    removeFromCartMutation.mutate({
-      itemId,
-      params: { sessionId }
-    });
+    removeFromCartMutation.mutate(
+      { itemId, params: { sessionId } },
+      { onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/cart"] }) }
+    );
   };
 
   if (isLoading) {

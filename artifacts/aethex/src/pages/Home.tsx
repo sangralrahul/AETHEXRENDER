@@ -14,6 +14,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { useSession } from "@/hooks/use-session";
 import { useAddToCart } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const categoryIconMap: Record<string, React.ElementType> = {
   Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield, HeartPulse,
@@ -177,6 +178,7 @@ function NewsletterSection() {
 export default function Home() {
   const sessionId = useSession();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: productsData, isLoading: loadingProducts } = useListProducts({ limit: 8 });
   const { data: categories, isLoading: loadingCategories } = useListCategories();
@@ -188,7 +190,10 @@ export default function Home() {
     addToCartMutation.mutate(
       { data: { productId, sessionId, quantity: 1 } },
       {
-        onSuccess: () => toast({ title: "Added to cart", description: "Item successfully added to your cart." }),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+          toast({ title: "Added to cart", description: "Item successfully added to your cart." });
+        },
         onError: () => toast({ variant: "destructive", title: "Error", description: "Failed to add item to cart." }),
       }
     );

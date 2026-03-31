@@ -7,6 +7,7 @@ import { useSession } from "@/hooks/use-session";
 import { useAddToCart } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Products() {
   const [, setLocation] = useLocation();
@@ -22,6 +23,7 @@ export default function Products() {
 
   const sessionId = useSession();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: productsData, isLoading: loadingProducts } = useListProducts({
     category: categoryFilter || undefined,
@@ -57,7 +59,10 @@ export default function Products() {
     addToCartMutation.mutate(
       { data: { productId, sessionId, quantity: 1 } },
       {
-        onSuccess: () => toast({ title: "Added to cart" }),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+          toast({ title: "Added to cart", description: "Item added successfully." });
+        },
         onError: () => toast({ variant: "destructive", title: "Error adding to cart" })
       }
     );

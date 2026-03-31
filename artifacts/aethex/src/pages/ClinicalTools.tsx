@@ -4,7 +4,7 @@ import {
   Pill, Calculator, Weight, BookOpen, Brain, Stethoscope,
   ClipboardList, FlaskConical, Activity, Scan, FileText,
   GraduationCap, Heart, Search, X,
-  Zap, Lock, ArrowUpRight,
+  Zap, Lock, ArrowUpRight, Sparkles,
 } from "lucide-react";
 
 /* ── Tool data ────────────────────────────────────────────────────── */
@@ -24,7 +24,7 @@ interface Tool {
 const TOOLS: Tool[] = [
   {
     id: "drug-interaction",
-    icon: <Pill className="w-6 h-6" />,
+    icon: <Pill className="w-5 h-5" />,
     title: "Drug Interaction Checker",
     desc: "Detect clinically significant interactions between multiple medications instantly.",
     category: "diagnostic",
@@ -33,28 +33,28 @@ const TOOLS: Tool[] = [
   },
   {
     id: "dosage-calculator",
-    icon: <Calculator className="w-6 h-6" />,
+    icon: <Calculator className="w-5 h-5" />,
     title: "Dosage Calculator",
     desc: "Calculate weight-based, renal-adjusted, and pediatric drug doses with ease.",
     category: "calculator",
   },
   {
     id: "bmi-calculator",
-    icon: <Weight className="w-6 h-6" />,
+    icon: <Weight className="w-5 h-5" />,
     title: "BMI Calculator",
     desc: "Body Mass Index with ideal weight ranges and WHO classification.",
     category: "calculator",
   },
   {
     id: "abbreviations",
-    icon: <BookOpen className="w-6 h-6" />,
+    icon: <BookOpen className="w-5 h-5" />,
     title: "Medical Abbreviations",
     desc: "Searchable dictionary of 5,000+ clinical abbreviations, acronyms & mnemonics.",
     category: "reference",
   },
   {
     id: "ddx",
-    icon: <Brain className="w-6 h-6" />,
+    icon: <Brain className="w-5 h-5" />,
     title: "Differential Diagnosis",
     desc: "AI-powered DDx generator based on symptoms, signs, and investigations.",
     category: "ai",
@@ -65,24 +65,24 @@ const TOOLS: Tool[] = [
   },
   {
     id: "symptom-checker",
-    icon: <Stethoscope className="w-6 h-6" />,
+    icon: <Stethoscope className="w-5 h-5" />,
     title: "Symptom Checker",
     desc: "Enter symptoms and get probable diagnoses with triage severity scoring.",
     category: "diagnostic",
   },
   {
     id: "clinical-decision",
-    icon: <ClipboardList className="w-6 h-6" />,
+    icon: <ClipboardList className="w-5 h-5" />,
     title: "Clinical Decision Support",
     desc: "Evidence-based clinical guidelines integrated into real-time decision trees.",
     category: "ai",
-    badge: "⭐ Pro",
+    badge: "Pro",
     badgeColor: "#F59E0B",
     pro: true,
   },
   {
     id: "lab-interpreter",
-    icon: <FlaskConical className="w-6 h-6" />,
+    icon: <FlaskConical className="w-5 h-5" />,
     title: "Lab Value Interpreter",
     desc: "Upload CBC, LFT, RFT results and get AI-interpreted clinical significance.",
     category: "ai",
@@ -91,7 +91,7 @@ const TOOLS: Tool[] = [
   },
   {
     id: "ecg-analyzer",
-    icon: <Activity className="w-6 h-6" />,
+    icon: <Activity className="w-5 h-5" />,
     title: "ECG Analyzer",
     desc: "Upload your ECG strip for AI rhythm analysis, intervals, and arrhythmia detection.",
     category: "ai",
@@ -101,7 +101,7 @@ const TOOLS: Tool[] = [
   },
   {
     id: "radiology",
-    icon: <Scan className="w-6 h-6" />,
+    icon: <Scan className="w-5 h-5" />,
     title: "Radiology Assistant",
     desc: "AI reads X-ray, CT, and MRI reports — highlights findings and differentials.",
     category: "ai",
@@ -111,7 +111,7 @@ const TOOLS: Tool[] = [
   },
   {
     id: "prescription",
-    icon: <FileText className="w-6 h-6" />,
+    icon: <FileText className="w-5 h-5" />,
     title: "Prescription Generator",
     desc: "Create professional prescriptions with dosing, frequency, and patient instructions.",
     category: "reference",
@@ -120,7 +120,7 @@ const TOOLS: Tool[] = [
   },
   {
     id: "case-simulator",
-    icon: <GraduationCap className="w-6 h-6" />,
+    icon: <GraduationCap className="w-5 h-5" />,
     title: "Case Study Simulator",
     desc: "Practice real-world clinical cases with branching decisions for NEET PG prep.",
     category: "diagnostic",
@@ -129,7 +129,7 @@ const TOOLS: Tool[] = [
   },
   {
     id: "risk-calculator",
-    icon: <Heart className="w-6 h-6" />,
+    icon: <Heart className="w-5 h-5" />,
     title: "Risk Calculator",
     desc: "ASCVD, CHADS2, Wells, CURB-65 and 20+ validated clinical risk scoring tools.",
     category: "calculator",
@@ -146,60 +146,79 @@ const CATEGORIES = [
 
 type CategoryId = (typeof CATEGORIES)[number]["id"];
 
+/* ── Icon colour palette (light theme) ───────────────────────────── */
+const iconBg: Record<Tool["category"], string> = {
+  ai: "rgba(124,58,237,0.1)",
+  calculator: "rgba(0,122,255,0.1)",
+  diagnostic: "rgba(0,194,168,0.1)",
+  reference: "rgba(245,158,11,0.1)",
+};
+const iconColor: Record<Tool["category"], string> = {
+  ai: "#7C3AED",
+  calculator: "#007AFF",
+  diagnostic: "#00C2A8",
+  reference: "#F59E0B",
+};
+const categoryLabel: Record<Tool["category"], string> = {
+  ai: "AI Tool",
+  calculator: "Calculator",
+  diagnostic: "Diagnostics",
+  reference: "Reference",
+};
+
 /* ── ToolCard ─────────────────────────────────────────────────────── */
 function ToolCard({ tool }: { tool: Tool }) {
-  const iconColors: Record<Tool["category"], string> = {
-    ai: "from-violet-600/30 to-violet-400/10 text-violet-400",
-    calculator: "from-blue-600/30 to-blue-400/10 text-blue-400",
-    diagnostic: "from-teal-600/30 to-teal-400/10 text-[#00C2A8]",
-    reference: "from-amber-600/30 to-amber-400/10 text-amber-400",
-  };
-
   const content = (
     <div
       className="group relative rounded-2xl p-5 flex flex-col gap-3 cursor-pointer transition-all duration-300
-        hover:-translate-y-1 hover:shadow-[0_0_28px_rgba(0,194,168,0.15)]"
+        hover:-translate-y-1"
       style={{
-        background: "rgba(22,27,34,0.85)",
-        border: "1px solid rgba(255,255,255,0.07)",
-        backdropFilter: "blur(12px)",
+        background: "#FFFFFF",
+        border: "1px solid rgba(60,60,67,0.1)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 28px rgba(0,122,255,0.12)";
+        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(0,122,255,0.2)";
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 8px rgba(0,0,0,0.05)";
+        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(60,60,67,0.1)";
       }}
     >
-      {/* Glow on hover */}
-      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at top left, rgba(0,194,168,0.07) 0%, transparent 70%)" }} />
-
       {/* Top row */}
       <div className="flex items-start justify-between gap-2">
-        <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${iconColors[tool.category]} flex items-center justify-center shrink-0`}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+          style={{ background: iconBg[tool.category], color: iconColor[tool.category] }}>
           {tool.icon}
         </div>
         <div className="flex items-center gap-1.5 flex-wrap justify-end">
           {tool.badge && (
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-              style={{ background: `${tool.badgeColor}22`, color: tool.badgeColor, border: `1px solid ${tool.badgeColor}44` }}>
+              style={{ background: `${tool.badgeColor}18`, color: tool.badgeColor, border: `1px solid ${tool.badgeColor}33` }}>
               {tool.badge}
             </span>
           )}
           {tool.pro && (
-            <Lock className="w-3.5 h-3.5 text-amber-400/70" />
+            <Lock className="w-3.5 h-3.5" style={{ color: "#F59E0B" }} />
           )}
         </div>
       </div>
 
       {/* Title + desc */}
       <div>
-        <h3 className="font-semibold text-[15px] text-white/90 leading-snug mb-1">{tool.title}</h3>
-        <p className="text-[13px] text-white/45 leading-relaxed">{tool.desc}</p>
+        <h3 className="font-semibold text-[15px] leading-snug mb-1" style={{ color: "#1C1C1E" }}>{tool.title}</h3>
+        <p className="text-[13px] leading-relaxed" style={{ color: "#636366" }}>{tool.desc}</p>
       </div>
 
       {/* Footer */}
-      <div className="mt-auto pt-2 flex items-center justify-between">
-        <span className="text-[11px] font-medium capitalize px-2 py-0.5 rounded-full"
-          style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.35)" }}>
-          {tool.category === "ai" ? "AI Tool" : tool.category === "calculator" ? "Calculator" : tool.category === "diagnostic" ? "Diagnostics" : "Reference"}
+      <div className="mt-auto pt-1 flex items-center justify-between">
+        <span className="text-[11px] font-medium px-2.5 py-1 rounded-full"
+          style={{ background: iconBg[tool.category], color: iconColor[tool.category] }}>
+          {categoryLabel[tool.category]}
         </span>
-        <span className="flex items-center gap-0.5 text-[12px] text-[#00C2A8] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
+        <span className="flex items-center gap-0.5 text-[12px] font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{ color: "#007AFF" }}>
           Open <ArrowUpRight className="w-3.5 h-3.5" />
         </span>
       </div>
@@ -225,99 +244,103 @@ export default function ClinicalTools() {
   }, [query, activeCategory]);
 
   return (
-    <div className="min-h-screen" style={{ background: "#0D1117" }}>
+    <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden">
-        {/* Ambient glows */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse, rgba(0,194,168,0.10) 0%, transparent 70%)" }} />
-        <div className="absolute top-20 left-1/4 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse, rgba(124,58,237,0.07) 0%, transparent 70%)" }} />
+      <div className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, #0A1628 0%, #0D2144 50%, #0A3060 100%)" }}>
+        {/* Ambient orbs */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[350px] rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(0,122,255,0.2) 0%, transparent 70%)" }} />
+        <div className="absolute top-10 right-1/4 w-64 h-64 rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(0,194,168,0.15) 0%, transparent 70%)" }} />
 
-        <div className="max-w-5xl mx-auto px-4 pt-16 pb-10 text-center relative z-10">
-          {/* Label */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
-            style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)" }}>
-            <Zap className="w-3.5 h-3.5 text-[#00C2A8]" />
-            <span className="text-[12px] font-medium text-[#00C2A8]">13 clinical tools available</span>
+        <div className="max-w-5xl mx-auto px-4 pt-20 pb-14 text-center relative z-10">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
+            style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.3)" }}>
+            <Zap className="w-3.5 h-3.5" style={{ color: "#00C2A8" }} />
+            <span className="text-[12px] font-semibold" style={{ color: "#00C2A8" }}>13 clinical tools available</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight"
-            style={{
-              color: "rgba(255,255,255,0.95)",
-              textShadow: "0 0 60px rgba(0,194,168,0.25)",
-            }}>
-            Clinical Tools
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 tracking-tight" style={{ color: "#FFFFFF", letterSpacing: "-0.02em" }}>
+            Clinical{" "}
+            <span style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              Tools
+            </span>
           </h1>
-          <p className="text-lg text-white/45 max-w-xl mx-auto mb-8">
+          <p className="text-base max-w-xl mx-auto mb-10" style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.7 }}>
             Essential tools for daily clinical practice — from drug checks to AI-powered diagnostics.
           </p>
 
           {/* Search */}
           <div className="relative max-w-md mx-auto">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "rgba(255,255,255,0.4)" }} />
             <input
               type="text"
               placeholder="Search tools..."
               value={query}
               onChange={e => setQuery(e.target.value)}
-              className="w-full pl-10 pr-10 py-3 rounded-xl text-sm outline-none placeholder-white/25"
+              className="w-full pl-11 pr-10 py-3.5 rounded-2xl text-sm outline-none"
               style={{
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                color: "rgba(255,255,255,0.85)",
+                background: "rgba(255,255,255,0.1)",
+                border: "1px solid rgba(255,255,255,0.15)",
+                color: "#FFFFFF",
+                backdropFilter: "blur(12px)",
               }}
             />
             {query && (
               <button onClick={() => setQuery("")}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
-                <X className="w-4 h-4" />
+                className="absolute right-4 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-100 opacity-60">
+                <X className="w-4 h-4" style={{ color: "#FFFFFF" }} />
               </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* ── Category Tabs ─────────────────────────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-4 mb-8">
-        <div className="flex gap-2 flex-wrap">
+      {/* ── Body ─────────────────────────────────────────────────────── */}
+      <div className="max-w-5xl mx-auto px-4 py-8">
+
+        {/* Category Tabs */}
+        <div className="flex gap-2 flex-wrap mb-8">
           {CATEGORIES.map(cat => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className="px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200"
+              className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
               style={activeCategory === cat.id ? {
-                background: "rgba(0,194,168,0.18)",
-                border: "1px solid rgba(0,194,168,0.45)",
-                color: "#00C2A8",
+                background: "linear-gradient(135deg,#007AFF,#00C2A8)",
+                color: "#FFFFFF",
+                boxShadow: "0 2px 8px rgba(0,122,255,0.3)",
+                border: "1px solid transparent",
               } : {
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.45)",
+                background: "#FFFFFF",
+                border: "1px solid rgba(60,60,67,0.15)",
+                color: "#636366",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
               }}
             >
               {cat.label}
             </button>
           ))}
-
-          {/* Result count */}
           {(query || activeCategory !== "all") && (
-            <span className="ml-auto self-center text-[12px] text-white/30">
+            <span className="ml-auto self-center text-[12px]" style={{ color: "#AEAEB2" }}>
               {filtered.length} tool{filtered.length !== 1 ? "s" : ""}
             </span>
           )}
         </div>
-      </div>
 
-      {/* ── Tools Grid ────────────────────────────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-4 pb-16">
+        {/* Tools Grid */}
         {filtered.length === 0 ? (
           <div className="text-center py-20">
-            <Search className="w-10 h-10 mx-auto mb-4 text-white/15" />
-            <p className="text-white/40 text-sm">No tools match your search.</p>
+            <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ background: "rgba(0,122,255,0.08)" }}>
+              <Search className="w-6 h-6" style={{ color: "#007AFF" }} />
+            </div>
+            <p className="font-medium mb-1" style={{ color: "#1C1C1E" }}>No tools found</p>
+            <p className="text-sm mb-4" style={{ color: "#AEAEB2" }}>Try a different keyword or category.</p>
             <button onClick={() => { setQuery(""); setActiveCategory("all"); }}
-              className="mt-3 text-[#00C2A8] text-sm hover:underline">
+              className="text-sm font-medium hover:underline" style={{ color: "#007AFF" }}>
               Clear filters
             </button>
           </div>
@@ -329,6 +352,29 @@ export default function ClinicalTools() {
           </div>
         )}
 
+        {/* Cadus AI CTA */}
+        <div className="mt-14 rounded-2xl p-8 text-center relative overflow-hidden"
+          style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: "radial-gradient(ellipse at top right, rgba(255,255,255,0.12) 0%, transparent 60%)" }} />
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+              style={{ background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.3)" }}>
+              <Sparkles className="w-3.5 h-3.5 text-white" />
+              <span className="text-xs font-semibold text-white">Powered by Cadus AI</span>
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2">Need a deeper clinical answer?</h2>
+            <p className="text-white/75 text-sm mb-6 max-w-md mx-auto">
+              Ask Cadus AI anything — diagnosis, drug dosing, patient education, SOAP notes and more.
+            </p>
+            <Link href="/ai-assistant"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90 hover:scale-105"
+              style={{ background: "#FFFFFF", color: "#007AFF" }}>
+              <Sparkles className="w-4 h-4" />
+              Open Cadus AI
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

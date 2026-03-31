@@ -61,7 +61,7 @@ export default function ProductDetail() {
     : 0;
 
   return (
-    <div className="min-h-screen pt-[72px] bg-slate-50">
+    <div className="min-h-screen  bg-slate-50">
       {/* Product Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
         <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">

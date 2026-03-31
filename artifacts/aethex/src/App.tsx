@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
 import NotFound from "@/pages/not-found";
 
-import { Navbar } from "@/components/layout/Navbar";
+import { Navbar, AnnouncementBar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
 import Home from "@/pages/Home";
@@ -106,8 +106,11 @@ function Router() {
       <Route>
         {() => (
           <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-1">
+            <div className="fixed top-0 left-0 right-0 z-[60]">
+              <AnnouncementBar />
+              <Navbar />
+            </div>
+            <main className="flex-1 pt-[104px]">
               <Switch>
                 <Route path="/" component={Home} />
 

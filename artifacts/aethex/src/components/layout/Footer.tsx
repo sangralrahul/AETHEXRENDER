@@ -59,65 +59,75 @@ export function Footer() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5">
               <img
                 src={`${import.meta.env.BASE_URL}aethex-logo.jpg`}
                 alt="aethex logo"
-                className="w-10 h-10 object-contain"
+                className="w-9 h-9 object-contain"
               />
-              <span className="font-display font-bold text-2xl tracking-tight text-white leading-none">
+              <span className="font-display font-bold text-xl tracking-tight text-white leading-none">
                 aethex
               </span>
             </Link>
             <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
-              Medicine Made Effortless. India's #1 destination for medical professionals and students — top-tier equipment, books, scrubs, and AI assistance.
+              Medicine Made Effortless. India's #1 destination for medical professionals — supplies, AI tools, and study resources.
             </p>
-            <div className="flex items-center gap-4">
-              <a href="#" className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:opacity-90" style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.45)" }}>
-                <Twitter className="w-5 h-5" />
+            <div className="flex items-center gap-3">
+              <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:opacity-90" style={{ background: "rgba(255,255,255,0.08)" }}>
+                <Twitter className="w-4 h-4" style={{ color: "rgba(255,255,255,0.5)" }} />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:opacity-90" style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.45)" }}>
-                <Linkedin className="w-5 h-5" />
+              <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:opacity-90" style={{ background: "rgba(255,255,255,0.08)" }}>
+                <Linkedin className="w-4 h-4" style={{ color: "rgba(255,255,255,0.5)" }} />
               </a>
             </div>
           </div>
 
-          {/* Categories */}
+          {/* Shop */}
           <div>
-            <h3 className="font-display font-bold text-white text-lg mb-6">Shop Categories</h3>
-            <ul className="space-y-4 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
+            <h3 className="font-display font-semibold text-white text-sm uppercase tracking-wider mb-5">Shop</h3>
+            <ul className="space-y-3 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
               {[
-                { href: "/category/stethoscopes", label: "Premium Stethoscopes" },
-                { href: "/category/scrubs", label: "Medical Scrubs & Aprons" },
-                { href: "/category/books", label: "Books & Study Material" },
-                { href: "/category/surgical", label: "Surgical Instruments" },
-                { href: "/category/equipment", label: "Medical Equipment" },
+                { href: "/shop?category=stethoscopes", label: "Stethoscopes" },
+                { href: "/shop?category=scrubs-clothing", label: "Scrubs & Aprons" },
+                { href: "/shop?category=books", label: "Books & Notes" },
+                { href: "/shop?category=surgical-instruments", label: "Surgical Instruments" },
+                { href: "/shop?category=diagnostics", label: "Diagnostics" },
+                { href: "/shop", label: "View All Products" },
               ].map(({ href, label }) => (
                 <li key={href}><Link href={href} className="hover:text-white transition-colors">{label}</Link></li>
               ))}
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Study Hub */}
           <div>
-            <h3 className="font-display font-bold text-white text-lg mb-6">Resources</h3>
-            <ul className="space-y-4 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
+            <h3 className="font-display font-semibold text-white text-sm uppercase tracking-wider mb-5">Study Hub</h3>
+            <ul className="space-y-3 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
+              <li><Link href="/study-hub" className="hover:text-white transition-colors">NEET PG Prep</Link></li>
+              <li><Link href="/study-hub" className="hover:text-white transition-colors">USMLE Resources</Link></li>
+              <li><Link href="/study-hub" className="hover:text-white transition-colors">FMGE Study</Link></li>
               <li><Link href="/ai-assistant" className="hover:text-white transition-colors">Cadus AI Assistant</Link></li>
+              <li><Link href="/tools" className="hover:text-white transition-colors">Clinical Tools</Link></li>
               <li><Link href="/blog" className="hover:text-white transition-colors">Medical Blog</Link></li>
-              <li><Link href="/news" className="hover:text-white transition-colors">Medical News</Link></li>
-              <li><Link href="/orders/track" className="hover:text-white transition-colors">Track Order</Link></li>
-              <li><a href="#" className="hover:text-white transition-colors">FAQs for Doctors</a></li>
             </ul>
           </div>
 
-          {/* Features */}
+          {/* Company + Support */}
           <div>
-            <h3 className="font-display font-bold text-white text-lg mb-6">Why aethex?</h3>
-            <ul className="space-y-4 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
-              <li className="flex items-center gap-3"><ShieldCheck className="w-5 h-5" style={{ color: "#00C2A8" }} /><span>100% Genuine Products</span></li>
-              <li className="flex items-center gap-3"><Truck className="w-5 h-5" style={{ color: "#00C2A8" }} /><span>Pan-India Fast Delivery</span></li>
-              <li className="flex items-center gap-3"><Heart className="w-5 h-5" style={{ color: "#00C2A8" }} /><span>Trusted by 50k+ Doctors</span></li>
+            <h3 className="font-display font-semibold text-white text-sm uppercase tracking-wider mb-5">Company</h3>
+            <ul className="space-y-3 text-sm mb-7" style={{ color: "rgba(255,255,255,0.45)" }}>
+              <li><a href="https://clavix.in" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">About Us</a></li>
+              <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+              <li><Link href="/news" className="hover:text-white transition-colors">Medical News</Link></li>
+              <li><Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link></li>
+            </ul>
+            <h3 className="font-display font-semibold text-white text-sm uppercase tracking-wider mb-5">Support</h3>
+            <ul className="space-y-3 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
+              <li><Link href="/orders/track" className="hover:text-white transition-colors">Track Order</Link></li>
+              <li><a href="mailto:support@clavixtech.in" className="hover:text-white transition-colors">support@clavixtech.in</a></li>
+              <li><Link href="/medical-disclaimer" className="hover:text-white transition-colors">Medical Disclaimer</Link></li>
             </ul>
           </div>
         </div>

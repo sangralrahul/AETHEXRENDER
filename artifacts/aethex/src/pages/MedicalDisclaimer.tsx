@@ -18,7 +18,7 @@ export default function MedicalDisclaimer() {
   );
 
   return (
-    <div className="min-h-screen pt-[72px]" style={{ background: "#F2F2F7" }}>
+    <div className="min-h-screen " style={{ background: "#F2F2F7" }}>
       {/* Hero */}
       <div className="py-14" style={{ background: "linear-gradient(160deg,#FFF3E0 0%,#FFF8F0 50%,#FFF0E8 100%)" }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6">

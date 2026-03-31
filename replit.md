@@ -20,14 +20,15 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 - **Navbar entry point** — account dropdown → "Cadus AI Settings" → navigates to `/settings`
 - **No more modal** — old SettingsModal and all its state removed from Navbar; `SettingsModal.tsx` still exists for legacy exports only
 
-### Titanium Pro Light Theme (March 2026)
-- **Full light redesign** — iOS-style Titanium Pro theme applied to all main pages
-- **CSS tokens**: `--bg-primary:#F2F2F7`, `--accent-blue:#007AFF`, `--accent-teal:#00C2A8`, `--text-primary:#1C1C1E`
-- **Body**: #F2F2F7 background, #1C1C1E text (replaces dark #0D1117)
-- **Navbar**: frosted glass `rgba(242,242,247,0.88)` with `backdrop-filter:blur(20px)`, dark text, blue-to-teal gradient "Start Chat" pill
-- **Footer**: stays dark `#1C1C1E` by design — includes "Medicine Made Effortless." in copyright bar
-- **Hero**: "Medicine Made Effortless." headline with blue-to-teal gradient, rounded pill CTA buttons
-- **Stats bar**: white bg, blue numbers (#007AFF)
+### Titanium Pro Design System — Full Redesign (March 2026)
+- **Apple-inspired** — Clean, premium, generous whitespace; Outfit font throughout
+- **Announcement bar**: Black `#1c1c1e` sticky bar above navbar; promo code + delivery message
+- **Navbar**: White `rgba(255,255,255,0.94)` with `backdrop-filter:blur`; solid blue `#007AFF` "Start Chat" button; links: Shop, Study Hub, Blog, Tools, News
+- **App.tsx layout**: Announcement bar + Navbar fixed in a single `z-[60]` container; all pages get `pt-[104px]` via `<main>` (individual page pt removed)
+- **Hero**: "Medicine Made Effortless." with blue "Effortless"; tagline "Everything a doctor needs..."; CTAs: "Shop Essentials →" (blue) + "Try AI Chat" (white outlined); 2×2 stat tiles right column (50k+, 1k+, 28+, 98%)
+- **Footer**: Dark `#1c1c1e`; 4 columns: Shop, Study Hub, Company, Support
+- **CSS tokens**: `--bg:#F4F4F6`, `--accent:#007AFF`, `--text:#1c1c1e`, `--border:#e8e8ed`
+- **All page paddings cleaned** — no more per-page `pt-[72px]`; consistent with global layout
 - **Feature cards, category cards**: white bg, subtle shadow, hover lift
 - **Cadus AI banner**: full blue-to-teal gradient block
 - **AiAssistant.tsx stays dark** — manages its own inline theme, completely untouched

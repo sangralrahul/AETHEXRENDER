@@ -1,0 +1,224 @@
+You are redesigning the AETHEX medical website completely. Apply this design system to ALL pages — homepage, shop, product pages, study hub, blog, tools, news, cart, checkout, login, and any other pages. Every single page must use this exact same theme consistently. The website should be fully production-ready and deployable with zero changes needed after.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BRAND IDENTITY — DO NOT CHANGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Logo: The existing AETHEX logo — a blue-to-teal gradient letter "A" with a white medical cross inside it. DO NOT modify, replace, or redesign the logo in any way. Display it at 36px height in the navbar.
+
+Brand Name: AETHEX
+Tagline: "Medicine Made Effortless."
+Sub-tagline: "Everything a doctor needs — supplies, AI research tools, and study resources — in one beautifully simple platform."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+THEME: TITANIUM PRO (Apple-Inspired)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DESIGN PHILOSOPHY: Clean, premium, Apple-level polish. Generous whitespace. Crisp typography. Every element feels intentional, modern, and trustworthy. Think Apple.com meets a world-class medical platform.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COLOR SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+--color-bg-primary: #ffffff
+--color-bg-secondary: #f4f4f6
+--color-bg-tertiary: #e8e8ed
+--color-accent: #007aff
+--color-accent-hover: #0062cc
+--color-accent-light: #e8f3ff
+--color-text-primary: #1c1c1e
+--color-text-secondary: #8e8e93
+--color-text-muted: #aeaeb2
+--color-border: #e8e8ed
+--color-border-strong: #d1d1d6
+--color-success: #34c759
+--color-warning: #ff9f0a
+--color-danger: #ff3b30
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TYPOGRAPHY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Primary Font: 'Outfit', sans-serif (import from Google Fonts)
+Fallback: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif
+
+Font Scale:
+- Display: 56px / weight 700 / letter-spacing -0.03em
+- H1: 40px / weight 700 / letter-spacing -0.02em
+- H2: 28px / weight 700 / letter-spacing -0.02em
+- H3: 20px / weight 600
+- Body Large: 17px / weight 400 / line-height 1.65
+- Body: 15px / weight 400 / line-height 1.6
+- Small: 13px / weight 400
+- Label: 11px / weight 600 / letter-spacing 0.04em / uppercase
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COMPONENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NAVBAR:
+- Background: #ffffff with bottom border 1px solid #e8e8ed
+- Height: 64px
+- Logo: AETHEX logo image (unchanged) + text "AETHEX" in #1c1c1e weight 700
+- Nav links: Shop, Study Hub, Blog, Tools, News — color #8e8e93, hover #1c1c1e, font 15px
+- Right side: Search icon + Cart icon + "Start Chat" button
+- "Start Chat" button: background #007aff, color white, border-radius 10px, padding 8px 18px, font-weight 600
+- Sticky on scroll with subtle backdrop blur
+
+ANNOUNCEMENT BAR (above navbar):
+- Background: #1c1c1e
+- Text: "Free delivery on orders above ₹999 · Trusted by 50,000+ doctors · Use code AETHEX10 for 10% off"
+- Font: 12px, color rgba(255,255,255,0.8), center aligned
+
+HERO SECTION (homepage):
+- Background: #f4f4f6
+- Layout: Two columns — left text, right feature cards
+- Left column:
+  - Badge: "India's #1 Medical Platform" — background #e8f3ff, color #007aff, border-radius 20px, font 12px weight 600
+  - H1: "Medicine Made Effortless." — 48px, weight 700, color #1c1c1e, letter-spacing -0.03em
+  - Accent word "Effortless" in color #007aff
+  - Subtext: "Everything a doctor needs — supplies, AI research tools, and study resources — in one beautifully simple platform." — 17px, color #8e8e93, max-width 480px
+  - CTA Buttons row: Primary "Shop Essentials →" (#007aff bg, white text, border-radius 12px, padding 14px 28px, font 16px weight 600) + Secondary "Try AI Chat" (white bg, border 1px solid #e8e8ed, color #1c1c1e, same size)
+- Right column: 2x2 grid of stat tiles:
+  - Each tile: white bg, border 1px solid #e8e8ed, border-radius 16px, padding 20px, centered
+  - Stat number: 24px weight 700, color #1c1c1e
+  - Stat label: 13px, color #8e8e93
+  - Stats: 50,000+ Doctors / 1,000+ Products / 28+ States / 98% Satisfaction
+
+STATS BAR (below hero):
+- Background: white
+- Border-top and bottom: 1px solid #e8e8ed
+- 4 stats in a row, each with a divider
+- Animated count-up on scroll
+
+PRODUCT CARDS:
+- Background: white
+- Border: 1px solid #e8e8ed
+- Border-radius: 16px
+- Padding: 16px
+- Image: border-radius 12px, background #f4f4f6, aspect ratio 1:1
+- Product name: 15px weight 600, color #1c1c1e
+- Price: 17px weight 700, color #007aff
+- "Add to Cart" button: full width, background #007aff, white text, border-radius 10px, padding 10px
+- Hover: transform translateY(-4px), border-color #007aff
+
+BUTTONS:
+- Primary: background #007aff, color white, border-radius 10px, padding 12px 24px, font 15px weight 600, hover background #0062cc
+- Secondary: background white, border 1px solid #e8e8ed, color #1c1c1e, same sizing, hover border-color #007aff, color #007aff
+- Ghost: transparent bg, color #007aff, no border, hover underline
+
+FORM INPUTS:
+- Background: white
+- Border: 1px solid #e8e8ed
+- Border-radius: 10px
+- Padding: 12px 16px
+- Font: 15px, color #1c1c1e
+- Placeholder: #aeaeb2
+- Focus: border-color #007aff, box-shadow 0 0 0 3px rgba(0,122,255,0.12)
+
+CARDS (general):
+- Background: white
+- Border: 1px solid #e8e8ed
+- Border-radius: 16px
+- Padding: 24px
+- Hover: border-color #007aff transition 0.2s
+
+BADGES / TAGS:
+- Border-radius: 20px
+- Padding: 4px 12px
+- Font: 12px weight 600
+- Blue: bg #e8f3ff, text #007aff
+- Green: bg #e8f9ed, text #1a7f37
+- Orange: bg #fff4e5, text #b45309
+
+FOOTER:
+- Background: #1c1c1e
+- Text color: rgba(255,255,255,0.6)
+- Logo + tagline at top
+- 4 column links: Shop, Study Hub, Company, Support
+- Bottom bar: "© 2025 AETHEX. All rights reserved." + social icons
+- Accent color #007aff for hover states
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PAGE-SPECIFIC INSTRUCTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SHOP PAGE:
+- Sidebar filters: Categories, Price range slider, Brand, Availability
+- Product grid: 3 columns desktop, 2 tablet, 1 mobile
+- Sort dropdown, search bar at top
+- "PRO" badge on featured products in #007aff
+
+PRODUCT DETAIL PAGE:
+- Large product image left, details right
+- Quantity selector, Add to Cart + Buy Now buttons
+- Tabs: Description, Specifications, Reviews
+- Related products carousel below
+
+STUDY HUB PAGE:
+- Hero section: "Ace Your Medical Exams" heading
+- Cards for: NEET PG, USMLE, FMGE, PG Entrance resources
+- Recent articles grid
+- Progress tracker for logged-in users
+
+BLOG PAGE:
+- Featured article hero at top (large image)
+- Article grid below: image, category badge, title, read time, date
+- Sidebar: Search, Popular Tags, Newsletter signup
+
+AI CHAT / TOOLS PAGE:
+- Full-height chat interface
+- Sidebar: conversation history
+- Input bar at bottom with send button
+- "Deep Research" mode toggle in header
+- Clean message bubbles: user right (#007aff bg), AI left (white bg, border)
+
+LOGIN / SIGNUP PAGE:
+- Centered card on #f4f4f6 background
+- Card: white bg, border-radius 20px, padding 40px, max-width 440px
+- AETHEX logo + "Welcome back" heading
+- Email + password inputs
+- "Sign In" primary button full width
+- "Don't have an account? Sign up" link below
+
+CART PAGE:
+- Left: Cart items list with quantity controls
+- Right: Order summary sticky card
+- Each item: product image (60px), name, price, quantity stepper, remove button
+- Summary card: Subtotal, Delivery, Discount, Total, Checkout button
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ANIMATIONS & INTERACTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Page load: fade-in + subtle slide-up (opacity 0→1, translateY 20px→0, duration 0.5s)
+- Scroll reveal: elements animate in as they enter viewport using IntersectionObserver
+- Stat counters: count-up animation when stats section scrolls into view
+- Hover on cards: translateY(-4px), border-color transition 0.2s ease
+- Button clicks: scale(0.97) active state
+- Navbar: smooth background blur transition on scroll
+- Smooth scrolling: scroll-behavior: smooth on html element
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RESPONSIVE BREAKPOINTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Mobile: < 768px (single column, hamburger menu, 16px body font)
+- Tablet: 768px–1024px (2 columns where applicable)
+- Desktop: > 1024px (full layout as described)
+- Mobile navbar: hamburger menu slides in from right, full-height overlay
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IMPORTANT RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. DO NOT change the AETHEX logo in any way
+2. Apply this EXACT theme to EVERY page — no page should look different
+3. Use Outfit font from Google Fonts throughout
+4. All CSS colors must use the variables defined above
+5. Every page must have the same navbar and footer
+6. The website must be fully functional and deployable — no placeholder content
+7. Mobile-first responsive design
+8. No purple gradients, no generic templates — this is a custom premium design
+9. Maintain all existing functionality (cart, search, AI chat, etc.)
+10. Code must be clean, commented, and production-ready

@@ -107,7 +107,7 @@ export default function PrivacyPolicy() {
   );
 
   return (
-    <div className="min-h-screen pt-[72px]" style={{ background: "#F2F2F7" }}>
+    <div className="min-h-screen " style={{ background: "#F2F2F7" }}>
       {/* Hero */}
       <div className="py-14" style={{ background: "linear-gradient(160deg,#EBF4FF 0%,#F0F8FF 50%,#E8F5F3 100%)" }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6">

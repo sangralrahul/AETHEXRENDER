@@ -121,7 +121,7 @@ export default function Products() {
   const gradient = categoryFilter ? (categoryGradients[categoryFilter] ?? "from-primary to-primary/80") : "";
 
   return (
-    <div className="min-h-screen pt-[72px] bg-slate-50">
+    <div className="min-h-screen  bg-slate-50">
 
       {/* ── Category banner (shown when a category is selected) ── */}
       {activeCategory && CategoryIcon ? (

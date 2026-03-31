@@ -42,7 +42,7 @@ export default function Cart() {
   const isEmpty = !cart || cart.items.length === 0;
 
   return (
-    <div className="min-h-screen pt-[72px] bg-slate-50 pb-24">
+    <div className="min-h-screen  bg-slate-50 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-8">
           Your Cart

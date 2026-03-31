@@ -148,7 +148,7 @@ export default function AdminReviews() {
   const total = productReviews.length + platformRevs.length;
 
   return (
-    <div className="min-h-screen pt-[72px] bg-slate-50">
+    <div className="min-h-screen  bg-slate-50">
       <div className="max-w-4xl mx-auto px-4 py-10">
         <Link href="/products" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-primary mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Store

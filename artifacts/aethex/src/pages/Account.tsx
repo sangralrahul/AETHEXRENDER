@@ -145,7 +145,7 @@ export default function Account() {
 
   if (!isLoggedIn || !user) {
     return (
-      <div className="min-h-screen pt-[72px] bg-[#0D1117] flex items-center justify-center p-4">
+      <div className="min-h-screen  bg-[#0D1117] flex items-center justify-center p-4">
         <div className="text-center max-w-sm">
           <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-5">
             <User className="w-8 h-8 text-white/30" />
@@ -191,7 +191,7 @@ export default function Account() {
   };
 
   return (
-    <div className="min-h-screen pt-[72px] bg-[#0D1117] pb-24">
+    <div className="min-h-screen  bg-[#0D1117] pb-24">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex items-center gap-2 text-sm text-white/40 mb-6">
           <Link href="/" className="hover:text-white">Home</Link>

@@ -8,6 +8,15 @@ import { cn } from "@/lib/utils";
 import { NotificationBell } from "@/components/NotificationBell";
 import { AuthModal } from "@/components/AuthModal";
 
+export function AnnouncementBar() {
+  return (
+    <div className="w-full text-center py-2.5 px-4 text-xs font-medium" style={{ background: "#1c1c1e", color: "rgba(255,255,255,0.8)" }}>
+      Free delivery on orders above ₹999 · Trusted by 50,000+ doctors · Use code{" "}
+      <span className="font-bold" style={{ color: "#007AFF" }}>AETHEX10</span> for 10% off
+    </div>
+  );
+}
+
 export function Navbar() {
   const [location, setLocation] = useLocation();
   const sessionId = useSession();
@@ -55,19 +64,22 @@ export function Navbar() {
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
+          "transition-all duration-300 border-b",
           isScrolled
             ? "backdrop-blur-xl shadow-sm py-3"
             : "py-4"
         )}
         style={{
-          background: "rgba(242,242,247,0.88)",
+          background: "rgba(255,255,255,0.94)",
           backdropFilter: "blur(20px) saturate(180%)",
           WebkitBackdropFilter: "blur(20px) saturate(180%)",
-          borderBottom: "1px solid rgba(60,60,67,0.12)",
+          borderBottom: "1px solid #e8e8ed",
+          height: 64,
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-4 md:gap-8">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 group shrink-0">
@@ -110,18 +122,19 @@ export function Navbar() {
             <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               <Link
                 href="/ai-assistant"
-                className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl font-semibold text-sm transition-all hover:opacity-90 hover:scale-105"
-                style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF" }}
+                className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-[10px] font-semibold text-sm transition-all hover:opacity-90"
+                style={{ background: "#007AFF", color: "#FFFFFF" }}
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Start Chat</span>
               </Link>
 
               {[
-                { href: "/tools", label: "Tools" },
-                { href: "/study-hub", label: "Study", lg: true },
-                { href: "/shop", label: "Store", lg: true },
-                { href: "/blog", label: "Blog", xl: true },
+                { href: "/shop", label: "Shop" },
+                { href: "/study-hub", label: "Study Hub", lg: true },
+                { href: "/blog", label: "Blog", lg: true },
+                { href: "/tools", label: "Tools", xl: true },
+                { href: "/news", label: "News", xl: true },
               ].map((item) => (
                 <Link
                   key={item.href}

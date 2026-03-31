@@ -251,7 +251,7 @@ export default function StudyHub() {
   const comparePlatforms = platforms.filter(p => compareIds.includes(p.id));
 
   return (
-    <div className="min-h-screen pt-[72px]" style={{ background: "#F2F2F7" }}>
+    <div className="min-h-screen " style={{ background: "#F2F2F7" }}>
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, #EBF4FF 0%, #F0F8FF 50%, #E8F5F3 100%)", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>

@@ -44,7 +44,7 @@ export default function MyReviews() {
     (Date.now() - new Date(review.createdAt).getTime()) < 7 * 24 * 60 * 60 * 1000;
 
   return (
-    <div className="min-h-screen pt-[72px] bg-slate-50">
+    <div className="min-h-screen  bg-slate-50">
       <div className="max-w-3xl mx-auto px-4 py-10">
         {/* Header */}
         <Link href="/products" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-primary mb-6 transition-colors">

@@ -318,17 +318,12 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen pt-[72px]" style={{ background: "#F2F2F7" }}>
+    <div className="min-h-screen" style={{ background: "#F4F4F6" }}>
 
       {/* ── Hero Section ── */}
       <section className="relative overflow-hidden"
-        style={{ background: "radial-gradient(ellipse at 60% 0%, rgba(0,122,255,0.07), transparent 60%), #F2F2F7", minHeight: "88vh", display: "flex", alignItems: "center" }}>
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/3 w-80 h-80 rounded-full blur-3xl" style={{ background: "rgba(0,122,255,0.05)" }} />
-          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full blur-3xl" style={{ background: "rgba(0,194,168,0.06)" }} />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-16 lg:py-0">
+        style={{ background: "#F4F4F6", minHeight: "calc(100vh - 104px)", display: "flex", alignItems: "center" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-16 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left: Copy */}
             <motion.div
@@ -336,51 +331,66 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-6"
-                style={{ background: "rgba(0,122,255,0.1)", border: "1px solid rgba(0,122,255,0.2)", color: "#007AFF" }}>
-                <Activity className="w-4 h-4" />
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-6"
+                style={{ background: "#e8f3ff", color: "#007AFF" }}>
+                <Activity className="w-3.5 h-3.5" />
                 India's #1 Medical Platform
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-display font-extrabold leading-[1.1] tracking-tight mb-5" style={{ color: "#1C1C1E" }}>
-                Study, Diagnose, and Source —{" "}
-                <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>
-                  All in One Medical Platform
-                </span>
+              <h1 className="font-display font-bold leading-[1.05] tracking-tight mb-5"
+                style={{ color: "#1c1c1e", fontSize: "clamp(2.4rem, 5vw, 3rem)", letterSpacing: "-0.03em" }}>
+                Medicine Made{" "}
+                <span style={{ color: "#007AFF" }}>Effortless.</span>
               </h1>
 
-              <p className="text-lg mb-8 leading-relaxed max-w-xl" style={{ color: "#636366" }}>
-                AI-powered clinical tools, exam prep, and medical supplies — built for Indian medical students and doctors.
+              <p className="mb-8 max-w-[480px] leading-relaxed" style={{ fontSize: 17, color: "#8e8e93" }}>
+                Everything a doctor needs — supplies, AI research tools, and study resources — in one beautifully simple platform.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/ai-assistant"
-                  className="inline-flex items-center justify-center px-7 py-4 text-base font-bold rounded-full shadow-lg transition-all hover:opacity-90 hover:-translate-y-0.5 text-center"
-                  style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF", boxShadow: "0 4px 20px rgba(0,122,255,0.3)" }}>
-                  <Sparkles className="mr-2 w-4 h-4" />
-                  Start Free AI Consultation
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link href="/shop"
+                  className="inline-flex items-center justify-center text-base font-semibold text-center transition-all hover:opacity-90 active:scale-[0.97]"
+                  style={{ background: "#007AFF", color: "#FFFFFF", borderRadius: 12, padding: "14px 28px", fontSize: 16, fontWeight: 600, boxShadow: "0 4px 20px rgba(0,122,255,0.25)" }}>
+                  Shop Essentials →
                 </Link>
-                <Link href="/tools"
-                  className="inline-flex items-center justify-center px-7 py-4 text-base font-bold rounded-full transition-all hover:bg-black/8 text-center"
-                  style={{ background: "rgba(120,120,128,0.16)", color: "#1C1C1E" }}>
-                  Explore Tools
-                  <ArrowRight className="ml-2 w-4 h-4" />
+                <Link href="/ai-assistant"
+                  className="inline-flex items-center justify-center text-base font-semibold text-center transition-all hover:border-[#007AFF] hover:text-[#007AFF] active:scale-[0.97]"
+                  style={{ background: "#FFFFFF", color: "#1c1c1e", borderRadius: 12, padding: "14px 28px", fontSize: 16, fontWeight: 600, border: "1px solid #e8e8ed" }}>
+                  <Sparkles className="mr-2 w-4 h-4" />
+                  Try AI Chat
                 </Link>
               </div>
 
-              <p className="mt-5 text-sm" style={{ color: "#AEAEB2" }}>
+              <p className="mt-5 text-sm" style={{ color: "#aeaeb2" }}>
                 Free to start · No credit card required · 20 queries/day on free plan
               </p>
             </motion.div>
 
-            {/* Right: AI Chat Preview */}
+            {/* Right: Stat Tiles 2x2 */}
             <motion.div
               initial={{ opacity: 0, x: 24 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, delay: 0.15 }}
-              className="hidden lg:block"
+              className="hidden lg:grid grid-cols-2 gap-4"
             >
-              <AIChatPreview />
+              {[
+                { value: "50,000+", label: "Doctors & Students", icon: Users },
+                { value: "1,000+", label: "Medical Products", icon: ShieldCheck },
+                { value: "28+", label: "States Delivered", icon: Truck },
+                { value: "98%", label: "Satisfaction Rate", icon: CheckCircle2 },
+              ].map((stat, i) => {
+                const Icon = stat.icon;
+                return (
+                  <div key={i} className="flex flex-col items-center justify-center text-center p-6 rounded-2xl transition-all hover:-translate-y-1"
+                    style={{ background: "#FFFFFF", border: "1px solid #e8e8ed", borderRadius: 16, padding: 20 }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: "#e8f3ff" }}>
+                      <Icon className="w-5 h-5" style={{ color: "#007AFF" }} />
+                    </div>
+                    <div className="font-display font-bold mb-1" style={{ fontSize: 24, color: "#1c1c1e" }}>{stat.value}</div>
+                    <div style={{ fontSize: 13, color: "#8e8e93" }}>{stat.label}</div>
+                  </div>
+                );
+              })}
             </motion.div>
           </div>
         </div>

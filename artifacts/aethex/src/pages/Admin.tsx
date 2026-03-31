@@ -119,7 +119,7 @@ export default function Admin() {
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-[#0D1117] flex items-center justify-center p-4 pt-[72px]">
+      <div className="min-h-screen bg-[#0D1117] flex items-center justify-center p-4 ">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-2xl bg-[#00C2A8]/15 border border-[#00C2A8]/30 flex items-center justify-center mx-auto mb-4">
@@ -153,7 +153,7 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0D1117] pt-[72px]">
+    <div className="min-h-screen bg-[#0D1117] ">
       <div className="flex">
         {/* Admin Sidebar */}
         <aside className="fixed left-0 top-[72px] bottom-0 w-56 bg-[#161B22] border-r border-white/8 flex flex-col z-40 hidden lg:flex">

@@ -5,6 +5,7 @@ import {
   Download, Upload, Archive, Trash2, Lock,
   UserCheck, Pencil, Key, Cookie,
   Activity, CheckCircle, Zap, RotateCcw, Volume2, Crown,
+  GraduationCap, Building2,
 } from "lucide-react";
 import { getTranslation } from "@/lib/translations";
 import type { UserProfile } from "@/hooks/use-user-auth";
@@ -528,6 +529,32 @@ function SectionAccount({ user }: { user?: UserProfile | null }) {
           Edit account
         </button>
       </div>
+
+      {/* Role / College / Hospital info */}
+      {(user?.role || user?.college || user?.hospital) && (
+        <div className="rounded-xl px-4 py-3 space-y-2" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
+          {user?.role && (
+            <div className="flex items-center gap-2">
+              <User className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(0,188,212,0.5)" }} />
+              <span className="text-xs capitalize" style={{ color: "rgba(120,170,220,0.6)" }}>
+                {user.role === "student" ? "Medical Student" : user.role === "doctor" ? "Doctor" : "General User"}
+              </span>
+            </div>
+          )}
+          {user?.college && (
+            <div className="flex items-start gap-2">
+              <GraduationCap className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: "rgba(0,188,212,0.5)" }} />
+              <span className="text-xs" style={{ color: "rgba(180,215,255,0.75)" }}>{user.college}</span>
+            </div>
+          )}
+          {user?.hospital && (
+            <div className="flex items-start gap-2">
+              <Building2 className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: "rgba(0,188,212,0.5)" }} />
+              <span className="text-xs" style={{ color: "rgba(180,215,255,0.75)" }}>{user.hospital}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Daily usage bar */}
       <div className="rounded-xl px-4 py-3" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { X, Mail, Lock, User, Eye, EyeOff, Sparkles, ShieldCheck, RefreshCw } from "lucide-react";
+import { X, Mail, Lock, User, Eye, EyeOff, Sparkles, ShieldCheck, RefreshCw, GraduationCap, Building2, ChevronDown, Search } from "lucide-react";
 import { useUserAuth } from "@/hooks/use-user-auth";
+import { MEDICAL_COLLEGES, HOSPITALS } from "@/lib/india-institutions";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -12,6 +13,94 @@ interface AuthModalProps {
 
 type Tab = "login" | "signup" | "otp";
 type OtpStep = "email" | "verify";
+type Role = "student" | "doctor" | "other";
+
+function InstitutionCombobox({
+  placeholder,
+  options,
+  value,
+  onChange,
+}: {
+  placeholder: string;
+  options: { name: string; city: string; state: string }[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [query, setQuery] = useState(value);
+  const [open, setOpen] = useState(false);
+  const [highlighted, setHighlighted] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+
+  const filtered = query.length < 2
+    ? []
+    : options.filter(o =>
+        o.name.toLowerCase().includes(query.toLowerCase()) ||
+        o.city.toLowerCase().includes(query.toLowerCase()) ||
+        o.state.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 8);
+
+  useEffect(() => { setHighlighted(0); }, [query]);
+
+  const select = (name: string) => {
+    setQuery(name);
+    onChange(name);
+    setOpen(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!open || filtered.length === 0) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); setHighlighted(h => Math.min(h + 1, filtered.length - 1)); }
+    if (e.key === "ArrowUp") { e.preventDefault(); setHighlighted(h => Math.max(h - 1, 0)); }
+    if (e.key === "Enter") { e.preventDefault(); if (filtered[highlighted]) select(filtered[highlighted].name); }
+    if (e.key === "Escape") setOpen(false);
+  };
+
+  return (
+    <div className="relative">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+        <input
+          ref={inputRef}
+          type="text"
+          value={query}
+          placeholder={placeholder}
+          onChange={e => { setQuery(e.target.value); onChange(e.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onKeyDown={handleKeyDown}
+          autoComplete="off"
+          className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all text-sm"
+        />
+      </div>
+      {open && filtered.length > 0 && (
+        <ul ref={listRef}
+          className="absolute z-50 w-full mt-1 rounded-xl overflow-hidden shadow-2xl"
+          style={{ background: "#1A2035", border: "1px solid rgba(255,255,255,0.1)", maxHeight: 220, overflowY: "auto" }}>
+          {filtered.map((opt, i) => (
+            <li key={opt.name}
+              onMouseDown={() => select(opt.name)}
+              className="px-4 py-2.5 cursor-pointer transition-colors text-sm"
+              style={{
+                background: i === highlighted ? "rgba(0,194,168,0.15)" : "transparent",
+                color: i === highlighted ? "#00C2A8" : "rgba(255,255,255,0.8)",
+                borderBottom: i < filtered.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none",
+              }}>
+              <span className="font-medium">{opt.name}</span>
+              <span className="ml-2 text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>{opt.city}, {opt.state}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {open && query.length >= 2 && filtered.length === 0 && (
+        <div className="absolute z-50 w-full mt-1 px-4 py-3 rounded-xl text-sm text-white/40"
+          style={{ background: "#1A2035", border: "1px solid rgba(255,255,255,0.1)" }}>
+          No results — you can type your own
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalProps) {
   const [tab, setTab] = useState<Tab>(defaultMode);
@@ -19,6 +108,9 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [role, setRole] = useState<Role>("student");
+  const [college, setCollege] = useState("");
+  const [hospital, setHospital] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { signup, login, otpLogin } = useUserAuth();
@@ -31,11 +123,7 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (!open) {
-      setTab(defaultMode);
-      reset();
-      resetOtp();
-    }
+    if (!open) { setTab(defaultMode); reset(); resetOtp(); }
   }, [open, defaultMode]);
 
   useEffect(() => {
@@ -46,6 +134,7 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
 
   function reset() {
     setName(""); setEmail(""); setPassword(""); setError(""); setLoading(false);
+    setRole("student"); setCollege(""); setHospital("");
   }
 
   function resetOtp() {
@@ -54,9 +143,7 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
     if (timerRef.current) clearInterval(timerRef.current);
   }
 
-  function switchTab(t: Tab) {
-    setTab(t); reset(); resetOtp();
-  }
+  function switchTab(t: Tab) { setTab(t); reset(); resetOtp(); }
 
   function startTimer() {
     setOtpTimer(60);
@@ -75,7 +162,11 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
     try {
       if (tab === "signup") {
         if (!name.trim()) { setError("Please enter your name."); return; }
-        const res = signup(name.trim(), email, password);
+        const res = signup(
+          name.trim(), email, password, role,
+          role === "student" ? college || undefined : undefined,
+          role === "doctor" ? hospital || undefined : undefined,
+        );
         if (!res.success) { setError(res.error || "Signup failed."); return; }
       } else {
         const res = login(email, password);
@@ -146,6 +237,12 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
       setLoading(false);
     }
   };
+
+  const roleOptions: { value: Role; label: string; icon: React.ReactNode; desc: string }[] = [
+    { value: "student", label: "Student", icon: <GraduationCap className="w-4 h-4" />, desc: "MBBS / PG" },
+    { value: "doctor", label: "Doctor", icon: <Building2 className="w-4 h-4" />, desc: "Practising" },
+    { value: "other", label: "Other", icon: <User className="w-4 h-4" />, desc: "General" },
+  ];
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
@@ -244,18 +341,81 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
             )}
           </div>
         ) : (
-          <form onSubmit={handlePasswordSubmit} className="p-6 pt-2 space-y-4">
+          <form onSubmit={handlePasswordSubmit} className="p-6 pt-2 space-y-4 max-h-[70vh] overflow-y-auto">
             {tab === "signup" && (
-              <div>
-                <label className="block text-sm font-medium text-white/70 mb-1.5">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-                  <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                    placeholder="Dr. Priya Sharma"
-                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+              <>
+                {/* Full Name */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1.5">Full Name</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                    <input type="text" value={name} onChange={e => setName(e.target.value)} required
+                      placeholder="Dr. Priya Sharma"
+                      className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                  </div>
                 </div>
-              </div>
+
+                {/* Role Selector */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-2">I am a</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {roleOptions.map(r => (
+                      <button key={r.value} type="button" onClick={() => setRole(r.value)}
+                        className="flex flex-col items-center gap-1.5 py-3 rounded-xl text-xs font-semibold transition-all"
+                        style={role === r.value ? {
+                          background: "rgba(0,194,168,0.15)",
+                          border: "1.5px solid rgba(0,194,168,0.5)",
+                          color: "#00C2A8",
+                        } : {
+                          background: "rgba(255,255,255,0.04)",
+                          border: "1px solid rgba(255,255,255,0.1)",
+                          color: "rgba(255,255,255,0.45)",
+                        }}>
+                        {r.icon}
+                        <span>{r.label}</span>
+                        <span className="text-[10px] opacity-60">{r.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* College (for students) */}
+                {role === "student" && (
+                  <div>
+                    <label className="block text-sm font-medium text-white/70 mb-1.5">
+                      <GraduationCap className="inline w-3.5 h-3.5 mr-1.5 opacity-60" />
+                      Medical College
+                      <span className="text-white/30 font-normal ml-1">(optional)</span>
+                    </label>
+                    <InstitutionCombobox
+                      placeholder="Search your college…"
+                      options={MEDICAL_COLLEGES}
+                      value={college}
+                      onChange={setCollege}
+                    />
+                  </div>
+                )}
+
+                {/* Hospital (for doctors) */}
+                {role === "doctor" && (
+                  <div>
+                    <label className="block text-sm font-medium text-white/70 mb-1.5">
+                      <Building2 className="inline w-3.5 h-3.5 mr-1.5 opacity-60" />
+                      Hospital / Institution
+                      <span className="text-white/30 font-normal ml-1">(optional)</span>
+                    </label>
+                    <InstitutionCombobox
+                      placeholder="Search your hospital…"
+                      options={HOSPITALS}
+                      value={hospital}
+                      onChange={setHospital}
+                    />
+                  </div>
+                )}
+              </>
             )}
+
+            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-white/70 mb-1.5">Email Address</label>
               <div className="relative">
@@ -265,6 +425,8 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
                   className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
               </div>
             </div>
+
+            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-white/70 mb-1.5">Password</label>
               <div className="relative">

@@ -8,6 +8,9 @@ export interface UserProfile {
   proExpiry?: string;
   avatar?: string;
   phone?: string;
+  role?: "student" | "doctor" | "other";
+  college?: string;
+  hospital?: string;
   addresses: Address[];
   wishlist: number[];
   cadusDailyCount: number;
@@ -66,7 +69,14 @@ export function useUserAuth() {
     setUser(u);
   };
 
-  const signup = (name: string, email: string, password: string): { success: boolean; error?: string } => {
+  const signup = (
+    name: string,
+    email: string,
+    password: string,
+    role?: "student" | "doctor" | "other",
+    college?: string,
+    hospital?: string,
+  ): { success: boolean; error?: string } => {
     const users = getUsers();
     const emailKey = email.toLowerCase();
     if (users[emailKey]) {
@@ -77,6 +87,9 @@ export function useUserAuth() {
       name,
       email: emailKey,
       isPro: false,
+      role,
+      college,
+      hospital,
       addresses: [],
       wishlist: [],
       cadusDailyCount: 0,

@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { formatINR } from "@/lib/utils";
-import { ChevronRight, MapPin, CreditCard, Smartphone, Landmark, PackageCheck, ShieldCheck, Truck, CheckCircle2, Lock } from "lucide-react";
+import { ChevronRight, MapPin, CreditCard, Smartphone, Landmark, PackageCheck, ShieldCheck, Truck, CheckCircle2, Lock, Sparkles, Heart, Package, ArrowRight, Copy, Check, MessageSquare } from "lucide-react";
 
 type Step = "address" | "payment" | "confirm";
 
@@ -77,43 +77,125 @@ export default function Checkout() {
     setOrderPlaced(true);
   };
 
+  const [copied, setCopied] = useState(false);
+  const deliveryDate = new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
+
+  const copyOrderId = () => {
+    navigator.clipboard.writeText(orderId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   if (orderPlaced) {
     return (
-      <div className="min-h-screen  bg-[#F2F2F7] flex items-center justify-center p-4">
-        <div className="max-w-md w-full text-center">
-          <div className="w-24 h-24 rounded-full bg-[#00C2A8]/20 border-2 border-[#00C2A8] flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-12 h-12 text-[#00C2A8]" />
+      <div className="min-h-screen bg-[#F2F2F7] flex flex-col">
+        {/* Top gradient banner */}
+        <div className="w-full py-16 px-4 text-center relative overflow-hidden" style={{ background: "linear-gradient(135deg,#007AFF 0%,#00C2A8 100%)" }}>
+          <div className="absolute inset-0 opacity-10">
+            {[...Array(20)].map((_, i) => (
+              <div key={i} className="absolute rounded-full bg-white" style={{ width: Math.random() * 6 + 2, height: Math.random() * 6 + 2, top: `${Math.random() * 100}%`, left: `${Math.random() * 100}%`, opacity: Math.random() * 0.6 + 0.2 }} />
+            ))}
           </div>
-          <h1 className="text-3xl font-display font-bold text-[#1c1c1e] mb-3">Order Placed!</h1>
-          <p className="text-[#3c3c43] mb-2">Thank you for your order. You'll receive a confirmation email shortly.</p>
-          <p className="text-sm text-[#00C2A8] font-semibold mb-8">Order ID: {orderId}</p>
-          <div className="bg-white border border-black/[0.08] rounded-2xl p-6 mb-8 text-left space-y-3">
-            <div className="flex justify-between text-sm">
-              <span className="text-[#6c6c70]">Items</span>
-              <span className="text-[#1c1c1e]">{formatINR(subtotal)}</span>
+          <div className="relative">
+            <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur flex items-center justify-center mx-auto mb-5 ring-4 ring-white/30">
+              <CheckCircle2 className="w-10 h-10 text-white" />
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[#6c6c70]">GST (18%)</span>
-              <span className="text-[#1c1c1e]">{formatINR(gst)}</span>
+            <p className="text-white/80 text-sm font-medium mb-1 tracking-widest uppercase">Order Confirmed</p>
+            <h1 className="text-4xl font-display font-bold text-white mb-3">Thank you for using AETHEX!</h1>
+            <p className="text-white/75 text-base max-w-sm mx-auto">Your order is confirmed and being prepared for dispatch. We appreciate your trust in us.</p>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 max-w-lg mx-auto w-full px-4 py-8 space-y-4">
+
+          {/* Order ID Card */}
+          <div className="bg-white border border-black/[0.08] rounded-2xl p-5 flex items-center justify-between shadow-sm">
+            <div>
+              <p className="text-xs text-[#6c6c70] mb-1 font-medium uppercase tracking-wide">Order ID</p>
+              <p className="text-lg font-bold text-[#1c1c1e] font-mono">{orderId}</p>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[#6c6c70]">Shipping</span>
-              <span className="text-[#1c1c1e]">{shipping === 0 ? "Free" : formatINR(shipping)}</span>
+            <button onClick={copyOrderId} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all" style={{ background: copied ? "rgba(0,194,168,0.12)" : "rgba(0,122,255,0.08)", color: copied ? "#00C2A8" : "#007AFF" }}>
+              {copied ? <><Check className="w-4 h-4" />Copied!</> : <><Copy className="w-4 h-4" />Copy</>}
+            </button>
+          </div>
+
+          {/* Delivery Info */}
+          <div className="bg-white border border-black/[0.08] rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,194,168,0.12)" }}>
+                <Truck className="w-4 h-4 text-[#00C2A8]" />
+              </div>
+              <div>
+                <p className="text-xs text-[#6c6c70] font-medium">Estimated Delivery</p>
+                <p className="text-sm font-bold text-[#1c1c1e]">{deliveryDate}</p>
+              </div>
+              <div className="ml-auto">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: "rgba(0,194,168,0.12)", color: "#00C2A8" }}>5–7 Days</span>
+              </div>
             </div>
-            <div className="border-t border-black/[0.08] pt-3 flex justify-between font-bold">
-              <span className="text-[#1c1c1e]">Total Paid</span>
-              <span className="text-[#00C2A8]">{formatINR(total)}</span>
+            <div className="flex items-center gap-3 pt-4 border-t border-black/[0.06]">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,122,255,0.08)" }}>
+                <Package className="w-4 h-4 text-[#007AFF]" />
+              </div>
+              <div>
+                <p className="text-xs text-[#6c6c70] font-medium">Confirmation</p>
+                <p className="text-sm font-bold text-[#1c1c1e]">Sent to {addr.email || "your email"}</p>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col gap-3">
-            <Link href="/orders"
-              className="block py-3 bg-[#00C2A8] text-[#0D1117] font-bold rounded-xl hover:bg-[#00D4B8] transition-colors">
-              Track Your Order
+
+          {/* Order Summary */}
+          <div className="bg-white border border-black/[0.08] rounded-2xl p-5 shadow-sm">
+            <h3 className="text-sm font-bold text-[#1c1c1e] mb-4">Order Summary</h3>
+            <div className="space-y-3">
+              {items.map(item => (
+                <div key={item.id} className="flex justify-between items-center">
+                  <div>
+                    <p className="text-sm text-[#1c1c1e] font-medium line-clamp-1">{item.name}</p>
+                    <p className="text-xs text-[#6c6c70]">Qty: {item.quantity}</p>
+                  </div>
+                  <span className="text-sm font-semibold text-[#1c1c1e]">{formatINR(item.price * item.quantity)}</span>
+                </div>
+              ))}
+              <div className="border-t border-black/[0.06] pt-3 space-y-2">
+                <div className="flex justify-between text-sm text-[#6c6c70]">
+                  <span>Subtotal</span><span>{formatINR(subtotal)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-[#6c6c70]">
+                  <span>GST (18%)</span><span>{formatINR(gst)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-[#6c6c70]">
+                  <span>Shipping</span><span>{shipping === 0 ? "Free 🎉" : formatINR(shipping)}</span>
+                </div>
+                <div className="flex justify-between font-bold text-base pt-1">
+                  <span className="text-[#1c1c1e]">Total Paid</span>
+                  <span style={{ color: "#00C2A8" }}>{formatINR(total)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTAs */}
+          <div className="grid grid-cols-2 gap-3">
+            <Link href="/orders" className="flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02]" style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#ffffff" }}>
+              <Package className="w-4 h-4" />
+              Track Order
             </Link>
-            <Link href="/shop"
-              className="block py-3 bg-black/5 border border-black/10 text-[#1c1c1e] font-semibold rounded-xl hover:bg-black/10 transition-colors">
+            <Link href="/shop" className="flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm border border-black/10 bg-white text-[#1c1c1e] transition-all hover:bg-black/5">
               Continue Shopping
+              <ArrowRight className="w-4 h-4" />
             </Link>
+          </div>
+          <Link href="/ai-assistant" className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl font-semibold text-sm border border-black/10 bg-white text-[#007AFF] transition-all hover:bg-[#007AFF]/5">
+            <Sparkles className="w-4 h-4" />
+            Ask Cadus AI a clinical question
+          </Link>
+
+          {/* Support note */}
+          <div className="text-center pt-2 pb-6">
+            <p className="text-xs text-[#8e8e93]">Need help? <a href="mailto:email@aethex.in" className="text-[#007AFF] font-medium">email@aethex.in</a></p>
+            <p className="text-xs text-[#aeaeb2] mt-1">Made with <Heart className="inline w-3 h-3 text-rose-400" /> by AETHEX · Clavix Technologies Pvt Ltd</p>
           </div>
         </div>
       </div>

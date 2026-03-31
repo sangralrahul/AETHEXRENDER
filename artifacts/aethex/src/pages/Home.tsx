@@ -727,6 +727,71 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Payment Partners ── */}
+      <section className="py-10" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs font-semibold uppercase tracking-widest mb-7" style={{ color: "#aeaeb2" }}>Secure Payments via</p>
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+            {/* UPI */}
+            <div className="flex items-center justify-center h-10 px-4 rounded-xl border border-black/[0.07] bg-[#F2F2F7] min-w-[80px]">
+              <svg viewBox="0 0 60 24" className="h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="0" y="18" fontFamily="Arial, sans-serif" fontWeight="800" fontSize="16" fill="#006FAF">U</text>
+                <text x="12" y="18" fontFamily="Arial, sans-serif" fontWeight="800" fontSize="16" fill="#F37021">P</text>
+                <text x="22" y="18" fontFamily="Arial, sans-serif" fontWeight="800" fontSize="16" fill="#006FAF">I</text>
+              </svg>
+            </div>
+            {/* Visa */}
+            <div className="flex items-center justify-center h-10 px-4 rounded-xl border border-black/[0.07] bg-[#F2F2F7] min-w-[80px]">
+              <svg viewBox="0 0 80 24" className="h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="0" y="19" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="22" fill="#1A1F71" letterSpacing="-1">VISA</text>
+              </svg>
+            </div>
+            {/* Mastercard */}
+            <div className="flex items-center justify-center h-10 px-4 rounded-xl border border-black/[0.07] bg-[#F2F2F7] min-w-[80px] gap-1">
+              <div className="w-7 h-7 rounded-full" style={{ background: "#EB001B", opacity: 0.92 }} />
+              <div className="w-7 h-7 rounded-full -ml-3.5" style={{ background: "#F79E1B", opacity: 0.92 }} />
+              <span className="ml-1 text-[11px] font-bold text-[#3c3c43]">Mastercard</span>
+            </div>
+            {/* RuPay */}
+            <div className="flex items-center justify-center h-10 px-4 rounded-xl border border-black/[0.07] bg-[#F2F2F7] min-w-[80px]">
+              <svg viewBox="0 0 90 24" className="h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="0" y="19" fontFamily="Arial, sans-serif" fontWeight="800" fontSize="18" fill="#00529B">Ru</text>
+                <text x="28" y="19" fontFamily="Arial, sans-serif" fontWeight="800" fontSize="18" fill="#E5872B">Pay</text>
+              </svg>
+            </div>
+            {/* PhonePe */}
+            <div className="flex items-center justify-center h-10 px-4 rounded-xl border border-black/[0.07] bg-[#F2F2F7] min-w-[90px] gap-1.5">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "#5F259F" }}>
+                <span className="text-white text-[10px] font-bold">P</span>
+              </div>
+              <span className="text-[12px] font-bold" style={{ color: "#5F259F" }}>PhonePe</span>
+            </div>
+            {/* Google Pay */}
+            <div className="flex items-center justify-center h-10 px-4 rounded-xl border border-black/[0.07] bg-[#F2F2F7] min-w-[90px] gap-1">
+              <span className="text-[13px] font-bold" style={{ color: "#4285F4" }}>G</span>
+              <span className="text-[13px] font-bold" style={{ color: "#1c1c1e" }}>Pay</span>
+            </div>
+            {/* Paytm */}
+            <div className="flex items-center justify-center h-10 px-4 rounded-xl border border-black/[0.07] bg-[#F2F2F7] min-w-[80px]">
+              <span className="text-[13px] font-bold" style={{ color: "#00B9F5" }}>Pay</span>
+              <span className="text-[13px] font-bold" style={{ color: "#002970" }}>tm</span>
+            </div>
+            {/* Net Banking */}
+            <div className="flex items-center justify-center h-10 px-5 rounded-xl border border-black/[0.07] bg-[#F2F2F7]">
+              <span className="text-[12px] font-semibold text-[#3c3c43]">🏦 Net Banking</span>
+            </div>
+            {/* COD */}
+            <div className="flex items-center justify-center h-10 px-5 rounded-xl border border-black/[0.07] bg-[#F2F2F7]">
+              <span className="text-[12px] font-semibold text-[#3c3c43]">💵 Cash on Delivery</span>
+            </div>
+          </div>
+          <p className="text-center text-xs mt-6 flex items-center justify-center gap-1.5" style={{ color: "#aeaeb2" }}>
+            <ShieldCheck className="w-3.5 h-3.5 text-[#00C2A8]" />
+            256-bit SSL encrypted · PCI DSS compliant · Your data is always safe
+          </p>
+        </div>
+      </section>
+
       {/* ── Newsletter ── */}
       <NewsletterSection />
 

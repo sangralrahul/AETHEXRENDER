@@ -130,11 +130,46 @@ function AIChatPreview() {
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 text-sm" style={{ background: "#F9F9FB" }}>
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-              <div className="max-w-[85%] px-3.5 py-2.5 rounded-2xl leading-relaxed"
+              <div className="max-w-[85%] px-3.5 py-2.5 rounded-2xl"
                 style={msg.role === "user"
                   ? { background: "#007AFF", color: "#FFFFFF", borderBottomRightRadius: "6px" }
                   : { background: "#FFFFFF", color: "#1C1C1E", borderBottomLeftRadius: "6px", border: "1px solid rgba(60,60,67,0.1)" }}>
-                {msg.text}
+                {msg.role === "user" ? (
+                  <span className="text-sm leading-relaxed">{msg.text}</span>
+                ) : (
+                  <div className="text-sm space-y-1">
+                    {msg.text.split("\n").map((line, li) => {
+                      const trimmed = line.trim();
+                      if (!trimmed) return null;
+                      const isBullet = /^[-•*]\s/.test(trimmed);
+                      const isNumbered = /^\d+\.\s/.test(trimmed);
+                      const boldified = trimmed.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${t}</strong>`);
+                      if (isBullet) {
+                        const content = trimmed.replace(/^[-•*]\s/, "");
+                        const bld = content.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${t}</strong>`);
+                        return (
+                          <div key={li} className="flex items-start gap-1.5">
+                            <span className="mt-1 shrink-0 w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#007AFF" }} />
+                            <span dangerouslySetInnerHTML={{ __html: bld }} />
+                          </div>
+                        );
+                      }
+                      if (isNumbered) {
+                        const [num, ...rest] = trimmed.split(/\.\s+/);
+                        const bld = rest.join(". ").replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${t}</strong>`);
+                        return (
+                          <div key={li} className="flex items-start gap-1.5">
+                            <span className="shrink-0 font-bold text-xs mt-0.5" style={{ color: "#007AFF", minWidth: "16px" }}>{num}.</span>
+                            <span dangerouslySetInnerHTML={{ __html: bld }} />
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={li} className="leading-snug" dangerouslySetInnerHTML={{ __html: boldified }} />
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           ))}

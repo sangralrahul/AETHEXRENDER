@@ -30,6 +30,7 @@ const TOOLS: Tool[] = [
     category: "diagnostic",
     badge: "Essential",
     badgeColor: "#00C2A8",
+    href: "/tools/drug-interaction",
   },
   {
     id: "dosage-calculator",
@@ -37,6 +38,7 @@ const TOOLS: Tool[] = [
     title: "Dosage Calculator",
     desc: "Calculate weight-based, renal-adjusted, and pediatric drug doses with ease.",
     category: "calculator",
+    href: "/tools/dosage-calculator",
   },
   {
     id: "bmi-calculator",
@@ -44,6 +46,7 @@ const TOOLS: Tool[] = [
     title: "BMI Calculator",
     desc: "Body Mass Index with ideal weight ranges and WHO classification.",
     category: "calculator",
+    href: "/tools/bmi-calculator",
   },
   {
     id: "abbreviations",
@@ -51,6 +54,7 @@ const TOOLS: Tool[] = [
     title: "Medical Abbreviations",
     desc: "Searchable dictionary of 5,000+ clinical abbreviations, acronyms & mnemonics.",
     category: "reference",
+    href: "/tools/abbreviations",
   },
   {
     id: "ddx",
@@ -69,6 +73,7 @@ const TOOLS: Tool[] = [
     title: "Symptom Checker",
     desc: "Enter symptoms and get probable diagnoses with triage severity scoring.",
     category: "diagnostic",
+    href: "/tools/symptom-checker",
   },
   {
     id: "clinical-decision",
@@ -78,36 +83,37 @@ const TOOLS: Tool[] = [
     category: "ai",
     badge: "Pro",
     badgeColor: "#F59E0B",
-    pro: true,
+    href: "/tools/clinical-decision",
   },
   {
     id: "lab-interpreter",
     icon: <FlaskConical className="w-5 h-5" />,
     title: "Lab Value Interpreter",
-    desc: "Upload CBC, LFT, RFT results and get AI-interpreted clinical significance.",
+    desc: "Enter CBC, LFT, RFT results and get clinically interpreted significance.",
     category: "ai",
     badge: "AI",
     badgeColor: "#7C3AED",
+    href: "/tools/lab-interpreter",
   },
   {
     id: "ecg-analyzer",
     icon: <Activity className="w-5 h-5" />,
     title: "ECG Analyzer",
-    desc: "Upload your ECG strip for AI rhythm analysis, intervals, and arrhythmia detection.",
+    desc: "Systematic ECG interpretation — rhythm, intervals, ST changes, and arrhythmia.",
     category: "ai",
     badge: "AI",
     badgeColor: "#7C3AED",
-    pro: true,
+    href: "/tools/ecg-analyzer",
   },
   {
     id: "radiology",
     icon: <Scan className="w-5 h-5" />,
     title: "Radiology Assistant",
-    desc: "AI reads X-ray, CT, and MRI reports — highlights findings and differentials.",
+    desc: "X-ray, CT, and MRI findings with radiological descriptions and next steps.",
     category: "ai",
     badge: "AI",
     badgeColor: "#7C3AED",
-    pro: true,
+    href: "/tools/radiology",
   },
   {
     id: "prescription",
@@ -117,6 +123,7 @@ const TOOLS: Tool[] = [
     category: "reference",
     badge: "New",
     badgeColor: "#10B981",
+    href: "/tools/prescription",
   },
   {
     id: "case-simulator",
@@ -126,13 +133,15 @@ const TOOLS: Tool[] = [
     category: "diagnostic",
     badge: "Students",
     badgeColor: "#3B82F6",
+    href: "/tools/case-simulator",
   },
   {
     id: "risk-calculator",
     icon: <Heart className="w-5 h-5" />,
     title: "Risk Calculator",
-    desc: "ASCVD, CHADS2, Wells, CURB-65 and 20+ validated clinical risk scoring tools.",
+    desc: "ASCVD, CHA₂DS₂-VASc, Wells DVT/PE, CURB-65, GCS and more.",
     category: "calculator",
+    href: "/tools/risk-calculator",
   },
 ];
 

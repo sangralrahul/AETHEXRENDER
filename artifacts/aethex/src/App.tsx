@@ -29,6 +29,18 @@ import BlogPost from "@/pages/BlogPost";
 import MedicalNews from "@/pages/News";
 import AdminBlog from "@/pages/AdminBlog";
 import ClinicalTools from "@/pages/ClinicalTools";
+import BMICalculator from "@/pages/tools/BMICalculator";
+import DrugInteractionChecker from "@/pages/tools/DrugInteractionChecker";
+import DosageCalculator from "@/pages/tools/DosageCalculator";
+import MedicalAbbreviations from "@/pages/tools/MedicalAbbreviations";
+import SymptomChecker from "@/pages/tools/SymptomChecker";
+import RiskCalculator from "@/pages/tools/RiskCalculator";
+import PrescriptionGenerator from "@/pages/tools/PrescriptionGenerator";
+import LabValueInterpreter from "@/pages/tools/LabValueInterpreter";
+import CaseStudySimulator from "@/pages/tools/CaseStudySimulator";
+import ClinicalDecisionSupport from "@/pages/tools/ClinicalDecisionSupport";
+import ECGAnalyzer from "@/pages/tools/ECGAnalyzer";
+import RadiologyAssistant from "@/pages/tools/RadiologyAssistant";
 import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
@@ -116,6 +128,18 @@ function Router() {
 
                 {/* Clinical Tools */}
                 <Route path="/tools" component={ClinicalTools} />
+                <Route path="/tools/bmi-calculator" component={BMICalculator} />
+                <Route path="/tools/drug-interaction" component={DrugInteractionChecker} />
+                <Route path="/tools/dosage-calculator" component={DosageCalculator} />
+                <Route path="/tools/abbreviations" component={MedicalAbbreviations} />
+                <Route path="/tools/symptom-checker" component={SymptomChecker} />
+                <Route path="/tools/risk-calculator" component={RiskCalculator} />
+                <Route path="/tools/prescription" component={PrescriptionGenerator} />
+                <Route path="/tools/lab-interpreter" component={LabValueInterpreter} />
+                <Route path="/tools/case-simulator" component={CaseStudySimulator} />
+                <Route path="/tools/clinical-decision" component={ClinicalDecisionSupport} />
+                <Route path="/tools/ecg-analyzer" component={ECGAnalyzer} />
+                <Route path="/tools/radiology" component={RadiologyAssistant} />
 
                 {/* Study Hub */}
                 <Route path="/study-hub" component={StudyHub} />

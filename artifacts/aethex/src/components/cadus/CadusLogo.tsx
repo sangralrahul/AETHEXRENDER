@@ -9,9 +9,9 @@ interface CadusLogoProps {
 }
 
 const SIZES = {
-  sm: { box: 52, orbit: 20, orb: 2.8 },
+  sm: { box: 38, orbit: 15, orb: 2.4 },
   md: { box: 96, orbit: 40, orb: 4 },
-  lg: { box: 136, orbit: 56, orb: 5 },
+  lg: { box: 140, orbit: 58, orb: 5.2 },
 };
 
 export default function CadusLogo({

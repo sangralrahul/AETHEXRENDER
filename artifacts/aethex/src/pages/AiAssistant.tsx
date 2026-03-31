@@ -1088,7 +1088,7 @@ export default function AiAssistant() {
       >
         {/* Top row: Logo + centred Search bar */}
         <div className="flex flex-col items-center gap-2 px-3 pt-3 pb-1 shrink-0">
-          <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+          <CadusLogo size="md" thinking={false} baseUrl={import.meta.env.BASE_URL} />
           <div className="w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl"
             style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}>
             <Search className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(255,255,255,0.35)" }} />

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import DOMPurify from "dompurify";
 import { Link } from "wouter";
 import { ArrowLeft, Plus, Edit3, Trash2, Eye, EyeOff, Download, Loader2, CheckCircle2, Clock, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -47,7 +48,7 @@ function BlogForm({ initial, onSave, onCancel, saving }: BlogFormProps) {
             <span className="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{form.category}</span>
             <h1 className="text-2xl font-bold text-slate-900 mt-3 mb-2">{form.title || "Untitled"}</h1>
             <p className="text-slate-500 mb-4">{form.excerpt}</p>
-            <div className="prose prose-slate max-w-none text-sm" dangerouslySetInnerHTML={{ __html: form.content }} />
+            <div className="prose prose-slate max-w-none text-sm" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(form.content) }} />
           </div>
         </div>
       ) : (

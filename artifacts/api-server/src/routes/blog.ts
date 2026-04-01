@@ -254,10 +254,12 @@ router.get("/sitemap.xml", async (_req: Request, res: Response) => {
     const posts = await db.select({ slug: blogPosts.slug, updatedAt: blogPosts.updatedAt }).from(blogPosts).where(eq(blogPosts.published, true));
     const base = process.env.SITE_URL ?? "https://aethex.in";
     const staticPages = ["/", "/products", "/blog", "/news", "/ai-assistant", "/orders/track"];
+    const escapeXml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+    const safeBase = escapeXml(base);
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${staticPages.map(p => `  <url><loc>${base}${p}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`).join("\n")}
-${posts.map(p => `  <url><loc>${base}/blog/${p.slug}</loc><lastmod>${new Date(p.updatedAt).toISOString().split("T")[0]}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`).join("\n")}
+${staticPages.map(p => `  <url><loc>${safeBase}${escapeXml(p)}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`).join("\n")}
+${posts.map(p => `  <url><loc>${safeBase}/blog/${escapeXml(p.slug)}</loc><lastmod>${new Date(p.updatedAt).toISOString().split("T")[0]}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`).join("\n")}
 </urlset>`;
     res.setHeader("Content-Type", "application/xml").send(xml);
   } catch { res.status(500).send("Error generating sitemap"); }

@@ -1,5 +1,14 @@
 import { db, emailLogsTable } from "@workspace/db";
 
+function escapeHtml(s: string | number | null | undefined): string {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = process.env.FROM_EMAIL ?? "orders@aethex.in";
 const SUPPORT_EMAIL = "support@aethex.in";
@@ -89,8 +98,8 @@ function orderItemsHtml(items: Array<{ name: string; quantity: number; price: st
   return items.map(i => `
     <div class="item-row">
       <div>
-        <div class="item-name">${i.name}</div>
-        <div class="item-qty">Qty: ${i.quantity}</div>
+        <div class="item-name">${escapeHtml(i.name)}</div>
+        <div class="item-qty">Qty: ${escapeHtml(i.quantity)}</div>
       </div>
       <div class="item-price">${formatCurrency(Number(i.price) * i.quantity)}</div>
     </div>`).join("");
@@ -110,8 +119,8 @@ export async function sendOrderConfirmationEmail(order: {
   const html = baseEmailHtml(`
     <div class="body">
       <div class="title">Order Confirmed! 🎉</div>
-      <div class="subtitle">Hi ${order.customerName}, your Aethex order is confirmed.</div>
-      <div class="status-badge">Order #${order.id}</div>
+      <div class="subtitle">Hi ${escapeHtml(order.customerName)}, your Aethex order is confirmed.</div>
+      <div class="status-badge">Order #${escapeHtml(order.id)}</div>
       <div class="info-box">
         ${orderItemsHtml(order.items)}
       </div>
@@ -122,10 +131,10 @@ export async function sendOrderConfirmationEmail(order: {
         <div class="info-row"><span class="info-label">Total</span><span class="info-value" style="color:#22D3EE;font-size:16px;">${formatCurrency(order.total)}</span></div>
       </div>
       <div class="info-box">
-        <div class="info-row"><span class="info-label">Delivery Address</span><span class="info-value">${order.deliveryAddress.line1}${order.deliveryAddress.line2 ? ", " + order.deliveryAddress.line2 : ""}, ${order.deliveryAddress.city}, ${order.deliveryAddress.state} - ${order.deliveryAddress.pincode}</span></div>
-        <div class="info-row"><span class="info-label">Estimated Delivery</span><span class="info-value">${estDate}</span></div>
+        <div class="info-row"><span class="info-label">Delivery Address</span><span class="info-value">${escapeHtml(order.deliveryAddress.line1)}${order.deliveryAddress.line2 ? ", " + escapeHtml(order.deliveryAddress.line2) : ""}, ${escapeHtml(order.deliveryAddress.city)}, ${escapeHtml(order.deliveryAddress.state)} - ${escapeHtml(order.deliveryAddress.pincode)}</span></div>
+        <div class="info-row"><span class="info-label">Estimated Delivery</span><span class="info-value">${escapeHtml(estDate)}</span></div>
       </div>
-      <a href="${SITE_URL}/orders/track?orderId=${order.id}" class="cta-btn">Track My Order</a>
+      <a href="${SITE_URL}/orders/track?orderId=${escapeHtml(order.id)}" class="cta-btn">Track My Order</a>
     </div>`, `Your Aethex order #${order.id} is confirmed!`);
 
   return sendEmail(order.customerEmail, `Your Aethex order #${order.id} is confirmed! 🎉`, html, order.id, "order_confirmed");
@@ -135,13 +144,13 @@ export async function sendPaymentFailedEmail(order: { id: string; customerName: 
   const html = baseEmailHtml(`
     <div class="body">
       <div class="title">Payment Failed ⚠️</div>
-      <div class="subtitle">Hi ${order.customerName}, your payment for order #${order.id} could not be processed.</div>
+      <div class="subtitle">Hi ${escapeHtml(order.customerName)}, your payment for order #${escapeHtml(order.id)} could not be processed.</div>
       <div class="info-box">
-        <div class="info-row"><span class="info-label">Order ID</span><span class="info-value">#${order.id}</span></div>
+        <div class="info-row"><span class="info-label">Order ID</span><span class="info-value">#${escapeHtml(order.id)}</span></div>
         <div class="info-row"><span class="info-label">Amount</span><span class="info-value">${formatCurrency(order.total)}</span></div>
       </div>
       <p style="color:#8B949E;font-size:14px;">Please retry your payment. If the issue persists, contact our support team.</p>
-      <a href="${SITE_URL}/orders/track?orderId=${order.id}" class="cta-btn">Retry Payment</a>
+      <a href="${SITE_URL}/orders/track?orderId=${escapeHtml(order.id)}" class="cta-btn">Retry Payment</a>
     </div>`, `Payment failed for order #${order.id}`);
 
   return sendEmail(order.customerEmail, `Payment failed for your Aethex order #${order.id}`, html, order.id, "payment_failed");
@@ -158,14 +167,14 @@ export async function sendOrderShippedEmail(order: {
   const html = baseEmailHtml(`
     <div class="body">
       <div class="title">Your Order Has Shipped! 🚚</div>
-      <div class="subtitle">Hi ${order.customerName}, order #${order.id} is on its way.</div>
+      <div class="subtitle">Hi ${escapeHtml(order.customerName)}, order #${escapeHtml(order.id)} is on its way.</div>
       <div class="info-box">
-        <div class="info-row"><span class="info-label">Courier</span><span class="info-value">${order.courierName}</span></div>
-        <div class="info-row"><span class="info-label">Tracking Number</span><span class="info-value">${order.trackingNumber}</span></div>
-        <div class="info-row"><span class="info-label">Expected Delivery</span><span class="info-value">${estDate}</span></div>
+        <div class="info-row"><span class="info-label">Courier</span><span class="info-value">${escapeHtml(order.courierName)}</span></div>
+        <div class="info-row"><span class="info-label">Tracking Number</span><span class="info-value">${escapeHtml(order.trackingNumber)}</span></div>
+        <div class="info-row"><span class="info-label">Expected Delivery</span><span class="info-value">${escapeHtml(estDate)}</span></div>
       </div>
-      ${order.courierUrl ? `<a href="${order.courierUrl}" class="cta-btn">Track on Courier Site</a>` : ""}
-      <a href="${SITE_URL}/orders/track?orderId=${order.id}" class="cta-btn" style="margin-left:12px;">Track on Aethex</a>
+      ${order.courierUrl ? `<a href="${escapeHtml(order.courierUrl)}" class="cta-btn">Track on Courier Site</a>` : ""}
+      <a href="${SITE_URL}/orders/track?orderId=${escapeHtml(order.id)}" class="cta-btn" style="margin-left:12px;">Track on Aethex</a>
     </div>`, `Order #${order.id} has been shipped!`);
 
   return sendEmail(order.customerEmail, `Your Aethex order #${order.id} has shipped! 🚚`, html, order.id, "order_shipped");
@@ -175,9 +184,9 @@ export async function sendOutForDeliveryEmail(order: { id: string; customerName:
   const html = baseEmailHtml(`
     <div class="body">
       <div class="title">Out for Delivery Today! 📦</div>
-      <div class="subtitle">Hi ${order.customerName}, your Aethex order #${order.id} is out for delivery today.</div>
+      <div class="subtitle">Hi ${escapeHtml(order.customerName)}, your Aethex order #${escapeHtml(order.id)} is out for delivery today.</div>
       <p style="color:#8B949E;font-size:14px;">Please ensure someone is available at the delivery address to receive the package.</p>
-      <a href="${SITE_URL}/orders/track?orderId=${order.id}" class="cta-btn">Track Your Order</a>
+      <a href="${SITE_URL}/orders/track?orderId=${escapeHtml(order.id)}" class="cta-btn">Track Your Order</a>
     </div>`, `Order #${order.id} is out for delivery today!`);
 
   return sendEmail(order.customerEmail, `Your Aethex order #${order.id} is out for delivery today! 📦`, html, order.id, "out_for_delivery");
@@ -187,10 +196,10 @@ export async function sendOrderDeliveredEmail(order: { id: string; customerName:
   const html = baseEmailHtml(`
     <div class="body">
       <div class="title">Order Delivered! ✅</div>
-      <div class="subtitle">Hi ${order.customerName}, your Aethex order #${order.id} has been delivered.</div>
+      <div class="subtitle">Hi ${escapeHtml(order.customerName)}, your Aethex order #${escapeHtml(order.id)} has been delivered.</div>
       <p style="color:#8B949E;font-size:14px;">Thank you for shopping with Aethex! We hope you love your purchase.</p>
       <div style="text-align:center;margin:24px 0;">
-        <a href="${SITE_URL}/orders/track?orderId=${order.id}" class="cta-btn" style="margin-right:12px;">Rate Your Purchase</a>
+        <a href="${SITE_URL}/orders/track?orderId=${escapeHtml(order.id)}" class="cta-btn" style="margin-right:12px;">Rate Your Purchase</a>
         <a href="${SITE_URL}/products" class="cta-btn">Shop Again</a>
       </div>
     </div>`, `Order #${order.id} delivered!`);
@@ -205,9 +214,9 @@ export async function sendOrderCancelledEmail(order: {
   const html = baseEmailHtml(`
     <div class="body">
       <div class="title">Order Cancelled</div>
-      <div class="subtitle">Hi ${order.customerName}, your Aethex order #${order.id} has been cancelled.</div>
-      ${order.cancellationReason ? `<div class="info-box"><div class="info-row"><span class="info-label">Reason</span><span class="info-value">${order.cancellationReason}</span></div></div>` : ""}
-      ${order.refundStatus ? `<div class="info-box"><div class="info-row"><span class="info-label">Refund Status</span><span class="info-value">${order.refundStatus}</span></div><div class="info-row"><span class="info-label">Refund Timeline</span><span class="info-value">5-7 business days</span></div></div>` : ""}
+      <div class="subtitle">Hi ${escapeHtml(order.customerName)}, your Aethex order #${escapeHtml(order.id)} has been cancelled.</div>
+      ${order.cancellationReason ? `<div class="info-box"><div class="info-row"><span class="info-label">Reason</span><span class="info-value">${escapeHtml(order.cancellationReason)}</span></div></div>` : ""}
+      ${order.refundStatus ? `<div class="info-box"><div class="info-row"><span class="info-label">Refund Status</span><span class="info-value">${escapeHtml(order.refundStatus)}</span></div><div class="info-row"><span class="info-label">Refund Timeline</span><span class="info-value">5-7 business days</span></div></div>` : ""}
       <a href="${SITE_URL}/products" class="cta-btn">Continue Shopping</a>
     </div>`, `Order #${order.id} has been cancelled`);
 
@@ -222,10 +231,10 @@ export async function sendProActivatedEmail(to: string, name: string, validUntil
   const html = baseEmailHtml(`
     <div class="body">
       <div class="title">Welcome to Cadus AI Pro! ✨</div>
-      <div class="subtitle">Hi ${name}, your Cadus AI Pro plan is now active.</div>
+      <div class="subtitle">Hi ${escapeHtml(name)}, your Cadus AI Pro plan is now active.</div>
       <div class="info-box">
         <div class="info-row"><span class="info-label">Plan</span><span class="info-value">Cadus AI Pro</span></div>
-        <div class="info-row"><span class="info-label">Valid Until</span><span class="info-value">${validity}</span></div>
+        <div class="info-row"><span class="info-label">Valid Until</span><span class="info-value">${escapeHtml(validity)}</span></div>
       </div>
       <p style="color:#8B949E;font-size:14px;">You now have access to all Pro features including Cadus Magnus, Scan Analysis, unlimited queries, and more.</p>
       <a href="${SITE_URL}/ai-assistant" class="cta-btn">Start Using Cadus AI Pro</a>
@@ -238,9 +247,9 @@ export async function sendProExpiringEmail(to: string, name: string, daysLeft: n
   const html = baseEmailHtml(`
     <div class="body">
       <div class="title">Cadus AI Pro Expiring Soon ⏰</div>
-      <div class="subtitle">Hi ${name}, your Cadus AI Pro plan expires in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}.</div>
+      <div class="subtitle">Hi ${escapeHtml(name)}, your Cadus AI Pro plan expires in ${escapeHtml(daysLeft)} day${daysLeft !== 1 ? "s" : ""}.</div>
       <div class="info-box">
-        <div class="info-row"><span class="info-label">Expiry Date</span><span class="info-value">${new Date(validUntil).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</span></div>
+        <div class="info-row"><span class="info-label">Expiry Date</span><span class="info-value">${escapeHtml(new Date(validUntil).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }))}</span></div>
       </div>
       <p style="color:#8B949E;font-size:14px;">Renew now to continue uninterrupted access to all Cadus AI Pro features.</p>
       <a href="${SITE_URL}/ai-assistant" class="cta-btn">Renew Cadus AI Pro</a>

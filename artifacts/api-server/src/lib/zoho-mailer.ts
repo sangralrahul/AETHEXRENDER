@@ -1,5 +1,14 @@
 import nodemailer from "nodemailer";
 
+function escapeHtml(s: string | number | null | undefined): string {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 const ZOHO_USER = process.env.ZOHO_USER;
 const ZOHO_PASS = process.env.ZOHO_PASS;
 const FROM_NAME = process.env.ZOHO_FROM_NAME ?? "AETHEX Medical";
@@ -73,7 +82,7 @@ export async function sendOtpEmail(to: string, otp: string): Promise<void> {
       <div class="title">Your AETHEX OTP Code</div>
       <p style="color:#8B949E;font-size:15px;margin:0 0 8px;">Use the code below to log in to your AETHEX account.</p>
       <div class="otp-box">
-        <div class="otp">${otp}</div>
+        <div class="otp">${escapeHtml(otp)}</div>
         <div class="otp-note">Valid for <strong>5 minutes</strong> &middot; Do not share this code</div>
       </div>
       <p style="color:#8B949E;font-size:13px;">If you didn't request this code, you can safely ignore this email.</p>
@@ -97,14 +106,14 @@ export async function sendContactUserEmail(
 ): Promise<void> {
   const html = baseHtml(`
     <div class="body">
-      <div class="title">Hi ${name}, Cadus AI has responded</div>
+      <div class="title">Hi ${escapeHtml(name)}, Cadus AI has responded</div>
       <p style="color:#8B949E;font-size:14px;margin:0 0 20px;">Thank you for reaching out to AETHEX. Here's Cadus AI's response to your query.</p>
       <div class="info-box">
-        <div class="info-row"><span class="info-label">Subject</span><span class="info-value">${subject}</span></div>
-        <div class="info-row"><span class="info-label">Your Query</span><span class="info-value" style="max-width:60%;text-align:right;">${query}</span></div>
+        <div class="info-row"><span class="info-label">Subject</span><span class="info-value">${escapeHtml(subject)}</span></div>
+        <div class="info-row"><span class="info-label">Your Query</span><span class="info-value" style="max-width:60%;text-align:right;">${escapeHtml(query)}</span></div>
       </div>
       <p style="color:#E6EDF3;font-weight:600;margin:20px 0 8px;">Cadus AI Response:</p>
-      <div class="ai-box">${aiResponse.replace(/\n/g, "<br/>")}</div>
+      <div class="ai-box">${escapeHtml(aiResponse).replace(/\n/g, "<br/>")}</div>
       <p style="color:#8B949E;font-size:13px;">Our support team will follow up if your query requires human assistance.</p>
     </div>
   `);
@@ -131,15 +140,15 @@ export async function sendContactAdminEmail(
       <div class="title">New Contact Query</div>
       <p style="color:#8B949E;font-size:14px;margin:0 0 16px;">A user has submitted a query via the AETHEX contact form.</p>
       <div class="info-box">
-        <div class="info-row"><span class="info-label">Name</span><span class="info-value">${name}</span></div>
-        <div class="info-row"><span class="info-label">Email</span><span class="info-value">${email}</span></div>
-        <div class="info-row"><span class="info-label">Subject</span><span class="info-value">${subject}</span></div>
+        <div class="info-row"><span class="info-label">Name</span><span class="info-value">${escapeHtml(name)}</span></div>
+        <div class="info-row"><span class="info-label">Email</span><span class="info-value">${escapeHtml(email)}</span></div>
+        <div class="info-row"><span class="info-label">Subject</span><span class="info-value">${escapeHtml(subject)}</span></div>
         <div class="info-row"><span class="info-label">Timestamp</span><span class="info-value">${new Date().toISOString()}</span></div>
       </div>
       <p style="color:#E6EDF3;font-weight:600;margin:20px 0 8px;">User Message:</p>
-      <div class="ai-box" style="border-color:#8B949E;">${query.replace(/\n/g, "<br/>")}</div>
+      <div class="ai-box" style="border-color:#8B949E;">${escapeHtml(query).replace(/\n/g, "<br/>")}</div>
       <p style="color:#E6EDF3;font-weight:600;margin:20px 0 8px;">Cadus AI Response Sent to User:</p>
-      <div class="ai-box">${aiResponse.replace(/\n/g, "<br/>")}</div>
+      <div class="ai-box">${escapeHtml(aiResponse).replace(/\n/g, "<br/>")}</div>
     </div>
   `);
 

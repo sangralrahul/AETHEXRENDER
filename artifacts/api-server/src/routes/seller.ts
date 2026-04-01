@@ -369,9 +369,19 @@ router.put("/seller/settings", async (req: Request, res: Response) => {
     const [seller] = await db.select().from(sellers).where(eq(sellers.sellerCode, sellerCode));
     if (!seller) { res.status(403).json({ error: "Unauthorized" }); return; }
 
-    const allowed = ["businessName", "ownerName", "phone", "address", "pincode", "bankAccount", "bankIfsc", "accountHolder", "deliveryPincodes", "deliveryDays", "vacationMode"];
+    const { businessName, ownerName, phone, address, pincode, bankAccount, bankIfsc, accountHolder, deliveryPincodes, deliveryDays, vacationMode } = req.body;
     const updates: any = { updatedAt: new Date() };
-    for (const key of allowed) { if (req.body[key] !== undefined) updates[key] = req.body[key]; }
+    if (businessName !== undefined) updates.businessName = businessName;
+    if (ownerName !== undefined) updates.ownerName = ownerName;
+    if (phone !== undefined) updates.phone = phone;
+    if (address !== undefined) updates.address = address;
+    if (pincode !== undefined) updates.pincode = pincode;
+    if (bankAccount !== undefined) updates.bankAccount = bankAccount;
+    if (bankIfsc !== undefined) updates.bankIfsc = bankIfsc;
+    if (accountHolder !== undefined) updates.accountHolder = accountHolder;
+    if (deliveryPincodes !== undefined) updates.deliveryPincodes = deliveryPincodes;
+    if (deliveryDays !== undefined) updates.deliveryDays = deliveryDays;
+    if (vacationMode !== undefined) updates.vacationMode = vacationMode;
 
     const [updated] = await db.update(sellers).set(updates).where(eq(sellers.id, seller.id)).returning();
     res.json({ success: true, seller: updated });

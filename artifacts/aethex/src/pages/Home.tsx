@@ -180,10 +180,11 @@ function AIChatPreview() {
                       if (!trimmed) return null;
                       const isBullet = /^[-•*]\s/.test(trimmed);
                       const isNumbered = /^\d+\.\s/.test(trimmed);
-                      const boldified = trimmed.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${t}</strong>`);
+                      const escHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                      const boldified = trimmed.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`);
                       if (isBullet) {
                         const content = trimmed.replace(/^[-•*]\s/, "");
-                        const bld = content.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${t}</strong>`);
+                        const bld = content.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`);
                         return (
                           <div key={li} className="flex items-start gap-1.5">
                             <span className="mt-1 shrink-0 w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#007AFF" }} />
@@ -193,7 +194,7 @@ function AIChatPreview() {
                       }
                       if (isNumbered) {
                         const [num, ...rest] = trimmed.split(/\.\s+/);
-                        const bld = rest.join(". ").replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${t}</strong>`);
+                        const bld = rest.join(". ").replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`);
                         return (
                           <div key={li} className="flex items-start gap-1.5">
                             <span className="shrink-0 font-bold text-xs mt-0.5" style={{ color: "#007AFF", minWidth: "16px" }}>{num}.</span>

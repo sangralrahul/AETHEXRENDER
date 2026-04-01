@@ -614,8 +614,11 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
 // ── /api/ai/generate-slides — returns JSON slide data for in-browser viewer ──
 router.post("/ai/generate-slides", aiHeavyLimiter, async (req, res) => {
   try {
-    const { prompt, slideCount } = req.body;
+    const rawPrompt = req.body.prompt;
+    if (!rawPrompt) { res.status(400).json({ error: "prompt is required" }); return; }
+    const prompt = String(rawPrompt).trim().slice(0, 500);
     if (!prompt) { res.status(400).json({ error: "prompt is required" }); return; }
+    const { slideCount } = req.body;
 
     const count = Math.max(5, Math.min(20, parseInt(String(slideCount ?? 12)) || 12));
     // For 12 slides, use the full structured template; otherwise adapt
@@ -784,8 +787,11 @@ RULES:
 
 router.post("/ai/generate-presentation", aiHeavyLimiter, async (req, res) => {
   try {
-    const { prompt, slideCount } = req.body;
+    const rawPrompt = req.body.prompt;
+    if (!rawPrompt) { res.status(400).json({ error: "prompt is required" }); return; }
+    const prompt = String(rawPrompt).trim().slice(0, 500);
     if (!prompt) { res.status(400).json({ error: "prompt is required" }); return; }
+    const { slideCount } = req.body;
 
     const count = Math.max(3, Math.min(30, parseInt(String(slideCount ?? 10)) || 10));
 

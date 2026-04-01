@@ -36,6 +36,10 @@ function PreviewRenderer({
     setError(null);
 
     async function loadComponent(): Promise<void> {
+      if (!/^[a-zA-Z0-9_\-/]+$/.test(componentPath)) {
+        setError(`Invalid component path: ${componentPath}`);
+        return;
+      }
       const key = `./components/mockups/${componentPath}.tsx`;
       const loader = modules[key];
       if (!loader) {

@@ -44,10 +44,11 @@ function extractTOC(html: string) {
 }
 
 function injectIds(html: string) {
-  return html.replace(/<h([23])([^>]*)>(.*?)<\/h[23]>/gi, (_, level, attrs, content) => {
+  return html.replace(/<h([23])([^>]*)>(.*?)<\/h[23]>/gi, (_, level, _attrs, content) => {
     const text = content.replace(/<[^>]+>/g, "");
-    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    return `<h${level}${attrs} id="${id}">${content}</h${level}>`;
+    const safeLevel = level === "2" || level === "3" ? level : "2";
+    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    return `<h${safeLevel} id="${id}">${content}</h${safeLevel}>`;
   });
 }
 

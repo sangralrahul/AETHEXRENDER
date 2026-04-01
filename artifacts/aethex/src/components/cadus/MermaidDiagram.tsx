@@ -43,13 +43,13 @@ export default function MermaidDiagram({ chart }: { chart: string }) {
       .render(id.current, chart)
       .then(({ svg }) => {
         if (target) {
-          target.innerHTML = svg;
-          const svgEl = target.querySelector("svg");
-          if (svgEl) {
-            svgEl.style.width = "100%";
-            svgEl.style.maxWidth = "100%";
-            svgEl.style.height = "auto";
-          }
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(svg, "image/svg+xml");
+          const svgEl = doc.documentElement as unknown as SVGSVGElement;
+          svgEl.style.width = "100%";
+          svgEl.style.maxWidth = "100%";
+          svgEl.style.height = "auto";
+          target.replaceChildren(svgEl);
         }
       })
       .catch(() => setError(true));

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useRoute } from "wouter";
 import { ArrowLeft, Clock, Eye, Share2, Copy, Check, MessageSquare, Loader2, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import DOMPurify from "dompurify";
 
 function ReadingProgressBar() {
   const [progress, setProgress] = useState(0);
@@ -71,7 +72,13 @@ export default function BlogPost() {
   const [commentBody, setCommentBody] = useState("");
   const [commenting, setCommenting] = useState(false);
   const [comments, setComments] = useState<any[]>([]);
-  const [sessionId] = useState(() => localStorage.getItem("aethex_session_id") ?? Math.random().toString(36).slice(2));
+  const [sessionId] = useState(() => {
+    const stored = localStorage.getItem("aethex_session_id");
+    if (stored) return stored;
+    const id = crypto.randomUUID();
+    localStorage.setItem("aethex_session_id", id);
+    return id;
+  });
   const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
@@ -101,7 +108,11 @@ export default function BlogPost() {
   }, [slug]);
 
   const toc = useMemo(() => data?.post?.content ? extractTOC(data.post.content) : [], [data?.post?.content]);
-  const processedContent = useMemo(() => data?.post?.content ? injectIds(data.post.content) : "", [data?.post?.content]);
+  const processedContent = useMemo(() => {
+    if (!data?.post?.content) return "";
+    const withIds = injectIds(data.post.content);
+    return DOMPurify.sanitize(withIds, { ADD_ATTR: ["id"], FORCE_BODY: false });
+  }, [data?.post?.content]);
 
   useEffect(() => {
     if (toc.length === 0) return;

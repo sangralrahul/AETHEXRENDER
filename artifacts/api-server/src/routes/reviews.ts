@@ -158,11 +158,15 @@ router.get("/reviews/my", async (req: Request, res: Response) => {
 // POST /api/reviews
 router.post("/reviews", async (req: Request, res: Response) => {
   try {
-    const { productId, sessionId, customerName, customerRole, starRating, title, body, photos } = req.body;
+    const { productId, sessionId, customerRole, starRating, photos } = req.body;
+    const customerName = typeof req.body.customerName === "string" ? req.body.customerName.trim().slice(0, 100) : "";
+    const title = typeof req.body.title === "string" ? req.body.title.trim().slice(0, 200) : "";
+    const body = typeof req.body.body === "string" ? req.body.body.trim().slice(0, 5000) : "";
 
     if (!productId || !sessionId || !customerName || !starRating || !title || !body) {
       res.status(400).json({ error: "Missing required fields" }); return;
     }
+    if (typeof sessionId !== "string" || sessionId.length > 200) { res.status(400).json({ error: "Invalid session" }); return; }
     if (body.length < 20) { res.status(400).json({ error: "Review must be at least 20 characters" }); return; }
     if (starRating < 1 || starRating > 5) { res.status(400).json({ error: "Invalid star rating" }); return; }
 
@@ -216,7 +220,11 @@ router.post("/reviews", async (req: Request, res: Response) => {
 router.put("/reviews/:id", async (req: Request, res: Response) => {
   try {
     const reviewId = parseInt(req.params.id, 10);
-    const { sessionId, starRating, title, body, photos, customerRole } = req.body;
+    const { sessionId, starRating, photos, customerRole } = req.body;
+    const title = typeof req.body.title === "string" ? req.body.title.trim().slice(0, 200) : undefined;
+    const body = typeof req.body.body === "string" ? req.body.body.trim().slice(0, 5000) : undefined;
+
+    if (typeof sessionId !== "string" || sessionId.length > 200) { res.status(400).json({ error: "Invalid session" }); return; }
 
     const [existing] = await db.select().from(reviews)
       .where(and(eq(reviews.id, reviewId), eq(reviews.sessionId, sessionId)));
@@ -341,10 +349,15 @@ router.get("/platform-reviews", async (req: Request, res: Response) => {
 
 router.post("/platform-reviews", async (req: Request, res: Response) => {
   try {
-    const { platformName, sessionId, customerName, customerRole, overallRating, valueForMoney, contentQuality, facultyRating, wouldRecommend, examPreparing, title, body } = req.body;
+    const { platformName, sessionId, customerRole, overallRating, valueForMoney, contentQuality, facultyRating, wouldRecommend, examPreparing } = req.body;
+    const customerName = typeof req.body.customerName === "string" ? req.body.customerName.trim().slice(0, 100) : "";
+    const title = typeof req.body.title === "string" ? req.body.title.trim().slice(0, 200) : "";
+    const body = typeof req.body.body === "string" ? req.body.body.trim().slice(0, 5000) : "";
+
     if (!platformName || !sessionId || !customerName || !overallRating || !title || !body) {
       res.status(400).json({ error: "Missing required fields" }); return;
     }
+    if (typeof sessionId !== "string" || sessionId.length > 200) { res.status(400).json({ error: "Invalid session" }); return; }
     if (body.length < 20) { res.status(400).json({ error: "Review must be at least 20 characters" }); return; }
 
     const hasBanned = await containsBannedWords(body + " " + title);

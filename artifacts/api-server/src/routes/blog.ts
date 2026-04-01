@@ -129,8 +129,15 @@ router.get("/blog/posts/:slug", async (req: Request, res: Response) => {
 
 router.post("/blog/posts/:slug/comments", async (req: Request, res: Response) => {
   try {
-    const { authorName, body, sessionId } = req.body;
-    if (!authorName || !body || !sessionId) { res.status(400).json({ error: "Name, comment and session required" }); return; }
+    const { authorName: rawName, body: rawBody, sessionId } = req.body;
+    if (!rawName || !rawBody || !sessionId) { res.status(400).json({ error: "Name, comment and session required" }); return; }
+
+    const authorName = String(rawName).trim().slice(0, 100);
+    const body = String(rawBody).trim().slice(0, 2000);
+
+    if (!authorName) { res.status(400).json({ error: "Author name cannot be empty" }); return; }
+    if (body.length < 3) { res.status(400).json({ error: "Comment is too short" }); return; }
+    if (typeof sessionId !== "string" || sessionId.length > 200) { res.status(400).json({ error: "Invalid session" }); return; }
 
     const [post] = await db.select({ id: blogPosts.id }).from(blogPosts).where(eq(blogPosts.slug, req.params.slug));
     if (!post) { res.status(404).json({ error: "Post not found" }); return; }

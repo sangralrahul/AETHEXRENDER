@@ -120,7 +120,8 @@ router.post("/seller/register", async (req: Request, res: Response) => {
     }).returning();
 
     // Create admin notification
-    await db.execute(sql`INSERT INTO notifications (session_id, type, title, message, link, icon_type) VALUES ('admin', 'seller_registration', 'New Seller Application', ${`${businessName} has submitted a seller application`}, '/admin/sellers', 'info') ON CONFLICT DO NOTHING`);
+    const notifMessage = `${String(businessName).slice(0, 200)} has submitted a seller application`;
+    await db.execute(sql`INSERT INTO notifications (session_id, type, title, message, link, icon_type) VALUES ('admin', 'seller_registration', 'New Seller Application', ${notifMessage}, '/admin/sellers', 'info') ON CONFLICT DO NOTHING`);
 
     res.status(201).json({ success: true, message: "Your application is under review. We will contact you within 48 hours.", seller: { id: seller.id, businessName: seller.businessName } });
   } catch (err: any) {

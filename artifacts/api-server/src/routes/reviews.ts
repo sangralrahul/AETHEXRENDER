@@ -390,14 +390,17 @@ router.get("/admin/reviews", async (req: Request, res: Response) => {
 
 router.put("/admin/reviews/:id/moderate", async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const reviewId = parseInt(req.params.id, 10);
     const { status, type = "product" } = req.body;
 
+    const allowed = ["approved", "pending", "rejected"];
+    if (!allowed.includes(status)) { res.status(400).json({ error: "Invalid status value" }); return; }
+
     if (type === "platform") {
-      await db.execute(sql`UPDATE platform_reviews SET status = ${status}, updated_at = NOW() WHERE id = ${parseInt(id)}`);
+      await db.update(platformReviews).set({ status, updatedAt: new Date() }).where(eq(platformReviews.id, reviewId));
     } else {
-      await db.execute(sql`UPDATE reviews SET status = ${status}, updated_at = NOW() WHERE id = ${parseInt(id)}`);
-      const [r] = await db.select({ productId: reviews.productId }).from(reviews).where(eq(reviews.id, parseInt(id)));
+      await db.update(reviews).set({ status, updatedAt: new Date() }).where(eq(reviews.id, reviewId));
+      const [r] = await db.select({ productId: reviews.productId }).from(reviews).where(eq(reviews.id, reviewId));
       if (r) await updateProductRating(r.productId);
     }
     res.json({ success: true });
@@ -406,13 +409,16 @@ router.put("/admin/reviews/:id/moderate", async (req: Request, res: Response) =>
 
 router.post("/admin/reviews/:id/reply", async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const reviewId = parseInt(req.params.id, 10);
     const { reply, type = "product" } = req.body;
 
+    const adminReply = typeof reply === "string" ? reply.trim().slice(0, 2000) : "";
+    if (!adminReply) { res.status(400).json({ error: "Reply text is required" }); return; }
+
     if (type === "platform") {
-      await db.execute(sql`UPDATE platform_reviews SET admin_reply = ${reply}, updated_at = NOW() WHERE id = ${parseInt(id)}`);
+      await db.update(platformReviews).set({ adminReply, updatedAt: new Date() }).where(eq(platformReviews.id, reviewId));
     } else {
-      await db.execute(sql`UPDATE reviews SET admin_reply = ${reply}, admin_reply_at = NOW() WHERE id = ${parseInt(id)}`);
+      await db.update(reviews).set({ adminReply, adminReplyAt: new Date(), updatedAt: new Date() }).where(eq(reviews.id, reviewId));
     }
     res.json({ success: true });
   } catch { res.status(500).json({ error: "Internal server error" }); }

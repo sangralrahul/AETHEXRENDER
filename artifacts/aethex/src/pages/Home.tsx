@@ -285,8 +285,9 @@ function NewsletterSection() {
   };
 
   return (
-    <section className="py-16" style={{ background: "#F2F2F7", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section className="py-16 relative" style={{ borderTop: "1px solid rgba(60,60,67,0.08)", backgroundImage: "url('https://images.unsplash.com/photo-1481214110143-ed630356e1bb?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
+      <div className="absolute inset-0" style={{ background: "rgba(242,242,247,0.93)" }} />
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-5"
           style={{ background: "rgba(0,122,255,0.1)", border: "1px solid rgba(0,122,255,0.2)", color: "#007AFF" }}>
           <Send className="w-3.5 h-3.5" />
@@ -353,7 +354,8 @@ export default function Home() {
 
       {/* ── Hero Section ── */}
       <section className="relative overflow-hidden"
-        style={{ background: "#F4F4F6", minHeight: "calc(100vh - 104px)", display: "flex", alignItems: "center" }}>
+        style={{ minHeight: "calc(100vh - 104px)", display: "flex", alignItems: "center", backgroundImage: "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
+        <div className="absolute inset-0" style={{ background: "rgba(244,244,246,0.91)" }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-16 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left: Copy */}
@@ -451,8 +453,9 @@ export default function Home() {
       </section>
 
       {/* ── Platform Breakdown ── */}
-      <section className="py-20" style={{ background: "#F2F2F7" }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 relative" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
+        <div className="absolute inset-0" style={{ background: "rgba(242,242,247,0.93)" }} />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-display font-bold mb-3" style={{ color: "#1C1C1E" }}>
               Everything Medicine.{" "}
@@ -535,8 +538,9 @@ export default function Home() {
       </section>
 
       {/* ── Why AETHEX ── */}
-      <section className="py-20" style={{ background: "#F2F2F7" }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 relative" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center top", backgroundRepeat: "no-repeat" }}>
+        <div className="absolute inset-0" style={{ background: "rgba(242,242,247,0.93)" }} />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-6"
@@ -653,8 +657,9 @@ export default function Home() {
       </section>
 
       {/* ── Featured Products ── */}
-      <section className="py-16" style={{ background: "#F2F2F7" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 relative" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
+        <div className="absolute inset-0" style={{ background: "rgba(242,242,247,0.94)" }} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-end justify-between mb-10">
             <div>
               <h2 className="text-3xl font-display font-bold mb-2" style={{ color: "#1C1C1E" }}>Featured Products</h2>
@@ -688,8 +693,9 @@ export default function Home() {
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="py-20" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)", borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 relative" style={{ borderTop: "1px solid rgba(60,60,67,0.08)", borderBottom: "1px solid rgba(60,60,67,0.08)", backgroundImage: "url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
+        <div className="absolute inset-0" style={{ background: "rgba(255,255,255,0.94)" }} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-14">
             <h2 className="text-3xl font-display font-bold mb-3" style={{ color: "#1C1C1E" }}>What Doctors & Students Say</h2>
             <p className="max-w-2xl mx-auto" style={{ color: "#636366" }}>Trusted by medical professionals across India — from AIIMS to community hospitals.</p>

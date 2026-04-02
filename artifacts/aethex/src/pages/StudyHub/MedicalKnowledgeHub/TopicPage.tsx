@@ -15,6 +15,30 @@ import { RichContent } from "@/components/MedKnowledge/RichContent";
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const API_BASE = BASE.replace(/\/[^/]*$/, "");
 
+const SUBJECT_BG: Record<string, string> = {
+  "anatomy":               "https://images.unsplash.com/photo-1530026405186-ed1f139313f4?w=1400&q=80",
+  "physiology":            "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1400&q=80",
+  "biochemistry":          "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=1400&q=80",
+  "pharmacology":          "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1400&q=80",
+  "pathology":             "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1400&q=80",
+  "microbiology":          "https://images.unsplash.com/photo-1576671081837-49000212a370?w=1400&q=80",
+  "forensic-medicine":     "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1400&q=80",
+  "community-medicine":    "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1400&q=80",
+  "dermatology":           "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1400&q=80",
+  "psychiatry":            "https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1400&q=80",
+  "radiology":             "https://images.unsplash.com/photo-1516069677018-378515003435?w=1400&q=80",
+  "anesthesiology":        "https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=1400&q=80",
+  "ophthalmology":         "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=1400&q=80",
+  "ent":                   "https://images.unsplash.com/photo-1504813184591-01572f98c85f?w=1400&q=80",
+  "orthopedics":           "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=1400&q=80",
+  "medicine":              "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1400&q=80",
+  "surgery":               "https://images.unsplash.com/photo-1512678080530-7760d81faba6?w=1400&q=80",
+  "obstetrics-gynecology": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1400&q=80",
+  "pediatrics":            "https://images.unsplash.com/photo-1565538420870-da08ff96a207?w=1400&q=80",
+  "emergency-medicine":    "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=1400&q=80",
+};
+const FALLBACK_BG = "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1400&q=80";
+
 const diffColor: Record<string, string> = {
   Basic: "#238636", Intermediate: "#E3B341", Advanced: "#F85149",
 };
@@ -162,8 +186,10 @@ export default function TopicPage() {
   return (
     <div className="min-h-screen" style={{ background: "#0D1117" }}>
       {/* Hero */}
-      <div className="border-b" style={{ borderColor: "#21262D", background: "linear-gradient(180deg,#161B22 0%,#0D1117 100%)" }}>
-        <div className="max-w-5xl mx-auto px-4 py-6">
+      <div className="relative border-b overflow-hidden" style={{ borderColor: "#21262D" }}>
+        <div className="absolute inset-0" style={{ backgroundImage: `url('${SUBJECT_BG[subject.slug] ?? FALLBACK_BG}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, rgba(13,17,23,0.97) 0%, rgba(22,27,34,0.95) 60%, ${subject.color ?? "#00C2A8"}10 100%)` }} />
+        <div className="max-w-5xl mx-auto px-4 py-6 relative z-10">
           <BreadcrumbNav crumbs={[
             { label: "Study Hub", href: `${BASE}/study-hub` },
             { label: "Knowledge Hub", href: `${BASE}/study-hub/medical-knowledge-hub` },

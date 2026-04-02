@@ -116,7 +116,15 @@ export default function MedicalKnowledgeHub() {
       </div>
 
       {/* Section A: Medical Subjects */}
-      <div id="subjects-section" className="max-w-7xl mx-auto px-4 py-16">
+      <div id="subjects-section" className="relative">
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=1600&q=60')",
+          backgroundSize: "cover", backgroundPosition: "center", opacity: 0.04
+        }} />
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: "linear-gradient(180deg, rgba(13,17,23,0) 0%, rgba(13,17,23,0.6) 40%, rgba(13,17,23,0.8) 100%)"
+        }} />
+      <div className="max-w-7xl mx-auto px-4 py-16 relative z-10">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold mb-1" style={{ color: "#E6EDF3" }}>Medical Subjects</h2>
@@ -155,9 +163,18 @@ export default function MedicalKnowledgeHub() {
           ))}
         </div>
       </div>
+      </div>
 
       {/* Section B: Clinical Departments */}
-      <div id="departments-section" className="max-w-7xl mx-auto px-4 pb-16">
+      <div id="departments-section" className="relative">
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1600&q=60')",
+          backgroundSize: "cover", backgroundPosition: "center", opacity: 0.04
+        }} />
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: "linear-gradient(180deg, rgba(13,17,23,0.7) 0%, rgba(13,17,23,0.5) 50%, rgba(13,17,23,0.8) 100%)"
+        }} />
+      <div className="max-w-7xl mx-auto px-4 pb-16 relative z-10">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold mb-1" style={{ color: "#E6EDF3" }}>Clinical Departments</h2>
@@ -196,10 +213,15 @@ export default function MedicalKnowledgeHub() {
           ))}
         </div>
       </div>
+      </div>
 
       {/* Features */}
-      <div className="border-t" style={{ borderColor: "#21262D" }}>
-        <div className="max-w-5xl mx-auto px-4 py-16">
+      <div className="relative border-t" style={{ borderColor: "#21262D" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1600&q=60')",
+          backgroundSize: "cover", backgroundPosition: "center", opacity: 0.04
+        }} />
+        <div className="max-w-5xl mx-auto px-4 py-16 relative z-10">
           <h2 className="text-2xl font-bold text-center mb-10" style={{ color: "#E6EDF3" }}>Everything a Medical Student Needs</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[

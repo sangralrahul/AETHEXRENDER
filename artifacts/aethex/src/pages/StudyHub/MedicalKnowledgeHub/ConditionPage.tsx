@@ -184,11 +184,39 @@ export default function ConditionPage() {
   const { dept, condition } = result;
   const sev = severityConfig[condition.severity] ?? severityConfig.Moderate;
 
+  const DEPT_BG: Record<string, string> = {
+    "cardiology":                "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1400&q=80",
+    "neurology":                 "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=1400&q=80",
+    "orthopedics-dept":          "https://images.unsplash.com/photo-1530026405186-ed1f139313f4?w=1400&q=80",
+    "ophthalmology-dept":        "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=1400&q=80",
+    "pulmonology":               "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1400&q=80",
+    "gastroenterology":          "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1400&q=80",
+    "nephrology":                "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=1400&q=80",
+    "endocrinology":             "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1400&q=80",
+    "oncology":                  "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1400&q=80",
+    "hematology":                "https://images.unsplash.com/photo-1588776814546-1ffbb172f276?w=1400&q=80",
+    "rheumatology":              "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1400&q=80",
+    "infectious-diseases":       "https://images.unsplash.com/photo-1576671081837-49000212a370?w=1400&q=80",
+    "psychiatry-dept":           "https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1400&q=80",
+    "obstetrics-gynecology-dept":"https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1400&q=80",
+    "urology":                   "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=1400&q=80",
+    "ent-dept":                  "https://images.unsplash.com/photo-1504813184591-01572f98c85f?w=1400&q=80",
+    "anesthesiology-dept":       "https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=1400&q=80",
+    "emergency-medicine-dept":   "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=1400&q=80",
+    "geriatrics":                "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1400&q=80",
+    "immunology":                "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1400&q=80",
+    "pediatrics-dept":           "https://images.unsplash.com/photo-1565538420870-da08ff96a207?w=1400&q=80",
+    "clinical-pharmacology":     "https://images.unsplash.com/photo-1512678080530-7760d81faba6?w=1400&q=80",
+  };
+  const FALLBACK_DEPT_BG = "https://images.unsplash.com/photo-1516069677018-378515003435?w=1400&q=80";
+
   return (
     <div className="min-h-screen" style={{ background: "#0D1117" }}>
       {/* Hero */}
-      <div className="border-b" style={{ borderColor: "#21262D", background: "linear-gradient(180deg,#161B22 0%,#0D1117 100%)" }}>
-        <div className="max-w-5xl mx-auto px-4 py-6">
+      <div className="relative border-b overflow-hidden" style={{ borderColor: "#21262D" }}>
+        <div className="absolute inset-0" style={{ backgroundImage: `url('${DEPT_BG[dept.slug] ?? FALLBACK_DEPT_BG}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, rgba(13,17,23,0.97) 0%, rgba(22,27,34,0.95) 60%, ${dept.color ?? "#00C2A8"}10 100%)` }} />
+        <div className="max-w-5xl mx-auto px-4 py-6 relative z-10">
           <BreadcrumbNav crumbs={[
             { label: "Study Hub", href: `${BASE}/study-hub` },
             { label: "Knowledge Hub", href: `${BASE}/study-hub/medical-knowledge-hub` },

@@ -1,0 +1,519 @@
+Build the most comprehensive, visually stunning, and medically accurate Medical Knowledge Hub ever created on the web — integrated into the Aethex platform. This should surpass Amboss, Osmosis, Lecturio, and Wikipedia combined. Every single topic and condition must be encyclopedic, diagram-rich, and completely self-sufficient for a medical student or doctor.
+
+===================================================================
+SECTION 1 — NAVBAR INTEGRATION
+===================================================================
+
+In the existing Aethex navbar under "Study Hub", add a new entry:
+→ "Medical Knowledge Hub" → routes to /study-hub/medical-knowledge-hub
+
+Keep all existing Study Hub links. Add this as a new prominent item with a teal badge that says "NEW".
+
+===================================================================
+SECTION 2 — MEDICAL KNOWLEDGE HUB LANDING PAGE
+===================================================================
+
+Route: /study-hub/medical-knowledge-hub
+
+Page layout:
+- Hero section: "Medical Knowledge Hub" title, subtitle: "The most complete medical reference ever built. Every subject. Every department. Every condition. Everything."
+- Global search bar (searches across all subjects, departments, topics, conditions in real-time)
+- Stats bar: "20+ Subjects | 35+ Departments | 500+ Topics | 1000+ Conditions | AI-Powered Content"
+- Section A: Medical Subjects (grid of subject cards)
+- Section B: Clinical Departments (grid of department cards)
+- Each section has its own heading, description, and "View All" button
+
+===================================================================
+SECTION 3 — MEDICAL SUBJECTS SECTION (Section A)
+===================================================================
+
+All subjects displayed as cards (4-col grid, teal icon, name, topic count, hover glow).
+
+COMPLETE SUBJECT LIST — BUILD ALL OF THESE:
+
+PRE-CLINICAL:
+1. Anatomy — 45 topics
+2. Physiology — 38 topics
+3. Biochemistry — 32 topics
+4. Pharmacology — 42 topics
+5. Pathology — 50 topics
+6. Microbiology — 36 topics
+7. Forensic Medicine & Toxicology — 28 topics
+8. Community Medicine / PSM — 40 topics
+
+PARA-CLINICAL:
+9. Dermatology — 35 topics
+10. Psychiatry — 30 topics
+11. Radiology & Imaging — 25 topics
+12. Anesthesiology — 22 topics
+13. Ophthalmology — 28 topics
+14. ENT — 30 topics
+15. Orthopedics — 40 topics
+
+CLINICAL:
+16. Medicine / Internal Medicine — 60 topics
+17. Surgery — 48 topics
+18. Obstetrics & Gynecology — 45 topics
+19. Pediatrics — 35 topics
+20. Emergency Medicine — 28 topics
+
+===================================================================
+SECTION 4 — SUBJECT INNER PAGE (e.g., /subjects/anatomy)
+===================================================================
+
+Each subject has a full detail page with:
+- Breadcrumb: Study Hub > Medical Knowledge Hub > [Subject]
+- Subject hero: name, icon, short intro paragraph
+- All topics as clickable cards in a grid
+
+---
+ANATOMY TOPICS (45) — full list:
+Upper Limb, Lower Limb, Head & Neck, Thorax, Abdomen, Pelvis & Perineum, Back & Vertebral Column, Neuroanatomy, Embryology, Histology & Cell Biology, Osteology (Bones), Joints & Ligaments, Musculoskeletal System, Cardiovascular Anatomy, Respiratory Anatomy, Digestive System Anatomy, Urogenital Anatomy, Endocrine Glands Anatomy, Lymphatics & Venous Drainage, Special Senses Anatomy, Skin & Fascia, Peripheral Nervous System, Autonomic Nervous System, Cranial Nerves, Spinal Cord & Meninges, Cerebral Cortex & Lobes, Brainstem & Cerebellum, Basal Ganglia, Thalamus & Hypothalamus, Ventricular System & CSF, Eye & Orbit, Ear (External, Middle, Inner), Nose & Paranasal Sinuses, Pharynx & Larynx, Salivary Glands, Thyroid & Parathyroid, Breast Anatomy, Heart & Pericardium, Great Vessels, Liver & Biliary System, Kidney & Ureter, Bladder & Urethra, Male Reproductive Anatomy, Female Reproductive Anatomy, Fetal Circulation
+
+PHYSIOLOGY TOPICS (38):
+Cell Physiology & Membrane Transport, Nerve Physiology & Action Potential, Muscle Physiology (Skeletal, Smooth, Cardiac), Blood & Body Fluids, Cardiovascular Physiology, Cardiac Cycle & ECG, Respiratory Physiology, Lung Volumes & Spirometry, Renal Physiology & GFR, Tubular Functions & Concentration, GI Physiology, Liver Physiology, Endocrine Physiology (Overview), Thyroid Physiology, Adrenal Physiology, Pancreatic Physiology, Reproductive Physiology (Male & Female), CNS Physiology & Higher Functions, Special Senses Physiology, Temperature Regulation, Acid-Base Balance, Fluid & Electrolytes, Nutrition & Metabolism, Exercise Physiology, Sleep Physiology, Pain Physiology, Autonomic Nervous System Physiology, Hemostasis & Coagulation, Immunophysiology, Fetal & Neonatal Physiology, Altitude & Diving Physiology, Microcirculation, Shock Physiology, Cerebrospinal Fluid, Placental Physiology, Lactation Physiology, Aging Physiology, Applied Physiology (Clinical Cases)
+
+PHARMACOLOGY TOPICS (42):
+General Pharmacology & Pharmacokinetics, Pharmacodynamics, Drug Interactions, Adverse Drug Reactions & Toxicology, Autonomic Pharmacology (ANS Drugs), Cholinergic & Anticholinergic Drugs, Adrenergic & Antiadrenergic Drugs, Cardiovascular Drugs (Antihypertensives), Antiarrhythmics, Antianginal Drugs, Heart Failure Drugs, Anticoagulants & Antiplatelets, Thrombolytics, Diuretics, CNS Pharmacology (Overview), Sedatives, Hypnotics & Anxiolytics, Antidepressants & Mood Stabilizers, Antipsychotics, Antiepileptics, Analgesics (Opioid & Non-opioid), NSAIDs & COX Inhibitors, General Anesthetics & Local Anesthetics, Neuromuscular Blockers, Respiratory Pharmacology, GI Pharmacology, Antiulcer Drugs, Antimicrobials (Overview), Penicillins & Cephalosporins, Macrolides, Fluoroquinolones & Aminoglycosides, Antitubercular Drugs, Antifungal Drugs, Antiviral Drugs, Antiparasitic & Antimalarial Drugs, Corticosteroids, Thyroid & Antithyroid Drugs, Insulin & Oral Hypoglycemics, Sex Hormones & Contraceptives, Anticancer (Chemotherapy), Immunosuppressants, Vitamins & Minerals Pharmacology
+
+PATHOLOGY TOPICS (50):
+Cell Injury & Death (Necrosis, Apoptosis), Inflammation (Acute & Chronic), Tissue Repair & Regeneration, Hemodynamic Disorders (Edema, Hemorrhage, Shock), Thrombosis, Embolism & Infarction, Neoplasia (General Concepts), Tumor Markers & Staging, Immunopathology & Hypersensitivity, Autoimmune Diseases, Amyloidosis, Genetic Disorders, Congenital Anomalies, Cardiovascular Pathology, Respiratory Pathology, GI Pathology (Upper), GI Pathology (Lower), Liver Pathology, Gallbladder & Pancreas Pathology, Kidney Pathology (Glomerular), Kidney Pathology (Tubular & Interstitial), Urological Pathology, Male Reproductive Pathology, Female Reproductive Pathology, Breast Pathology, CNS Pathology, Peripheral Nerve Pathology, Muscle Pathology, Endocrine Pathology (Thyroid), Endocrine Pathology (Adrenal, Pituitary), Diabetes Mellitus Pathology, Bone & Joint Pathology, Skin Pathology, Lymphoma & Leukemia, Anemia (Types & Pathology), Coagulation Disorders, Infections (Bacterial, Viral, Fungal), Parasitic Infections, HIV/AIDS Pathology, Nutritional Deficiencies, Environmental & Chemical Pathology, Forensic Pathology, Pediatric Pathology, Transplant Pathology, Wound Healing, Pulmonary Hypertension, Vasculitis, Eye Pathology, Ear Pathology, Oral & Salivary Pathology
+
+MICROBIOLOGY TOPICS (36):
+Bacteriology (General), Gram-Positive Cocci (Staph, Strep), Gram-Positive Bacilli, Gram-Negative Cocci, Gram-Negative Bacilli (Enterobacteriaceae), Gram-Negative Non-Fermenters, Anaerobes, Mycobacteria (TB & Leprosy), Spirochetes (Syphilis, Leptospirosis), Rickettsia & Chlamydia, Mycoplasma, Virology (General), DNA Viruses, RNA Viruses, Hepatitis Viruses, HIV/AIDS Virology, Influenza & Respiratory Viruses, Herpesvirus Group, Arboviruses (Dengue, Chikungunya, Zika), Rabies & Prions, Mycology (General), Superficial & Cutaneous Fungi, Subcutaneous Mycoses, Systemic Mycoses, Opportunistic Fungi (Candida, Aspergillus, Cryptococcus), Parasitology (General), Malaria, Intestinal Protozoa (Amoeba, Giardia), Blood & Tissue Protozoa (Leishmania, Trypanosoma), Tissue Nematodes (Filariae), Intestinal Nematodes (Roundworms), Trematodes (Flukes), Cestodes (Tapeworms), Sterilization & Disinfection, Immunology & Vaccines, Hospital-Acquired Infections
+
+Build complete topic lists similarly for Surgery, Medicine, ObGyn, Pediatrics, Emergency, Dermatology, Psychiatry, Radiology, Anesthesiology, Ophthalmology, ENT, Orthopedics, Community Medicine, Forensic Medicine with the same level of completeness.
+
+===================================================================
+SECTION 5 — TOPIC DETAIL PAGE (THE MOST IMPORTANT PART)
+===================================================================
+
+Route: /study-hub/medical-knowledge-hub/subjects/:subjectSlug/:topicSlug
+
+Example: /study-hub/medical-knowledge-hub/subjects/anatomy/upper-limb
+
+THIS PAGE MUST BE WORLD-CLASS. IT MUST CONTAIN ALL OF THE FOLLOWING:
+
+---
+### A) HERO SECTION
+- Topic title (large, bold)
+- Subject badge (e.g., "Anatomy")
+- Breadcrumb navigation
+- Estimated read time
+- Difficulty badge (Basic / Intermediate / Advanced)
+- Quick action buttons: "Save Topic", "Print View", "Quiz Me" (quiz uses Claude API)
+
+---
+### B) OVERVIEW (Claude API Generated — auto-loads on page open)
+Use claude-sonnet-4-20250514 to generate a 4–6 paragraph comprehensive overview of the topic. The system prompt should be:
+"You are a world-class medical professor writing for MBBS/MD students. Write an encyclopedic, clinically relevant, and exam-focused overview of [TOPIC] in [SUBJECT]. Cover definition, importance, historical context, and a complete conceptual introduction. Write in clear academic English. Format with paragraph headings in bold."
+
+Show loading skeleton while fetching.
+
+---
+### C) SVG ANATOMICAL / MEDICAL DIAGRAMS SECTION
+This is critical. For EVERY topic, generate rich SVG diagrams directly in React code (no external images needed). The SVG diagrams must be medically accurate, labeled, and visually professional.
+
+For **Upper Limb (Anatomy)**, generate SVG diagrams for:
+1. Bones of the Upper Limb — full labeled diagram (humerus, radius, ulna, carpals, metacarpals, phalanges) with bone names labeled
+2. Muscles of the Upper Limb — anterior and posterior compartment muscles labeled
+3. Brachial Plexus — full SVG diagram showing roots (C5–T1), trunks, divisions, cords, terminal branches (musculocutaneous, median, ulnar, radial, axillary nerves) with color coding
+4. Arteries of the Upper Limb — axillary → brachial → radial/ulnar → palmar arches, fully labeled
+5. Dermatomes of the Upper Limb — color-coded dermatome map
+6. Cubital Fossa — contents labeled (brachial artery, median nerve, biceps tendon, lateral/medial boundaries)
+7. Carpal Tunnel — cross-section SVG showing contents (9 tendons + median nerve)
+8. Shoulder Joint — labeled diagram (glenoid, humerus head, rotator cuff muscles)
+9. Elbow Joint — labeled SVG (bones, carrying angle, cubitus valgus/varus)
+10. Hand — intrinsic muscles, thenar/hypothenar eminences, labeled
+
+Each SVG diagram must:
+- Have a title
+- Use teal (#00C2A8) as primary color with dark (#0D1117) background
+- Have all anatomical structures labeled with small text annotations
+- Have a legend where applicable
+- Be responsive (viewBox based)
+- Be grouped in a horizontal scrollable carousel on mobile, grid on desktop
+
+For **Lower Limb (Anatomy)**, generate SVGs for:
+Bones of Lower Limb, Femoral Triangle, Popliteal Fossa, Muscles (Anterior/Posterior/Medial Thigh, Leg), Femoral/Sciatic Nerve paths, Lumbar/Sacral Plexus, Artery of Lower Limb (Femoral → Popliteal → Anterior/Posterior Tibial), Dermatomes, Knee Joint, Hip Joint, Ankle Joint, Foot Arches, Lymph Drainage
+
+For **Brachial Plexus** (standalone topic), generate an ultra-detailed SVG showing:
+- All roots, trunks, divisions, cords, branches color coded
+- Text labels for every nerve, every root value
+- Injury patterns indicated with icons
+
+For ALL anatomy topics, generate 6–10 relevant SVG medical diagrams.
+
+For physiology topics, generate SVG diagrams like:
+- Action potential graph (voltage vs time with labeled phases)
+- Cardiac cycle (pressure-volume loop, Wiggers diagram)
+- Spirometry graph (FVC, FEV1, lung volumes labeled)
+- Nephron diagram with labeled segments
+- Acid-base nomogram
+- Oxygen-hemoglobin dissociation curve
+
+For pathology topics, generate SVG diagrams like:
+- Cell death pathways (apoptosis vs necrosis flowchart)
+- Coagulation cascade (intrinsic/extrinsic/common pathway)
+- Tumor staging diagrams
+- Inflammation mediators diagram
+
+For pharmacology topics:
+- Drug receptor interaction curves (dose-response)
+- Pharmacokinetics compartment models
+- Drug mechanism flowcharts
+
+For microbiology topics:
+- Gram stain classification tree (SVG)
+- Viral replication cycle diagrams
+- Parasite life cycle SVG diagrams
+
+---
+### D) KEY CONCEPTS (Claude API Generated)
+Prompt: "List 8–12 key concepts a medical student must know about [TOPIC] in [SUBJECT]. Format as a numbered list with each concept having a bold title and 2–3 sentence explanation. Include mnemonics where applicable."
+
+Display as an expandable accordion list.
+
+---
+### E) CLINICAL RELEVANCE & APPLIED ANATOMY/PHYSIOLOGY (Claude API)
+Prompt: "Write a detailed Clinical Relevance section for [TOPIC] covering: common clinical presentations, surgical/clinical applications, common pathologies arising from this topic, and real-world diagnostic significance. Write for MBBS/MD level."
+
+Display in a highlighted teal-bordered card.
+
+---
+### F) COMMON DISEASES / CONDITIONS RELATED TO THIS TOPIC
+A horizontal scrollable card row linking to related conditions in the Department section.
+Example: Upper Limb → links to Carpal Tunnel Syndrome, Radial Nerve Palsy, Saturday Night Palsy, Claw Hand, Erb's Palsy, Klumpke's Palsy, Rotator Cuff Tear, Frozen Shoulder
+
+Each card shows: condition name, brief 1-line description, link to condition detail page.
+
+---
+### G) EXAM CORNER (NEET-PG / USMLE / FMGE Style)
+Claude API generated. Prompt: "Generate 8 high-yield MCQ-style exam questions (question + 4 options + correct answer + explanation) about [TOPIC] for NEET-PG/USMLE level. Format as JSON."
+
+Display as an interactive quiz — student sees the question, selects an answer, then sees if correct with explanation.
+
+---
+### H) QUICK REVISION FLASHCARDS
+Claude API generated. Prompt: "Generate 10 flashcard pairs (front: question, back: answer) for rapid revision of [TOPIC] in [SUBJECT]. Make them high-yield and concise."
+
+Display as flip cards — click to reveal answer.
+
+---
+### I) RELATED TOPICS
+Links to 4–6 related topics within the same subject or across subjects.
+
+---
+### J) NOTES / BOOKMARK
+Button to save topic to "My Study List" (stored in localStorage).
+
+===================================================================
+SECTION 6 — CLINICAL DEPARTMENTS SECTION (Section B)
+===================================================================
+
+Route: /study-hub/medical-knowledge-hub (scroll to Section B)
+Department list page: /study-hub/medical-knowledge-hub/departments
+
+ALL 35 DEPARTMENTS — same horizontal card layout (icon left, name, condition count right):
+
+1. Cardiology — 120 conditions
+2. Neurology — 95 conditions
+3. Orthopedics — 80 conditions
+4. Ophthalmology — 60 conditions
+5. Pulmonology / Respiratory Medicine — 75 conditions
+6. Pediatrics — 110 conditions
+7. Clinical Pharmacology — 200 conditions
+8. Dermatology — 85 conditions
+9. Gastroenterology & Hepatology — 90 conditions
+10. Nephrology — 70 conditions
+11. Endocrinology & Diabetes — 80 conditions
+12. Oncology — 95 conditions
+13. Hematology — 65 conditions
+14. Rheumatology — 55 conditions
+15. Infectious Diseases — 100 conditions
+16. Psychiatry & Mental Health — 75 conditions
+17. Obstetrics & Gynecology — 85 conditions
+18. Urology — 60 conditions
+19. ENT (Otorhinolaryngology) — 55 conditions
+20. Anesthesiology & Critical Care — 45 conditions
+21. Radiology & Imaging — 40 conditions
+22. Emergency Medicine & Trauma — 80 conditions
+23. Geriatrics — 50 conditions
+24. Immunology & Allergy — 55 conditions
+25. Neurosurgery — 45 conditions
+26. Plastic & Reconstructive Surgery — 35 conditions
+27. Vascular Surgery — 40 conditions
+28. Cardiac Surgery — 38 conditions
+29. Thoracic Surgery — 32 conditions
+30. Sports Medicine & Rehabilitation — 45 conditions
+31. Forensic Medicine — 25 conditions
+32. Community Medicine / Public Health — 60 conditions
+33. Palliative Care — 30 conditions
+34. Neonatology — 50 conditions
+35. Clinical Genetics — 35 conditions
+
+===================================================================
+SECTION 7 — DEPARTMENT INNER PAGE
+===================================================================
+
+Route: /study-hub/medical-knowledge-hub/departments/:deptSlug
+
+Example: /study-hub/medical-knowledge-hub/departments/cardiology
+
+Contains:
+- Department hero (name, icon, intro, breadcrumb)
+- Search bar to filter conditions
+- All conditions as clickable cards (2-column grid)
+- Each condition card shows: name, ICD-10 code badge, 1-line description, severity badge (Mild/Moderate/Severe/Critical)
+
+CARDIOLOGY — all 120 conditions (hardcode this list):
+Hypertension (Essential), Hypertension (Secondary), Hypertensive Emergency, Hypertensive Urgency, Coronary Artery Disease (Stable Angina), Unstable Angina, NSTEMI, STEMI, Silent Myocardial Infarction, Prinzmetal (Variant) Angina, Heart Failure (HFrEF), Heart Failure (HFpEF), Right Heart Failure, Acute Decompensated Heart Failure, Cardiogenic Shock, Atrial Fibrillation, Atrial Flutter, Supraventricular Tachycardia (SVT), AVNRT, AVRT, Ventricular Tachycardia, Ventricular Fibrillation, Torsades de Pointes, Premature Atrial Contractions, Premature Ventricular Contractions, Sick Sinus Syndrome, Complete Heart Block (3rd Degree AV Block), 2nd Degree AV Block (Mobitz I & II), 1st Degree AV Block, Bundle Branch Block (LBBB/RBBB), Wolff-Parkinson-White Syndrome, Long QT Syndrome, Brugada Syndrome, Dilated Cardiomyopathy, Hypertrophic Obstructive Cardiomyopathy (HOCM), Restrictive Cardiomyopathy, Arrhythmogenic Right Ventricular Cardiomyopathy (ARVC), Takotsubo Cardiomyopathy (Stress Cardiomyopathy), Aortic Stenosis, Aortic Regurgitation, Mitral Stenosis, Mitral Regurgitation, Mitral Valve Prolapse, Tricuspid Regurgitation, Tricuspid Stenosis, Pulmonary Stenosis, Pulmonary Regurgitation, Infective Endocarditis, Non-bacterial Thrombotic Endocarditis, Rheumatic Fever, Rheumatic Heart Disease, Pericarditis (Acute), Pericarditis (Constrictive), Pericardial Effusion, Cardiac Tamponade, Myocarditis, Aortic Aneurysm (Thoracic), Aortic Aneurysm (Abdominal), Aortic Dissection (Type A & B), Coarctation of the Aorta, Atrial Septal Defect (ASD), Ventricular Septal Defect (VSD), Patent Ductus Arteriosus (PDA), Tetralogy of Fallot (ToF), Transposition of Great Arteries (TGA), Eisenmenger Syndrome, Truncus Arteriosus, Total Anomalous Pulmonary Venous Connection (TAPVC), Pulmonary Arterial Hypertension, Cor Pulmonale, Deep Vein Thrombosis (DVT), Pulmonary Embolism, Peripheral Arterial Disease (PAD), Acute Limb Ischemia, Critical Limb Ischemia, Raynaud's Phenomenon, Buerger's Disease (Thromboangiitis Obliterans), Atherosclerosis, Hypercholesterolemia, Hypertriglyceridemia, Mixed Dyslipidemia, Metabolic Syndrome, Obesity & Cardiac Risk, Diabetes & Cardiovascular Disease, Cardiac Syndrome X, Vasospastic Angina, Cardiac Arrest, Sudden Cardiac Death, Commotio Cordis, Takayasu Arteritis, Giant Cell Arteritis, Polyarteritis Nodosa (Cardiac involvement), Kawasaki Disease (Cardiac), Marfan Syndrome (Cardiac), Ehlers-Danlos (Cardiovascular), Fabry Disease (Cardiac), Amyloidosis (Cardiac), Sarcoidosis (Cardiac), Hemochromatosis (Cardiac), Chemotherapy-Induced Cardiomyopathy, Radiation-Induced Heart Disease, Cocaine-Induced Cardiac Events, Alcohol-Induced Cardiomyopathy, Peripartum Cardiomyopathy, Athlete's Heart, Cardiac Tumors (Myxoma, Rhabdomyoma), Venous Thromboembolism (VTE), Paradoxical Embolism, Cardiac Syncope, Orthostatic Hypotension, Vasovagal Syncope, Carotid Sinus Hypersensitivity, Pulseless Electrical Activity (PEA), Asystole, Cardiac Contusion (Trauma), Post-MI Complications (Dressler's, free wall rupture, VSD, papillary muscle rupture), Lipoma of Heart, Cardiac Fistula, Anomalous Coronary Arteries, Myocardial Bridging, Coronary Artery Spasm, No-Reflow Phenomenon, Contrast-Induced Nephropathy (post-cardiac cath)
+
+Do the same for all 35 departments — build realistic, complete condition lists.
+
+===================================================================
+SECTION 8 — CONDITION DETAIL PAGE (THE CROWN JEWEL)
+===================================================================
+
+Route: /study-hub/medical-knowledge-hub/departments/:deptSlug/:conditionSlug
+
+Example: /study-hub/medical-knowledge-hub/departments/cardiology/myocardial-infarction
+
+THIS IS THE MOST IMPORTANT PAGE. IT MUST CONTAIN EVERYTHING A DOCTOR OR STUDENT NEEDS:
+
+---
+### A) HERO
+- Condition name (large)
+- ICD-10 code badge (e.g., I21.9)
+- Department badge
+- Severity badge (color-coded: green=mild, yellow=moderate, orange=severe, red=critical)
+- Breadcrumb
+- Quick stats bar: Prevalence, Mortality rate, Age group affected, Gender predominance (Claude API fetches these)
+- Action buttons: Save, Print, Share
+
+---
+### B) OVERVIEW (Claude API)
+System prompt: "You are a world-class clinician and medical educator. Write a comprehensive, encyclopedia-level overview of [CONDITION NAME] for a medical student or junior doctor. Include: definition, epidemiology (global + Indian context), historical background, and why this condition matters clinically. Write in flowing academic paragraphs. Bold key terms."
+
+---
+### C) SVG MEDICAL DIAGRAMS — MANDATORY FOR EVERY CONDITION
+
+Generate rich, labeled SVG diagrams relevant to the condition. These must be medically accurate and professional.
+
+For **Myocardial Infarction**, generate SVGs for:
+1. Heart diagram showing coronary arteries (LAD, RCX, RCA) with infarct zone highlighted in red for STEMI (anterior, inferior, lateral) — labeled
+2. ECG changes timeline SVG — showing evolution: Hyperacute T waves → ST elevation → Q waves → T wave inversion — each stage on a timeline with ECG trace drawings
+3. Pathophysiology flowchart SVG — Plaque rupture → Thrombus → Occlusion → Ischemia → Necrosis, with each step as a labeled node
+4. Zones of injury SVG — Zone of necrosis, zone of injury, zone of ischemia concentric circles in heart cross-section
+5. Cardiac biomarkers timeline SVG — graph showing rise and fall of Troponin I, Troponin T, CK-MB, Myoglobin over 72 hours post-MI — color-coded lines with labeled peaks
+6. Treatment algorithm SVG flowchart — STEMI management: Chest pain → ECG → STEMI confirmed → Reperfusion strategy (PCI vs Thrombolysis) → Post-MI care, with time windows labeled
+7. Complications diagram — SVG showing post-MI complications: Dressler's syndrome, Free wall rupture, Papillary muscle rupture, VSR, Aneurysm, Arrhythmias — radial layout
+
+For **Heart Failure**, generate SVGs for:
+1. Frank-Starling curve (normal vs failing heart)
+2. Compensatory mechanisms diagram
+3. HFrEF vs HFpEF comparison diagram
+4. NYHA classification visual
+5. Treatment ladder algorithm flowchart
+
+For **Hypertension**, generate SVGs for:
+1. Blood pressure classification table (SVG visual)
+2. Renin-Angiotensin-Aldosterone System (RAAS) flowchart
+3. End-organ damage diagram (heart, brain, kidney, retina, vessels)
+4. Antihypertensive drug class mechanism SVG
+
+For **Atrial Fibrillation**, generate SVGs for:
+1. ECG of AF vs Normal Sinus vs Atrial Flutter comparison
+2. CHA₂DS₂-VASc score visual calculator
+3. Rate vs Rhythm control algorithm flowchart
+4. AF pathophysiology (pulmonary vein triggers, reentry circuits)
+
+Apply this same diagram approach to EVERY condition. Each condition gets 4–8 SVG diagrams that are medically relevant, labeled, and beautiful.
+
+---
+### D) ETIOLOGY & RISK FACTORS (Claude API)
+Prompt: "List all causes and risk factors for [CONDITION] organized by: Modifiable vs Non-modifiable, Predisposing vs Precipitating, Primary vs Secondary causes. Be exhaustive and clinically accurate."
+
+Display as organized cards with category headers.
+
+---
+### E) PATHOPHYSIOLOGY (Claude API)
+Prompt: "Explain the complete pathophysiology of [CONDITION] step by step, from initial trigger to final manifestation. Include molecular mechanisms, cellular changes, and organ-level effects. Format as numbered steps with subpoints. Include a summary sentence at the end."
+
+Display in a dark card with step-by-step numbered layout.
+
+---
+### F) CLINICAL FEATURES (Claude API)
+Prompt: "List ALL clinical features of [CONDITION] organized as: Symptoms (by system), Signs (general examination, vital signs, systemic examination, special tests/signs), and Complications. Include classic exam findings and their clinical significance."
+
+Display with tabbed layout: Symptoms tab | Signs tab | Complications tab
+
+---
+### G) INVESTIGATIONS (Claude API)
+Prompt: "List all investigations for [CONDITION] organized by: First-line investigations, Confirmatory tests, Monitoring tests. For each investigation, include: what it shows, typical findings in this condition, and clinical significance. Format as a structured table."
+
+Display as a beautiful table with columns: Investigation | Purpose | Expected Finding | Significance
+
+---
+### H) DIAGNOSIS & DIAGNOSTIC CRITERIA (Claude API)
+Prompt: "Explain the diagnostic criteria and approach for [CONDITION]. Include: gold standard diagnosis, clinical diagnostic criteria (if any, e.g., Framingham, Duke, Jones, WHO), differential diagnosis (top 5), and how to differentiate from mimics."
+
+Display diagnosis section with colored differential diagnosis cards.
+
+---
+### I) TREATMENT / MANAGEMENT (Claude API) — THIS IS CRITICAL
+Prompt: "Write a complete, protocol-level treatment guide for [CONDITION] covering: Emergency management (if applicable), Medical management (first-line, second-line, salvage), Drug details (drug name, dose, mechanism, monitoring), Surgical/Interventional management, Non-pharmacological management, Patient education, Follow-up schedule, Monitoring parameters. Write like a clinical protocol. Be specific with drug doses."
+
+Display in a tabbed layout: Emergency | Medical | Surgical | Non-Pharmacological | Follow-up
+
+---
+### J) PROGNOSIS & COMPLICATIONS (Claude API)
+Prompt: "Explain the prognosis of [CONDITION] including survival rates, prognostic factors, prognostic scoring systems (if applicable), and list all possible complications organized by: Acute complications, Chronic complications, Life-threatening complications."
+
+---
+### K) PREVENTION (Claude API)
+Prompt: "Explain primary prevention, secondary prevention, and tertiary prevention strategies for [CONDITION]. Include screening guidelines, vaccination (if applicable), lifestyle modifications, and chemoprophylaxis."
+
+---
+### L) SPECIAL POPULATIONS (Claude API)
+Prompt: "How does [CONDITION] differ in management or presentation in: Pregnant women, Elderly patients, Pediatric patients, Patients with renal/hepatic failure, and Immunocompromised patients?"
+
+Display as expandable accordions per population.
+
+---
+### M) EXAM CORNER — HIGH YIELD MCQs (Claude API)
+Prompt: "Generate 10 NEET-PG/USMLE Step 1 & 2 level MCQs about [CONDITION]. Format as JSON array: [{question, options: [A,B,C,D], correct, explanation}]. Make them clinically realistic with patient vignettes."
+
+Interactive quiz — student selects answer, gets instant feedback with explanation.
+
+---
+### N) QUICK REVISION FLASHCARDS (Claude API)
+Prompt: "Generate 12 high-yield flashcards for [CONDITION]. Format as JSON: [{front, back}]. Cover: key facts, drug of choice, diagnostic gold standard, classic presentation, complications, mnemonics."
+
+Flip card UI — click to reveal.
+
+---
+### O) RELATED CONDITIONS
+Horizontal scroll row of related condition cards linking to their pages.
+
+---
+### P) REFERENCES / GUIDELINES
+Links to: WHO Guidelines, AHA/ACC Guidelines, Indian Medical Association guidelines (hardcoded links where available), UpToDate topic reference.
+
+===================================================================
+SECTION 9 — GLOBAL FEATURES
+===================================================================
+
+1. SEARCH — Real-time search across all subjects, departments, topics, and conditions. Results show category badges. Debounced input (300ms). Keyboard navigation.
+
+2. MY STUDY LIST — Bookmark any topic or condition. Saved to localStorage. Accessible from navbar as "My Study List" icon.
+
+3. PROGRESS TRACKER — Track which topics/conditions have been viewed. Show progress percentage per subject.
+
+4. PRINT VIEW — Clean, printer-friendly CSS for any topic or condition page.
+
+5. DARK MODE — Already dark by default (Aethex theme). No toggle needed.
+
+6. LOADING SKELETONS — Show animated skeletons for all Claude API-fetched sections.
+
+7. ERROR STATES — If Claude API fails, show a "Content temporarily unavailable. Try again." message with retry button.
+
+8. BREADCRUMBS — On every inner page.
+
+9. BACK BUTTON — On every inner page.
+
+10. SCROLL TO TOP — Floating button on long pages.
+
+===================================================================
+SECTION 10 — CLAUDE API IMPLEMENTATION
+===================================================================
+
+For ALL Claude API calls use:
+- Model: claude-sonnet-4-20250514
+- Max tokens: 2000
+- Temperature: default
+- Never expose API key in frontend (it is handled by the platform)
+
+Batch related sections together where possible to reduce API calls. Cache responses in sessionStorage so revisiting a page doesn't re-fetch.
+
+On first load of any topic/condition page, fetch these in parallel:
+- Overview
+- Key Concepts
+- Clinical Features
+
+Then lazy-load remaining sections as user scrolls down (IntersectionObserver).
+
+===================================================================
+SECTION 11 — DESIGN SYSTEM
+===================================================================
+
+Strictly follow existing Aethex design:
+- Background: #0D1117
+- Card background: #161B22
+- Border: #21262D
+- Teal accent: #00C2A8
+- Text: #E6EDF3
+- Muted text: #8B949E
+- Success: #238636
+- Danger: #F85149
+- Warning: #E3B341
+
+All SVG diagrams: dark background (#161B22 or #1C2128), teal lines/structures (#00C2A8), white labels (#E6EDF3), subtle grid lines (#21262D)
+
+Cards: rounded-xl, border border-[#21262D], hover:border-[#00C2A8], hover:shadow-[0_0_20px_rgba(0,194,168,0.2)]
+
+Responsive: 4-col → 2-col → 1-col
+
+Animations: subtle fade-in on page load, hover scale 1.02 on cards, smooth tab transitions
+
+===================================================================
+SECTION 12 — FILE STRUCTURE
+===================================================================
+
+Create these files:
+src/pages/StudyHub/MedicalKnowledgeHub/
+  index.tsx                          (landing page)
+  subjects/
+    index.tsx                        (all subjects grid)
+    [subjectSlug]/
+      index.tsx                      (subject detail with topics)
+      [topicSlug]/
+        index.tsx                    (topic detail page — THE BIG ONE)
+  departments/
+    index.tsx                        (all departments grid)
+    [deptSlug]/
+      index.tsx                      (department detail with conditions)
+      [conditionSlug]/
+        index.tsx                    (condition detail page — THE BIG ONE)
+
+src/data/
+  medicalSubjects.ts                 (all subjects + topics data)
+  medicalDepartments.ts              (all departments + conditions data with ICD-10 codes)
+
+src/components/MedKnowledge/
+  SubjectCard.tsx
+  TopicCard.tsx
+  DepartmentCard.tsx
+  ConditionCard.tsx
+  DiagramCarousel.tsx                (SVG diagram display component)
+  FlashCard.tsx
+  MCQQuiz.tsx
+  SectionLoader.tsx                  (skeleton loader)
+  BreadcrumbNav.tsx
+
+src/diagrams/anatomy/
+  UpperLimbDiagrams.tsx              (all SVG diagrams for upper limb)
+  LowerLimbDiagrams.tsx
+  BrachialPlexusDiagram.tsx
+  (etc for all anatomy topics)
+
+src/diagrams/conditions/
+  MyocardialInfarctionDiagrams.tsx
+  HeartFailureDiagrams.tsx
+  HypertensionDiagrams.tsx
+  AtrialFibrillationDiagrams.tsx
+  (etc for all major conditions)
+
+===================================================================
+
+BUILD THIS COMPLETELY. NO PLACEHOLDERS. NO "COMING SOON." EVERY CARD CLICKABLE. EVERY PAGE FULLY BUILT. EVERY SVG DIAGRAM MEDICALLY ACCURATE AND LABELED. THIS IS THE MOST IMPORTANT FEATURE ON THE AETHEX PLATFORM. MAKE IT THE BEST MEDICAL KNOWLEDGE WEBSITE IN THE WORLD.

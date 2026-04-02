@@ -1,0 +1,217 @@
+import { useState, useMemo } from "react";
+import { Link } from "wouter";
+import { Search, BookOpen, Building2, ArrowRight, Zap, Brain, FlaskConical, Stethoscope, ChevronRight } from "lucide-react";
+import { medicalSubjects } from "@/data/medicalSubjects";
+import { medicalDepartments } from "@/data/medicalDepartments";
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+function HubSearchResult({ label, category, href }: { label: string; category: string; href: string }) {
+  return (
+    <Link href={href}
+      className="flex items-center justify-between px-4 py-3 transition-all hover:bg-white/5 border-b"
+      style={{ borderColor: "#21262D" }}>
+      <div>
+        <span className="text-sm font-medium" style={{ color: "#E6EDF3" }}>{label}</span>
+        <span className="ml-2 px-1.5 py-0.5 rounded text-xs font-semibold" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>{category}</span>
+      </div>
+      <ChevronRight className="w-4 h-4" style={{ color: "#8B949E" }} />
+    </Link>
+  );
+}
+
+export default function MedicalKnowledgeHub() {
+  const [query, setQuery] = useState("");
+
+  const searchResults = useMemo(() => {
+    if (!query.trim() || query.length < 2) return [];
+    const q = query.toLowerCase();
+    const results: { label: string; category: string; href: string }[] = [];
+
+    medicalSubjects.forEach(s => {
+      if (s.name.toLowerCase().includes(q)) {
+        results.push({ label: s.name, category: "Subject", href: `${BASE}/study-hub/medical-knowledge-hub/subjects/${s.slug}` });
+      }
+      s.topics.forEach(t => {
+        if (t.name.toLowerCase().includes(q)) {
+          results.push({ label: t.name, category: s.name, href: `${BASE}/study-hub/medical-knowledge-hub/subjects/${s.slug}/${t.slug}` });
+        }
+      });
+    });
+
+    medicalDepartments.forEach(d => {
+      if (d.name.toLowerCase().includes(q)) {
+        results.push({ label: d.name, category: "Department", href: `${BASE}/study-hub/medical-knowledge-hub/departments/${d.slug}` });
+      }
+      d.conditions.forEach(c => {
+        if (c.name.toLowerCase().includes(q)) {
+          results.push({ label: c.name, category: d.name, href: `${BASE}/study-hub/medical-knowledge-hub/departments/${d.slug}/${c.slug}` });
+        }
+      });
+    });
+
+    return results.slice(0, 8);
+  }, [query]);
+
+  return (
+    <div className="min-h-screen" style={{ background: "#0D1117" }}>
+      {/* Hero */}
+      <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0D1117 0%, #161B22 50%, #0D1117 100%)" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: "radial-gradient(ellipse at 60% 50%, rgba(0,194,168,0.07) 0%, transparent 70%)",
+        }} />
+        <div className="max-w-5xl mx-auto px-4 py-20 text-center relative">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-sm font-semibold" style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.3)", color: "#00C2A8" }}>
+            <Zap className="w-3.5 h-3.5" /> AI-Powered Medical Knowledge Hub
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight" style={{ color: "#E6EDF3" }}>
+            Medical Knowledge Hub
+          </h1>
+          <p className="text-lg md:text-xl mb-10 max-w-3xl mx-auto" style={{ color: "#8B949E", lineHeight: 1.7 }}>
+            The most complete medical reference ever built. Every subject. Every department. Every condition. AI-generated encyclopedic content for MBBS, MD and clinical practice.
+          </p>
+
+          {/* Search */}
+          <div className="relative max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "#8B949E" }} />
+              <input
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Search subjects, topics, departments, conditions..."
+                className="w-full pl-12 pr-4 py-4 rounded-2xl text-base outline-none transition-all"
+                style={{ background: "#161B22", border: "1px solid #21262D", color: "#E6EDF3", boxShadow: "0 0 0 0 transparent" }}
+                onFocus={e => (e.target.style.border = "1px solid #00C2A8")}
+                onBlur={e => (e.target.style.border = "1px solid #21262D")}
+              />
+            </div>
+            {searchResults.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 rounded-xl overflow-hidden z-50 shadow-xl" style={{ background: "#161B22", border: "1px solid #21262D" }}>
+                {searchResults.map((r, i) => <HubSearchResult key={i} {...r} />)}
+              </div>
+            )}
+          </div>
+
+          {/* Stats */}
+          <div className="flex flex-wrap justify-center gap-6 mt-10">
+            {[
+              ["20+", "Subjects"],
+              ["35+", "Departments"],
+              ["500+", "Topics"],
+              ["1000+", "Conditions"],
+              ["AI-Powered", "Content"],
+            ].map(([num, label]) => (
+              <div key={label} className="text-center">
+                <div className="text-2xl font-bold" style={{ color: "#00C2A8" }}>{num}</div>
+                <div className="text-xs" style={{ color: "#8B949E" }}>{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Section A: Medical Subjects */}
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold mb-1" style={{ color: "#E6EDF3" }}>Medical Subjects</h2>
+            <p style={{ color: "#8B949E" }}>Core pre-clinical and clinical subject areas</p>
+          </div>
+          <Link href={`${BASE}/study-hub/medical-knowledge-hub/subjects`}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
+            style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00C2A8" }}>
+            View All <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {medicalSubjects.map(subject => (
+            <Link key={subject.id} href={`${BASE}/study-hub/medical-knowledge-hub/subjects/${subject.slug}`}
+              className="group rounded-xl border p-4 transition-all duration-200 cursor-pointer"
+              style={{ background: "#161B22", borderColor: "#21262D" }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = "#00C2A8";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 0 20px rgba(0,194,168,0.15)";
+                (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = "#21262D";
+                (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+              }}>
+              <div className="text-3xl mb-3">{subject.icon}</div>
+              <div className="text-sm font-semibold mb-1.5 leading-tight" style={{ color: "#E6EDF3" }}>{subject.name}</div>
+              <div className="text-xs mb-2" style={{ color: "#8B949E" }}>{subject.topics.length} topics</div>
+              <div className="text-xs px-2 py-0.5 rounded-full inline-block" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>
+                {subject.category}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Section B: Clinical Departments */}
+      <div className="max-w-7xl mx-auto px-4 pb-16">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold mb-1" style={{ color: "#E6EDF3" }}>Clinical Departments</h2>
+            <p style={{ color: "#8B949E" }}>Complete condition libraries for all specialties</p>
+          </div>
+          <Link href={`${BASE}/study-hub/medical-knowledge-hub/departments`}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
+            style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00C2A8" }}>
+            View All <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {medicalDepartments.map(dept => (
+            <Link key={dept.id} href={`${BASE}/study-hub/medical-knowledge-hub/departments/${dept.slug}`}
+              className="group rounded-xl border p-4 transition-all duration-200 cursor-pointer flex items-center gap-4"
+              style={{ background: "#161B22", borderColor: "#21262D" }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = dept.color;
+                (e.currentTarget as HTMLElement).style.boxShadow = `0 0 16px ${dept.color}20`;
+                (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = "#21262D";
+                (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+              }}>
+              <div className="text-3xl shrink-0">{dept.icon}</div>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold truncate" style={{ color: "#E6EDF3" }}>{dept.name}</div>
+                <div className="text-xs" style={{ color: "#8B949E" }}>{dept.conditions.length} conditions</div>
+              </div>
+              <ChevronRight className="w-4 h-4 ml-auto shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#00C2A8" }} />
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Features */}
+      <div className="border-t" style={{ borderColor: "#21262D" }}>
+        <div className="max-w-5xl mx-auto px-4 py-16">
+          <h2 className="text-2xl font-bold text-center mb-10" style={{ color: "#E6EDF3" }}>Everything a Medical Student Needs</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: <Brain className="w-6 h-6" />, title: "AI-Generated Content", desc: "Claude AI writes comprehensive, exam-focused content for every topic and condition." },
+              { icon: <FlaskConical className="w-6 h-6" />, title: "SVG Medical Diagrams", desc: "Anatomical and pathological diagrams built directly in code — no external images." },
+              { icon: <Stethoscope className="w-6 h-6" />, title: "MCQ Exam Practice", desc: "10 NEET-PG/USMLE style questions per topic with explanations." },
+              { icon: <BookOpen className="w-6 h-6" />, title: "Quick Revision Flashcards", desc: "Flip card revision for every topic and condition — exam-ready in minutes." },
+            ].map(({ icon, title, desc }) => (
+              <div key={title} className="rounded-xl border p-5" style={{ background: "#161B22", borderColor: "#21262D" }}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>
+                  {icon}
+                </div>
+                <div className="font-semibold mb-2 text-sm" style={{ color: "#E6EDF3" }}>{title}</div>
+                <div className="text-xs leading-relaxed" style={{ color: "#8B949E" }}>{desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

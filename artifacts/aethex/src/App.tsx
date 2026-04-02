@@ -158,6 +158,8 @@ function Router() {
 
                 {/* Medical Knowledge Hub */}
                 <Route path="/study-hub/medical-knowledge-hub" component={MedicalKnowledgeHub} />
+                <Route path="/study-hub/medical-knowledge-hub/subjects" component={MedicalKnowledgeHub} />
+                <Route path="/study-hub/medical-knowledge-hub/departments" component={MedicalKnowledgeHub} />
                 <Route path="/study-hub/medical-knowledge-hub/subjects/:subjectSlug/:topicSlug" component={TopicPage} />
                 <Route path="/study-hub/medical-knowledge-hub/subjects/:subjectSlug" component={SubjectPage} />
                 <Route path="/study-hub/medical-knowledge-hub/departments/:deptSlug/:conditionSlug" component={ConditionPage} />

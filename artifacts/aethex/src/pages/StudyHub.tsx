@@ -509,38 +509,44 @@ export default function StudyHub() {
   return (
     <div className="min-h-screen " style={{ background: "#F2F2F7" }}>
 
-      {/* ── Hero (compact) ───────────────────────────────────────────── */}
-      <section className="relative overflow-hidden" style={{ background: "linear-gradient(160deg,#EBF4FF 0%,#F0F8FF 50%,#E8F5F3 100%)", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-2"
-                style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.25)" }}>
-                <GraduationCap className="w-3.5 h-3.5" style={{ color: "#00A893" }} />
-                <span className="text-xs font-semibold" style={{ color: "#00A893" }}>AETHEX STUDY HUB</span>
+      {/* ── Hero ─────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden pt-16 pb-20" style={{ background: "linear-gradient(135deg, #0A1628 0%, #0D2137 50%, #0A1628 100%)" }}>
+        {/* Ambient glow orbs */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" style={{ background: "rgba(0,194,168,0.1)" }} />
+          <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full blur-3xl translate-y-1/3" style={{ background: "rgba(0,122,255,0.08)" }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full blur-3xl" style={{ background: "rgba(0,194,168,0.04)" }} />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5"
+              style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.25)", color: "#5EEAD4" }}>
+              <GraduationCap className="w-3.5 h-3.5" /> AETHEX STUDY HUB
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight" style={{ letterSpacing: "-1px" }}>
+              Medical Exam Prep —<br />
+              <span style={{ background: "linear-gradient(135deg,#00C2A8,#007AFF)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                Everything in One Place
+              </span>
+            </h1>
+            <p className="text-base mb-8 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+              Compare top platforms for NEET PG, NEXT, FMGE & USMLE. Essential books, YouTube channels, and the AI-powered Medical Knowledge Hub.
+            </p>
+          </div>
+          {/* Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 max-w-3xl mx-auto">
+            {[
+              { value: "10+", label: "Platforms Compared" },
+              { value: "500+", label: "Knowledge Topics" },
+              { value: "6", label: "Top Books Listed" },
+              { value: "2026", label: "Edition" },
+            ].map((stat, i) => (
+              <div key={i} className="text-center py-4 px-3 rounded-2xl"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <div className="text-2xl font-black text-white mb-0.5">{stat.value}</div>
+                <div className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>{stat.label}</div>
               </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold leading-tight" style={{ color: "#1C1C1E", letterSpacing: "-0.01em" }}>
-                Medical Exam{" "}
-                <span style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                  Prep Guide
-                </span>
-              </h1>
-              <p className="text-sm mt-1.5 max-w-xl" style={{ color: "#636366" }}>
-                Compare top platforms for NEET PG, NEXT, FMGE & USMLE. Books, YouTube channels and more.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-4 text-xs shrink-0">
-              {[
-                { icon: Users, label: "10+ Platforms" },
-                { icon: Award, label: "Real Reviews" },
-                { icon: Zap, label: "2026 Edition" },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: "rgba(255,255,255,0.7)", color: "#636366", border: "1px solid rgba(60,60,67,0.1)" }}>
-                  <item.icon className="w-3.5 h-3.5" style={{ color: "#00A893" }} />
-                  {item.label}
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
       </section>

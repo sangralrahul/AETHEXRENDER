@@ -1,21 +1,22 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useParams } from "wouter";
-import { ArrowLeft, Clock, Bookmark, BookmarkCheck, AlertCircle, RefreshCw, Stethoscope, FlaskConical, Pill, Shield, Users, BookOpen, FileText } from "lucide-react";
+import { ArrowLeft, Bookmark, BookmarkCheck, AlertCircle, RefreshCw, Stethoscope, FlaskConical, Pill, Shield, Users, BookOpen, FileText, Brain, Zap } from "lucide-react";
 import { getConditionBySlug } from "@/data/medicalDepartments";
 import { BreadcrumbNav } from "@/components/MedKnowledge/BreadcrumbNav";
 import { SectionLoader } from "@/components/MedKnowledge/SectionLoader";
 import { MCQQuiz } from "@/components/MedKnowledge/MCQQuiz";
 import { FlashCard } from "@/components/MedKnowledge/FlashCard";
 import { DiagramCarousel } from "@/components/MedKnowledge/DiagramCarousel";
+import { RichContent } from "@/components/MedKnowledge/RichContent";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const API_BASE = BASE.replace(/\/[^/]*$/, "");
 
-const severityConfig: Record<string, { bg: string; color: string; label: string }> = {
-  Mild: { bg: "rgba(35,134,54,0.12)", color: "#238636", label: "Mild" },
-  Moderate: { bg: "rgba(227,179,65,0.12)", color: "#E3B341", label: "Moderate" },
-  Severe: { bg: "rgba(249,115,22,0.12)", color: "#F97316", label: "Severe" },
-  Critical: { bg: "rgba(248,81,73,0.12)", color: "#F85149", label: "Critical" },
+const severityConfig: Record<string, { bg: string; color: string }> = {
+  Mild:     { bg: "rgba(35,134,54,0.12)",   color: "#238636" },
+  Moderate: { bg: "rgba(227,179,65,0.12)",  color: "#E3B341" },
+  Severe:   { bg: "rgba(249,115,22,0.12)",  color: "#F97316" },
+  Critical: { bg: "rgba(248,81,73,0.12)",   color: "#F85149" },
 };
 
 function useIntersection(ref: React.RefObject<HTMLElement | null>) {
@@ -66,13 +67,29 @@ function useMedContent(section: string, params: Record<string, string>, eager = 
   return { content, loading, error, fetch: fetch_ };
 }
 
+function robustParseJSON(raw: string): any[] | null {
+  try {
+    const s = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
+    const arr = JSON.parse(s);
+    if (Array.isArray(arr) && arr.length > 0) return arr;
+  } catch {}
+  try {
+    const match = raw.match(/(\[[\s\S]*\])/);
+    if (match) {
+      const arr = JSON.parse(match[1]);
+      if (Array.isArray(arr) && arr.length > 0) return arr;
+    }
+  } catch {}
+  return null;
+}
+
 function SectionBlock({ title, icon, content, loading, error, onRetry }: {
   title: string; icon: React.ReactNode; content: string | null;
   loading: boolean; error: boolean; onRetry: () => void;
 }) {
   return (
-    <div className="rounded-xl border" style={{ background: "#161B22", borderColor: "#21262D" }}>
-      <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: "#21262D" }}>
+    <div className="rounded-xl border overflow-hidden" style={{ background: "#161B22", borderColor: "#21262D" }}>
+      <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: "#21262D", background: "rgba(0,194,168,0.03)" }}>
         <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>
           {icon}
         </div>
@@ -89,10 +106,7 @@ function SectionBlock({ title, icon, content, loading, error, onRetry }: {
             </button>
           </div>
         )}
-        {content && !loading && (
-          <div className="text-sm leading-relaxed" style={{ color: "#E6EDF3" }}
-            dangerouslySetInnerHTML={{ __html: content.replace(/\*\*(.*?)\*\*/g, "<strong style='color:#00C2A8'>$1</strong>").replace(/\n/g, "<br/>") }} />
-        )}
+        {content && !loading && <RichContent content={content} lineByLine />}
       </div>
     </div>
   );
@@ -114,28 +128,37 @@ function LazyBlock({ section, params, title, icon }: {
   );
 }
 
+function BarChart2Icon() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
+      <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" />
+      <line x1="6" y1="20" x2="6" y2="14" /><line x1="2" y1="20" x2="22" y2="20" />
+    </svg>
+  );
+}
+
 export default function ConditionPage() {
   const params = useParams<{ deptSlug: string; conditionSlug: string }>();
   const result = getConditionBySlug(params.deptSlug || "", params.conditionSlug || "");
-  const [activeTab, setActiveTab] = useState<"overview"|"management"|"exam"|"flashcards">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "management" | "exam" | "flashcards">("overview");
   const [saved, setSaved] = useState(() => {
     const list = JSON.parse(localStorage.getItem("aethex_study_list") || "[]");
     return list.includes(`${params.deptSlug}/${params.conditionSlug}`);
   });
 
   const apiParams = result ? { conditionName: result.condition.name, department: result.dept.name } : {};
-  const overview = useMedContent("overview", apiParams, !!result);
-  const etiology = useMedContent("etiology", apiParams, !!result);
-  const clinicalFeatures = useMedContent("clinical_features", apiParams, !!result);
+  const overview        = useMedContent("overview", apiParams, !!result);
+  const etiology        = useMedContent("etiology", apiParams, !!result);
+  const clinicalFeatures= useMedContent("clinical_features", apiParams, !!result);
   const pathophysiology = useMedContent("pathophysiology", apiParams, false);
-  const investigations = useMedContent("investigations", apiParams, false);
-  const diagnosis = useMedContent("diagnosis", apiParams, false);
-  const treatment = useMedContent("treatment", apiParams, false);
-  const prognosis = useMedContent("prognosis", apiParams, false);
-  const prevention = useMedContent("prevention", apiParams, false);
-  const specialPop = useMedContent("special_populations", apiParams, false);
-  const mcqData = useMedContent("mcq", apiParams, false);
-  const flashData = useMedContent("flashcards", apiParams, false);
+  const investigations  = useMedContent("investigations", apiParams, false);
+  const diagnosis       = useMedContent("diagnosis", apiParams, false);
+  const treatment       = useMedContent("treatment", apiParams, false);
+  const prognosis       = useMedContent("prognosis", apiParams, false);
+  const prevention      = useMedContent("prevention", apiParams, false);
+  const specialPop      = useMedContent("special_populations", apiParams, false);
+  const mcqData         = useMedContent("mcq", apiParams, false);
+  const flashData       = useMedContent("flashcards", apiParams, false);
 
   const handleSave = () => {
     const list = JSON.parse(localStorage.getItem("aethex_study_list") || "[]");
@@ -157,19 +180,12 @@ export default function ConditionPage() {
   }
 
   const { dept, condition } = result;
-  const sev = severityConfig[condition.severity];
-
-  const parseMCQs = (raw: string) => {
-    try { return JSON.parse(raw.replace(/```json\n?|```\n?/g, "").trim()); } catch { return null; }
-  };
-  const parseFlashcards = (raw: string) => {
-    try { return JSON.parse(raw.replace(/```json\n?|```\n?/g, "").trim()); } catch { return null; }
-  };
+  const sev = severityConfig[condition.severity] ?? severityConfig.Moderate;
 
   return (
     <div className="min-h-screen" style={{ background: "#0D1117" }}>
       {/* Hero */}
-      <div className="border-b" style={{ borderColor: "#21262D", background: "#161B22" }}>
+      <div className="border-b" style={{ borderColor: "#21262D", background: "linear-gradient(180deg,#161B22 0%,#0D1117 100%)" }}>
         <div className="max-w-5xl mx-auto px-4 py-6">
           <BreadcrumbNav crumbs={[
             { label: "Study Hub", href: `${BASE}/study-hub` },
@@ -178,7 +194,7 @@ export default function ConditionPage() {
             { label: condition.name },
           ]} />
           <Link href={`${BASE}/study-hub/medical-knowledge-hub/departments/${dept.slug}`}
-            className="flex items-center gap-2 text-sm mt-4 mb-5 hover:opacity-80" style={{ color: "#8B949E" }}>
+            className="flex items-center gap-2 text-sm mt-4 mb-5 hover:opacity-80 transition-opacity" style={{ color: "#8B949E" }}>
             <ArrowLeft className="w-4 h-4" /> Back to {dept.name}
           </Link>
 
@@ -186,10 +202,10 @@ export default function ConditionPage() {
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <span className="text-xs font-mono px-2.5 py-1 rounded font-bold" style={{ background: "#21262D", color: "#00C2A8" }}>{condition.icd10}</span>
-                <span className="text-xs px-2.5 py-1 rounded-full font-semibold" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>{dept.icon} {dept.name}</span>
-                <span className="text-xs px-2.5 py-1 rounded-full font-semibold" style={{ background: sev.bg, color: sev.color }}>{sev.label}</span>
+                <span className="text-xs px-2.5 py-1 rounded-full font-semibold" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8", border: "1px solid rgba(0,194,168,0.2)" }}>{dept.icon} {dept.name}</span>
+                <span className="text-xs px-2.5 py-1 rounded-full font-semibold" style={{ background: sev.bg, color: sev.color }}>{condition.severity}</span>
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: "#E6EDF3" }}>{condition.name}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: "#E6EDF3", letterSpacing: "-0.01em" }}>{condition.name}</h1>
               <p className="text-sm leading-relaxed" style={{ color: "#8B949E", maxWidth: 600 }}>{condition.description}</p>
             </div>
             <button onClick={handleSave}
@@ -203,10 +219,10 @@ export default function ConditionPage() {
           {/* Tabs */}
           <div className="flex flex-wrap gap-1 mt-6 border-b" style={{ borderColor: "#21262D" }}>
             {[
-              ["overview", "Overview"],
-              ["management", "Full Management"],
-              ["exam", "MCQ Practice"],
-              ["flashcards", "Flashcards"],
+              ["overview", "📖 Overview"],
+              ["management", "💊 Management"],
+              ["exam", "🎯 MCQ Practice"],
+              ["flashcards", "⚡ Flashcards"],
             ].map(([t, label]) => (
               <button key={t} onClick={() => setActiveTab(t as any)}
                 className="px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px"
@@ -225,14 +241,13 @@ export default function ConditionPage() {
       <div className="max-w-5xl mx-auto px-4 py-8">
 
         {activeTab === "overview" && (
-          <div className="space-y-6">
-            {/* Overview */}
-            <SectionBlock title="Overview & Epidemiology" icon={<BookOpen className="w-4 h-4" />}
+          <div className="space-y-5">
+            <SectionBlock title="Overview & Epidemiology" icon={<Brain className="w-4 h-4" />}
               content={overview.content} loading={overview.loading} error={overview.error} onRetry={overview.fetch} />
 
-            {/* Diagrams */}
-            <div className="rounded-xl border" style={{ background: "#161B22", borderColor: "#21262D" }}>
-              <div className="px-6 py-4 border-b" style={{ borderColor: "#21262D" }}>
+            <div className="rounded-xl border overflow-hidden" style={{ background: "#161B22", borderColor: "#21262D" }}>
+              <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: "#21262D", background: "rgba(0,194,168,0.03)" }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>📊</div>
                 <h3 className="font-bold text-base" style={{ color: "#E6EDF3" }}>Medical Diagrams</h3>
               </div>
               <div className="px-6 py-5">
@@ -240,31 +255,24 @@ export default function ConditionPage() {
               </div>
             </div>
 
-            {/* Etiology */}
             <SectionBlock title="Etiology & Risk Factors" icon={<AlertCircle className="w-4 h-4" />}
               content={etiology.content} loading={etiology.loading} error={etiology.error} onRetry={etiology.fetch} />
 
-            {/* Clinical Features */}
             <SectionBlock title="Clinical Features" icon={<Stethoscope className="w-4 h-4" />}
               content={clinicalFeatures.content} loading={clinicalFeatures.loading} error={clinicalFeatures.error} onRetry={clinicalFeatures.fetch} />
 
-            {/* Pathophysiology — lazy */}
             <LazyBlock section="pathophysiology" params={apiParams} title="Pathophysiology" icon={<FlaskConical className="w-4 h-4" />} />
-
-            {/* Investigations — lazy */}
             <LazyBlock section="investigations" params={apiParams} title="Investigations" icon={<FileText className="w-4 h-4" />} />
-
-            {/* Diagnosis — lazy */}
             <LazyBlock section="diagnosis" params={apiParams} title="Diagnosis & Diagnostic Criteria" icon={<BookOpen className="w-4 h-4" />} />
           </div>
         )}
 
         {activeTab === "management" && (
-          <div className="space-y-6">
+          <div className="space-y-5">
             <h2 className="text-xl font-bold" style={{ color: "#E6EDF3" }}>Complete Management Protocol</h2>
             <SectionBlock title="Treatment & Management" icon={<Pill className="w-4 h-4" />}
               content={treatment.content} loading={treatment.loading} error={treatment.error} onRetry={treatment.fetch} />
-            <SectionBlock title="Prognosis & Complications" icon={<BarChart2Wrapper />}
+            <SectionBlock title="Prognosis & Complications" icon={<BarChart2Icon />}
               content={prognosis.content} loading={prognosis.loading} error={prognosis.error} onRetry={prognosis.fetch} />
             <SectionBlock title="Prevention" icon={<Shield className="w-4 h-4" />}
               content={prevention.content} loading={prevention.loading} error={prevention.error} onRetry={prevention.fetch} />
@@ -275,33 +283,52 @@ export default function ConditionPage() {
 
         {activeTab === "exam" && (
           <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-bold mb-2" style={{ color: "#E6EDF3" }}>Exam Corner — MCQ Practice</h2>
-              <p className="text-sm mb-6" style={{ color: "#8B949E" }}>NEET-PG / USMLE Style with Clinical Vignettes</p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.2)" }}>🎯</div>
+              <div>
+                <h2 className="text-xl font-bold" style={{ color: "#E6EDF3" }}>Exam Corner — MCQ Practice</h2>
+                <p className="text-sm" style={{ color: "#8B949E" }}>NEET-PG / USMLE Style with Clinical Vignettes</p>
+              </div>
             </div>
             {!mcqData.content && !mcqData.loading && !mcqData.error && (
-              <div className="text-center py-12 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
-                <p className="text-base mb-4" style={{ color: "#8B949E" }}>Test your knowledge on {condition.name}</p>
-                <button onClick={mcqData.fetch} className="px-6 py-3 rounded-xl font-semibold text-sm hover:opacity-90" style={{ background: "#00C2A8", color: "#0D1117" }}>
-                  Generate 8 MCQs with AI
+              <div className="text-center py-14 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                <div className="text-4xl mb-4">🧠</div>
+                <p className="text-base font-medium mb-2" style={{ color: "#E6EDF3" }}>Test your knowledge on {condition.name}</p>
+                <p className="text-sm mb-6" style={{ color: "#8B949E" }}>8 AI-generated clinical vignette questions</p>
+                <button onClick={mcqData.fetch} className="px-8 py-3 rounded-xl font-semibold text-sm hover:opacity-90 hover:scale-105 transition-all"
+                  style={{ background: "linear-gradient(135deg,#00C2A8,#0088cc)", color: "#fff" }}>
+                  Generate MCQs with AI
                 </button>
               </div>
             )}
             {mcqData.loading && (
-              <div className="text-center py-12 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
-                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-3" style={{ borderColor: "#00C2A8", borderTopColor: "transparent" }} />
-                <p className="text-sm" style={{ color: "#8B949E" }}>Generating clinical MCQs...</p>
+              <div className="text-center py-14 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: "#00C2A8", borderTopColor: "transparent" }} />
+                <p className="text-sm font-medium" style={{ color: "#E6EDF3" }}>Generating clinical MCQs...</p>
+                <p className="text-xs mt-1" style={{ color: "#8B949E" }}>This takes 5–10 seconds</p>
               </div>
             )}
             {mcqData.error && (
-              <div className="text-center py-8 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
-                <button onClick={mcqData.fetch} className="text-sm" style={{ color: "#00C2A8" }}>Retry</button>
+              <div className="text-center py-10 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                <AlertCircle className="w-8 h-8 mx-auto mb-3" style={{ color: "#F85149" }} />
+                <p className="text-sm mb-4" style={{ color: "#8B949E" }}>Failed to generate questions.</p>
+                <button onClick={mcqData.fetch} className="flex items-center gap-2 text-sm mx-auto px-5 py-2.5 rounded-xl"
+                  style={{ background: "#21262D", color: "#00C2A8" }}>
+                  <RefreshCw className="w-4 h-4" /> Try Again
+                </button>
               </div>
             )}
             {mcqData.content && (() => {
-              const questions = parseMCQs(mcqData.content);
-              return questions ? <MCQQuiz questions={questions} topic={condition.name} /> : (
-                <pre className="text-xs p-4 whitespace-pre-wrap" style={{ color: "#8B949E" }}>{mcqData.content}</pre>
+              const questions = robustParseJSON(mcqData.content);
+              if (questions) return <MCQQuiz questions={questions} topic={condition.name} />;
+              return (
+                <div className="p-5 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                  <p className="text-sm mb-3 font-semibold" style={{ color: "#F85149" }}>⚠ Could not parse questions.</p>
+                  <button onClick={() => { sessionStorage.removeItem(`mkc_mcq_${JSON.stringify(apiParams)}`); mcqData.fetch(); }}
+                    className="flex items-center gap-1 text-sm mb-3" style={{ color: "#00C2A8" }}>
+                    <RefreshCw className="w-3.5 h-3.5" /> Regenerate
+                  </button>
+                </div>
               );
             })()}
           </div>
@@ -309,33 +336,50 @@ export default function ConditionPage() {
 
         {activeTab === "flashcards" && (
           <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-bold mb-2" style={{ color: "#E6EDF3" }}>Quick Revision Flashcards</h2>
-              <p className="text-sm mb-6" style={{ color: "#8B949E" }}>Key facts, DOC, gold standard, mnemonics</p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.2)" }}>⚡</div>
+              <div>
+                <h2 className="text-xl font-bold" style={{ color: "#E6EDF3" }}>Quick Revision Flashcards</h2>
+                <p className="text-sm" style={{ color: "#8B949E" }}>Key facts, DOC, gold standard, mnemonics</p>
+              </div>
             </div>
             {!flashData.content && !flashData.loading && !flashData.error && (
-              <div className="text-center py-12 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
-                <p className="text-base mb-4" style={{ color: "#8B949E" }}>Generate flashcards for {condition.name}</p>
-                <button onClick={flashData.fetch} className="px-6 py-3 rounded-xl font-semibold text-sm hover:opacity-90" style={{ background: "#00C2A8", color: "#0D1117" }}>
-                  Generate 12 Flashcards
+              <div className="text-center py-14 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                <div className="text-4xl mb-4">📇</div>
+                <p className="text-base font-medium mb-2" style={{ color: "#E6EDF3" }}>High-yield flashcards for {condition.name}</p>
+                <p className="text-sm mb-6" style={{ color: "#8B949E" }}>Covers drug of choice, gold standards, mnemonics</p>
+                <button onClick={flashData.fetch} className="px-8 py-3 rounded-xl font-semibold text-sm hover:opacity-90 hover:scale-105 transition-all"
+                  style={{ background: "linear-gradient(135deg,#00C2A8,#0088cc)", color: "#fff" }}>
+                  Generate Flashcards
                 </button>
               </div>
             )}
             {flashData.loading && (
-              <div className="text-center py-12 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
-                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-3" style={{ borderColor: "#00C2A8", borderTopColor: "transparent" }} />
-                <p className="text-sm" style={{ color: "#8B949E" }}>Generating flashcards...</p>
+              <div className="text-center py-14 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: "#00C2A8", borderTopColor: "transparent" }} />
+                <p className="text-sm font-medium" style={{ color: "#E6EDF3" }}>Generating flashcards...</p>
+                <p className="text-xs mt-1" style={{ color: "#8B949E" }}>This takes 5–10 seconds</p>
               </div>
             )}
             {flashData.error && (
               <div className="text-center py-8">
-                <button onClick={flashData.fetch} className="text-sm" style={{ color: "#00C2A8" }}>Retry</button>
+                <button onClick={flashData.fetch} className="flex items-center gap-2 text-sm mx-auto px-5 py-2.5 rounded-xl"
+                  style={{ background: "#21262D", color: "#00C2A8" }}>
+                  <RefreshCw className="w-4 h-4" /> Retry
+                </button>
               </div>
             )}
             {flashData.content && (() => {
-              const cards = parseFlashcards(flashData.content);
-              return cards ? <FlashCard cards={cards} /> : (
-                <div className="text-xs p-4 rounded-xl border" style={{ borderColor: "#21262D", color: "#8B949E" }}>{flashData.content}</div>
+              const cards = robustParseJSON(flashData.content);
+              if (cards) return <FlashCard cards={cards} />;
+              return (
+                <div className="p-5 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                  <p className="text-sm mb-3 font-semibold" style={{ color: "#F85149" }}>⚠ Could not parse flashcards.</p>
+                  <button onClick={() => { sessionStorage.removeItem(`mkc_flashcards_${JSON.stringify(apiParams)}`); flashData.fetch(); }}
+                    className="flex items-center gap-1 text-sm" style={{ color: "#00C2A8" }}>
+                    <RefreshCw className="w-3.5 h-3.5" /> Regenerate
+                  </button>
+                </div>
               );
             })()}
           </div>
@@ -344,18 +388,9 @@ export default function ConditionPage() {
 
       <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         className="fixed bottom-6 right-6 w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:opacity-90 shadow-lg"
-        style={{ background: "#00C2A8", color: "#0D1117" }}>
+        style={{ background: "#00C2A8", color: "#0D1117", fontSize: "18px" }}>
         ↑
       </button>
     </div>
-  );
-}
-
-function BarChart2Wrapper() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
-      <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
-      <line x1="2" y1="20" x2="22" y2="20" />
-    </svg>
   );
 }

@@ -17,135 +17,141 @@ const medKnowledgeLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+function extractJSON(text: string): string {
+  let s = text.trim();
+  s = s.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
+  const match = s.match(/(\[[\s\S]*\])/);
+  if (match) return match[1];
+  return s;
+}
+
+const HIGHLIGHT_RULE = `
+Use exactly THREE levels of highlighting for important terms:
+- Wrap CRITICAL/must-know terms (exam high-yield, life-threatening, gold standard) in **double asterisks** — these appear RED
+- Wrap IMPORTANT terms (key pathophysiology, major drugs, typical findings) in *single asterisks* — these appear BLUE  
+- Wrap NOTABLE terms (supporting facts, less-tested details) in ~~double tildes~~ — these appear GREEN
+Apply these markers throughout your entire response. Every sentence should have at least 1–2 highlighted terms.`;
+
 function buildPrompt(section: string, topic: string, subject: string, conditionName?: string, department?: string): string {
   const isCondition = !!conditionName;
   const entityName = isCondition ? conditionName! : topic;
   const entityContext = isCondition ? department! : subject;
 
   const prompts: Record<string, string> = {
-    overview_topic: `You are a world-class medical professor writing for MBBS/MD students. Write an encyclopedic, clinically relevant, and exam-focused overview of **${topic}** in **${subject}**. Cover definition, importance, historical context, and a complete conceptual introduction. Write 4–6 well-structured paragraphs. Format paragraph headings in bold. Include key terminology in bold. Write in clear academic English.`,
+    overview_topic: `You are a world-class medical professor writing for MBBS/MD students. Write an encyclopedic, clinically relevant, and exam-focused overview of **${topic}** in **${subject}**. Cover definition, importance, historical context, and a complete conceptual introduction. Write line by line — each sentence or point on its own line. Use section headings like ## Heading. Include key statistics and clinical pearls.
+${HIGHLIGHT_RULE}`,
 
-    overview_condition: `You are a world-class clinician and medical educator. Write a comprehensive, encyclopedia-level overview of **${conditionName}** for a medical student or junior doctor. Include: definition, epidemiology (global + Indian context), historical background, and why this condition matters clinically. Write 4–6 flowing academic paragraphs. Bold key terms. Include relevant statistics.`,
+    overview_condition: `You are a world-class clinician and medical educator. Write a comprehensive, encyclopedia-level overview of **${conditionName}** for a medical student or junior doctor. Include definition, epidemiology (global + Indian context), historical background, and clinical importance. Write line by line — each sentence or point on its own line. Use section headings like ## Heading. Include relevant statistics.
+${HIGHLIGHT_RULE}`,
 
-    key_concepts: `List 8–12 key concepts a medical student must know about **${entityName}** in **${entityContext}**. Format as a numbered list where each concept has:
-- A **bold title** 
-- 2–3 sentence explanation
-- Include mnemonics where applicable (label them as "Mnemonic:")
+    key_concepts: `List 8–12 key concepts a medical student must know about **${entityName}** in **${entityContext}**. Format as a numbered list. Each concept must have a bold title line, then 2–3 sentences of explanation on separate lines. Include mnemonics where applicable (label them as "Mnemonic:").
+${HIGHLIGHT_RULE}
 Make each point exam-relevant for NEET-PG/USMLE level.`,
 
     clinical_relevance: `Write a detailed Clinical Relevance section for **${entityName}** covering:
-1. **Common Clinical Presentations** — how patients typically present
-2. **Surgical/Clinical Applications** — practical clinical importance  
-3. **Common Pathologies** — diseases arising from this topic
-4. **Diagnostic Significance** — how knowledge of this topic aids diagnosis
-5. **Red Flags** — dangerous presentations to recognize immediately
-Write for MBBS/MD level. Be specific with clinical examples from Indian/global practice.`,
+## Common Clinical Presentations
+## Surgical/Clinical Applications
+## Common Pathologies
+## Diagnostic Significance
+## Red Flags
+Write line by line. Be specific with clinical examples.
+${HIGHLIGHT_RULE}`,
 
     etiology: `List ALL causes and risk factors for **${conditionName}** organized by:
-**Modifiable vs Non-modifiable Risk Factors**
-**Primary vs Secondary Causes**
-**Predisposing vs Precipitating Factors**
-For each factor, provide a brief explanation of the mechanism. Be exhaustive and clinically accurate. Include Indian-specific epidemiology where relevant.`,
+## Modifiable vs Non-modifiable Risk Factors
+## Primary vs Secondary Causes
+## Predisposing vs Precipitating Factors
+For each factor, provide a brief mechanism explanation on a new line. Include Indian-specific epidemiology.
+${HIGHLIGHT_RULE}`,
 
-    pathophysiology: `Explain the complete pathophysiology of **${conditionName}** step by step, from initial trigger to final manifestation. 
-- Use numbered steps
-- Include molecular mechanisms, cellular changes, and organ-level effects  
-- Use arrows (→) to show progression
-- End with a summary paragraph
-Format clearly for exam revision. Bold key pathophysiological terms.`,
+    pathophysiology: `Explain the complete pathophysiology of **${conditionName}** step by step, from initial trigger to final manifestation.
+- Use numbered steps, each on its own line
+- Include molecular mechanisms, cellular changes, and organ-level effects
+- Use → to show progression
+- End with a ## Summary section
+${HIGHLIGHT_RULE}`,
 
     clinical_features: `List ALL clinical features of **${conditionName}** organized as:
-
-**SYMPTOMS** (organized by system)
-**SIGNS** (General examination → Vital signs → Systemic examination → Special clinical signs/tests)
-**COMPLICATIONS** (Early, Late, Life-threatening)
-
-Include classic exam findings and their clinical significance. Note sensitivity/specificity where relevant.`,
+## Symptoms (organized by system)
+## Signs (General → Vitals → Systemic → Special clinical signs)
+## Complications (Early, Late, Life-threatening)
+Include classic exam findings and clinical significance. Each feature on its own line.
+${HIGHLIGHT_RULE}`,
 
     investigations: `List all investigations for **${conditionName}** organized as:
+## First-line Investigations
+## Confirmatory Tests (Gold Standard)
+## Monitoring Tests
+For EACH investigation include what it shows, typical findings, clinical significance, and normal vs abnormal values. Each item on its own line.
+${HIGHLIGHT_RULE}`,
 
-**First-line Investigations** — with expected findings
-**Confirmatory Tests** — gold standard investigations
-**Monitoring Tests** — for disease progression and treatment
-
-For EACH investigation include:
-- What it shows
-- Typical findings in this condition
-- Clinical significance
-- Normal vs abnormal values where applicable`,
-
-    diagnosis: `Explain the diagnostic approach for **${conditionName}**:
-
-**Diagnostic Criteria** — list formal criteria (Jones, Duke, Framingham, WHO, DSM-5 etc. as applicable)
-**Gold Standard Diagnosis**
-**Differential Diagnosis** — top 5 differentials with distinguishing features
-**Approach to the Patient** — stepwise clinical reasoning
-**How to differentiate from mimics**
-
-Format clearly for exam use.`,
+    diagnosis: `Explain the diagnostic approach for **${conditionName}}**:
+## Diagnostic Criteria
+## Gold Standard Diagnosis
+## Differential Diagnosis (top 5 with distinguishing features)
+## Stepwise Approach to the Patient
+## How to Differentiate from Mimics
+${HIGHLIGHT_RULE}`,
 
     treatment: `Write a complete, protocol-level treatment guide for **${conditionName}** covering:
-
-**Emergency Management** (if applicable) — immediate priorities
-**Medical Management** — first-line, second-line, salvage therapy with specific drug names, doses, mechanisms and monitoring
-**Surgical/Interventional Management** — indications and procedures
-**Non-pharmacological Management** — lifestyle, diet, physiotherapy
-**Patient Education** — key teaching points
-**Follow-up Schedule** — monitoring parameters and frequency
-
-Write like a clinical protocol. Be specific with drug doses in Indian/international context.`,
+## Emergency Management (if applicable)
+## Medical Management (first-line, second-line, salvage therapy — specific drug names, doses, mechanisms)
+## Surgical/Interventional Management
+## Non-pharmacological Management
+## Patient Education
+## Follow-up Schedule
+Write like a clinical protocol. Be specific with drug doses.
+${HIGHLIGHT_RULE}`,
 
     prognosis: `Explain the prognosis of **${conditionName}** including:
-**Survival/Outcome Statistics**
-**Prognostic Factors** — favorable and unfavorable
-**Prognostic Scoring Systems** (if applicable)
-**Acute Complications** — immediate risks
-**Chronic Complications** — long-term sequelae  
-**Life-threatening Complications** — what kills the patient
-Include Indian data where available.`,
+## Survival/Outcome Statistics
+## Prognostic Factors (favorable and unfavorable)
+## Prognostic Scoring Systems (if applicable)
+## Acute Complications
+## Chronic Complications
+## Life-threatening Complications
+Include Indian data where available.
+${HIGHLIGHT_RULE}`,
 
     prevention: `Explain prevention strategies for **${conditionName}**:
+## Primary Prevention
+## Secondary Prevention
+## Tertiary Prevention
+## Screening Guidelines
+## Vaccination (if applicable)
+## Lifestyle Modifications (evidence-based)
+## Chemoprophylaxis (if applicable)
+${HIGHLIGHT_RULE}`,
 
-**Primary Prevention** — before disease develops
-**Secondary Prevention** — early detection and treatment
-**Tertiary Prevention** — preventing complications and disability
-**Screening Guidelines** — who, when, how
-**Vaccination** (if applicable)
-**Lifestyle Modifications** — evidence-based recommendations
-**Chemoprophylaxis** (if applicable)`,
+    special_populations: `How does **${conditionName}** differ in:
+## Pregnant Women (risks, drug safety, management changes)
+## Elderly Patients (atypical presentation, drug dosing)
+## Pediatric Patients (age-specific considerations)
+## Renal/Hepatic Failure (dose adjustments, contraindications)
+## Immunocompromised Patients (altered presentation and risks)
+${HIGHLIGHT_RULE}`,
 
-    special_populations: `How does **${conditionName}** differ in these special populations:
-1. **Pregnant Women** — risks, drug safety, management changes
-2. **Elderly Patients** — atypical presentation, drug dosing
-3. **Pediatric Patients** — age-specific considerations
-4. **Renal/Hepatic Failure** — dose adjustments, contraindications
-5. **Immunocompromised Patients** — altered presentation and risks
+    mcq: `Generate 8 high-yield MCQ-style exam questions about **${entityName}** for NEET-PG/USMLE Step 1 & 2 level. Include clinical vignettes where relevant.
 
-For each population, provide specific management guidance.`,
-
-    mcq: `Generate 8 high-yield MCQ-style exam questions about **${entityName}** for NEET-PG/USMLE Step 1 & 2 level. Include clinical vignettes. 
-
-Return ONLY valid JSON in this exact format (no markdown, no explanation):
+Return ONLY a valid JSON array. No markdown, no code blocks, no explanation text. Start with [ and end with ].
 [
   {
-    "question": "A 45-year-old presents with...",
-    "options": ["A. Option A", "B. Option B", "C. Option C", "D. Option E"],
+    "question": "Clinical scenario or direct question text here",
+    "options": ["A. Option A", "B. Option B", "C. Option C", "D. Option D"],
     "correct": "A",
-    "explanation": "Detailed explanation of why A is correct and others are wrong..."
+    "explanation": "Why A is correct and others are wrong"
   }
 ]`,
 
-    flashcards: `Generate 10 high-yield flashcard pairs for rapid revision of **${entityName}** in **${entityContext}**.
+    flashcards: `Generate 10 high-yield flashcard pairs for rapid revision of **${entityName}** in **${entityContext}**. Cover: key facts, drug of choice, diagnostic gold standard, classic presentation, complications, mnemonics.
 
-Return ONLY valid JSON in this exact format (no markdown, no explanation):
+Return ONLY a valid JSON array. No markdown, no code blocks, no explanation text. Start with [ and end with ].
 [
   {
-    "front": "Question or incomplete statement...",
-    "back": "Complete concise answer with key facts..."
+    "front": "Question or incomplete statement",
+    "back": "Complete concise answer with key facts"
   }
-]
-
-Cover: key facts, drug of choice, diagnostic gold standard, classic presentation, complications, mnemonics.`,
+]`,
   };
 
   const key = isCondition
@@ -168,18 +174,27 @@ router.post("/med-knowledge/content", medKnowledgeLimiter, async (req: Request, 
       return;
     }
 
-    const cacheKey = `medknowledge_${section}_${topic || ""}_${conditionName || ""}`;
+    const isJsonSection = section === "mcq" || section === "flashcards";
     const prompt = buildPrompt(section, topic || "", subject || "", conditionName, department);
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 2000,
+    const msgParams: Parameters<typeof anthropic.messages.create>[0] = {
+      model: isJsonSection ? "claude-haiku-4-5" : "claude-sonnet-4-6",
+      max_tokens: isJsonSection ? 2000 : 2500,
       messages: [{ role: "user", content: prompt }],
-    });
+    };
 
-    const content = message.content[0].type === "text" ? message.content[0].text : "";
+    if (isJsonSection) {
+      (msgParams as any).system = "You are a medical education JSON API. Output ONLY a valid JSON array starting with [ and ending with ]. Absolutely no markdown, no code fences, no explanation text before or after the JSON.";
+    }
 
-    res.json({ content, cacheKey });
+    const message = await anthropic.messages.create(msgParams);
+    let content = message.content[0].type === "text" ? message.content[0].text : "";
+
+    if (isJsonSection) {
+      content = extractJSON(content);
+    }
+
+    res.json({ content });
   } catch (err: any) {
     req.log?.error?.({ err }, "Med knowledge content error");
     res.status(500).json({ error: "Failed to generate content. Please try again." });

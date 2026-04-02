@@ -255,39 +255,38 @@ export default function StudyHub() {
   return (
     <div className="min-h-screen " style={{ background: "#F2F2F7" }}>
 
-      {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, #EBF4FF 0%, #F0F8FF 50%, #E8F5F3 100%)", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse, rgba(0,122,255,0.1) 0%, transparent 70%)" }} />
-        <div className="absolute top-10 right-1/4 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse, rgba(0,194,168,0.08) 0%, transparent 70%)" }} />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
-            style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.25)" }}>
-            <GraduationCap className="w-4 h-4" style={{ color: "#00A893" }} />
-            <span className="text-sm font-semibold" style={{ color: "#00A893" }}>AETHEX STUDY HUB</span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-5 leading-tight" style={{ color: "#1C1C1E", letterSpacing: "-0.02em" }}>
-            Your Medical Exam<br />
-            <span style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Prep Guide
-            </span>
-          </h1>
-          <p className="text-lg max-w-2xl mx-auto mb-10" style={{ color: "#636366", lineHeight: 1.7 }}>
-            Compare top coaching platforms, discover essential books, and access free YouTube resources — all in one place for NEET PG, NEXT, FMGE, and USMLE.
-          </p>
-          <div className="flex flex-wrap justify-center gap-8 text-sm">
-            {[
-              { icon: Users, label: "10+ Platforms Compared" },
-              { icon: Award, label: "Real Student Reviews" },
-              { icon: Zap, label: "Updated 2026" },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2" style={{ color: "#636366" }}>
-                <item.icon className="w-4 h-4" style={{ color: "#00A893" }} />
-                {item.label}
+      {/* ── Hero (compact) ───────────────────────────────────────────── */}
+      <section className="relative overflow-hidden" style={{ background: "linear-gradient(160deg,#EBF4FF 0%,#F0F8FF 50%,#E8F5F3 100%)", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-2"
+                style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.25)" }}>
+                <GraduationCap className="w-3.5 h-3.5" style={{ color: "#00A893" }} />
+                <span className="text-xs font-semibold" style={{ color: "#00A893" }}>AETHEX STUDY HUB</span>
               </div>
-            ))}
+              <h1 className="text-2xl md:text-3xl font-extrabold leading-tight" style={{ color: "#1C1C1E", letterSpacing: "-0.01em" }}>
+                Medical Exam{" "}
+                <span style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  Prep Guide
+                </span>
+              </h1>
+              <p className="text-sm mt-1.5 max-w-xl" style={{ color: "#636366" }}>
+                Compare top platforms for NEET PG, NEXT, FMGE & USMLE. Books, YouTube channels and more.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-4 text-xs shrink-0">
+              {[
+                { icon: Users, label: "10+ Platforms" },
+                { icon: Award, label: "Real Reviews" },
+                { icon: Zap, label: "2026 Edition" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: "rgba(255,255,255,0.7)", color: "#636366", border: "1px solid rgba(60,60,67,0.1)" }}>
+                  <item.icon className="w-3.5 h-3.5" style={{ color: "#00A893" }} />
+                  {item.label}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -367,51 +366,113 @@ export default function StudyHub() {
         </div>
       )}
 
-      {/* ── Medical Knowledge Hub Banner ─────────────────────────────── */}
-      <section className="py-10">
+      {/* ── Medical Knowledge Hub — FEATURED ─────────────────────────── */}
+      <section className="py-12" style={{ background: "#0D1117" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link href={`${BASE}/study-hub/medical-knowledge-hub`}
-            className="block rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-2xl group"
-            style={{ background: "linear-gradient(135deg,#0D1117 0%,#161B22 50%,#0D1117 100%)", border: "1px solid #21262D", boxShadow: "0 4px 20px rgba(0,194,168,0.08)" }}>
-            <div className="relative p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 overflow-hidden">
-              <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at top right, rgba(0,194,168,0.12) 0%, transparent 60%)" }} />
-              <div className="relative z-10 flex items-center gap-5 flex-1">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0"
-                  style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.25)" }}>
-                  <Brain className="w-8 h-8" style={{ color: "#00C2A8" }} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-xl md:text-2xl font-bold" style={{ color: "#E6EDF3" }}>Medical Knowledge Hub</h2>
-                    <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,194,168,0.2)", border: "1px solid rgba(0,194,168,0.4)", color: "#00C2A8" }}>NEW</span>
-                  </div>
-                  <p className="text-sm max-w-xl" style={{ color: "#8B949E" }}>
-                    AI-generated content for 20 medical subjects, 500+ topics, and 35 clinical departments. Deep-dive overviews, pathophysiology, MCQs, flashcards and diagrams — all in one place.
-                  </p>
-                  <div className="flex flex-wrap gap-4 mt-3">
-                    {[
-                      { icon: BookOpen, label: "20 Subjects" },
-                      { icon: FlaskConical, label: "500+ Topics" },
-                      { icon: Stethoscope, label: "35 Departments" },
-                      { icon: Brain, label: "AI-Powered" },
-                    ].map((item, i) => (
-                      <span key={i} className="flex items-center gap-1.5 text-xs font-medium" style={{ color: "#8B949E" }}>
-                        <item.icon className="w-3.5 h-3.5" style={{ color: "#00C2A8" }} />
-                        {item.label}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-3"
+                style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.3)" }}>
+                <Brain className="w-3.5 h-3.5" style={{ color: "#00C2A8" }} />
+                <span className="text-xs font-bold tracking-wider uppercase" style={{ color: "#00C2A8" }}>New — AI-Powered</span>
               </div>
-              <div className="relative z-10 shrink-0">
-                <div className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all group-hover:gap-3"
-                  style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.35)", color: "#00C2A8" }}>
-                  Explore Hub
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </div>
-              </div>
+              <h2 className="text-3xl md:text-4xl font-extrabold leading-tight" style={{ color: "#E6EDF3", letterSpacing: "-0.02em" }}>
+                Medical Knowledge Hub
+              </h2>
+              <p className="text-sm mt-2 max-w-lg" style={{ color: "#8B949E" }}>
+                The most complete medical reference ever built. Every subject, every department, every condition — with AI-generated encyclopedic content, MCQs, flashcards and diagrams.
+              </p>
             </div>
-          </Link>
+            <Link href={`${BASE}/study-hub/medical-knowledge-hub`}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm shrink-0 transition-all hover:opacity-90 hover:-translate-y-0.5"
+              style={{ background: "linear-gradient(135deg,#00C2A8,#007AFF)", color: "#fff", boxShadow: "0 4px 16px rgba(0,194,168,0.3)" }}>
+              Open Knowledge Hub
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Stats row */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+            {[
+              { value: "20", label: "Medical Subjects" },
+              { value: "500+", label: "Topics" },
+              { value: "35+", label: "Departments" },
+              { value: "1000+", label: "Conditions" },
+              { value: "AI", label: "Generated Content" },
+            ].map((s, i) => (
+              <div key={i} className="rounded-xl p-4 text-center"
+                style={{ background: "#161B22", border: "1px solid #21262D" }}>
+                <div className="text-2xl font-extrabold mb-0.5" style={{ color: "#00C2A8" }}>{s.value}</div>
+                <div className="text-xs" style={{ color: "#8B949E" }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Feature cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            {[
+              {
+                icon: "📖",
+                title: "Encyclopedic Overviews",
+                desc: "Line-by-line AI content with color-coded highlights — red for critical, blue for important, green for notable terms.",
+                badge: "All sections",
+              },
+              {
+                icon: "🎯",
+                title: "MCQ Practice",
+                desc: "8 NEET-PG / USMLE style clinical vignette questions per topic, generated instantly with detailed explanations.",
+                badge: "NEET-PG · USMLE",
+              },
+              {
+                icon: "⚡",
+                title: "Smart Flashcards",
+                desc: "10 high-yield revision cards per topic covering drug of choice, gold standards, and mnemonics.",
+                badge: "Quick Revision",
+              },
+            ].map((f, i) => (
+              <div key={i} className="rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-teal-500/30"
+                style={{ background: "#161B22", border: "1px solid #21262D" }}>
+                <div className="text-3xl mb-3">{f.icon}</div>
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="font-bold text-sm" style={{ color: "#E6EDF3" }}>{f.title}</h3>
+                  <span className="px-1.5 py-0.5 rounded text-xs font-semibold" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>{f.badge}</span>
+                </div>
+                <p className="text-xs leading-relaxed" style={{ color: "#8B949E" }}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Subject quick-links */}
+          <div className="rounded-2xl overflow-hidden" style={{ background: "#161B22", border: "1px solid #21262D" }}>
+            <div className="px-6 py-4 border-b flex items-center justify-between" style={{ borderColor: "#21262D" }}>
+              <h3 className="font-bold text-sm" style={{ color: "#E6EDF3" }}>Browse by Subject</h3>
+              <Link href={`${BASE}/study-hub/medical-knowledge-hub`} className="text-xs font-semibold" style={{ color: "#00C2A8" }}>
+                View All →
+              </Link>
+            </div>
+            <div className="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {[
+                { icon: "🧬", name: "Anatomy", slug: "anatomy" },
+                { icon: "⚡", name: "Physiology", slug: "physiology" },
+                { icon: "💊", name: "Pharmacology", slug: "pharmacology" },
+                { icon: "🔬", name: "Pathology", slug: "pathology" },
+                { icon: "🦠", name: "Microbiology", slug: "microbiology" },
+                { icon: "🩺", name: "Medicine", slug: "medicine" },
+                { icon: "🔪", name: "Surgery", slug: "surgery" },
+                { icon: "👶", name: "Paediatrics", slug: "paediatrics" },
+                { icon: "🤱", name: "OBG", slug: "obstetrics-gynaecology" },
+                { icon: "🧠", name: "Psychiatry", slug: "psychiatry" },
+              ].map((s) => (
+                <Link key={s.slug} href={`${BASE}/study-hub/medical-knowledge-hub/subjects/${s.slug}`}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all hover:border-teal-500/40 hover:-translate-y-0.5"
+                  style={{ background: "#0D1117", color: "#C9D1D9", border: "1px solid #30363D" }}>
+                  <span>{s.icon}</span>
+                  <span>{s.name}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

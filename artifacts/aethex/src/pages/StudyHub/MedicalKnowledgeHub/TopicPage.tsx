@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useParams } from "wouter";
 import {
   ArrowLeft, Clock, BarChart2, Bookmark, BookmarkCheck,
-  ChevronDown, ChevronUp, AlertCircle, RefreshCw, Stethoscope
+  ChevronDown, ChevronUp, AlertCircle, RefreshCw, Stethoscope, Brain, Zap
 } from "lucide-react";
 import { getTopicBySlug } from "@/data/medicalSubjects";
 import { BreadcrumbNav } from "@/components/MedKnowledge/BreadcrumbNav";
@@ -10,6 +10,7 @@ import { SectionLoader } from "@/components/MedKnowledge/SectionLoader";
 import { MCQQuiz } from "@/components/MedKnowledge/MCQQuiz";
 import { FlashCard } from "@/components/MedKnowledge/FlashCard";
 import { DiagramCarousel } from "@/components/MedKnowledge/DiagramCarousel";
+import { RichContent } from "@/components/MedKnowledge/RichContent";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const API_BASE = BASE.replace(/\/[^/]*$/, "");
@@ -36,7 +37,7 @@ function useMedContent(section: string, params: Record<string, string>, eager = 
   const fetched = useRef(false);
 
   const fetch_ = useCallback(async () => {
-    if (fetched.current) return;
+    if (fetched.current && content) return;
     const cacheKey = `mk_${section}_${JSON.stringify(params)}`;
     const cached = sessionStorage.getItem(cacheKey);
     if (cached) { setContent(cached); return; }
@@ -66,33 +67,37 @@ function useMedContent(section: string, params: Record<string, string>, eager = 
   return { content, loading, error, fetch: fetch_ };
 }
 
-function AccordionSection({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <div className="rounded-xl border overflow-hidden" style={{ borderColor: "#21262D" }}>
-      <button className="w-full flex items-center justify-between px-6 py-4 text-left transition-all hover:bg-white/5"
-        style={{ background: "#161B22" }} onClick={() => setOpen(o => !o)}>
-        <span className="font-semibold" style={{ color: "#E6EDF3" }}>{title}</span>
-        {open ? <ChevronUp className="w-4 h-4" style={{ color: "#8B949E" }} /> : <ChevronDown className="w-4 h-4" style={{ color: "#8B949E" }} />}
-      </button>
-      {open && <div className="px-6 py-5" style={{ background: "#0D1117" }}>{children}</div>}
-    </div>
-  );
+function robustParseJSON(raw: string): any[] | null {
+  try {
+    const s = raw
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/\s*```\s*$/i, "")
+      .trim();
+    const arr = JSON.parse(s);
+    if (Array.isArray(arr) && arr.length > 0) return arr;
+  } catch {}
+  try {
+    const match = raw.match(/(\[[\s\S]*\])/);
+    if (match) {
+      const arr = JSON.parse(match[1]);
+      if (Array.isArray(arr) && arr.length > 0) return arr;
+    }
+  } catch {}
+  return null;
 }
 
-function LazySection({ section, params, title, icon, children }: {
-  section: string; params: Record<string, string>; title: string;
-  icon: React.ReactNode; children?: (content: string) => React.ReactNode;
+function LazySection({ section, params, title, icon }: {
+  section: string; params: Record<string, string>; title: string; icon: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const visible = useIntersection(ref as React.RefObject<HTMLElement>);
   const { content, loading, error, fetch: fetchContent } = useMedContent(section, params, false);
 
-  useEffect(() => { if (visible && !content) fetchContent(); }, [visible]);
+  useEffect(() => { if (visible && !content && !loading) fetchContent(); }, [visible]);
 
   return (
-    <div ref={ref} className="rounded-xl border" style={{ background: "#161B22", borderColor: "#21262D" }}>
-      <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: "#21262D" }}>
+    <div ref={ref} className="rounded-xl border overflow-hidden" style={{ background: "#161B22", borderColor: "#21262D" }}>
+      <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: "#21262D", background: "rgba(0,194,168,0.03)" }}>
         <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(0,194,168,0.1)" }}>
           {icon}
         </div>
@@ -104,17 +109,12 @@ function LazySection({ section, params, title, icon, children }: {
           <div className="flex items-center gap-3 py-3">
             <AlertCircle className="w-5 h-5" style={{ color: "#F85149" }} />
             <span className="text-sm" style={{ color: "#8B949E" }}>Content temporarily unavailable.</span>
-            <button onClick={fetchContent} className="flex items-center gap-1 text-sm transition-all hover:opacity-80" style={{ color: "#00C2A8" }}>
+            <button onClick={fetchContent} className="flex items-center gap-1 text-sm" style={{ color: "#00C2A8" }}>
               <RefreshCw className="w-3.5 h-3.5" /> Retry
             </button>
           </div>
         )}
-        {content && !loading && (
-          children ? children(content) : (
-            <div className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "#E6EDF3" }}
-              dangerouslySetInnerHTML={{ __html: content.replace(/\*\*(.*?)\*\*/g, "<strong style='color:#00C2A8'>$1</strong>") }} />
-          )
-        )}
+        {content && !loading && <RichContent content={content} />}
       </div>
     </div>
   );
@@ -127,7 +127,7 @@ export default function TopicPage() {
     const list = JSON.parse(localStorage.getItem("aethex_study_list") || "[]");
     return list.includes(`${params.subjectSlug}/${params.topicSlug}`);
   });
-  const [activeTab, setActiveTab] = useState<"overview"|"exam"|"flashcards">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "exam" | "flashcards">("overview");
 
   const apiParams = result ? { topic: result.topic.name, subject: result.subject.name } : {};
   const overview = useMedContent("overview", apiParams, !!result);
@@ -157,24 +157,10 @@ export default function TopicPage() {
 
   const { subject, topic } = result;
 
-  const parseMCQs = (raw: string) => {
-    try {
-      const cleaned = raw.replace(/```json\n?|```\n?/g, "").trim();
-      return JSON.parse(cleaned);
-    } catch { return null; }
-  };
-
-  const parseFlashcards = (raw: string) => {
-    try {
-      const cleaned = raw.replace(/```json\n?|```\n?/g, "").trim();
-      return JSON.parse(cleaned);
-    } catch { return null; }
-  };
-
   return (
     <div className="min-h-screen" style={{ background: "#0D1117" }}>
       {/* Hero */}
-      <div className="border-b" style={{ borderColor: "#21262D", background: "#161B22" }}>
+      <div className="border-b" style={{ borderColor: "#21262D", background: "linear-gradient(180deg,#161B22 0%,#0D1117 100%)" }}>
         <div className="max-w-5xl mx-auto px-4 py-6">
           <BreadcrumbNav crumbs={[
             { label: "Study Hub", href: `${BASE}/study-hub` },
@@ -190,11 +176,11 @@ export default function TopicPage() {
           <div className="flex items-start gap-4">
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>{subject.icon} {subject.name}</span>
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: `${diffColor[topic.difficulty]}18`, color: diffColor[topic.difficulty] }}>{topic.difficulty}</span>
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8", border: "1px solid rgba(0,194,168,0.2)" }}>{subject.icon} {subject.name}</span>
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: `${diffColor[topic.difficulty]}18`, color: diffColor[topic.difficulty], border: `1px solid ${diffColor[topic.difficulty]}33` }}>{topic.difficulty}</span>
                 <span className="flex items-center gap-1 text-xs" style={{ color: "#8B949E" }}><Clock className="w-3.5 h-3.5" /> {topic.readTime} min read</span>
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: "#E6EDF3" }}>{topic.name}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: "#E6EDF3", letterSpacing: "-0.01em" }}>{topic.name}</h1>
             </div>
             <button onClick={handleSave}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
@@ -206,7 +192,11 @@ export default function TopicPage() {
 
           {/* Tabs */}
           <div className="flex gap-1 mt-6 border-b" style={{ borderColor: "#21262D" }}>
-            {[["overview", "Overview & Diagrams"], ["exam", "Exam Corner (MCQs)"], ["flashcards", "Flashcards"]].map(([t, label]) => (
+            {[
+              ["overview", "📖 Overview & Diagrams"],
+              ["exam", "🎯 Exam Corner (MCQs)"],
+              ["flashcards", "⚡ Flashcards"],
+            ].map(([t, label]) => (
               <button key={t} onClick={() => setActiveTab(t as any)}
                 className="px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px"
                 style={{
@@ -224,14 +214,20 @@ export default function TopicPage() {
       <div className="max-w-5xl mx-auto px-4 py-8">
 
         {activeTab === "overview" && (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* Overview */}
-            <div className="rounded-xl border" style={{ background: "#161B22", borderColor: "#21262D" }}>
-              <div className="px-6 py-4 border-b" style={{ borderColor: "#21262D" }}>
-                <h2 className="font-bold text-lg" style={{ color: "#E6EDF3" }}>Overview</h2>
+            <div className="rounded-xl border overflow-hidden" style={{ background: "#161B22", borderColor: "#21262D" }}>
+              <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: "#21262D", background: "rgba(0,194,168,0.03)" }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(0,194,168,0.1)" }}>
+                  <Brain className="w-4 h-4" style={{ color: "#00C2A8" }} />
+                </div>
+                <div>
+                  <h2 className="font-bold text-base" style={{ color: "#E6EDF3" }}>Overview</h2>
+                  <p className="text-xs" style={{ color: "#8B949E" }}>AI-generated encyclopedic content</p>
+                </div>
               </div>
               <div className="px-6 py-5">
-                {overview.loading && <SectionLoader lines={6} />}
+                {overview.loading && <SectionLoader lines={8} />}
                 {overview.error && (
                   <div className="flex items-center gap-3">
                     <AlertCircle className="w-5 h-5" style={{ color: "#F85149" }} />
@@ -241,17 +237,17 @@ export default function TopicPage() {
                     </button>
                   </div>
                 )}
-                {overview.content && (
-                  <div className="text-sm leading-loose" style={{ color: "#E6EDF3" }}
-                    dangerouslySetInnerHTML={{ __html: overview.content.replace(/\*\*(.*?)\*\*/g, "<strong style='color:#00C2A8'>$1</strong>") }} />
-                )}
+                {overview.content && <RichContent content={overview.content} lineByLine />}
               </div>
             </div>
 
             {/* Diagrams */}
-            <div className="rounded-xl border" style={{ background: "#161B22", borderColor: "#21262D" }}>
-              <div className="px-6 py-4 border-b" style={{ borderColor: "#21262D" }}>
-                <h2 className="font-bold text-lg" style={{ color: "#E6EDF3" }}>Medical Diagrams</h2>
+            <div className="rounded-xl border overflow-hidden" style={{ background: "#161B22", borderColor: "#21262D" }}>
+              <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: "#21262D", background: "rgba(0,194,168,0.03)" }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(0,194,168,0.1)" }}>
+                  <BarChart2 className="w-4 h-4" style={{ color: "#00C2A8" }} />
+                </div>
+                <h2 className="font-bold text-base" style={{ color: "#E6EDF3" }}>Medical Diagrams</h2>
               </div>
               <div className="px-6 py-5">
                 <DiagramCarousel topicSlug={topic.slug} subjectSlug={subject.slug} />
@@ -259,10 +255,15 @@ export default function TopicPage() {
             </div>
 
             {/* Key Concepts */}
-            <div className="rounded-xl border" style={{ background: "#161B22", borderColor: "#21262D" }}>
-              <div className="px-6 py-4 border-b" style={{ borderColor: "#21262D" }}>
-                <h2 className="font-bold text-lg" style={{ color: "#E6EDF3" }}>Key Concepts</h2>
-                <p className="text-sm mt-1" style={{ color: "#8B949E" }}>Essential facts every student must know</p>
+            <div className="rounded-xl border overflow-hidden" style={{ background: "#161B22", borderColor: "#21262D" }}>
+              <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: "#21262D", background: "rgba(0,194,168,0.03)" }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(0,194,168,0.1)" }}>
+                  <Zap className="w-4 h-4" style={{ color: "#00C2A8" }} />
+                </div>
+                <div>
+                  <h2 className="font-bold text-base" style={{ color: "#E6EDF3" }}>Key Concepts</h2>
+                  <p className="text-xs" style={{ color: "#8B949E" }}>Essential high-yield facts</p>
+                </div>
               </div>
               <div className="px-6 py-5">
                 {keyConcepts.loading && <SectionLoader lines={8} />}
@@ -272,32 +273,25 @@ export default function TopicPage() {
                     <button onClick={keyConcepts.fetch} className="flex items-center gap-1 text-sm" style={{ color: "#00C2A8" }}><RefreshCw className="w-3.5 h-3.5" /> Retry</button>
                   </div>
                 )}
-                {keyConcepts.content && (
-                  <div className="text-sm leading-relaxed" style={{ color: "#E6EDF3" }}
-                    dangerouslySetInnerHTML={{ __html: keyConcepts.content.replace(/\*\*(.*?)\*\*/g, "<strong style='color:#00C2A8'>$1</strong>").replace(/\n/g, "<br/>") }} />
-                )}
+                {keyConcepts.content && <RichContent content={keyConcepts.content} lineByLine />}
               </div>
             </div>
 
             {/* Clinical Relevance */}
-            <LazySection section="clinical_relevance" params={apiParams} title="Clinical Relevance & Applied" icon={<Stethoscope className="w-4 h-4" style={{ color: "#00C2A8" }} />}>
-              {(c) => (
-                <div className="text-sm leading-relaxed p-4 rounded-xl border" style={{ borderColor: "rgba(0,194,168,0.25)", background: "rgba(0,194,168,0.04)", color: "#E6EDF3" }}
-                  dangerouslySetInnerHTML={{ __html: c.replace(/\*\*(.*?)\*\*/g, "<strong style='color:#00C2A8'>$1</strong>").replace(/\n/g, "<br/>") }} />
-              )}
-            </LazySection>
+            <LazySection section="clinical_relevance" params={apiParams} title="Clinical Relevance & Applied"
+              icon={<Stethoscope className="w-4 h-4" style={{ color: "#00C2A8" }} />} />
 
             {/* Related Conditions */}
             {topic.relatedConditions && topic.relatedConditions.length > 0 && (
-              <div className="rounded-xl border" style={{ background: "#161B22", borderColor: "#21262D" }}>
+              <div className="rounded-xl border overflow-hidden" style={{ background: "#161B22", borderColor: "#21262D" }}>
                 <div className="px-6 py-4 border-b" style={{ borderColor: "#21262D" }}>
-                  <h2 className="font-bold text-lg" style={{ color: "#E6EDF3" }}>Related Conditions</h2>
+                  <h2 className="font-bold text-base" style={{ color: "#E6EDF3" }}>Related Conditions</h2>
                 </div>
                 <div className="px-6 py-5">
                   <div className="flex flex-wrap gap-3">
                     {topic.relatedConditions.map(c => (
-                      <div key={c} className="px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer hover:border-teal-500"
-                        style={{ background: "#21262D", color: "#E6EDF3", border: "1px solid #21262D" }}>
+                      <div key={c} className="px-4 py-2 rounded-xl text-sm font-medium transition-all hover:border-teal-500/50"
+                        style={{ background: "#21262D", color: "#E6EDF3", border: "1px solid #30363D" }}>
                         {c}
                       </div>
                     ))}
@@ -310,38 +304,55 @@ export default function TopicPage() {
 
         {activeTab === "exam" && (
           <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-bold mb-2" style={{ color: "#E6EDF3" }}>Exam Corner — MCQ Practice</h2>
-              <p className="text-sm mb-6" style={{ color: "#8B949E" }}>NEET-PG / USMLE style questions with explanations</p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.2)" }}>
+                🎯
+              </div>
+              <div>
+                <h2 className="text-xl font-bold" style={{ color: "#E6EDF3" }}>Exam Corner — MCQ Practice</h2>
+                <p className="text-sm" style={{ color: "#8B949E" }}>NEET-PG / USMLE style questions with explanations</p>
+              </div>
             </div>
             {!mcqData.content && !mcqData.loading && !mcqData.error && (
-              <div className="text-center py-12 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
-                <p className="text-base mb-4" style={{ color: "#8B949E" }}>Ready to test your knowledge on {topic.name}?</p>
+              <div className="text-center py-14 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                <div className="text-4xl mb-4">🧠</div>
+                <p className="text-base font-medium mb-2" style={{ color: "#E6EDF3" }}>Test your knowledge on {topic.name}</p>
+                <p className="text-sm mb-6" style={{ color: "#8B949E" }}>8 AI-generated NEET-PG / USMLE style questions</p>
                 <button onClick={mcqData.fetch}
-                  className="px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
-                  style={{ background: "#00C2A8", color: "#0D1117" }}>
-                  Generate 8 MCQs with AI
+                  className="px-8 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90 hover:scale-105"
+                  style={{ background: "linear-gradient(135deg,#00C2A8,#0088cc)", color: "#fff" }}>
+                  Generate MCQs with AI
                 </button>
               </div>
             )}
             {mcqData.loading && (
-              <div className="text-center py-12 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
-                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-3" style={{ borderColor: "#00C2A8", borderTopColor: "transparent" }} />
-                <p className="text-sm" style={{ color: "#8B949E" }}>Generating NEET-PG/USMLE questions...</p>
+              <div className="text-center py-14 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: "#00C2A8", borderTopColor: "transparent" }} />
+                <p className="text-sm font-medium" style={{ color: "#E6EDF3" }}>Generating questions...</p>
+                <p className="text-xs mt-1" style={{ color: "#8B949E" }}>This takes 5–10 seconds</p>
               </div>
             )}
             {mcqData.error && (
-              <div className="text-center py-8 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+              <div className="text-center py-10 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
                 <AlertCircle className="w-8 h-8 mx-auto mb-3" style={{ color: "#F85149" }} />
-                <p className="text-sm mb-3" style={{ color: "#8B949E" }}>Failed to generate questions.</p>
-                <button onClick={mcqData.fetch} className="flex items-center gap-1 text-sm mx-auto" style={{ color: "#00C2A8" }}><RefreshCw className="w-4 h-4" /> Try Again</button>
+                <p className="text-sm mb-4" style={{ color: "#8B949E" }}>Failed to generate questions.</p>
+                <button onClick={mcqData.fetch} className="flex items-center gap-2 text-sm mx-auto px-5 py-2.5 rounded-xl transition-all"
+                  style={{ background: "#21262D", color: "#00C2A8" }}>
+                  <RefreshCw className="w-4 h-4" /> Try Again
+                </button>
               </div>
             )}
             {mcqData.content && (() => {
-              const questions = parseMCQs(mcqData.content);
-              return questions ? <MCQQuiz questions={questions} topic={topic.name} /> : (
-                <div className="p-4 rounded-xl border text-sm" style={{ borderColor: "#21262D", color: "#8B949E" }}>
-                  <pre className="whitespace-pre-wrap text-xs" style={{ color: "#E6EDF3" }}>{mcqData.content}</pre>
+              const questions = robustParseJSON(mcqData.content);
+              if (questions) return <MCQQuiz questions={questions} topic={topic.name} />;
+              return (
+                <div className="p-5 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                  <p className="text-sm mb-3 font-semibold" style={{ color: "#F85149" }}>⚠ Could not parse questions. Raw response:</p>
+                  <button onClick={() => { sessionStorage.removeItem(`mk_mcq_${JSON.stringify(apiParams)}`); mcqData.fetch(); }}
+                    className="flex items-center gap-1 text-sm mb-4" style={{ color: "#00C2A8" }}>
+                    <RefreshCw className="w-3.5 h-3.5" /> Regenerate
+                  </button>
+                  <pre className="text-xs whitespace-pre-wrap leading-relaxed" style={{ color: "#8B949E" }}>{mcqData.content.slice(0, 500)}</pre>
                 </div>
               );
             })()}
@@ -350,45 +361,62 @@ export default function TopicPage() {
 
         {activeTab === "flashcards" && (
           <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-bold mb-2" style={{ color: "#E6EDF3" }}>Quick Revision Flashcards</h2>
-              <p className="text-sm mb-6" style={{ color: "#8B949E" }}>Click each card to reveal the answer</p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.2)" }}>
+                ⚡
+              </div>
+              <div>
+                <h2 className="text-xl font-bold" style={{ color: "#E6EDF3" }}>Quick Revision Flashcards</h2>
+                <p className="text-sm" style={{ color: "#8B949E" }}>Click each card to reveal the answer</p>
+              </div>
             </div>
             {!flashData.content && !flashData.loading && !flashData.error && (
-              <div className="text-center py-12 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
-                <p className="text-base mb-4" style={{ color: "#8B949E" }}>Generate AI flashcards for {topic.name}</p>
+              <div className="text-center py-14 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                <div className="text-4xl mb-4">📇</div>
+                <p className="text-base font-medium mb-2" style={{ color: "#E6EDF3" }}>10 high-yield flashcards for {topic.name}</p>
+                <p className="text-sm mb-6" style={{ color: "#8B949E" }}>Covers key facts, mnemonics, gold standards</p>
                 <button onClick={flashData.fetch}
-                  className="px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
-                  style={{ background: "#00C2A8", color: "#0D1117" }}>
-                  Generate 10 Flashcards
+                  className="px-8 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90 hover:scale-105"
+                  style={{ background: "linear-gradient(135deg,#00C2A8,#0088cc)", color: "#fff" }}>
+                  Generate Flashcards
                 </button>
               </div>
             )}
             {flashData.loading && (
-              <div className="text-center py-12 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
-                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-3" style={{ borderColor: "#00C2A8", borderTopColor: "transparent" }} />
-                <p className="text-sm" style={{ color: "#8B949E" }}>Generating flashcards...</p>
+              <div className="text-center py-14 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: "#00C2A8", borderTopColor: "transparent" }} />
+                <p className="text-sm font-medium" style={{ color: "#E6EDF3" }}>Generating flashcards...</p>
+                <p className="text-xs mt-1" style={{ color: "#8B949E" }}>This takes 5–10 seconds</p>
               </div>
             )}
             {flashData.error && (
               <div className="text-center py-8">
-                <button onClick={flashData.fetch} className="text-sm" style={{ color: "#00C2A8" }}>Retry</button>
+                <button onClick={flashData.fetch} className="flex items-center gap-2 text-sm mx-auto px-5 py-2.5 rounded-xl"
+                  style={{ background: "#21262D", color: "#00C2A8" }}>
+                  <RefreshCw className="w-4 h-4" /> Retry
+                </button>
               </div>
             )}
             {flashData.content && (() => {
-              const cards = parseFlashcards(flashData.content);
-              return cards ? <FlashCard cards={cards} /> : (
-                <div className="text-xs p-4 rounded-xl border" style={{ borderColor: "#21262D", color: "#8B949E" }}>{flashData.content}</div>
+              const cards = robustParseJSON(flashData.content);
+              if (cards) return <FlashCard cards={cards} />;
+              return (
+                <div className="p-5 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+                  <p className="text-sm mb-3 font-semibold" style={{ color: "#F85149" }}>⚠ Could not parse flashcards.</p>
+                  <button onClick={() => { sessionStorage.removeItem(`mk_flashcards_${JSON.stringify(apiParams)}`); flashData.fetch(); }}
+                    className="flex items-center gap-1 text-sm" style={{ color: "#00C2A8" }}>
+                    <RefreshCw className="w-3.5 h-3.5" /> Regenerate
+                  </button>
+                </div>
               );
             })()}
           </div>
         )}
       </div>
 
-      {/* Scroll to top */}
       <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         className="fixed bottom-6 right-6 w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:opacity-90 shadow-lg"
-        style={{ background: "#00C2A8", color: "#0D1117" }}>
+        style={{ background: "#00C2A8", color: "#0D1117", fontSize: "18px" }}>
         ↑
       </button>
     </div>

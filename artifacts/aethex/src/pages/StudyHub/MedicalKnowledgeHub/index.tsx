@@ -56,9 +56,14 @@ export default function MedicalKnowledgeHub() {
   return (
     <div className="min-h-screen" style={{ background: "#0D1117" }}>
       {/* Hero */}
-      <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0D1117 0%, #161B22 50%, #0D1117 100%)" }}>
+      <div className="relative overflow-hidden">
+        {/* Background photo — medical library / anatomy */}
+        <div className="absolute inset-0" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
+        {/* Dark overlay */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(13,17,23,0.95) 0%, rgba(22,27,34,0.92) 50%, rgba(13,17,23,0.95) 100%)" }} />
+        {/* Teal ambient glow */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: "radial-gradient(ellipse at 60% 50%, rgba(0,194,168,0.07) 0%, transparent 70%)",
+          backgroundImage: "radial-gradient(ellipse at 60% 50%, rgba(0,194,168,0.08) 0%, transparent 70%)",
         }} />
         <div className="max-w-5xl mx-auto px-4 py-20 text-center relative">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-sm font-semibold" style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.3)", color: "#00C2A8" }}>

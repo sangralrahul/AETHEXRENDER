@@ -10,7 +10,7 @@ import { AuthModal } from "@/components/AuthModal";
 
 export function AnnouncementBar() {
   return (
-    <div className="w-full text-center py-2.5 px-4 text-xs font-medium" style={{ background: "#1c1c1e", color: "rgba(255,255,255,0.8)" }}>
+    <div className="no-print w-full text-center py-2.5 px-4 text-xs font-medium" style={{ background: "#1c1c1e", color: "rgba(255,255,255,0.8)" }}>
       Free delivery on orders above ₹999 · Trusted by 50,000+ doctors · Use code{" "}
       <span className="font-bold" style={{ color: "#007AFF" }}>AETHEX10</span> for 10% off
     </div>
@@ -155,7 +155,7 @@ export function Navbar() {
     <>
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
       <header
-        className={cn("transition-all duration-300 border-b", isScrolled ? "backdrop-blur-xl shadow-sm py-3" : "py-4")}
+        className={cn("no-print transition-all duration-300 border-b", isScrolled ? "backdrop-blur-xl shadow-sm py-3" : "py-4")}
         style={{
           background: "rgba(255,255,255,0.94)",
           backdropFilter: "blur(20px) saturate(180%)",

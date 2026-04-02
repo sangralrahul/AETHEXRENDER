@@ -346,12 +346,66 @@ const platforms = [
 const examFilters = ["All", "NEET PG", "NEXT", "FMGE", "USMLE Step 1", "USMLE Step 2", "INI-CET", "AIIMS PG"];
 
 const youtubeChannels = [
-  { name: "Dr. Najeeb Lectures", subs: "1.8M", topic: "Basic Sciences", url: "https://youtube.com/@drnajeeb", badge: "Must Watch" },
-  { name: "PrepLadder NEET PG", subs: "1.2M", topic: "NEET PG All Subjects", url: "https://youtube.com/@prepladder", badge: "" },
-  { name: "Marrow NEET PG", subs: "890K", topic: "Clinical Sciences", url: "https://youtube.com/@marrow", badge: "" },
-  { name: "Medicosis Perfectionalis", subs: "730K", topic: "Pathophysiology", url: "https://youtube.com", badge: "" },
-  { name: "Armando Hasudungan", subs: "1.1M", topic: "Biology & Physiology", url: "https://youtube.com", badge: "" },
-  { name: "Dirty Medicine", subs: "630K", topic: "USMLE Step 1", url: "https://youtube.com", badge: "" },
+  {
+    name: "Dr. Najeeb Lectures",
+    handle: "@DrNajeebLectures",
+    subs: "1.8M",
+    topic: "Basic Sciences — Anatomy, Physiology, Pharmacology",
+    url: "https://www.youtube.com/@DrNajeebLectures",
+    logo: "https://unavatar.io/youtube/DrNajeebLectures",
+    badge: "Must Watch",
+    color: "#FF0000",
+  },
+  {
+    name: "PrepLadder",
+    handle: "@PrepLadder",
+    subs: "1.5M",
+    topic: "NEET PG — All Subjects",
+    url: "https://www.youtube.com/@PrepLadder",
+    logo: "https://unavatar.io/youtube/PrepLadder",
+    badge: "NEET PG",
+    color: "#FF6B35",
+  },
+  {
+    name: "Marrow",
+    handle: "@MarrowApp",
+    subs: "920K",
+    topic: "NEET PG — Clinical Sciences",
+    url: "https://www.youtube.com/@MarrowApp",
+    logo: "https://unavatar.io/youtube/MarrowApp",
+    badge: "",
+    color: "#00C2A8",
+  },
+  {
+    name: "Medicosis Perfectionalis",
+    handle: "@MedicosisP",
+    subs: "730K",
+    topic: "Pathophysiology & Clinical Medicine",
+    url: "https://www.youtube.com/@MedicosisP",
+    logo: "https://unavatar.io/youtube/MedicosisP",
+    badge: "USMLE",
+    color: "#8B5CF6",
+  },
+  {
+    name: "Armando Hasudungan",
+    handle: "@armandohasudungan",
+    subs: "1.1M",
+    topic: "Biology, Physiology & Microbiology",
+    url: "https://www.youtube.com/@armandohasudungan",
+    logo: "https://unavatar.io/youtube/armandohasudungan",
+    badge: "",
+    color: "#3B82F6",
+  },
+  {
+    name: "Dirty Medicine",
+    handle: "@DirtyMedicine",
+    subs: "630K",
+    topic: "USMLE Step 1 & Step 2 CK",
+    url: "https://www.youtube.com/@DirtyMedicine",
+    logo: "https://unavatar.io/youtube/DirtyMedicine",
+    badge: "USMLE",
+    color: "#F59E0B",
+  },
 ];
 
 const medicalBooks = [
@@ -825,34 +879,55 @@ export default function StudyHub() {
                 className="flex items-center gap-4 p-4 rounded-2xl transition-all hover:-translate-y-0.5 group"
                 style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(239,68,68,0.25)";
-                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 16px rgba(239,68,68,0.1)";
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = `${channel.color}44`;
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = `0 4px 16px ${channel.color}18`;
                 }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(60,60,67,0.1)";
                   (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)";
                 }}>
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-                  <PlayCircle className="w-6 h-6" style={{ color: "#EF4444" }} />
+                {/* Channel logo */}
+                <div className="w-14 h-14 rounded-full overflow-hidden shrink-0 relative"
+                  style={{ border: `2px solid ${channel.color}33`, background: `${channel.color}18` }}>
+                  <img
+                    src={channel.logo}
+                    alt={channel.name}
+                    className="w-full h-full object-cover"
+                    onError={e => {
+                      const img = e.currentTarget;
+                      img.style.display = "none";
+                      const fallback = img.nextElementSibling as HTMLElement;
+                      if (fallback) fallback.style.display = "flex";
+                    }}
+                  />
+                  <div className="absolute inset-0 items-center justify-center text-lg font-bold hidden"
+                    style={{ color: channel.color }}>
+                    {channel.name.charAt(0)}
+                  </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <h4 className="font-semibold text-sm truncate" style={{ color: "#1C1C1E" }}>{channel.name}</h4>
+                  <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h4 className="font-bold text-sm" style={{ color: "#1C1C1E" }}>{channel.name}</h4>
                     {channel.badge && (
-                      <span className="px-2 py-0.5 rounded text-xs font-bold shrink-0"
-                        style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.25)", color: "#F59E0B" }}>
+                      <span className="px-2 py-0.5 rounded-full text-xs font-bold shrink-0"
+                        style={{ background: `${channel.color}18`, border: `1px solid ${channel.color}44`, color: channel.color }}>
                         {channel.badge}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs" style={{ color: "#636366" }}>{channel.topic}</p>
-                  <div className="flex items-center gap-1 mt-1">
-                    <Users className="w-3 h-3" style={{ color: "#AEAEB2" }} />
-                    <span className="text-xs" style={{ color: "#AEAEB2" }}>{channel.subs} subscribers</span>
+                  <p className="text-xs mb-1.5 leading-relaxed" style={{ color: "#636366" }}>{channel.topic}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
+                      <Users className="w-3 h-3" style={{ color: "#AEAEB2" }} />
+                      <span className="text-xs font-medium" style={{ color: "#AEAEB2" }}>{channel.subs}</span>
+                    </div>
+                    <span className="text-xs font-medium" style={{ color: channel.color }}>{channel.handle}</span>
                   </div>
                 </div>
-                <ArrowUpRight className="w-4 h-4 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#EF4444" }} />
+                <div className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                  style={{ background: `${channel.color}18` }}>
+                  <ArrowUpRight className="w-4 h-4" style={{ color: channel.color }} />
+                </div>
               </a>
             ))}
           </div>

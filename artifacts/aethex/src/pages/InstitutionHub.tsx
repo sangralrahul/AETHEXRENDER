@@ -150,10 +150,16 @@ export default function InstitutionHub() {
     <div className="min-h-screen" style={{ background: "#F5F5F7" }}>
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden pt-20 pb-24" style={{ background: "linear-gradient(135deg, #0A1628 0%, #0D2137 50%, #0A1628 100%)" }}>
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" style={{ background: "rgba(0,122,255,0.1)" }} />
-          <div className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full blur-3xl translate-y-1/2" style={{ background: "rgba(0,194,168,0.08)" }} />
+      <section className="relative overflow-hidden pt-20 pb-24">
+        {/* Background photo */}
+        <div className="absolute inset-0"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(8,18,36,0.93) 0%, rgba(10,26,50,0.88) 50%, rgba(8,18,36,0.93) 100%)" }} />
+        {/* Glow orbs */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" style={{ background: "rgba(0,122,255,0.12)" }} />
+          <div className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full blur-3xl translate-y-1/2" style={{ background: "rgba(0,194,168,0.1)" }} />
         </div>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center max-w-3xl mx-auto">

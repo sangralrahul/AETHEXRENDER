@@ -256,12 +256,16 @@ export default function ClinicalTools() {
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden pt-16 pb-20" style={{ background: "linear-gradient(135deg, #0A1628 0%, #0D2137 50%, #0A1628 100%)" }}>
+      <div className="relative overflow-hidden pt-16 pb-20">
+        {/* Background photo — clinical / hospital setting */}
+        <div className="absolute inset-0"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(8,18,36,0.93) 0%, rgba(10,26,50,0.88) 50%, rgba(8,18,36,0.93) 100%)" }} />
         {/* Ambient glow orbs */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" style={{ background: "rgba(0,122,255,0.12)" }} />
           <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full blur-3xl translate-y-1/3" style={{ background: "rgba(0,194,168,0.08)" }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full blur-3xl" style={{ background: "rgba(0,122,255,0.04)" }} />
         </div>
 
         <div className="max-w-5xl mx-auto px-4 text-center relative z-10">

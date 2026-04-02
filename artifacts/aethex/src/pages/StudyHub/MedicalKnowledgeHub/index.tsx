@@ -116,17 +116,18 @@ export default function MedicalKnowledgeHub() {
       </div>
 
       {/* Section A: Medical Subjects */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      <div id="subjects-section" className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold mb-1" style={{ color: "#E6EDF3" }}>Medical Subjects</h2>
             <p style={{ color: "#8B949E" }}>Core pre-clinical and clinical subject areas</p>
           </div>
-          <Link href={`${BASE}/study-hub/medical-knowledge-hub/subjects`}
+          <button
+            onClick={() => document.getElementById("subjects-section")?.scrollIntoView({ behavior: "smooth" })}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
-            style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00C2A8" }}>
+            style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00C2A8", cursor: "pointer" }}>
             View All <ArrowRight className="w-4 h-4" />
-          </Link>
+          </button>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -156,17 +157,18 @@ export default function MedicalKnowledgeHub() {
       </div>
 
       {/* Section B: Clinical Departments */}
-      <div className="max-w-7xl mx-auto px-4 pb-16">
+      <div id="departments-section" className="max-w-7xl mx-auto px-4 pb-16">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold mb-1" style={{ color: "#E6EDF3" }}>Clinical Departments</h2>
             <p style={{ color: "#8B949E" }}>Complete condition libraries for all specialties</p>
           </div>
-          <Link href={`${BASE}/study-hub/medical-knowledge-hub/departments`}
+          <button
+            onClick={() => document.getElementById("departments-section")?.scrollIntoView({ behavior: "smooth" })}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
-            style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00C2A8" }}>
+            style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00C2A8", cursor: "pointer" }}>
             View All <ArrowRight className="w-4 h-4" />
-          </Link>
+          </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

@@ -60,7 +60,6 @@ function NavDropdown({ label, href, menu, open, onToggle, onClose, dropdownRef }
         onMouseLeave={e => { if (!active && !open) (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
       >
         {label}
-        <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (

@@ -41,8 +41,10 @@ export default function DepartmentPage() {
   return (
     <div className="min-h-screen" style={{ background: "#0D1117" }}>
       {/* Hero */}
-      <div className="border-b" style={{ borderColor: "#21262D", background: "#161B22" }}>
-        <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="relative border-b overflow-hidden" style={{ borderColor: "#21262D" }}>
+        <div className="absolute inset-0" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(13,17,23,0.96) 0%, rgba(22,27,34,0.94) 100%)" }} />
+        <div className="max-w-6xl mx-auto px-4 py-8 relative z-10">
           <BreadcrumbNav crumbs={[
             { label: "Study Hub", href: `${BASE}/study-hub` },
             { label: "Knowledge Hub", href: `${BASE}/study-hub/medical-knowledge-hub` },

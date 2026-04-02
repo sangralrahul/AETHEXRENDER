@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Link, useParams } from "wouter";
+import { Link, useParams, useSearch } from "wouter";
 import {
   ArrowLeft, Clock, BarChart2, Bookmark, BookmarkCheck,
   ChevronDown, ChevronUp, AlertCircle, RefreshCw, Stethoscope, Brain, Zap
@@ -122,12 +122,14 @@ function LazySection({ section, params, title, icon }: {
 
 export default function TopicPage() {
   const params = useParams<{ subjectSlug: string; topicSlug: string }>();
+  const search = useSearch();
   const result = getTopicBySlug(params.subjectSlug || "", params.topicSlug || "");
   const [saved, setSaved] = useState(() => {
     const list = JSON.parse(localStorage.getItem("aethex_study_list") || "[]");
     return list.includes(`${params.subjectSlug}/${params.topicSlug}`);
   });
-  const [activeTab, setActiveTab] = useState<"overview" | "exam" | "flashcards">("overview");
+  const urlTab = new URLSearchParams(search).get("tab") as "overview" | "exam" | "flashcards" | null;
+  const [activeTab, setActiveTab] = useState<"overview" | "exam" | "flashcards">(urlTab || "overview");
 
   const apiParams = result ? { topic: result.topic.name, subject: result.subject.name } : {};
   const overview = useMedContent("overview", apiParams, !!result);

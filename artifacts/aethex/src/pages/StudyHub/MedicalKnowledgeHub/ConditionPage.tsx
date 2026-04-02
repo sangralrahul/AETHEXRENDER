@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Link, useParams } from "wouter";
+import { Link, useParams, useSearch } from "wouter";
 import { ArrowLeft, Bookmark, BookmarkCheck, AlertCircle, RefreshCw, Stethoscope, FlaskConical, Pill, Shield, Users, BookOpen, FileText, Brain, Zap } from "lucide-react";
 import { getConditionBySlug } from "@/data/medicalDepartments";
 import { BreadcrumbNav } from "@/components/MedKnowledge/BreadcrumbNav";
@@ -139,8 +139,10 @@ function BarChart2Icon() {
 
 export default function ConditionPage() {
   const params = useParams<{ deptSlug: string; conditionSlug: string }>();
+  const search = useSearch();
   const result = getConditionBySlug(params.deptSlug || "", params.conditionSlug || "");
-  const [activeTab, setActiveTab] = useState<"overview" | "management" | "exam" | "flashcards">("overview");
+  const urlTab = new URLSearchParams(search).get("tab") as "overview" | "management" | "exam" | "flashcards" | null;
+  const [activeTab, setActiveTab] = useState<"overview" | "management" | "exam" | "flashcards">(urlTab || "overview");
   const [saved, setSaved] = useState(() => {
     const list = JSON.parse(localStorage.getItem("aethex_study_list") || "[]");
     return list.includes(`${params.deptSlug}/${params.conditionSlug}`);

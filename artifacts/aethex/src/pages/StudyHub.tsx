@@ -1,8 +1,154 @@
-import { useState } from "react";
-import { Link } from "wouter";
-import { Star, ExternalLink, BookOpen, PlayCircle, CheckCircle2, Filter, Crown, GraduationCap, Award, Zap, Clock, Globe, Users, Sparkles, ArrowUpRight, Brain, FlaskConical, Stethoscope, ArrowRight } from "lucide-react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { Link, useLocation } from "wouter";
+import { Star, ExternalLink, BookOpen, PlayCircle, CheckCircle2, Filter, Crown, GraduationCap, Award, Zap, Clock, Globe, Users, Sparkles, ArrowUpRight, Brain, FlaskConical, Stethoscope, ArrowRight, Search, X, ChevronRight } from "lucide-react";
+import { medicalSubjects } from "@/data/medicalSubjects";
+import { medicalDepartments } from "@/data/medicalDepartments";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+type SearchHit = {
+  label: string;
+  sub: string;
+  href: string;
+  badge?: string;
+  badgeColor?: string;
+};
+
+function buildSearchIndex(tab: "overview" | "exam" | "flashcards"): SearchHit[] {
+  const hits: SearchHit[] = [];
+  const suffix = tab === "overview" ? "" : `?tab=${tab}`;
+  medicalSubjects.forEach(s => {
+    s.topics.forEach(t => {
+      hits.push({
+        label: t.name,
+        sub: s.name,
+        badge: t.difficulty,
+        badgeColor: t.difficulty === "Basic" ? "#238636" : t.difficulty === "Intermediate" ? "#E3B341" : "#F85149",
+        href: `${BASE}/study-hub/medical-knowledge-hub/subjects/${s.slug}/${t.slug}${suffix}`,
+      });
+    });
+  });
+  medicalDepartments.forEach(d => {
+    d.conditions.forEach(c => {
+      hits.push({
+        label: c.name,
+        sub: d.name,
+        badge: c.severity,
+        badgeColor: c.severity === "Mild" ? "#238636" : c.severity === "Moderate" ? "#E3B341" : c.severity === "Severe" ? "#F97316" : "#F85149",
+        href: `${BASE}/study-hub/medical-knowledge-hub/departments/${d.slug}/${c.slug}${suffix}`,
+      });
+    });
+  });
+  return hits;
+}
+
+function HubSearchCard({
+  icon, title, desc, badge, tab, accentColor,
+}: {
+  icon: string; title: string; desc: string; badge: string;
+  tab: "overview" | "exam" | "flashcards"; accentColor: string;
+}) {
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const [, setLocation] = useLocation();
+
+  const index = useMemo(() => buildSearchIndex(tab), [tab]);
+
+  const results = useMemo(() => {
+    if (!query.trim() || query.length < 2) return [];
+    const q = query.toLowerCase();
+    return index.filter(h => h.label.toLowerCase().includes(q) || h.sub.toLowerCase().includes(q)).slice(0, 7);
+  }, [query, index]);
+
+  useEffect(() => {
+    function onClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  const handleSelect = (href: string) => {
+    setOpen(false);
+    setQuery("");
+    setLocation(href.replace(BASE, ""));
+  };
+
+  return (
+    <div className="rounded-xl overflow-visible flex flex-col" style={{ background: "#161B22", border: `1px solid #21262D` }}>
+      {/* Header */}
+      <div className="p-5 pb-3">
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="text-3xl">{icon}</div>
+          <span className="px-2 py-0.5 rounded text-xs font-bold shrink-0" style={{ background: `${accentColor}18`, color: accentColor, border: `1px solid ${accentColor}33` }}>{badge}</span>
+        </div>
+        <h3 className="font-bold text-sm mb-1" style={{ color: "#E6EDF3" }}>{title}</h3>
+        <p className="text-xs leading-relaxed" style={{ color: "#8B949E" }}>{desc}</p>
+      </div>
+
+      {/* Search */}
+      <div ref={ref} className="px-4 pb-4 relative mt-auto">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none" style={{ color: "#8B949E" }} />
+          <input
+            type="text"
+            value={query}
+            onChange={e => { setQuery(e.target.value); setOpen(true); }}
+            onFocus={() => setOpen(true)}
+            placeholder="Search topic or condition..."
+            className="w-full pl-8 pr-8 py-2 rounded-lg text-xs focus:outline-none transition-all"
+            style={{
+              background: "#0D1117",
+              border: `1px solid ${open && query ? accentColor + "66" : "#30363D"}`,
+              color: "#E6EDF3",
+            }}
+          />
+          {query && (
+            <button onClick={() => { setQuery(""); setOpen(false); }}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2">
+              <X className="w-3 h-3" style={{ color: "#8B949E" }} />
+            </button>
+          )}
+        </div>
+
+        {/* Dropdown */}
+        {open && results.length > 0 && (
+          <div className="absolute left-4 right-4 mt-1 rounded-xl overflow-hidden shadow-2xl z-50"
+            style={{ background: "#161B22", border: "1px solid #30363D", boxShadow: "0 8px 32px rgba(0,0,0,0.6)" }}>
+            {results.map((r, i) => (
+              <button key={i} onClick={() => handleSelect(r.href)}
+                className="w-full flex items-center justify-between px-3 py-2.5 text-left transition-all hover:bg-white/5 border-b last:border-0"
+                style={{ borderColor: "#21262D" }}>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-semibold truncate" style={{ color: "#E6EDF3" }}>{r.label}</div>
+                  <div className="text-xs truncate" style={{ color: "#8B949E" }}>{r.sub}</div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0 ml-2">
+                  {r.badge && (
+                    <span className="text-xs px-1.5 py-0.5 rounded font-semibold" style={{ color: r.badgeColor, background: `${r.badgeColor}18` }}>
+                      {r.badge}
+                    </span>
+                  )}
+                  <ChevronRight className="w-3 h-3" style={{ color: "#8B949E" }} />
+                </div>
+              </button>
+            ))}
+            <div className="px-3 py-2 text-xs" style={{ color: "#8B949E", borderTop: "1px solid #21262D" }}>
+              {results.length} result{results.length !== 1 ? "s" : ""} — press Enter to open first
+            </div>
+          </div>
+        )}
+        {open && query.length >= 2 && results.length === 0 && (
+          <div className="absolute left-4 right-4 mt-1 rounded-xl px-4 py-3 text-xs z-50"
+            style={{ background: "#161B22", border: "1px solid #30363D", color: "#8B949E" }}>
+            No results for "{query}"
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 const platforms = [
   {
@@ -409,38 +555,32 @@ export default function StudyHub() {
             ))}
           </div>
 
-          {/* Feature cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            {[
-              {
-                icon: "📖",
-                title: "Encyclopedic Overviews",
-                desc: "Line-by-line AI content with color-coded highlights — red for critical, blue for important, green for notable terms.",
-                badge: "All sections",
-              },
-              {
-                icon: "🎯",
-                title: "MCQ Practice",
-                desc: "8 NEET-PG / USMLE style clinical vignette questions per topic, generated instantly with detailed explanations.",
-                badge: "NEET-PG · USMLE",
-              },
-              {
-                icon: "⚡",
-                title: "Smart Flashcards",
-                desc: "10 high-yield revision cards per topic covering drug of choice, gold standards, and mnemonics.",
-                badge: "Quick Revision",
-              },
-            ].map((f, i) => (
-              <div key={i} className="rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-teal-500/30"
-                style={{ background: "#161B22", border: "1px solid #21262D" }}>
-                <div className="text-3xl mb-3">{f.icon}</div>
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="font-bold text-sm" style={{ color: "#E6EDF3" }}>{f.title}</h3>
-                  <span className="px-1.5 py-0.5 rounded text-xs font-semibold" style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>{f.badge}</span>
-                </div>
-                <p className="text-xs leading-relaxed" style={{ color: "#8B949E" }}>{f.desc}</p>
-              </div>
-            ))}
+          {/* Interactive search cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8" style={{ position: "relative", zIndex: 10 }}>
+            <HubSearchCard
+              icon="📖"
+              title="Encyclopedia Overview"
+              desc="Search any topic or condition and open its full AI-generated reference — line-by-line with color-coded highlights."
+              badge="Full Content"
+              tab="overview"
+              accentColor="#00C2A8"
+            />
+            <HubSearchCard
+              icon="🎯"
+              title="MCQ Practice"
+              desc="Search a topic and jump straight to 8 NEET-PG / USMLE clinical vignette questions with detailed explanations."
+              badge="NEET-PG · USMLE"
+              tab="exam"
+              accentColor="#F85149"
+            />
+            <HubSearchCard
+              icon="⚡"
+              title="Flashcard Revision"
+              desc="Search any topic and open its 10 high-yield revision flashcards — drug of choice, gold standards, mnemonics."
+              badge="Quick Revision"
+              tab="flashcards"
+              accentColor="#E3B341"
+            />
           </div>
 
           {/* Subject quick-links */}

@@ -162,7 +162,9 @@ export default function CaseStudySimulator() {
   if (!selectedCase) {
     return (
       <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
-        <div className="relative overflow-hidden" style={{ background: "linear-gradient(160deg,#0A1628,#0D2144,#0A3060)" }}>
+        <div className="relative overflow-hidden" >
+        <div className="absolute inset-0" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1576765608866-5b51046452be?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, rgba(10,22,40,0.93) 0%, rgba(13,33,68,0.9) 50%, rgba(10,48,96,0.93) 100%)" }} />
           <div className="max-w-3xl mx-auto px-4 pt-16 pb-10 relative z-10">
             <Link href="/tools" className="inline-flex items-center gap-1.5 text-sm mb-6 hover:opacity-80 transition-opacity" style={{ color: "rgba(255,255,255,0.6)" }}>
               <ArrowLeft className="w-4 h-4" /> Back to Tools

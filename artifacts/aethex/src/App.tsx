@@ -51,6 +51,11 @@ import TermsOfService from "@/pages/TermsOfService";
 import MedicalDisclaimer from "@/pages/MedicalDisclaimer";
 
 import InstitutionHub from "@/pages/InstitutionHub";
+import MedicalKnowledgeHub from "@/pages/StudyHub/MedicalKnowledgeHub/index";
+import SubjectPage from "@/pages/StudyHub/MedicalKnowledgeHub/SubjectPage";
+import TopicPage from "@/pages/StudyHub/MedicalKnowledgeHub/TopicPage";
+import DepartmentPage from "@/pages/StudyHub/MedicalKnowledgeHub/DepartmentPage";
+import ConditionPage from "@/pages/StudyHub/MedicalKnowledgeHub/ConditionPage";
 import SellerRegister from "@/pages/seller/Register";
 import SellerLogin from "@/pages/seller/Login";
 import SellerDashboard from "@/pages/seller/Dashboard";
@@ -150,6 +155,13 @@ function Router() {
 
                 {/* Study Hub */}
                 <Route path="/study-hub" component={StudyHub} />
+
+                {/* Medical Knowledge Hub */}
+                <Route path="/study-hub/medical-knowledge-hub" component={MedicalKnowledgeHub} />
+                <Route path="/study-hub/medical-knowledge-hub/subjects/:subjectSlug/:topicSlug" component={TopicPage} />
+                <Route path="/study-hub/medical-knowledge-hub/subjects/:subjectSlug" component={SubjectPage} />
+                <Route path="/study-hub/medical-knowledge-hub/departments/:deptSlug/:conditionSlug" component={ConditionPage} />
+                <Route path="/study-hub/medical-knowledge-hub/departments/:deptSlug" component={DepartmentPage} />
 
                 {/* Institution Hub */}
                 <Route path="/institutions" component={InstitutionHub} />

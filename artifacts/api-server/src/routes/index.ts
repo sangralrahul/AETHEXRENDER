@@ -11,6 +11,7 @@ import blogRouter from "./blog";
 import authRouter from "./auth";
 import contactRouter from "./contact";
 import adminRouter from "./admin";
+import medKnowledgeRouter from "./medknowledge";
 
 const router: IRouter = Router();
 
@@ -26,5 +27,6 @@ router.use(notificationsRouter);
 router.use(reviewsRouter);
 router.use(sellerRouter);
 router.use(blogRouter);
+router.use(medKnowledgeRouter);
 
 export default router;

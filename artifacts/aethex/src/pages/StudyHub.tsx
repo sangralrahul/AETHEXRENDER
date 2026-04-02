@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Star, ExternalLink, BookOpen, PlayCircle, CheckCircle2, Filter, Crown, GraduationCap, Award, Zap, Clock, Globe, Users, Sparkles, ArrowUpRight } from "lucide-react";
+import { Star, ExternalLink, BookOpen, PlayCircle, CheckCircle2, Filter, Crown, GraduationCap, Award, Zap, Clock, Globe, Users, Sparkles, ArrowUpRight, Brain, FlaskConical, Stethoscope, ArrowRight } from "lucide-react";
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const platforms = [
   {
@@ -364,6 +366,54 @@ export default function StudyHub() {
           </div>
         </div>
       )}
+
+      {/* ── Medical Knowledge Hub Banner ─────────────────────────────── */}
+      <section className="py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Link href={`${BASE}/study-hub/medical-knowledge-hub`}
+            className="block rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-2xl group"
+            style={{ background: "linear-gradient(135deg,#0D1117 0%,#161B22 50%,#0D1117 100%)", border: "1px solid #21262D", boxShadow: "0 4px 20px rgba(0,194,168,0.08)" }}>
+            <div className="relative p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 overflow-hidden">
+              <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at top right, rgba(0,194,168,0.12) 0%, transparent 60%)" }} />
+              <div className="relative z-10 flex items-center gap-5 flex-1">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0"
+                  style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.25)" }}>
+                  <Brain className="w-8 h-8" style={{ color: "#00C2A8" }} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-xl md:text-2xl font-bold" style={{ color: "#E6EDF3" }}>Medical Knowledge Hub</h2>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,194,168,0.2)", border: "1px solid rgba(0,194,168,0.4)", color: "#00C2A8" }}>NEW</span>
+                  </div>
+                  <p className="text-sm max-w-xl" style={{ color: "#8B949E" }}>
+                    AI-generated content for 20 medical subjects, 500+ topics, and 35 clinical departments. Deep-dive overviews, pathophysiology, MCQs, flashcards and diagrams — all in one place.
+                  </p>
+                  <div className="flex flex-wrap gap-4 mt-3">
+                    {[
+                      { icon: BookOpen, label: "20 Subjects" },
+                      { icon: FlaskConical, label: "500+ Topics" },
+                      { icon: Stethoscope, label: "35 Departments" },
+                      { icon: Brain, label: "AI-Powered" },
+                    ].map((item, i) => (
+                      <span key={i} className="flex items-center gap-1.5 text-xs font-medium" style={{ color: "#8B949E" }}>
+                        <item.icon className="w-3.5 h-3.5" style={{ color: "#00C2A8" }} />
+                        {item.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="relative z-10 shrink-0">
+                <div className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all group-hover:gap-3"
+                  style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.35)", color: "#00C2A8" }}>
+                  Explore Hub
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
 
       {/* ── Coaching Platforms ───────────────────────────────────────── */}
       <section className="py-14">

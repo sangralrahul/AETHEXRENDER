@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useUserAuth } from "@/hooks/use-user-auth";
@@ -17,6 +17,87 @@ export function AnnouncementBar() {
   );
 }
 
+const toolsMenu = [
+  { href: "/tools/prescription", icon: FileText, label: "Prescription Writer", desc: "AI-powered Rx generator", color: "#007AFF" },
+  { href: "/tools/drug-interactions", icon: Pill, label: "Drug Interactions", desc: "Check drug safety instantly", color: "#F59E0B" },
+  { href: "/tools/dosage-calculator", icon: FlaskConical, label: "Dosage Calculator", desc: "Weight-based dose calculator", color: "#10B981" },
+  { href: "/tools/differential-diagnosis", icon: Brain, label: "Differential Diagnosis", desc: "AI symptom analysis", color: "#8B5CF6" },
+  { href: "/tools/lab-interpreter", icon: Microscope, label: "Lab Interpreter", desc: "Interpret investigation results", color: "#EF4444" },
+  { href: "/tools/procedure-guide", icon: Syringe, label: "Procedure Guide", desc: "Step-by-step clinical procedures", color: "#06B6D4" },
+];
+
+const institutionsMenu = [
+  { href: "/institutions?type=medical-college", icon: University, label: "Medical Colleges", desc: "MBBS, MD, MS admissions", color: "#007AFF" },
+  { href: "/institutions?type=hospital", icon: Building2, label: "Hospitals", desc: "Top hospitals & networks", color: "#EF4444" },
+  { href: "/institutions?type=pg-entrance", icon: GraduationCap, label: "PG Entrance", desc: "NEET PG, NEXT coaching", color: "#F59E0B" },
+  { href: "/institutions?type=research", icon: Microscope, label: "Research Institutes", desc: "ICMR, AIIMS, CMC & more", color: "#8B5CF6" },
+  { href: "/institutions?type=nursing", icon: HeartPulse, label: "Nursing Colleges", desc: "BSc, MSc Nursing programs", color: "#10B981" },
+  { href: "/institutions?type=pharmacy", icon: Pill, label: "Pharmacy Colleges", desc: "B.Pharm, Pharm.D programs", color: "#06B6D4" },
+];
+
+function NavDropdown({ label, href, menu, open, onToggle, onClose, dropdownRef }: {
+  label: string;
+  href: string;
+  menu: typeof toolsMenu;
+  open: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+  dropdownRef: React.RefObject<HTMLDivElement>;
+}) {
+  const [location] = useLocation();
+  const active = location.startsWith(href);
+
+  return (
+    <div ref={dropdownRef} className="relative hidden lg:block">
+      <button
+        onClick={onToggle}
+        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+        style={{
+          color: active ? "#007AFF" : "#636366",
+          background: active ? "rgba(0,122,255,0.08)" : open ? "rgba(60,60,67,0.06)" : "transparent",
+        }}
+        onMouseEnter={e => { if (!active && !open) (e.currentTarget as HTMLButtonElement).style.background = "rgba(60,60,67,0.06)"; }}
+        onMouseLeave={e => { if (!active && !open) (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+      >
+        {label}
+        <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[440px] rounded-2xl z-50 overflow-hidden"
+          style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 16px 48px rgba(0,0,0,0.14)" }}>
+          <div className="px-4 pt-3 pb-2 border-b" style={{ borderColor: "rgba(60,60,67,0.08)" }}>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#AEAEB2" }}>{label}</p>
+          </div>
+          <div className="p-3 grid grid-cols-2 gap-1">
+            {menu.map((item) => (
+              <Link key={item.href} href={item.href} onClick={onClose}
+                className="flex items-center gap-3 p-3 rounded-xl transition-all hover:-translate-y-0.5"
+                style={{ background: "transparent" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `${item.color}08`; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                  style={{ background: `${item.color}14`, border: `1px solid ${item.color}25` }}>
+                  <item.icon className="w-4 h-4" style={{ color: item.color }} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold truncate" style={{ color: "#1C1C1E" }}>{item.label}</p>
+                  <p className="text-[10px] truncate" style={{ color: "#AEAEB2" }}>{item.desc}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="px-4 py-2.5 border-t" style={{ borderColor: "rgba(60,60,67,0.08)", background: "rgba(60,60,67,0.02)" }}>
+            <Link href={href} onClick={onClose} className="text-xs font-semibold" style={{ color: "#007AFF" }}>
+              View all {label} →
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Navbar() {
   const [location, setLocation] = useLocation();
   const sessionId = useSession();
@@ -27,12 +108,17 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const [institutionsOpen, setInstitutionsOpen] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
+  const toolsRef = useRef<HTMLDivElement>(null);
+  const institutionsRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
-        setAccountOpen(false);
-      }
+      if (accountRef.current && !accountRef.current.contains(e.target as Node)) setAccountOpen(false);
+      if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) setToolsOpen(false);
+      if (institutionsRef.current && !institutionsRef.current.contains(e.target as Node)) setInstitutionsOpen(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -59,16 +145,18 @@ export function Navbar() {
   const openLogin = () => { setAccountOpen(false); setMobileOpen(false); setLocation("/login"); };
   const openSignup = () => { setAccountOpen(false); setMobileOpen(false); setLocation("/signup"); };
 
+  const simpleLinks = [
+    { href: "/shop", label: "Shop" },
+    { href: "/study-hub", label: "Study Hub" },
+    { href: "/blog", label: "Blog" },
+    { href: "/news", label: "News" },
+  ];
+
   return (
     <>
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
       <header
-        className={cn(
-          "transition-all duration-300 border-b",
-          isScrolled
-            ? "backdrop-blur-xl shadow-sm py-3"
-            : "py-4"
-        )}
+        className={cn("transition-all duration-300 border-b", isScrolled ? "backdrop-blur-xl shadow-sm py-3" : "py-4")}
         style={{
           background: "rgba(255,255,255,0.94)",
           backdropFilter: "blur(20px) saturate(180%)",
@@ -80,7 +168,7 @@ export function Navbar() {
         }}
       >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4 md:gap-8">
+          <div className="flex items-center justify-between gap-4 md:gap-6">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 group shrink-0">
               <img
@@ -108,18 +196,14 @@ export function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="block w-full pl-8 pr-3 py-2 rounded-xl leading-5 text-xs transition-all focus:outline-none"
-                style={{
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(60,60,67,0.15)",
-                  color: "#1C1C1E",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                }}
+                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.15)", color: "#1C1C1E", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
                 placeholder="Search products..."
               />
             </form>
 
             {/* Right Navigation */}
-            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <div className="flex items-center gap-1 shrink-0">
+              {/* Start Chat — unchanged */}
               <Link
                 href="/ai-assistant"
                 className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-[10px] font-semibold text-sm transition-all hover:opacity-90"
@@ -129,26 +213,50 @@ export function Navbar() {
                 <span>Start Chat</span>
               </Link>
 
-              {[
-                { href: "/shop", label: "Shop" },
-                { href: "/study-hub", label: "Study Hub", lg: true },
-                { href: "/blog", label: "Blog", lg: true },
-                { href: "/tools", label: "Tools", lg: true },
-                { href: "/institutions", label: "Colleges & Hospitals", lg: true },
-                { href: "/news", label: "News", xl: true },
-              ].map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "text-sm font-medium transition-colors px-2 py-1",
-                    item.xl ? "hidden xl:block" : item.lg ? "hidden lg:block" : "hidden md:block"
-                  )}
-                  style={{ color: location === item.href ? "#007AFF" : "#636366" }}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {/* Simple nav links with hover background */}
+              {simpleLinks.map((item) => {
+                const active = location === item.href || location.startsWith(item.href + "/");
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
+                      item.href === "/shop" ? "hidden md:block" : "hidden lg:block"
+                    )}
+                    style={{
+                      color: active ? "#007AFF" : "#636366",
+                      background: active ? "rgba(0,122,255,0.08)" : "transparent",
+                    }}
+                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
+                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+
+              {/* Tools dropdown */}
+              <NavDropdown
+                label="Tools"
+                href="/tools"
+                menu={toolsMenu}
+                open={toolsOpen}
+                onToggle={() => { setToolsOpen(o => !o); setInstitutionsOpen(false); }}
+                onClose={() => setToolsOpen(false)}
+                dropdownRef={toolsRef as React.RefObject<HTMLDivElement>}
+              />
+
+              {/* Colleges & Hospitals dropdown */}
+              <NavDropdown
+                label="Colleges & Hospitals"
+                href="/institutions"
+                menu={institutionsMenu}
+                open={institutionsOpen}
+                onToggle={() => { setInstitutionsOpen(o => !o); setToolsOpen(false); }}
+                onClose={() => setInstitutionsOpen(false)}
+                dropdownRef={institutionsRef as React.RefObject<HTMLDivElement>}
+              />
 
               {/* Account Dropdown */}
               <div ref={accountRef} className="relative hidden md:block">
@@ -283,13 +391,16 @@ export function Navbar() {
                 { href: "/blog", label: "Blog" },
                 { href: "/news", label: "Medical News" },
                 { href: "/orders/track", label: "Track Order" },
-              ].map(item => (
-                <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
-                  className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors hover:bg-black/5"
-                  style={{ color: "#636366" }}>
-                  {item.label}
-                </Link>
-              ))}
+              ].map(item => {
+                const active = location === item.href || location.startsWith(item.href + "/");
+                return (
+                  <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
+                    className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all"
+                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}>
+                    {item.label}
+                  </Link>
+                );
+              })}
               <div className="pt-2 mt-2" style={{ borderTop: "1px solid rgba(60,60,67,0.1)" }}>
                 {isLoggedIn ? (
                   <button onClick={() => { logout(); setMobileOpen(false); }}

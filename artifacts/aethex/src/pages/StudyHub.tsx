@@ -348,33 +348,33 @@ const examFilters = ["All", "NEET PG", "NEXT", "FMGE", "USMLE Step 1", "USMLE St
 const youtubeChannels = [
   {
     name: "Dr. Najeeb Lectures",
-    handle: "@drnajeeb",
+    handle: "@DrNajeebLectures",
     subs: "1.8M",
     topic: "Basic Sciences — Anatomy, Physiology, Pharmacology",
-    url: "https://www.youtube.com/@drnajeeb",
-    logo: "https://unavatar.io/youtube/drnajeeb",
+    url: "https://www.youtube.com/@DrNajeebLectures",
+    logo: "https://ui-avatars.com/api/?name=NJ&background=CC0000&color=fff&size=128&bold=true&font-size=0.45&rounded=true",
     badge: "Must Watch",
-    color: "#FF0000",
+    color: "#CC0000",
   },
   {
     name: "PrepLadder",
-    handle: "@prepladder",
+    handle: "@PrepLadder",
     subs: "1.5M",
     topic: "NEET PG — All Subjects",
-    url: "https://www.youtube.com/@prepladder",
-    logo: "https://unavatar.io/youtube/prepladder",
+    url: "https://www.youtube.com/@PrepLadder",
+    logo: "https://ui-avatars.com/api/?name=PL&background=E84C1E&color=fff&size=128&bold=true&font-size=0.45&rounded=true",
     badge: "NEET PG",
-    color: "#FF6B35",
+    color: "#E84C1E",
   },
   {
     name: "Marrow",
-    handle: "@marrow",
+    handle: "@MarrowNEETPG",
     subs: "920K",
     topic: "NEET PG — Clinical Sciences",
-    url: "https://www.youtube.com/@marrow",
-    logo: "https://unavatar.io/youtube/marrow",
+    url: "https://www.youtube.com/@MarrowNEETPG",
+    logo: "https://ui-avatars.com/api/?name=MR&background=00A893&color=fff&size=128&bold=true&font-size=0.45&rounded=true",
     badge: "",
-    color: "#00C2A8",
+    color: "#00A893",
   },
   {
     name: "Medicosis Perfectionalis",
@@ -382,9 +382,9 @@ const youtubeChannels = [
     subs: "730K",
     topic: "Pathophysiology & Clinical Medicine",
     url: "https://www.youtube.com/@MedicosisP",
-    logo: "https://unavatar.io/youtube/MedicosisP",
+    logo: "https://ui-avatars.com/api/?name=MP&background=7C3AED&color=fff&size=128&bold=true&font-size=0.45&rounded=true",
     badge: "USMLE",
-    color: "#8B5CF6",
+    color: "#7C3AED",
   },
   {
     name: "Armando Hasudungan",
@@ -392,9 +392,9 @@ const youtubeChannels = [
     subs: "1.1M",
     topic: "Biology, Physiology & Microbiology",
     url: "https://www.youtube.com/@armandohasudungan",
-    logo: "https://unavatar.io/youtube/armandohasudungan",
+    logo: "https://ui-avatars.com/api/?name=AH&background=2563EB&color=fff&size=128&bold=true&font-size=0.45&rounded=true",
     badge: "",
-    color: "#3B82F6",
+    color: "#2563EB",
   },
   {
     name: "Dirty Medicine",
@@ -402,19 +402,73 @@ const youtubeChannels = [
     subs: "630K",
     topic: "USMLE Step 1 & Step 2 CK",
     url: "https://www.youtube.com/@DirtyMedicine",
-    logo: "https://unavatar.io/youtube/DirtyMedicine",
+    logo: "https://ui-avatars.com/api/?name=DM&background=D97706&color=fff&size=128&bold=true&font-size=0.45&rounded=true",
     badge: "USMLE",
-    color: "#F59E0B",
+    color: "#D97706",
   },
 ];
 
 const medicalBooks = [
-  { title: "Harrison's Principles of Internal Medicine", authors: "Fauci, Kasper, Longo", category: "Medicine", price: 4800, link: "/shop?search=harrison" },
-  { title: "Gray's Anatomy for Students", authors: "Drake, Vogl, Mitchell", category: "Anatomy", price: 2200, link: "/shop?search=gray+anatomy" },
-  { title: "Robbins & Cotran Pathological Basis of Disease", authors: "Kumar, Abbas, Aster", category: "Pathology", price: 3600, link: "/shop?search=robbins" },
-  { title: "Goodman & Gilman's Pharmacology", authors: "Brunton, Hilal-Dandan", category: "Pharmacology", price: 3200, link: "/shop?search=goodman+pharmacology" },
-  { title: "Bailey & Love's Surgery", authors: "Williams, O'Connell, McCaskie", category: "Surgery", price: 2900, link: "/shop?search=bailey+love" },
-  { title: "Williams Obstetrics", authors: "Cunningham et al.", category: "OBG", price: 2600, link: "/shop?search=williams+obstetrics" },
+  {
+    title: "Harrison's Principles of Internal Medicine",
+    authors: "Fauci, Kasper, Longo",
+    category: "Medicine",
+    price: 4800,
+    link: "/shop?search=harrison",
+    cover: "https://covers.openlibrary.org/b/isbn/9781259644030-M.jpg",
+    color: "#1D4ED8",
+    edition: "21st Ed",
+  },
+  {
+    title: "Gray's Anatomy for Students",
+    authors: "Drake, Vogl, Mitchell",
+    category: "Anatomy",
+    price: 2200,
+    link: "/shop?search=gray+anatomy",
+    cover: "https://covers.openlibrary.org/b/isbn/9780323393041-M.jpg",
+    color: "#B45309",
+    edition: "4th Ed",
+  },
+  {
+    title: "Robbins & Cotran Pathological Basis of Disease",
+    authors: "Kumar, Abbas, Aster",
+    category: "Pathology",
+    price: 3600,
+    link: "/shop?search=robbins",
+    cover: "https://covers.openlibrary.org/b/isbn/9780323531205-M.jpg",
+    color: "#9D1B1B",
+    edition: "10th Ed",
+  },
+  {
+    title: "Goodman & Gilman's Pharmacology",
+    authors: "Brunton, Hilal-Dandan",
+    category: "Pharmacology",
+    price: 3200,
+    link: "/shop?search=goodman+pharmacology",
+    cover: "https://covers.openlibrary.org/b/isbn/9781259584732-M.jpg",
+    color: "#065F46",
+    edition: "13th Ed",
+  },
+  {
+    title: "Bailey & Love's Short Practice of Surgery",
+    authors: "Williams, O'Connell, McCaskie",
+    category: "Surgery",
+    price: 2900,
+    link: "/shop?search=bailey+love",
+    cover: "https://covers.openlibrary.org/b/isbn/9781138052697-M.jpg",
+    color: "#4C1D95",
+    edition: "27th Ed",
+  },
+  {
+    title: "Williams Obstetrics",
+    authors: "Cunningham et al.",
+    category: "OBG",
+    price: 2600,
+    link: "/shop?search=williams+obstetrics",
+    cover: "https://covers.openlibrary.org/b/isbn/9781260462326-M.jpg",
+    color: "#9D174D",
+    edition: "26th Ed",
+  },
 ];
 
 function StarRating({ rating, count }: { rating: number; count: number }) {
@@ -837,28 +891,44 @@ export default function StudyHub() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {medicalBooks.map((book, i) => (
               <Link key={i} href={book.link}
-                className="flex items-start gap-4 p-5 rounded-2xl transition-all hover:-translate-y-0.5"
+                className="flex items-start gap-4 p-4 rounded-2xl transition-all hover:-translate-y-0.5 group"
                 style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(0,122,255,0.25)";
-                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 16px rgba(0,122,255,0.1)";
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = `${book.color}44`;
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = `0 4px 16px ${book.color}18`;
                 }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(60,60,67,0.1)";
                   (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)";
                 }}>
-                <div className="w-12 h-16 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ background: "linear-gradient(135deg,rgba(0,122,255,0.1),rgba(0,194,168,0.1))", border: "1px solid rgba(0,122,255,0.15)" }}>
-                  <BookOpen className="w-6 h-6" style={{ color: "#007AFF" }} />
+                {/* Book cover */}
+                <div className="w-14 h-20 rounded-lg overflow-hidden shrink-0 relative"
+                  style={{ border: `1px solid ${book.color}33`, background: `${book.color}10`, boxShadow: "2px 3px 8px rgba(0,0,0,0.15)" }}>
+                  <img
+                    src={book.cover}
+                    alt={book.title}
+                    className="w-full h-full object-cover"
+                    onError={e => {
+                      const img = e.currentTarget;
+                      img.style.display = "none";
+                      const fb = img.nextElementSibling as HTMLElement;
+                      if (fb) fb.style.display = "flex";
+                    }}
+                  />
+                  <div className="absolute inset-0 items-center justify-center hidden flex-col gap-0.5 p-1" style={{ background: `${book.color}15` }}>
+                    <BookOpen className="w-5 h-5" style={{ color: book.color }} />
+                    <span className="text-center text-[8px] font-bold leading-tight" style={{ color: book.color }}>{book.category}</span>
+                  </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-sm leading-snug mb-1 line-clamp-2" style={{ color: "#1C1C1E" }}>{book.title}</h4>
-                  <p className="text-xs mb-2" style={{ color: "#AEAEB2" }}>{book.authors}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 rounded text-xs font-medium"
-                      style={{ background: "rgba(0,122,255,0.07)", color: "#007AFF" }}>{book.category}</span>
-                    <span className="text-sm font-bold" style={{ color: "#00C2A8" }}>₹{book.price.toLocaleString()}</span>
+                  <h4 className="font-bold text-sm leading-snug mb-0.5 line-clamp-2" style={{ color: "#1C1C1E" }}>{book.title}</h4>
+                  <p className="text-xs mb-1" style={{ color: "#AEAEB2" }}>{book.authors}</p>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="px-2 py-0.5 rounded-full text-xs font-semibold"
+                      style={{ background: `${book.color}12`, color: book.color }}>{book.category}</span>
+                    <span className="text-xs font-medium" style={{ color: "#AEAEB2" }}>{book.edition}</span>
                   </div>
+                  <span className="text-sm font-bold" style={{ color: "#00C2A8" }}>₹{book.price.toLocaleString()}</span>
                 </div>
               </Link>
             ))}

@@ -206,32 +206,6 @@ export default function InstitutionHub() {
         </div>
       </section>
 
-      {/* ── Benefits ── */}
-      <section className="py-20" style={{ background: "#FFFFFF" }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#AEAEB2" }}>Why Aethex</p>
-            <h2 className="text-3xl font-black mb-3" style={{ color: "#1C1C1E", letterSpacing: "-0.5px" }}>
-              Built for Institutions
-            </h2>
-            <p className="text-base" style={{ color: "#636366" }}>Purpose-built features for medical colleges and hospitals across India</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {benefits.map((b, i) => (
-              <motion.div key={b.title} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i} variants={fadeUp}
-                className="p-6 rounded-2xl"
-                style={{ background: "#F5F5F7", border: "1px solid rgba(60,60,67,0.06)" }}>
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style={{ background: `${b.color}15` }}>
-                  <b.icon className="w-5 h-5" style={{ color: b.color }} />
-                </div>
-                <h3 className="font-bold text-base mb-2" style={{ color: "#1C1C1E" }}>{b.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#636366" }}>{b.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── Institution Browser ── */}
       <section id="institutions" className="py-20" style={{ background: "#F5F5F7" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

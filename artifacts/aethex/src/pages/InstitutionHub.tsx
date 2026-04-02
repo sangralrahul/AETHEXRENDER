@@ -579,26 +579,31 @@ export default function InstitutionHub() {
         </div>
       </section>
 
-      {/* ── CTA Banner ── */}
-      <section className="py-16" style={{ background: "linear-gradient(135deg, #0A1628, #0D2137)" }}>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-black mb-4" style={{ color: "#FFFFFF", letterSpacing: "-0.5px" }}>
-            Need immediate assistance?
-          </h2>
-          <p className="text-base mb-8" style={{ color: "rgba(255,255,255,0.5)" }}>
-            Call our institutional sales desk directly — available Mon–Sat, 9 AM to 7 PM IST.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+918800000000"
-              className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm"
-              style={{ background: "rgba(255,255,255,0.08)", color: "#FFFFFF", border: "1px solid rgba(255,255,255,0.15)" }}>
-              <Phone className="w-4 h-4" /> +91 88000 00000
-            </a>
-            <a href="mailto:institutions@aethex.in"
-              className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm"
-              style={{ background: "#007AFF", color: "#FFFFFF" }}>
-              <Mail className="w-4 h-4" /> institutions@aethex.in
-            </a>
+      {/* ── Built for Institutions (dark) ── */}
+      <section className="py-20" style={{ background: "#0D1117" }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#AEAEB2" }}>Why Aethex</p>
+            <h2 className="text-3xl sm:text-4xl font-black mb-4" style={{ color: "#FFFFFF", letterSpacing: "-0.5px" }}>
+              Built for Institutions
+            </h2>
+            <p className="text-base" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Purpose-built features for medical colleges and hospitals across India
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {benefits.map((b, i) => (
+              <motion.div key={b.title} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i} variants={fadeUp}
+                className="p-6 rounded-2xl"
+                style={{ background: "#161B22", border: "1px solid #21262D" }}>
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
+                  style={{ background: `${b.color}18`, border: `1px solid ${b.color}30` }}>
+                  <b.icon className="w-5 h-5" style={{ color: b.color }} />
+                </div>
+                <h3 className="font-bold text-base mb-2" style={{ color: "#FFFFFF" }}>{b.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{b.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

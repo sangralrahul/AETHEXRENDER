@@ -235,27 +235,33 @@ export function Navbar() {
                 );
               })}
 
-              {/* Tools dropdown */}
-              <NavDropdown
-                label="Tools"
-                href="/tools"
-                menu={toolsMenu}
-                open={toolsOpen}
-                onToggle={() => { setToolsOpen(o => !o); setInstitutionsOpen(false); }}
-                onClose={() => setToolsOpen(false)}
-                dropdownRef={toolsRef as React.RefObject<HTMLDivElement>}
-              />
+              {/* Tools link */}
+              {(() => {
+                const active = location === "/tools" || location.startsWith("/tools/");
+                return (
+                  <Link href="/tools"
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden lg:block"
+                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
+                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
+                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
+                    Tools
+                  </Link>
+                );
+              })()}
 
-              {/* Colleges & Hospitals dropdown */}
-              <NavDropdown
-                label="Colleges & Hospitals"
-                href="/institutions"
-                menu={institutionsMenu}
-                open={institutionsOpen}
-                onToggle={() => { setInstitutionsOpen(o => !o); setToolsOpen(false); }}
-                onClose={() => setInstitutionsOpen(false)}
-                dropdownRef={institutionsRef as React.RefObject<HTMLDivElement>}
-              />
+              {/* Colleges & Hospitals link */}
+              {(() => {
+                const active = location === "/institutions" || location.startsWith("/institutions/");
+                return (
+                  <Link href="/institutions"
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden lg:block"
+                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
+                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
+                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
+                    Colleges & Hospitals
+                  </Link>
+                );
+              })()}
 
               {/* Account Dropdown */}
               <div ref={accountRef} className="relative hidden md:block">

@@ -839,9 +839,12 @@ export default function AiAssistant() {
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error ?? "Image generation failed. Please try again.");
       if (data.imageUrl) {
+        const caption = data.isPlaceholder
+          ? `Image generation is temporarily unavailable — showing a medical reference image for: "${prompt}"`
+          : `Here is your generated ${contentLabels[imageStyle] ?? "medical illustration"} for: "${prompt}"`;
         updateSession(sessionId, [...newMsgs, {
           role: ChatMessageRole.assistant,
-          content: `Here is your generated ${contentLabels[imageStyle] ?? "medical illustration"} for: "${prompt}"`,
+          content: caption,
           imageUrl: data.imageUrl, isImageGeneration: true,
         }]);
       } else throw new Error(data.error ?? "No image was returned.");

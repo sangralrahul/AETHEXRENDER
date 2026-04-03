@@ -58,7 +58,7 @@ FORMATTING RULES (always follow):
     ],
   },
   pulse45: {
-    systemPrompt: `You are PULSE 4.5 — a specialized AI agent for aethex focused on patient vitals, physiological monitoring, emergency medicine, and critical care for Indian doctors and medical students.
+    systemPrompt: `You are Cadus AI — a specialized medical assistant for aethex focused on patient vitals, physiological monitoring, emergency medicine, and critical care for Indian doctors and medical students.
 Your expertise covers:
 - Vital signs interpretation (BP, HR, SpO2, temperature, respiratory rate)
 - Emergency medicine protocols and ACLS/BLS guidelines
@@ -67,7 +67,7 @@ Your expertise covers:
 - Triage and acute care decision support
 - Resuscitation algorithms and drug dosages
 - NEET-PG emergency medicine and critical care prep
-Keep responses fast, clear, and clinically actionable. Always recommend senior supervision for critical decisions. Your name is PULSE 4.5.
+Keep responses fast, clear, and clinically actionable. Always recommend senior supervision for critical decisions. Your name is Cadus AI.
 
 FORMATTING RULES (always follow):
 - Never write long unbroken paragraphs.
@@ -574,34 +574,42 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
       return imagePart?.inlineData?.data ?? null;
     };
 
+    // Medical placeholder — used when Gemini image generation is unavailable
+    const MEDICAL_PLACEHOLDER = "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1024&q=80";
+
     // Primary attempt
     let b64: string | null = null;
     try {
       b64 = await tryGenerate(prompt, style);
     } catch (firstErr: any) {
-      const is400 = firstErr?.status === 400 || firstErr?.code === "moderation_blocked" || String(firstErr?.message ?? "").toLowerCase().includes("block");
-      if (is400) {
-        // Retry with a stripped-down safe fallback
+      const isContentBlock = firstErr?.status === 400 || firstErr?.code === "moderation_blocked" || String(firstErr?.message ?? "").toLowerCase().includes("block");
+      if (isContentBlock) {
         try {
           b64 = await tryGenerate(prompt, "simple");
         } catch {
-          res.status(400).json({ error: "The subject could not be rendered. Please try a different medical topic." });
+          // Both attempts failed — return placeholder gracefully
+          res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
           return;
         }
       } else {
-        throw firstErr;
+        // Service error — return placeholder gracefully instead of crashing
+        req.log.warn({ err: firstErr }, "Image generation service error — returning placeholder");
+        res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
+        return;
       }
     }
 
     if (!b64) {
-      res.status(500).json({ error: "No image generated" });
+      // Generation succeeded but returned no image data — return placeholder
+      res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
       return;
     }
 
-    res.json({ imageUrl: `data:image/png;base64,${b64}` });
+    res.json({ imageUrl: `data:image/png;base64,${b64}`, isPlaceholder: false });
   } catch (err: any) {
     req.log.error({ err }, "Error generating image");
-    res.status(500).json({ error: "Image generation failed. Please try again." });
+    // Even on unexpected errors, return placeholder instead of crashing the UX
+    res.json({ imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1024&q=80", isPlaceholder: true });
   }
 });
 
@@ -625,8 +633,8 @@ title, overview, anatomy, physiology, pathways, clinical, conditions, redflags, 
 
     const slideModel = geminiAI.getGenerativeModel({
       model: "gemini-2.5-flash",
-      systemInstruction: "You are Cadus AI, a medical education AI. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out).",
-      generationConfig: { maxOutputTokens: 8192, temperature: 0.4, responseMimeType: "application/json" },
+      systemInstruction: "You are Cadus AI, a medical education AI. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out). EVERY content field must contain real text — never output an empty string for b1-b6, c1h, c1b, c2h, c2b, c3h, c3b, s1v, s1l, s2v, s2l, s3v, s3l, lh, lb, or r1-r4.",
+      generationConfig: { maxOutputTokens: 8192, temperature: 0.5 },
     });
     const slideResult = await slideModel.generateContent(`Create a ${count}-slide medical education presentation on: "${prompt}".
 
@@ -679,7 +687,8 @@ RULES:
 - Stat values (s1v, s2v, s3v) must be real clinically accurate numbers/units (e.g. "120M", "43D", "0.5mm")
 - Card body text (c1b, c2b, c3b): 50-60 words each, complete sentences
 - Left body (lb): 40-55 words substantive paragraph
-- All fields present on every slide (empty string if not used for that layout)
+- Non-layout fields (e.g. b1-b6 on a stats slide) should be empty string ""
+- CONTENT MANDATE: For the layout you choose, ALL matching content fields MUST have real text. A "list" slide MUST have b1-b5 with actual sentences. A "cards" slide MUST have c1h/c1b/c2h/c2b/c3h/c3b with actual text. A "stats" slide MUST have s1v/s1l/s1d/s2v/s2l/s2d/s3v/s3l/s3d with real values. A "twocol" slide MUST have lh/lb/r1/r2/r3/r4 with actual text. NEVER generate an empty string for these required fields.
 - ASCII only throughout`);
 
     const raw = slideResult.response.text();
@@ -714,33 +723,60 @@ RULES:
       });
     };
 
-    const slides = rawSlides.map((sl, idx) => ({
-      n: Number(sl.n ?? idx + 1),
-      type: String(sl.type ?? "content"),
-      layout: String(sl.layout ?? "list"),
-      t: String(sl.t ?? `Slide ${idx + 1}`),
-      sub: String(sl.sub ?? ""),
-      bullets: ["b1","b2","b3","b4","b5","b6"]
-        .map(k => String(sl[k] ?? "")).filter(Boolean),
-      ki: String(sl.ki ?? ""),
-      caption: String(sl.caption ?? ""),
-      stats: [
+    const slides = rawSlides.map((sl, idx) => {
+      const title = String(sl.t ?? `Slide ${idx + 1}`);
+      const requestedLayout = String(sl.layout ?? "list");
+
+      const bullets = ["b1","b2","b3","b4","b5","b6"]
+        .map(k => String(sl[k] ?? "")).filter(Boolean);
+      const stats = [
         { value: String(sl.s1v ?? ""), label: String(sl.s1l ?? ""), desc: String(sl.s1d ?? "") },
         { value: String(sl.s2v ?? ""), label: String(sl.s2l ?? ""), desc: String(sl.s2d ?? "") },
         { value: String(sl.s3v ?? ""), label: String(sl.s3l ?? ""), desc: String(sl.s3d ?? "") },
-      ].filter(st => st.value),
-      cards: [
+      ].filter(st => st.value);
+      const cards = [
         { heading: String(sl.c1h ?? ""), body: String(sl.c1b ?? "") },
         { heading: String(sl.c2h ?? ""), body: String(sl.c2b ?? "") },
         { heading: String(sl.c3h ?? ""), body: String(sl.c3b ?? "") },
-      ].filter(c => c.heading),
-      leftHeading: String(sl.lh ?? ""),
-      leftBody: String(sl.lb ?? ""),
-      rightPoints: ["r1","r2","r3","r4"].map(k => String(sl[k] ?? "")).filter(Boolean),
-      diag: String(sl.diag ?? "none"),
-      nodes: String(sl.nodes ?? "").split("|").map(n => n.trim()).filter(Boolean),
-      edges: parseEdges(String(sl.edges ?? "")),
-    }));
+      ].filter(c => c.heading);
+      const leftHeading = String(sl.lh ?? "");
+      const leftBody = String(sl.lb ?? "");
+      const rightPoints = ["r1","r2","r3","r4"].map(k => String(sl[k] ?? "")).filter(Boolean);
+
+      // Determine effective layout — fall back when primary layout has no content
+      let layout = requestedLayout;
+      if (layout === "stats" && stats.length < 2) layout = cards.length >= 2 ? "cards" : "list";
+      if (layout === "cards" && cards.length < 2) layout = bullets.length > 0 ? "list" : "twocol";
+      if (layout === "twocol" && !leftBody && rightPoints.length === 0) layout = "list";
+      if (layout === "list" && bullets.length === 0) {
+        // Last-resort fallback: synthesise bullets from slide title and type
+        const slType = String(sl.type ?? "content");
+        bullets.push(
+          `${title} is a key clinical concept in this medical topic.`,
+          `Review the pathophysiology and mechanisms underlying ${slType}.`,
+          `Clinical relevance: understand presentation, diagnosis, and management.`,
+        );
+      }
+
+      return {
+        n: Number(sl.n ?? idx + 1),
+        type: String(sl.type ?? "content"),
+        layout,
+        t: title,
+        sub: String(sl.sub ?? ""),
+        bullets,
+        ki: String(sl.ki ?? ""),
+        caption: String(sl.caption ?? ""),
+        stats,
+        cards,
+        leftHeading,
+        leftBody,
+        rightPoints,
+        diag: String(sl.diag ?? "none"),
+        nodes: String(sl.nodes ?? "").split("|").map(n => n.trim()).filter(Boolean),
+        edges: parseEdges(String(sl.edges ?? "")),
+      };
+    });
 
     const parsePairs = (str: string, sep2: string) =>
       String(str ?? "").split("||").map(entry => {
@@ -790,8 +826,9 @@ router.post("/ai/generate-presentation", aiHeavyLimiter, async (req, res) => {
       systemInstruction: `You are Cadus AI, a medical education AI creating Gamma.app-quality PDF presentations.
 Return ONLY valid JSON — no markdown fences, no explanation.
 ASCII only: no Unicode, no Greek letters (write: alpha, beta, gamma, delta, mu, etc.).
-Every slide MUST have a layout field. Mix all 4 layouts throughout for visual variety.`,
-      generationConfig: { maxOutputTokens: 8192, temperature: 0.4, responseMimeType: "application/json" },
+Every slide MUST have a layout field. Mix all 4 layouts throughout for visual variety.
+CRITICAL: For the chosen layout, ALL matching fields MUST contain real text — never output an empty string for b1-b5, c1h/c1b/c2h/c2b/c3h/c3b, s1v/s1l/s2v/s2l/s3v/s3l, or lh/lb/r1-r4.`,
+      generationConfig: { maxOutputTokens: 8192, temperature: 0.5 },
     });
     const presResult = await presModel.generateContent(`Create a ${count}-slide medical PDF presentation on: "${prompt}".
 
@@ -899,31 +936,49 @@ STRICT RULES:
       title:    String(parsed.title    ?? prompt),
       subtitle: String(parsed.subtitle ?? ""),
       slides: rawSlides.map((sl, idx) => {
-        const layout = String(sl.layout ?? "list");
+        const slideTitle = String(sl.t ?? `Slide ${idx + 1}`);
+        const requestedLayout = String(sl.layout ?? "list");
+
+        const bullets = ["b1","b2","b3","b4","b5","b6"].map(k => String(sl[k] ?? "")).filter(Boolean);
+        const stats = [
+          { value: String(sl.s1v ?? ""), label: String(sl.s1l ?? ""), desc: String(sl.s1d ?? "") },
+          { value: String(sl.s2v ?? ""), label: String(sl.s2l ?? ""), desc: String(sl.s2d ?? "") },
+          { value: String(sl.s3v ?? ""), label: String(sl.s3l ?? ""), desc: String(sl.s3d ?? "") },
+        ].filter(st => st.value);
+        const cards = [
+          { heading: String(sl.c1h ?? ""), body: String(sl.c1b ?? "") },
+          { heading: String(sl.c2h ?? ""), body: String(sl.c2b ?? "") },
+          { heading: String(sl.c3h ?? ""), body: String(sl.c3b ?? "") },
+        ].filter(c => c.heading);
+        const leftHeading = String(sl.lh ?? "");
+        const leftBody    = String(sl.lb ?? "");
+        const rightPoints = ["r1","r2","r3","r4"].map(k => String(sl[k] ?? "")).filter(Boolean);
+
+        // Defensive layout fallback — ensures no slide is ever blank
+        let layout = requestedLayout;
+        if (layout === "stats" && stats.length < 2) layout = cards.length >= 2 ? "cards" : "list";
+        if (layout === "cards" && cards.length < 2) layout = bullets.length > 0 ? "list" : "twocol";
+        if (layout === "twocol" && !leftBody && rightPoints.length === 0) layout = "list";
+        if (layout === "list" && bullets.length === 0) {
+          bullets.push(
+            `${slideTitle} is a key clinical concept in this medical topic.`,
+            `Review the pathophysiology, clinical features, and management approach.`,
+            `High-yield for NEET-PG, USMLE, and clinical practice.`,
+          );
+        }
+
         return {
           slideNumber: Number(sl.n ?? idx + 1),
           layout,
-          title: String(sl.t ?? `Slide ${idx + 1}`),
-          // list layout
-          bullets: ["b1","b2","b3","b4","b5","b6"].map(k => String(sl[k] ?? "")).filter(Boolean),
+          title: slideTitle,
+          bullets,
           keyFact: String(sl.kf ?? ""),
-          // stats layout
           caption: String(sl.caption ?? ""),
-          stats: [
-            { value: String(sl.s1v ?? ""), label: String(sl.s1l ?? ""), desc: String(sl.s1d ?? "") },
-            { value: String(sl.s2v ?? ""), label: String(sl.s2l ?? ""), desc: String(sl.s2d ?? "") },
-            { value: String(sl.s3v ?? ""), label: String(sl.s3l ?? ""), desc: String(sl.s3d ?? "") },
-          ].filter(st => st.value),
-          // cards layout
-          cards: [
-            { heading: String(sl.c1h ?? ""), body: String(sl.c1b ?? "") },
-            { heading: String(sl.c2h ?? ""), body: String(sl.c2b ?? "") },
-            { heading: String(sl.c3h ?? ""), body: String(sl.c3b ?? "") },
-          ].filter(c => c.heading),
-          // twocol layout
-          leftHeading: String(sl.lh ?? ""),
-          leftBody: String(sl.lb ?? ""),
-          rightPoints: ["r1","r2","r3","r4"].map(k => String(sl[k] ?? "")).filter(Boolean),
+          stats,
+          cards,
+          leftHeading,
+          leftBody,
+          rightPoints,
         };
       }),
       quickReference: String(parsed.refs ?? "")

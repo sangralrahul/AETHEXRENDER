@@ -1,0 +1,98 @@
+In the file api-server/src/routes/ai.ts, make the following 4 fixes exactly as described:
+
+---
+
+FIX 1 — Inside the fetchWikipediaImage function, find this exact code:
+
+  const searchTerm = wantLabeled
+    ? `${words.slice(0, 2).join(" ")} anatomy`
+    : words.slice(0, 3).join(" ");
+
+Replace it with:
+
+  const humanBodyParts = ["penis","vagina","uterus","ovary","testis","testes","breast","vulva","cervix","prostate","scrotum","foreskin","glans","clitoris","labia"];
+  const isReproductive = humanBodyParts.some(part => prompt.toLowerCase().includes(part));
+  const searchTerm = wantLabeled
+    ? `human ${words.slice(0, 2).join(" ")} anatomy labeled diagram`
+    : isReproductive
+      ? `human ${words.slice(0, 2).join(" ")} anatomy`
+      : words.slice(0, 3).join(" ");
+
+---
+
+FIX 2 — In the same fetchWikipediaImage function, find:
+
+  const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchTerm)}`;
+
+Replace it with:
+
+  const humanFirst = isReproductive || wantLabeled;
+  const primaryTerm = humanFirst ? `Human ${words.slice(0,2).join(" ")}` : searchTerm;
+  const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(primaryTerm)}`;
+
+Then find the first occurrence of:
+  if (imgUrl) return imgUrl;
+
+And add this block immediately AFTER it:
+
+  if (humanFirst) {
+    const fallbackUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchTerm)}`;
+    const fallbackResp = await httpsGet(fallbackUrl);
+    if (fallbackResp.status === 200) {
+      const fallbackData = JSON.parse(fallbackResp.body) as Record;
+      const fbImg = (fallbackData.originalimage?.source ?? fallbackData.thumbnail?.source) as string | undefined;
+      if (fbImg) return fbImg;
+    }
+  }
+
+---
+
+FIX 3 — Find this line:
+
+  model: "gemini-2.0-flash-preview-image-generation",
+
+Replace it with:
+
+  model: "gemini-2.0-flash-exp",
+
+---
+
+FIX 4 — Find this entire block:
+
+  if (style === "real" || style === "real-labeled") {
+    const imgUrl = await fetchWikipediaImage(String(prompt), style === "real-labeled");
+    if (imgUrl) {
+      return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia" });
+    }
+    return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
+  }
+
+Replace it with:
+
+  if (style === "real" || style === "real-labeled") {
+    const imgUrl = await fetchWikipediaImage(String(prompt), style === "real-labeled");
+    if (style === "real-labeled" && imgUrl) {
+      try {
+        const labelModel = geminiAI.getGenerativeModel({
+          model: "gemini-2.5-flash",
+          generationConfig: { maxOutputTokens: 500, temperature: 0.3 },
+        });
+        const labelResult = await labelModel.generateContent(
+          `List 6-8 key anatomical structures of the human ${prompt} as a JSON array of strings. Example: ["Glans","Corpus cavernosum","Urethra"]. Return ONLY the JSON array.`
+        );
+        const labelText = labelResult.response.text().trim();
+        const labels = JSON.parse(labelText.replace(/```json|```/g, "").trim());
+        return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia", labels });
+      } catch {
+        return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia", labels: [] });
+      }
+    }
+    if (imgUrl) {
+      return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia" });
+    }
+    return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
+  }
+
+---
+
+After all 4 changes are made, save the file and restart the server.

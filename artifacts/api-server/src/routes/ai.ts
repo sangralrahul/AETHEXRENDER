@@ -557,18 +557,36 @@ async function fetchWikipediaImage(prompt: string, wantLabeled: boolean): Promis
     const words = prompt.replace(/[^\w\s]/g, " ").split(/\s+/)
       .filter(w => w.length > 2 && !stopWords.has(w.toLowerCase()));
 
-    // For labeled: bias toward anatomy/diagram search terms
+    // FIX 1 — reproductive anatomy detection + smarter search terms
+    const humanBodyParts = ["penis","vagina","uterus","ovary","testis","testes","breast","vulva","cervix","prostate","scrotum","foreskin","glans","clitoris","labia"];
+    const isReproductive = humanBodyParts.some(part => prompt.toLowerCase().includes(part));
     const searchTerm = wantLabeled
-      ? `${words.slice(0, 2).join(" ")} anatomy`
-      : words.slice(0, 3).join(" ");
+      ? `human ${words.slice(0, 2).join(" ")} anatomy labeled diagram`
+      : isReproductive
+        ? `human ${words.slice(0, 2).join(" ")} anatomy`
+        : words.slice(0, 3).join(" ");
+
+    // FIX 2 — prefer "Human X" article for reproductive/labeled (Wikipedia has dedicated human anatomy articles)
+    const humanFirst = isReproductive || wantLabeled;
+    const primaryTerm = humanFirst ? `Human ${words.slice(0, 2).join(" ")}` : searchTerm;
 
     // 1. Try Wikipedia REST summary API (returns the main article image)
-    const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchTerm)}`;
+    const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(primaryTerm)}`;
     const summaryResp = await httpsGet(summaryUrl);
     if (summaryResp.status === 200) {
       const data = JSON.parse(summaryResp.body) as Record<string, any>;
       const imgUrl = (data.originalimage?.source ?? data.thumbnail?.source) as string | undefined;
       if (imgUrl) return imgUrl;
+      // If "Human X" had no image, try the original searchTerm as fallback
+      if (humanFirst) {
+        const fallbackUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchTerm)}`;
+        const fallbackResp = await httpsGet(fallbackUrl);
+        if (fallbackResp.status === 200) {
+          const fallbackData = JSON.parse(fallbackResp.body) as Record<string, any>;
+          const fbImg = (fallbackData.originalimage?.source ?? fallbackData.thumbnail?.source) as string | undefined;
+          if (fbImg) return fbImg;
+        }
+      }
     }
 
     // 2. Fallback: search Wikipedia for the term and get image from first result
@@ -617,10 +635,25 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
     // ── "real" and "real-labeled" → fetch from Wikipedia (free, no key, medically accurate) ──
     if (style === "real" || style === "real-labeled") {
       const imgUrl = await fetchWikipediaImage(String(prompt), style === "real-labeled");
+      if (style === "real-labeled" && imgUrl) {
+        try {
+          const labelModel = geminiAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: { maxOutputTokens: 500, temperature: 0.3 },
+          });
+          const labelResult = await labelModel.generateContent(
+            `List 6-8 key anatomical structures of the human ${prompt} as a JSON array of strings. Example: ["Glans","Corpus cavernosum","Urethra"]. Return ONLY the JSON array.`
+          );
+          const labelText = labelResult.response.text().trim();
+          const labels = JSON.parse(labelText.replace(/```json|```/g, "").trim());
+          return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia", labels });
+        } catch {
+          return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia", labels: [] });
+        }
+      }
       if (imgUrl) {
         return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia" });
       }
-      // Wikipedia had no image for this topic — fall back to placeholder
       return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
     }
 
@@ -639,7 +672,7 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
     const tryGenerate = async (subject: string, s: string): Promise<string | null> => {
       const p = buildPrompt(subject, s);
       const imgModel = geminiAI.getGenerativeModel({
-        model: "gemini-2.0-flash-preview-image-generation",
+        model: "gemini-2.0-flash-exp",
         generationConfig: { responseModalities: ["IMAGE"] as any, temperature: 0.9 },
         safetySettings: MEDICAL_SAFETY_SETTINGS,
       });

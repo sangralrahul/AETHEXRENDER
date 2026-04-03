@@ -1,5 +1,6 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { jsonrepair } from "jsonrepair";
 import rateLimit from "express-rate-limit";
 
 const router: IRouter = Router();
@@ -14,11 +15,27 @@ const medKnowledgeLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-function extractJSON(text: string): string {
-  let s = text.trim();
-  s = s.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
-  const match = s.match(/(\[[\s\S]*\])/);
-  if (match) return match[1];
+function extractAndRepairJSON(raw: string): string {
+  // 1. Strip Gemini 2.5 thinking tags (e.g. <thinking>...</thinking>)
+  let s = raw.replace(/<thinking>[\s\S]*?<\/thinking>/gi, "").trim();
+
+  // 2. Strip all markdown code fences (```json ... ``` or ``` ... ```)
+  s = s.replace(/^```(?:json)?\s*/im, "").replace(/\s*```\s*$/im, "").trim();
+
+  // 3. Find first '[' and last ']' — extract just the array
+  const start = s.indexOf("[");
+  const end = s.lastIndexOf("]");
+  if (start !== -1 && end !== -1 && end > start) {
+    s = s.slice(start, end + 1);
+  }
+
+  // 4. Use jsonrepair to fix any minor JSON syntax issues
+  try {
+    s = jsonrepair(s);
+  } catch {
+    // jsonrepair failed — return as-is and let JSON.parse surface the error
+  }
+
   return s;
 }
 
@@ -128,27 +145,27 @@ ${HIGHLIGHT_RULE}`,
 ## Immunocompromised Patients (altered presentation and risks)
 ${HIGHLIGHT_RULE}`,
 
-    mcq: `Generate 8 high-yield MCQ-style exam questions about **${entityName}** for NEET-PG/USMLE Step 1 & 2 level. Include clinical vignettes where relevant.
+    mcq: `Generate 8 high-yield MCQ exam questions about ${entityName} for NEET-PG/USMLE Step 1 & 2 level. Include clinical vignettes where relevant.
 
-Return ONLY a valid JSON array. No markdown, no code blocks, no explanation text. Start with [ and end with ].
-[
-  {
-    "question": "Clinical scenario or direct question text here",
-    "options": ["A. Option A", "B. Option B", "C. Option C", "D. Option D"],
-    "correct": "A",
-    "explanation": "Why A is correct and others are wrong"
-  }
-]`,
+CRITICAL OUTPUT RULES:
+- Output RAW JSON ONLY — no markdown, no code fences, no backticks, no explanation text
+- Start your response with [ and end with ]
+- Do NOT write \`\`\`json or \`\`\` anywhere
+- Do NOT write any text before [ or after ]
 
-    flashcards: `Generate 10 high-yield flashcard pairs for rapid revision of **${entityName}** in **${entityContext}**. Cover: key facts, drug of choice, diagnostic gold standard, classic presentation, complications, mnemonics.
+Output format (follow exactly):
+[{"question":"Clinical scenario or direct question text here","options":["A. Option A","B. Option B","C. Option C","D. Option D"],"correct":"A","explanation":"Why A is correct and others are wrong"}]`,
 
-Return ONLY a valid JSON array. No markdown, no code blocks, no explanation text. Start with [ and end with ].
-[
-  {
-    "front": "Question or incomplete statement",
-    "back": "Complete concise answer with key facts"
-  }
-]`,
+    flashcards: `Generate 10 high-yield flashcard pairs for rapid revision of ${entityName} in ${entityContext}. Cover: key facts, drug of choice, diagnostic gold standard, classic presentation, complications, mnemonics.
+
+CRITICAL OUTPUT RULES:
+- Output RAW JSON ONLY — no markdown, no code fences, no backticks, no explanation text
+- Start your response with [ and end with ]
+- Do NOT write \`\`\`json or \`\`\` anywhere
+- Do NOT write any text before [ or after ]
+
+Output format (follow exactly):
+[{"front":"Question or incomplete statement","back":"Complete concise answer with key facts"}]`,
   };
 
   const key = isCondition
@@ -174,18 +191,17 @@ router.post("/med-knowledge/content", medKnowledgeLimiter, async (req: Request, 
     const isJsonSection = section === "mcq" || section === "flashcards";
     const prompt = buildPrompt(section, topic || "", subject || "", conditionName, department);
 
-    const modelName = "gemini-2.5-flash";
-
     const systemInstruction = isJsonSection
-      ? "You are a medical education JSON API. Output ONLY a valid JSON array starting with [ and ending with ]. Absolutely no markdown, no code fences, no explanation text before or after the JSON."
+      ? "You are a medical education JSON API. Your ONLY output must be a raw JSON array starting with [ and ending with ]. Never use markdown, code fences, backticks, or any explanatory text. Never wrap the JSON in ```json blocks."
       : "You are a world-class medical educator. Respond with detailed, clinically accurate content suitable for MBBS/MD students and junior doctors.";
 
     const model = genAI.getGenerativeModel({
-      model: modelName,
+      model: "gemini-2.5-flash",
       systemInstruction,
       generationConfig: {
-        maxOutputTokens: isJsonSection ? 2000 : 4096,
-        temperature: isJsonSection ? 0.3 : 0.7,
+        maxOutputTokens: isJsonSection ? 4096 : 8192,
+        temperature: isJsonSection ? 0.2 : 0.7,
+        ...(isJsonSection ? { responseMimeType: "application/json" } : {}),
       },
     });
 
@@ -193,7 +209,17 @@ router.post("/med-knowledge/content", medKnowledgeLimiter, async (req: Request, 
     let content = result.response.text();
 
     if (isJsonSection) {
-      content = extractJSON(content);
+      const raw = content;
+      content = extractAndRepairJSON(raw);
+
+      // Validate the JSON parses correctly — throw early with context if not
+      try {
+        JSON.parse(content);
+      } catch (parseErr: any) {
+        req.log?.error?.({ parseErr, rawSample: raw.slice(0, 300) }, "JSON parse failed after extraction");
+        res.status(500).json({ error: "AI returned malformed data. Please try again." });
+        return;
+      }
     }
 
     res.json({ content });

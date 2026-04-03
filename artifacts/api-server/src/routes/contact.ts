@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import rateLimit, { ipKeyGenerator } from "express-rate-limit";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { db } from "@workspace/db";
 import { messagesTable } from "@workspace/db";
 import { sendContactUserEmail, sendContactAdminEmail } from "../lib/zoho-mailer.js";
@@ -17,10 +17,7 @@ const contactLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-const openai = new OpenAI({
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-});
+const geminiAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 const CADUS_SYSTEM_PROMPT = `You are Cadus AI, an advanced AI medical assistant inside AETHEX — India's premier medical store for doctors and medical students.
 You help medical professionals and students with:
@@ -64,20 +61,15 @@ router.post("/contact", contactLimiter, async (req, res) => {
   let aiResponse = "Thank you for your query. Our team will review and respond shortly.";
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: CADUS_SYSTEM_PROMPT },
-        {
-          role: "user",
-          content: `Subject: ${sanitizedSubject}\n\nQuery: ${sanitizedMessage}`,
-        },
-      ],
-      max_tokens: 600,
-      temperature: 0.6,
+    const contactModel = geminiAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+      systemInstruction: CADUS_SYSTEM_PROMPT,
+      generationConfig: { maxOutputTokens: 600, temperature: 0.6 },
     });
-
-    aiResponse = completion.choices[0]?.message?.content ?? aiResponse;
+    const contactResult = await contactModel.generateContent(
+      `Subject: ${sanitizedSubject}\n\nQuery: ${sanitizedMessage}`
+    );
+    aiResponse = contactResult.response.text() || aiResponse;
   } catch (aiErr) {
     console.error("Cadus AI error for contact:", aiErr);
   }

@@ -1,6 +1,4 @@
 import { Router, type IRouter } from "express";
-import OpenAI from "openai";
-import Anthropic from "@anthropic-ai/sdk";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
@@ -30,16 +28,6 @@ const aiHeavyLimiter = rateLimit({
   message: { error: "Heavy AI task rate limit reached. Please wait before running another." },
   standardHeaders: true,
   legacyHeaders: false,
-});
-
-const openai = new OpenAI({
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-});
-
-const anthropic = new Anthropic({
-  baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
-  apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
 });
 
 const geminiAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -386,23 +374,21 @@ router.post("/ai/chat", aiChatLimiter, async (req, res) => {
       ? modeSystemPrompt + specialtyInstruction + langInstruction
       : agentConfig.systemPrompt + specialtyInstruction + langInstruction;
 
-    const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-      { role: "system", content: finalSystemPrompt },
-      ...conversationHistory.map((msg: { role: string; content: string }) => ({
-        role: msg.role as "user" | "assistant",
-        content: msg.content,
-      })),
-      { role: "user", content: message },
-    ];
+    const history = conversationHistory
+      .map((msg: { role: string; content: string }) => ({
+        role: msg.role === "assistant" ? "model" : "user",
+        parts: [{ text: msg.content }],
+      }));
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-5.2",
-      messages,
-      max_completion_tokens: 8192,
+    const chatModel = geminiAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+      systemInstruction: finalSystemPrompt,
+      generationConfig: { maxOutputTokens: 8192, temperature: 0.7 },
     });
 
-    const responseMessage =
-      completion.choices[0]?.message?.content ?? "I'm sorry, I couldn't process your request.";
+    const chat = chatModel.startChat({ history });
+    const chatResult = await chat.sendMessage(message);
+    const responseMessage = chatResult.response.text() || "I'm sorry, I couldn't process your request.";
 
     res.json({ message: responseMessage, suggestions: agentConfig.suggestions });
   } catch (err) {
@@ -508,11 +494,9 @@ router.post("/ai/analyze-image", aiImageLimiter, async (req, res) => {
       ? `\n\nSPECIALTY CONTEXT: Apply ${specialty}-specific imaging interpretation guidelines.`
       : "";
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [{
-        role: "system",
-        content: `You are Cadus AI Medical Imaging AI — an expert clinical radiologist, cardiologist (ECG), and ophthalmologist (fundus) for Indian doctors.
+    const visionModel = geminiAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+      systemInstruction: `You are Cadus AI Medical Imaging AI — an expert clinical radiologist, cardiologist (ECG), and ophthalmologist (fundus) for Indian doctors.
 
 CRITICAL RULES:
 - NEVER comment on the origin, source, or provenance of the image (e.g., never say "this looks like a web example", "this appears to be a stock image", "not a real patient film", etc.)
@@ -531,17 +515,20 @@ Analyze the uploaded medical image and provide:
 
 Use systematic approach (e.g. for CXR: ABCDE — Airway, Breathing, Cardiac, Diaphragm, Everything else).
 Caveat at the end: "This is AI-assisted analysis — always correlate clinically and seek radiology/specialist review."${specialtyCtx}`,
-      }, {
-        role: "user",
-        content: [
-          { type: "image_url", image_url: { url: `data:${imageType};base64,${imageBase64}`, detail: "high" } },
-          { type: "text", text: query || "Please provide a full clinical analysis of this medical image." },
-        ] as any,
-      }],
-      max_completion_tokens: 2048,
+      generationConfig: { maxOutputTokens: 2048, temperature: 0.3 },
     });
 
-    const analysis = completion.choices[0]?.message?.content ?? "Unable to analyze image.";
+    const visionResult = await visionModel.generateContent({
+      contents: [{
+        role: "user",
+        parts: [
+          { inlineData: { mimeType: imageType as string, data: imageBase64 as string } },
+          { text: (query as string) || "Please provide a full clinical analysis of this medical image." },
+        ],
+      }],
+    });
+
+    const analysis = visionResult.response.text() || "Unable to analyze image.";
     res.json({ analysis });
   } catch (err: any) {
     req.log.error({ err }, "Error analyzing medical image");
@@ -575,10 +562,16 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
       }
     };
 
-    const tryGenerate = async (subject: string, s: string) => {
+    const tryGenerate = async (subject: string, s: string): Promise<string | null> => {
       const p = buildPrompt(subject, s);
-      const r = await openai.images.generate({ model: "gpt-image-1", prompt: p, n: 1, size: "1024x1024" });
-      return r.data[0]?.b64_json ?? null;
+      const imgModel = geminiAI.getGenerativeModel({
+        model: "gemini-2.0-flash-preview-image-generation",
+        generationConfig: { responseModalities: ["IMAGE"] as any, temperature: 0.9 },
+      });
+      const imgResult = await imgModel.generateContent(p);
+      const parts = imgResult.response.candidates?.[0]?.content?.parts ?? [];
+      const imagePart = (parts as any[]).find((pt: any) => pt.inlineData);
+      return imagePart?.inlineData?.data ?? null;
     };
 
     // Primary attempt
@@ -586,7 +579,7 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
     try {
       b64 = await tryGenerate(prompt, style);
     } catch (firstErr: any) {
-      const is400 = firstErr?.status === 400 || firstErr?.code === "moderation_blocked";
+      const is400 = firstErr?.status === 400 || firstErr?.code === "moderation_blocked" || String(firstErr?.message ?? "").toLowerCase().includes("block");
       if (is400) {
         // Retry with a stripped-down safe fallback
         try {
@@ -630,14 +623,12 @@ router.post("/ai/generate-slides", aiHeavyLimiter, async (req, res) => {
 title, overview, anatomy, physiology, pathways, clinical, conditions, redflags, mindmap, faq, glossary, summary`
       : `Generate ${count} slides. First slide type "title", last type "summary". Middle slides: overview, anatomy, physiology, clinical, faq, glossary.`;
 
-    const claudeMsg = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 8192,
-      system: "You are Cadus AI, a medical education AI built on Claude. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out).",
-      messages: [
-        {
-          role: "user",
-          content: `Create a ${count}-slide medical education presentation on: "${prompt}".
+    const slideModel = geminiAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+      systemInstruction: "You are Cadus AI, a medical education AI. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out).",
+      generationConfig: { maxOutputTokens: 8192, temperature: 0.4, responseMimeType: "application/json" },
+    });
+    const slideResult = await slideModel.generateContent(`Create a ${count}-slide medical education presentation on: "${prompt}".
 
 ${slideTypesInstructions}
 
@@ -689,12 +680,9 @@ RULES:
 - Card body text (c1b, c2b, c3b): 50-60 words each, complete sentences
 - Left body (lb): 40-55 words substantive paragraph
 - All fields present on every slide (empty string if not used for that layout)
-- ASCII only throughout`,
-        },
-      ],
-    });
+- ASCII only throughout`);
 
-    const raw = claudeMsg.content[0]?.type === "text" ? claudeMsg.content[0].text : "";
+    const raw = slideResult.response.text();
     let parsed: Record<string, unknown> = {};
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
@@ -796,18 +784,16 @@ router.post("/ai/generate-presentation", aiHeavyLimiter, async (req, res) => {
 
     const count = Math.max(3, Math.min(30, parseInt(String(slideCount ?? 10)) || 10));
 
-    // ── AI call: Multi-layout Gamma-style presentation (Claude) ─────────
-    const claudePDFMsg = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 8192,
-      system: `You are Cadus AI, a medical education AI creating Gamma.app-quality PDF presentations.
+    // ── AI call: Multi-layout Gamma-style presentation (Gemini) ─────────
+    const presModel = geminiAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+      systemInstruction: `You are Cadus AI, a medical education AI creating Gamma.app-quality PDF presentations.
 Return ONLY valid JSON — no markdown fences, no explanation.
 ASCII only: no Unicode, no Greek letters (write: alpha, beta, gamma, delta, mu, etc.).
 Every slide MUST have a layout field. Mix all 4 layouts throughout for visual variety.`,
-      messages: [
-        {
-          role: "user",
-          content: `Create a ${count}-slide medical PDF presentation on: "${prompt}".
+      generationConfig: { maxOutputTokens: 8192, temperature: 0.4, responseMimeType: "application/json" },
+    });
+    const presResult = await presModel.generateContent(`Create a ${count}-slide medical PDF presentation on: "${prompt}".
 
 Choose the best layout for each slide from these 4 types:
 - "stats"  — when showing 3 key numeric/quantitative facts prominently (like Gamma stat slides)
@@ -881,12 +867,9 @@ STRICT RULES:
 - Left body (lb): must be 30-45 words, substantive paragraph
 - List points (b1-b5): specific clinical facts with numbers/values where possible
 - Topic-specific content for: "${prompt}"
-- ASCII only — no Unicode`,
-        },
-      ],
-    });
+- ASCII only — no Unicode`);
 
-    const raw = claudePDFMsg.content[0]?.type === "text" ? claudePDFMsg.content[0].text : "";
+    const raw = presResult.response.text();
 
     // Parse with 4 fallback layers
     let parsed: Record<string, unknown> = {};

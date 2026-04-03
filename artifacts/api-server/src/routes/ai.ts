@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import OpenAI from "openai";
 import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
 import { jsonrepair } from "jsonrepair";
@@ -40,6 +41,8 @@ const anthropic = new Anthropic({
   baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
   apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
 });
+
+const geminiAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 const agentPrompts: Record<string, { systemPrompt: string; suggestions: string[] }> = {
   cadus: {
@@ -156,16 +159,16 @@ router.post("/ai/deep-research", aiHeavyLimiter, async (req, res) => {
     const GOOGLE_CSE_ID  = process.env.GOOGLE_CSE_ID;
     const hasGoogleSearch = !!(GOOGLE_API_KEY && GOOGLE_CSE_ID);
 
-    // Step 1 — generate focused search sub-queries via Anthropic
+    // Step 1 — generate focused search sub-queries via Gemini
     let searchQueries: string[] = [];
     try {
-      const queryGenMsg = await anthropic.messages.create({
-        model: "claude-sonnet-4-6",
-        max_tokens: 300,
-        system: `You are a medical research query generator. Generate 4 targeted Google search queries to comprehensively research the given medical topic from multiple angles (pathophysiology, clinical, guidelines, Indian context). Return ONLY a JSON array of strings, no other text. Example: ["query1","query2","query3","query4"]`,
-        messages: [{ role: "user", content: query }],
+      const queryGenModel = geminiAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        systemInstruction: "You are a medical research query generator. Generate 4 targeted Google search queries to comprehensively research the given medical topic from multiple angles (pathophysiology, clinical, guidelines, Indian context). Return ONLY a JSON array of strings, no other text. Example: [\"query1\",\"query2\",\"query3\",\"query4\"]",
+        generationConfig: { maxOutputTokens: 300, temperature: 0.2 },
       });
-      const raw = (queryGenMsg.content[0] as { type: string; text: string })?.text ?? "[]";
+      const queryGenResult = await queryGenModel.generateContent(query);
+      const raw = queryGenResult.response.text() ?? "[]";
       const parsed = JSON.parse(jsonrepair(raw));
       searchQueries = Array.isArray(parsed) ? parsed.map(String) : [];
     } catch { /* fall through */ }
@@ -209,7 +212,7 @@ router.post("/ai/deep-research", aiHeavyLimiter, async (req, res) => {
       );
     }
 
-    // Step 3 — AI synthesis with source grounding (Claude for high-quality output)
+    // Step 3 — AI synthesis with source grounding (Gemini for high-quality output)
     const sourceBlock = sources.length
       ? `\n\n---\nLIVE SEARCH RESULTS (from Google):\n${
           sources.map((s, i) => `[${i + 1}] ${s.title}\n${s.snippet}\nSource: ${s.url}`).join("\n\n")
@@ -240,19 +243,17 @@ Requirements:
 - Use bullet points (- ) for lists within sections
 - Be factually accurate — this is read by medical professionals`;
 
-    const synthesis = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 8000,
-      system: systemPrompt,
-      messages: [
-        {
-          role: "user",
-          content: `Deep research request: ${query}${sourceBlock}`,
-        },
-      ],
+    const synthesisModel = geminiAI.getGenerativeModel({
+      model: "gemini-1.5-pro",
+      systemInstruction: systemPrompt,
+      generationConfig: { maxOutputTokens: 8192, temperature: 0.6 },
     });
 
-    const report = (synthesis.content[0] as { type: string; text: string })?.text ?? "Unable to generate research report.";
+    const synthesisResult = await synthesisModel.generateContent(
+      `Deep research request: ${query}${sourceBlock}`
+    );
+
+    const report = synthesisResult.response.text() ?? "Unable to generate research report.";
 
     res.json({ report, sources: sources.slice(0, 12), searchQueries, hasGoogleSearch });
   } catch (err) {

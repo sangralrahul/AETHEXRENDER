@@ -1,13 +1,10 @@
 import { Router, type IRouter, type Request, type Response } from "express";
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import rateLimit from "express-rate-limit";
 
 const router: IRouter = Router();
 
-const anthropic = new Anthropic({
-  baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
-  apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 const medKnowledgeLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -85,7 +82,7 @@ ${HIGHLIGHT_RULE}`,
 For EACH investigation include what it shows, typical findings, clinical significance, and normal vs abnormal values. Each item on its own line.
 ${HIGHLIGHT_RULE}`,
 
-    diagnosis: `Explain the diagnostic approach for **${conditionName}}**:
+    diagnosis: `Explain the diagnostic approach for **${conditionName}**:
 ## Diagnostic Criteria
 ## Gold Standard Diagnosis
 ## Differential Diagnosis (top 5 with distinguishing features)
@@ -177,18 +174,23 @@ router.post("/med-knowledge/content", medKnowledgeLimiter, async (req: Request, 
     const isJsonSection = section === "mcq" || section === "flashcards";
     const prompt = buildPrompt(section, topic || "", subject || "", conditionName, department);
 
-    const msgParams: Parameters<typeof anthropic.messages.create>[0] = {
-      model: isJsonSection ? "claude-haiku-4-5" : "claude-sonnet-4-6",
-      max_tokens: isJsonSection ? 2000 : 2500,
-      messages: [{ role: "user", content: prompt }],
-    };
+    const modelName = isJsonSection ? "gemini-1.5-flash" : "gemini-1.5-pro";
 
-    if (isJsonSection) {
-      (msgParams as any).system = "You are a medical education JSON API. Output ONLY a valid JSON array starting with [ and ending with ]. Absolutely no markdown, no code fences, no explanation text before or after the JSON.";
-    }
+    const systemInstruction = isJsonSection
+      ? "You are a medical education JSON API. Output ONLY a valid JSON array starting with [ and ending with ]. Absolutely no markdown, no code fences, no explanation text before or after the JSON."
+      : "You are a world-class medical educator. Respond with detailed, clinically accurate content suitable for MBBS/MD students and junior doctors.";
 
-    const message = await anthropic.messages.create(msgParams);
-    let content = message.content[0].type === "text" ? message.content[0].text : "";
+    const model = genAI.getGenerativeModel({
+      model: modelName,
+      systemInstruction,
+      generationConfig: {
+        maxOutputTokens: isJsonSection ? 2000 : 4096,
+        temperature: isJsonSection ? 0.3 : 0.7,
+      },
+    });
+
+    const result = await model.generateContent(prompt);
+    let content = result.response.text();
 
     if (isJsonSection) {
       content = extractJSON(content);

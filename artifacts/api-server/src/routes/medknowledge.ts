@@ -46,7 +46,7 @@ Use exactly THREE levels of highlighting for important terms:
 - Wrap NOTABLE terms (supporting facts, less-tested details) in ~~double tildes~~ — these appear GREEN
 Apply these markers throughout your entire response. Every sentence should have at least 1–2 highlighted terms.`;
 
-function buildPrompt(section: string, topic: string, subject: string, conditionName?: string, department?: string): string {
+function buildPrompt(section: string, topic: string, subject: string, conditionName?: string, department?: string, mcqCount = 8): string {
   const isCondition = !!conditionName;
   const entityName = isCondition ? conditionName! : topic;
   const entityContext = isCondition ? department! : subject;
@@ -145,7 +145,7 @@ ${HIGHLIGHT_RULE}`,
 ## Immunocompromised Patients (altered presentation and risks)
 ${HIGHLIGHT_RULE}`,
 
-    mcq: `Generate 8 high-yield MCQ exam questions about ${entityName} for NEET-PG/USMLE Step 1 & 2 level. Include clinical vignettes where relevant.
+    mcq: (count: number) => `Generate ${count} high-yield MCQ exam questions about ${entityName} for NEET-PG/USMLE Step 1 & 2 level. Include clinical vignettes where relevant.
 
 CRITICAL OUTPUT RULES:
 - Output RAW JSON ONLY — no markdown, no code fences, no backticks, no explanation text
@@ -172,12 +172,13 @@ Output format (follow exactly):
     ? (section === "overview" ? "overview_condition" : section)
     : (section === "overview" ? "overview_topic" : section);
 
-  return prompts[key] || prompts[isCondition ? "overview_condition" : "overview_topic"];
+  const entry = prompts[key] ?? prompts[isCondition ? "overview_condition" : "overview_topic"];
+  return typeof entry === "function" ? (entry as (n: number) => string)(mcqCount) : entry;
 }
 
 router.post("/med-knowledge/content", medKnowledgeLimiter, async (req: Request, res: Response) => {
   try {
-    const { section, topic, subject, conditionName, department } = req.body;
+    const { section, topic, subject, conditionName, department, mcqCount } = req.body;
 
     if (!section) {
       res.status(400).json({ error: "section is required" });
@@ -188,8 +189,9 @@ router.post("/med-knowledge/content", medKnowledgeLimiter, async (req: Request, 
       return;
     }
 
+    const resolvedCount = Math.min(Math.max(parseInt(mcqCount) || 8, 1), 50);
     const isJsonSection = section === "mcq" || section === "flashcards";
-    const prompt = buildPrompt(section, topic || "", subject || "", conditionName, department);
+    const prompt = buildPrompt(section, topic || "", subject || "", conditionName, department, resolvedCount);
 
     const systemInstruction = isJsonSection
       ? "You are a medical education JSON API. Your ONLY output must be a raw JSON array starting with [ and ending with ]. Never use markdown, code fences, backticks, or any explanatory text. Never wrap the JSON in ```json blocks."
@@ -199,7 +201,7 @@ router.post("/med-knowledge/content", medKnowledgeLimiter, async (req: Request, 
       model: "gemini-2.5-flash",
       systemInstruction,
       generationConfig: {
-        maxOutputTokens: isJsonSection ? 4096 : 8192,
+        maxOutputTokens: isJsonSection ? Math.max(4096, resolvedCount * 200) : 8192,
         temperature: isJsonSection ? 0.2 : 0.7,
         ...(isJsonSection ? { responseMimeType: "application/json" } : {}),
       },

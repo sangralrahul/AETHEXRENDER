@@ -154,12 +154,14 @@ export default function TopicPage() {
   });
   const urlTab = new URLSearchParams(search).get("tab") as "overview" | "exam" | "flashcards" | null;
   const [activeTab, setActiveTab] = useState<"overview" | "exam" | "flashcards">(urlTab || "overview");
+  const [mcqCount, setMcqCount] = useState(8);
 
   const apiParams = result ? { topic: result.topic.name, subject: result.subject.name } : {};
+  const mcqApiParams = result ? { ...apiParams, mcqCount: String(mcqCount) } : {};
   const overview = useMedContent("overview", apiParams, !!result);
   const keyConcepts = useMedContent("key_concepts", apiParams, !!result);
   const clinicalRelevance = useMedContent("clinical_relevance", apiParams, false);
-  const mcqData = useMedContent("mcq", apiParams, false);
+  const mcqData = useMedContent("mcq", mcqApiParams, false);
   const flashData = useMedContent("flashcards", apiParams, false);
 
   const handleSave = () => {
@@ -342,14 +344,30 @@ export default function TopicPage() {
               </div>
             </div>
             {!mcqData.content && !mcqData.loading && !mcqData.error && (
-              <div className="text-center py-14 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
+              <div className="text-center py-12 rounded-xl border" style={{ borderColor: "#21262D", background: "#161B22" }}>
                 <div className="text-4xl mb-4">🧠</div>
                 <p className="text-base font-medium mb-2" style={{ color: "#E6EDF3" }}>Test your knowledge on {topic.name}</p>
-                <p className="text-sm mb-6" style={{ color: "#8B949E" }}>8 AI-generated NEET-PG / USMLE style questions</p>
+                <p className="text-sm mb-6" style={{ color: "#8B949E" }}>NEET-PG / USMLE style questions with explanations</p>
+                <div className="mb-6">
+                  <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#8B949E" }}>Number of Questions</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {[8, 15, 20, 25, 35, 50].map(n => (
+                      <button key={n} onClick={() => setMcqCount(n)}
+                        className="px-4 py-2 rounded-xl text-sm font-bold transition-all hover:scale-105"
+                        style={{
+                          background: mcqCount === n ? "linear-gradient(135deg,#00C2A8,#0088cc)" : "#21262D",
+                          color: mcqCount === n ? "#fff" : "#8B949E",
+                          border: `1px solid ${mcqCount === n ? "#00C2A8" : "#30363D"}`,
+                        }}>
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <button onClick={mcqData.fetch}
                   className="px-8 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90 hover:scale-105"
                   style={{ background: "linear-gradient(135deg,#00C2A8,#0088cc)", color: "#fff" }}>
-                  Generate MCQs with AI
+                  Generate {mcqCount} MCQs with AI
                 </button>
               </div>
             )}

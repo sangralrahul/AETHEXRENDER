@@ -77,6 +77,14 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 
 ---
 
+### AI Backend (April 2026)
+- **Groq API** — Primary AI backend using `groq-sdk`. Models: `llama-3.3-70b-versatile` → `llama-3.1-8b-instant` → `mixtral-8x7b-32768` (auto-fallback on rate limits)
+- **Gemini** — Secondary fallback: `gemini-2.5-flash` → `gemini-2.0-flash` → `gemini-2.5-flash-lite` (used if all Groq models rate-limited)
+- **Vision** — Groq `llama-3.2-90b-vision-preview` for image analysis, Gemini as fallback
+- **Image generation** — Wikipedia REST API primary; `gemini-2.5-flash-image` as bonus fallback (paid plans only)
+- **Helper functions** in `ai.ts`: `aiGenerate()`, `aiChat()`, `aiVision()` — all auto-cascade through Groq → Gemini models
+- **Required secrets**: `GROQ_API_KEY`, `GEMINI_API_KEY`
+
 - Home page with hero section, 8-category grid, featured products, Study Hub section, AI assistant banner
 - Products page with category filters, search, and sort (Featured / Price / Highest Rated)
 - Product detail pages with full review section, star breakdown, sort/filter, review form

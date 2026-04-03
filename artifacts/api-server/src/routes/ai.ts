@@ -1,5 +1,6 @@
 import { Router, type IRouter } from "express";
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import Groq from "groq-sdk";
 import https from "https";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
@@ -32,24 +33,183 @@ const aiHeavyLimiter = rateLimit({
 });
 
 const geminiAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const TEXT_MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash-lite"];
+const GROQ_MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"];
+const GEMINI_MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
 
-async function withModelFallback<T>(
-  fn: (modelName: string) => Promise<T>,
-  models: string[] = TEXT_MODELS,
-): Promise<T> {
+interface AiCallOpts {
+  systemPrompt: string;
+  userPrompt: string;
+  maxTokens?: number;
+  temperature?: number;
+  jsonMode?: boolean;
+}
+
+function isRateLimited(err: any): boolean {
+  return err?.status === 429 || err?.statusCode === 429 || err?.error?.code === "rate_limit_exceeded";
+}
+
+async function aiGenerate(opts: AiCallOpts): Promise<string> {
+  const { systemPrompt, userPrompt, maxTokens = 4096, temperature = 0.7, jsonMode = false } = opts;
   let lastErr: any;
-  for (const model of models) {
-    try {
-      return await fn(model);
-    } catch (err: any) {
-      lastErr = err;
-      if (err?.status === 429) continue;
-      throw err;
+
+  if (process.env.GROQ_API_KEY) {
+    for (const model of GROQ_MODELS) {
+      try {
+        const completion = await groq.chat.completions.create({
+          model,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          max_tokens: maxTokens,
+          temperature,
+          ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
+        });
+        const text = completion.choices?.[0]?.message?.content || "";
+        if (text) return text;
+      } catch (err: any) {
+        lastErr = err;
+        if (isRateLimited(err)) continue;
+        console.error(`Groq ${model} error:`, err?.message || err);
+        break;
+      }
     }
   }
-  throw lastErr;
+
+  for (const model of GEMINI_MODELS) {
+    try {
+      const m = geminiAI.getGenerativeModel({
+        model,
+        systemInstruction: systemPrompt,
+        generationConfig: { maxOutputTokens: maxTokens, temperature },
+      });
+      const result = await m.generateContent(userPrompt);
+      const text = result.response.text() || "";
+      if (text) return text;
+    } catch (err: any) {
+      lastErr = err;
+      if (isRateLimited(err)) continue;
+      console.error(`Gemini ${model} error:`, err?.message || err);
+      break;
+    }
+  }
+
+  throw lastErr || new Error("All AI models failed. Please try again.");
+}
+
+async function aiChat(opts: AiCallOpts & { history?: Array<{ role: string; content: string }> }): Promise<string> {
+  const { systemPrompt, userPrompt, maxTokens = 8192, temperature = 0.7, history = [] } = opts;
+  let lastErr: any;
+
+  if (process.env.GROQ_API_KEY) {
+    for (const model of GROQ_MODELS) {
+      try {
+        const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+          { role: "system", content: systemPrompt },
+          ...history.map(m => ({
+            role: (m.role === "assistant" ? "assistant" : "user") as "user" | "assistant",
+            content: m.content,
+          })),
+          { role: "user", content: userPrompt },
+        ];
+        const completion = await groq.chat.completions.create({
+          model,
+          messages,
+          max_tokens: maxTokens,
+          temperature,
+        });
+        const text = completion.choices?.[0]?.message?.content || "";
+        if (text) return text;
+      } catch (err: any) {
+        lastErr = err;
+        if (isRateLimited(err)) continue;
+        console.error(`Groq chat ${model} error:`, err?.message || err);
+        break;
+      }
+    }
+  }
+
+  for (const model of GEMINI_MODELS) {
+    try {
+      const m = geminiAI.getGenerativeModel({
+        model,
+        systemInstruction: systemPrompt,
+        generationConfig: { maxOutputTokens: maxTokens, temperature },
+      });
+      const geminiHistory = history.map(msg => ({
+        role: msg.role === "assistant" ? "model" as const : "user" as const,
+        parts: [{ text: msg.content }],
+      }));
+      const chat = m.startChat({ history: geminiHistory });
+      const result = await chat.sendMessage(userPrompt);
+      const text = result.response.text() || "";
+      if (text) return text;
+    } catch (err: any) {
+      lastErr = err;
+      if (isRateLimited(err)) continue;
+      console.error(`Gemini chat ${model} error:`, err?.message || err);
+      break;
+    }
+  }
+
+  throw lastErr || new Error("All AI models failed. Please try again.");
+}
+
+async function aiVision(opts: { systemPrompt: string; userPrompt: string; imageBase64: string; imageType: string; maxTokens?: number }): Promise<string> {
+  const { systemPrompt, userPrompt, imageBase64, imageType, maxTokens = 2048 } = opts;
+  let lastErr: any;
+
+  if (process.env.GROQ_API_KEY) {
+    try {
+      const completion = await groq.chat.completions.create({
+        model: "llama-3.2-90b-vision-preview",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: [
+            { type: "image_url", image_url: { url: `data:${imageType};base64,${imageBase64}` } },
+            { type: "text", text: userPrompt },
+          ] as any },
+        ],
+        max_tokens: maxTokens,
+        temperature: 0.3,
+      });
+      const text = completion.choices?.[0]?.message?.content || "";
+      if (text) return text;
+    } catch (err: any) {
+      lastErr = err;
+      console.error("Groq vision error:", err?.message || err);
+    }
+  }
+
+  for (const model of GEMINI_MODELS) {
+    try {
+      const m = geminiAI.getGenerativeModel({
+        model,
+        systemInstruction: systemPrompt,
+        generationConfig: { maxOutputTokens: maxTokens, temperature: 0.3 },
+      });
+      const result = await m.generateContent({
+        contents: [{
+          role: "user",
+          parts: [
+            { inlineData: { mimeType: imageType, data: imageBase64 } },
+            { text: userPrompt },
+          ],
+        }],
+      });
+      const text = result.response.text() || "";
+      if (text) return text;
+    } catch (err: any) {
+      lastErr = err;
+      if (isRateLimited(err)) continue;
+      console.error(`Gemini vision ${model} error:`, err?.message || err);
+      break;
+    }
+  }
+
+  throw lastErr || new Error("All AI models failed. Please try again.");
 }
 
 const agentPrompts: Record<string, { systemPrompt: string; suggestions: string[] }> = {
@@ -170,15 +330,12 @@ router.post("/ai/deep-research", aiHeavyLimiter, async (req, res) => {
     // Step 1 — generate focused search sub-queries via Gemini
     let searchQueries: string[] = [];
     try {
-      const queryGenResult = await withModelFallback(async (modelName) => {
-        const queryGenModel = geminiAI.getGenerativeModel({
-          model: modelName,
-          systemInstruction: "You are a medical research query generator. Generate 4 targeted Google search queries to comprehensively research the given medical topic from multiple angles (pathophysiology, clinical, guidelines, Indian context). Return ONLY a JSON array of strings, no other text. Example: [\"query1\",\"query2\",\"query3\",\"query4\"]",
-          generationConfig: { maxOutputTokens: 300, temperature: 0.2 },
-        });
-        return queryGenModel.generateContent(query);
-      });
-      const raw = queryGenResult.response.text() ?? "[]";
+      const raw = await aiGenerate({
+        systemPrompt: "You are a medical research query generator. Generate 4 targeted Google search queries to comprehensively research the given medical topic from multiple angles (pathophysiology, clinical, guidelines, Indian context). Return ONLY a JSON array of strings, no other text. Example: [\"query1\",\"query2\",\"query3\",\"query4\"]",
+        userPrompt: query,
+        maxTokens: 300,
+        temperature: 0.2,
+      }) || "[]";
       const parsed = JSON.parse(jsonrepair(raw));
       searchQueries = Array.isArray(parsed) ? parsed.map(String) : [];
     } catch { /* fall through */ }
@@ -253,18 +410,12 @@ Requirements:
 - Use bullet points (- ) for lists within sections
 - Be factually accurate — this is read by medical professionals`;
 
-    const synthesisResult = await withModelFallback(async (modelName) => {
-      const synthesisModel = geminiAI.getGenerativeModel({
-        model: modelName,
-        systemInstruction: systemPrompt,
-        generationConfig: { maxOutputTokens: 8192, temperature: 0.6 },
-      });
-      return synthesisModel.generateContent(
-        `Deep research request: ${query}${sourceBlock}`
-      );
-    });
-
-    const report = synthesisResult.response.text() ?? "Unable to generate research report.";
+    const report = await aiGenerate({
+      systemPrompt,
+      userPrompt: `Deep research request: ${query}${sourceBlock}`,
+      maxTokens: 8192,
+      temperature: 0.6,
+    }) || "Unable to generate research report.";
 
     res.json({ report, sources: sources.slice(0, 12), searchQueries, hasGoogleSearch });
   } catch (err) {
@@ -397,22 +548,13 @@ router.post("/ai/chat", aiChatLimiter, async (req, res) => {
       ? modeSystemPrompt + specialtyInstruction + langInstruction
       : agentConfig.systemPrompt + specialtyInstruction + langInstruction;
 
-    const history = conversationHistory
-      .map((msg: { role: string; content: string }) => ({
-        role: msg.role === "assistant" ? "model" : "user",
-        parts: [{ text: msg.content }],
-      }));
-
-    const chatResult = await withModelFallback(async (modelName) => {
-      const chatModel = geminiAI.getGenerativeModel({
-        model: modelName,
-        systemInstruction: finalSystemPrompt,
-        generationConfig: { maxOutputTokens: 8192, temperature: 0.7 },
-      });
-      const chat = chatModel.startChat({ history });
-      return chat.sendMessage(message);
-    });
-    const responseMessage = chatResult.response.text() || "I'm sorry, I couldn't process your request.";
+    const responseMessage = await aiChat({
+      systemPrompt: finalSystemPrompt,
+      userPrompt: message,
+      maxTokens: 8192,
+      temperature: 0.7,
+      history: conversationHistory,
+    }) || "I'm sorry, I couldn't process your request.";
 
     res.json({ message: responseMessage, suggestions: agentConfig.suggestions });
   } catch (err) {
@@ -538,24 +680,13 @@ Analyze the uploaded medical image and provide:
 Use systematic approach (e.g. for CXR: ABCDE — Airway, Breathing, Cardiac, Diaphragm, Everything else).
 Caveat at the end: "This is AI-assisted analysis — always correlate clinically and seek radiology/specialist review."${specialtyCtx}`;
 
-    const visionResult = await withModelFallback(async (modelName) => {
-      const visionModel = geminiAI.getGenerativeModel({
-        model: modelName,
-        systemInstruction: visionSysPrompt,
-        generationConfig: { maxOutputTokens: 2048, temperature: 0.3 },
-      });
-      return visionModel.generateContent({
-        contents: [{
-          role: "user",
-          parts: [
-            { inlineData: { mimeType: imageType as string, data: imageBase64 as string } },
-            { text: (query as string) || "Please provide a full clinical analysis of this medical image." },
-          ],
-        }],
-      });
-    });
-
-    const analysis = visionResult.response.text() || "Unable to analyze image.";
+    const analysis = await aiVision({
+      systemPrompt: visionSysPrompt,
+      userPrompt: (query as string) || "Please provide a full clinical analysis of this medical image.",
+      imageBase64: imageBase64 as string,
+      imageType: imageType as string,
+      maxTokens: 2048,
+    }) || "Unable to analyze image.";
     res.json({ analysis });
   } catch (err: any) {
     req.log.error({ err }, "Error analyzing medical image");
@@ -665,14 +796,12 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
       if (wantLabels) {
         let labels: string[] = [];
         try {
-          const labelModel = geminiAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
-            generationConfig: { maxOutputTokens: 500, temperature: 0.3 },
-          });
-          const labelResult = await labelModel.generateContent(
-            `List 6-8 key anatomical structures of the human ${prompt} as a JSON array of strings. Example: ["Glans","Corpus cavernosum","Urethra"]. Return ONLY the JSON array.`
-          );
-          const labelText = labelResult.response.text().trim();
+          const labelText = (await aiGenerate({
+            systemPrompt: "You are an anatomy expert. Return ONLY a JSON array of strings.",
+            userPrompt: `List 6-8 key anatomical structures of the human ${prompt} as a JSON array of strings. Example: ["Glans","Corpus cavernosum","Urethra"]. Return ONLY the JSON array.`,
+            maxTokens: 500,
+            temperature: 0.3,
+          })).trim();
           labels = JSON.parse(labelText.replace(/```json|```/g, "").trim());
         } catch {
           const fallbackLabels: Record<string, string[]> = {
@@ -759,12 +888,9 @@ router.post("/ai/generate-slides", aiHeavyLimiter, async (req, res) => {
 title, overview, anatomy, physiology, pathways, clinical, conditions, redflags, mindmap, faq, glossary, summary`
       : `Generate ${count} slides. First slide type "title", last type "summary". Middle slides: overview, anatomy, physiology, clinical, faq, glossary.`;
 
-    const slideModel = geminiAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      systemInstruction: "You are Cadus AI, a medical education AI. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out). EVERY content field must contain real text — never output an empty string for b1-b6, c1h, c1b, c2h, c2b, c3h, c3b, s1v, s1l, s2v, s2l, s3v, s3l, lh, lb, or r1-r4.",
-      generationConfig: { maxOutputTokens: 8192, temperature: 0.5 },
-    });
-    const slideResult = await slideModel.generateContent(`Create a ${count}-slide medical education presentation on: "${prompt}".
+    const slideSysPrompt = "You are Cadus AI, a medical education AI. Return ONLY valid JSON — no markdown, no fences, no explanation. ASCII only (no Unicode, no Greek letters, spell them out). EVERY content field must contain real text — never output an empty string for b1-b6, c1h, c1b, c2h, c2b, c3h, c3b, s1v, s1l, s2v, s2l, s3v, s3l, lh, lb, or r1-r4.";
+
+    const slideUserPrompt = `Create a ${count}-slide medical education presentation on: "${prompt}".
 
 ${slideTypesInstructions}
 
@@ -817,9 +943,15 @@ RULES:
 - Left body (lb): 40-55 words substantive paragraph
 - Non-layout fields (e.g. b1-b6 on a stats slide) should be empty string ""
 - CONTENT MANDATE: For the layout you choose, ALL matching content fields MUST have real text. A "list" slide MUST have b1-b5 with actual sentences. A "cards" slide MUST have c1h/c1b/c2h/c2b/c3h/c3b with actual text. A "stats" slide MUST have s1v/s1l/s1d/s2v/s2l/s2d/s3v/s3l/s3d with real values. A "twocol" slide MUST have lh/lb/r1/r2/r3/r4 with actual text. NEVER generate an empty string for these required fields.
-- ASCII only throughout`);
+- ASCII only throughout`;
 
-    const raw = slideResult.response.text();
+    const raw = await aiGenerate({
+      systemPrompt: slideSysPrompt,
+      userPrompt: slideUserPrompt,
+      maxTokens: 8192,
+      temperature: 0.5,
+      jsonMode: true,
+    });
     let parsed: Record<string, unknown> = {};
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
@@ -948,17 +1080,13 @@ router.post("/ai/generate-presentation", aiHeavyLimiter, async (req, res) => {
 
     const count = Math.max(3, Math.min(30, parseInt(String(slideCount ?? 10)) || 10));
 
-    // ── AI call: Multi-layout Gamma-style presentation (Gemini) ─────────
-    const presModel = geminiAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      systemInstruction: `You are Cadus AI, a medical education AI creating Gamma.app-quality PDF presentations.
+    const presSysPrompt = `You are Cadus AI, a medical education AI creating Gamma.app-quality PDF presentations.
 Return ONLY valid JSON — no markdown fences, no explanation.
 ASCII only: no Unicode, no Greek letters (write: alpha, beta, gamma, delta, mu, etc.).
 Every slide MUST have a layout field. Mix all 4 layouts throughout for visual variety.
-CRITICAL: For the chosen layout, ALL matching fields MUST contain real text — never output an empty string for b1-b5, c1h/c1b/c2h/c2b/c3h/c3b, s1v/s1l/s2v/s2l/s3v/s3l, or lh/lb/r1-r4.`,
-      generationConfig: { maxOutputTokens: 8192, temperature: 0.5 },
-    });
-    const presResult = await presModel.generateContent(`Create a ${count}-slide medical PDF presentation on: "${prompt}".
+CRITICAL: For the chosen layout, ALL matching fields MUST contain real text — never output an empty string for b1-b5, c1h/c1b/c2h/c2b/c3h/c3b, s1v/s1l/s2v/s2l/s3v/s3l, or lh/lb/r1-r4.`;
+
+    const presUserPrompt = `Create a ${count}-slide medical PDF presentation on: "${prompt}".
 
 Choose the best layout for each slide from these 4 types:
 - "stats"  — when showing 3 key numeric/quantitative facts prominently (like Gamma stat slides)
@@ -1032,9 +1160,15 @@ STRICT RULES:
 - Left body (lb): must be 30-45 words, substantive paragraph
 - List points (b1-b5): specific clinical facts with numbers/values where possible
 - Topic-specific content for: "${prompt}"
-- ASCII only — no Unicode`);
+- ASCII only — no Unicode`;
 
-    const raw = presResult.response.text();
+    const raw = await aiGenerate({
+      systemPrompt: presSysPrompt,
+      userPrompt: presUserPrompt,
+      maxTokens: 8192,
+      temperature: 0.5,
+      jsonMode: true,
+    });
 
     // Parse with 4 fallback layers
     let parsed: Record<string, unknown> = {};

@@ -33,6 +33,25 @@ const aiHeavyLimiter = rateLimit({
 
 const geminiAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
+const TEXT_MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash-lite"];
+
+async function withModelFallback<T>(
+  fn: (modelName: string) => Promise<T>,
+  models: string[] = TEXT_MODELS,
+): Promise<T> {
+  let lastErr: any;
+  for (const model of models) {
+    try {
+      return await fn(model);
+    } catch (err: any) {
+      lastErr = err;
+      if (err?.status === 429) continue;
+      throw err;
+    }
+  }
+  throw lastErr;
+}
+
 const agentPrompts: Record<string, { systemPrompt: string; suggestions: string[] }> = {
   cadus: {
     systemPrompt: `You are Cadus AI — the primary AI medical assistant for aethex, India's premier medical store for doctors and medical students.
@@ -151,12 +170,14 @@ router.post("/ai/deep-research", aiHeavyLimiter, async (req, res) => {
     // Step 1 — generate focused search sub-queries via Gemini
     let searchQueries: string[] = [];
     try {
-      const queryGenModel = geminiAI.getGenerativeModel({
-        model: "gemini-2.5-flash",
-        systemInstruction: "You are a medical research query generator. Generate 4 targeted Google search queries to comprehensively research the given medical topic from multiple angles (pathophysiology, clinical, guidelines, Indian context). Return ONLY a JSON array of strings, no other text. Example: [\"query1\",\"query2\",\"query3\",\"query4\"]",
-        generationConfig: { maxOutputTokens: 300, temperature: 0.2 },
+      const queryGenResult = await withModelFallback(async (modelName) => {
+        const queryGenModel = geminiAI.getGenerativeModel({
+          model: modelName,
+          systemInstruction: "You are a medical research query generator. Generate 4 targeted Google search queries to comprehensively research the given medical topic from multiple angles (pathophysiology, clinical, guidelines, Indian context). Return ONLY a JSON array of strings, no other text. Example: [\"query1\",\"query2\",\"query3\",\"query4\"]",
+          generationConfig: { maxOutputTokens: 300, temperature: 0.2 },
+        });
+        return queryGenModel.generateContent(query);
       });
-      const queryGenResult = await queryGenModel.generateContent(query);
       const raw = queryGenResult.response.text() ?? "[]";
       const parsed = JSON.parse(jsonrepair(raw));
       searchQueries = Array.isArray(parsed) ? parsed.map(String) : [];
@@ -232,15 +253,16 @@ Requirements:
 - Use bullet points (- ) for lists within sections
 - Be factually accurate — this is read by medical professionals`;
 
-    const synthesisModel = geminiAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      systemInstruction: systemPrompt,
-      generationConfig: { maxOutputTokens: 8192, temperature: 0.6 },
+    const synthesisResult = await withModelFallback(async (modelName) => {
+      const synthesisModel = geminiAI.getGenerativeModel({
+        model: modelName,
+        systemInstruction: systemPrompt,
+        generationConfig: { maxOutputTokens: 8192, temperature: 0.6 },
+      });
+      return synthesisModel.generateContent(
+        `Deep research request: ${query}${sourceBlock}`
+      );
     });
-
-    const synthesisResult = await synthesisModel.generateContent(
-      `Deep research request: ${query}${sourceBlock}`
-    );
 
     const report = synthesisResult.response.text() ?? "Unable to generate research report.";
 
@@ -381,14 +403,15 @@ router.post("/ai/chat", aiChatLimiter, async (req, res) => {
         parts: [{ text: msg.content }],
       }));
 
-    const chatModel = geminiAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      systemInstruction: finalSystemPrompt,
-      generationConfig: { maxOutputTokens: 8192, temperature: 0.7 },
+    const chatResult = await withModelFallback(async (modelName) => {
+      const chatModel = geminiAI.getGenerativeModel({
+        model: modelName,
+        systemInstruction: finalSystemPrompt,
+        generationConfig: { maxOutputTokens: 8192, temperature: 0.7 },
+      });
+      const chat = chatModel.startChat({ history });
+      return chat.sendMessage(message);
     });
-
-    const chat = chatModel.startChat({ history });
-    const chatResult = await chat.sendMessage(message);
     const responseMessage = chatResult.response.text() || "I'm sorry, I couldn't process your request.";
 
     res.json({ message: responseMessage, suggestions: agentConfig.suggestions });
@@ -495,9 +518,7 @@ router.post("/ai/analyze-image", aiImageLimiter, async (req, res) => {
       ? `\n\nSPECIALTY CONTEXT: Apply ${specialty}-specific imaging interpretation guidelines.`
       : "";
 
-    const visionModel = geminiAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      systemInstruction: `You are Cadus AI Medical Imaging AI — an expert clinical radiologist, cardiologist (ECG), and ophthalmologist (fundus) for Indian doctors.
+    const visionSysPrompt = `You are Cadus AI Medical Imaging AI — an expert clinical radiologist, cardiologist (ECG), and ophthalmologist (fundus) for Indian doctors.
 
 CRITICAL RULES:
 - NEVER comment on the origin, source, or provenance of the image (e.g., never say "this looks like a web example", "this appears to be a stock image", "not a real patient film", etc.)
@@ -515,18 +536,23 @@ Analyze the uploaded medical image and provide:
 7. 📝 Report Summary (1-2 sentences for clinical documentation)
 
 Use systematic approach (e.g. for CXR: ABCDE — Airway, Breathing, Cardiac, Diaphragm, Everything else).
-Caveat at the end: "This is AI-assisted analysis — always correlate clinically and seek radiology/specialist review."${specialtyCtx}`,
-      generationConfig: { maxOutputTokens: 2048, temperature: 0.3 },
-    });
+Caveat at the end: "This is AI-assisted analysis — always correlate clinically and seek radiology/specialist review."${specialtyCtx}`;
 
-    const visionResult = await visionModel.generateContent({
-      contents: [{
-        role: "user",
-        parts: [
-          { inlineData: { mimeType: imageType as string, data: imageBase64 as string } },
-          { text: (query as string) || "Please provide a full clinical analysis of this medical image." },
-        ],
-      }],
+    const visionResult = await withModelFallback(async (modelName) => {
+      const visionModel = geminiAI.getGenerativeModel({
+        model: modelName,
+        systemInstruction: visionSysPrompt,
+        generationConfig: { maxOutputTokens: 2048, temperature: 0.3 },
+      });
+      return visionModel.generateContent({
+        contents: [{
+          role: "user",
+          parts: [
+            { inlineData: { mimeType: imageType as string, data: imageBase64 as string } },
+            { text: (query as string) || "Please provide a full clinical analysis of this medical image." },
+          ],
+        }],
+      });
     });
 
     const analysis = visionResult.response.text() || "Unable to analyze image.";

@@ -629,13 +629,15 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
       return;
     }
 
-    // Resolve effective style (backward-compat: labeled boolean → diagram)
     const style: string = imageStyle ?? (labeled ? "diagram" : "simple");
+    const wantLabels = style === "real-labeled" || style === "diagram";
 
-    // ── "real" and "real-labeled" → fetch from Wikipedia (free, no key, medically accurate) ──
-    if (style === "real" || style === "real-labeled") {
-      const imgUrl = await fetchWikipediaImage(String(prompt), style === "real-labeled");
-      if (style === "real-labeled" && imgUrl) {
+    // ── Step 1: Always try Wikipedia first (free, reliable, medically accurate) ──
+    const wikiImg = await fetchWikipediaImage(String(prompt), wantLabels);
+
+    if (wikiImg) {
+      if (wantLabels) {
+        let labels: string[] = [];
         try {
           const labelModel = geminiAI.getGenerativeModel({
             model: "gemini-2.5-flash",
@@ -645,59 +647,68 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
             `List 6-8 key anatomical structures of the human ${prompt} as a JSON array of strings. Example: ["Glans","Corpus cavernosum","Urethra"]. Return ONLY the JSON array.`
           );
           const labelText = labelResult.response.text().trim();
-          const labels = JSON.parse(labelText.replace(/```json|```/g, "").trim());
-          return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia", labels });
+          labels = JSON.parse(labelText.replace(/```json|```/g, "").trim());
         } catch {
-          return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia", labels: [] });
+          const fallbackLabels: Record<string, string[]> = {
+            heart: ["Left ventricle", "Right ventricle", "Left atrium", "Right atrium", "Aorta", "Pulmonary artery", "Mitral valve", "Tricuspid valve"],
+            brain: ["Cerebrum", "Cerebellum", "Brainstem", "Frontal lobe", "Parietal lobe", "Temporal lobe", "Occipital lobe", "Thalamus"],
+            lung: ["Upper lobe", "Middle lobe", "Lower lobe", "Bronchus", "Trachea", "Alveoli", "Pleura", "Diaphragm"],
+            kidney: ["Cortex", "Medulla", "Renal pelvis", "Ureter", "Nephron", "Glomerulus", "Renal artery", "Renal vein"],
+            liver: ["Right lobe", "Left lobe", "Hepatic artery", "Portal vein", "Bile duct", "Gallbladder", "Central vein", "Hepatocytes"],
+            eye: ["Cornea", "Iris", "Pupil", "Lens", "Retina", "Optic nerve", "Vitreous humor", "Sclera"],
+            ear: ["Pinna", "Tympanic membrane", "Cochlea", "Semicircular canals", "Ossicles", "Eustachian tube", "Auditory nerve", "Vestibule"],
+            stomach: ["Fundus", "Body", "Antrum", "Pylorus", "Cardia", "Lesser curvature", "Greater curvature", "Rugae"],
+            spine: ["Cervical vertebrae", "Thoracic vertebrae", "Lumbar vertebrae", "Sacrum", "Intervertebral disc", "Spinal cord", "Vertebral body", "Spinous process"],
+            skull: ["Frontal bone", "Parietal bone", "Temporal bone", "Occipital bone", "Sphenoid", "Mandible", "Maxilla", "Zygomatic bone"],
+            penis: ["Glans", "Corpus cavernosum", "Corpus spongiosum", "Urethra", "Foreskin", "Frenulum", "Bulb", "Crus"],
+            uterus: ["Fundus", "Body", "Cervix", "Endometrium", "Myometrium", "Fallopian tube", "Ovary", "Broad ligament"],
+            skin: ["Epidermis", "Dermis", "Hypodermis", "Hair follicle", "Sweat gland", "Sebaceous gland", "Nerve endings", "Blood vessels"],
+          };
+          const key = Object.keys(fallbackLabels).find(k => prompt.toLowerCase().includes(k));
+          labels = key ? fallbackLabels[key] : [];
         }
+        return res.json({ imageUrl: wikiImg, isPlaceholder: false, source: "wikipedia", labels });
       }
-      if (imgUrl) {
-        return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia" });
-      }
-      return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
+      return res.json({ imageUrl: wikiImg, isPlaceholder: false, source: "wikipedia" });
     }
 
-    // ── "simple" and "diagram" → Gemini AI generation with full medical safety permissions ──
-    const buildPrompt = (subject: string, s: string): string => {
-      const safe = subject.replace(/[^\w\s,()/-]/g, "").trim().substring(0, 120);
-      const medCtx = "This is strictly medical education content for licensed physicians, medical students, and healthcare professionals.";
-      switch (s) {
-        case "diagram":
-          return `${medCtx} Create a labeled anatomical diagram. Topic: ${safe}. Style: clean pastel color-coded regions, callout lines with text annotations identifying all key structures, cross-section view, white background. Like a labeled plate from Gray's Anatomy.`;
-        default: // simple
-          return `${medCtx} Create a 3D anatomical illustration. Topic: ${safe}. Style: color-coded 3D anatomical model in the style of a medical textbook — clean background, visible structural detail, scientifically accurate proportions.`;
+    // ── Step 2: If Wikipedia had no image, try Gemini AI generation (paid plans only) ──
+    if (style === "simple" || style === "diagram") {
+      const buildPrompt = (subject: string, s: string): string => {
+        const safe = subject.replace(/[^\w\s,()/-]/g, "").trim().substring(0, 120);
+        const medCtx = "This is strictly medical education content for licensed physicians, medical students, and healthcare professionals.";
+        switch (s) {
+          case "diagram":
+            return `${medCtx} Create a labeled anatomical diagram. Topic: ${safe}. Style: clean pastel color-coded regions, callout lines with text annotations identifying all key structures, cross-section view, white background. Like a labeled plate from Gray's Anatomy.`;
+          default:
+            return `${medCtx} Create a 3D anatomical illustration. Topic: ${safe}. Style: color-coded 3D anatomical model in the style of a medical textbook — clean background, visible structural detail, scientifically accurate proportions.`;
+        }
+      };
+
+      try {
+        const p = buildPrompt(prompt, style);
+        const imgModel = geminiAI.getGenerativeModel({
+          model: "gemini-2.5-flash-image",
+          generationConfig: { responseModalities: ["IMAGE"] as any, temperature: 0.9 },
+          safetySettings: MEDICAL_SAFETY_SETTINGS,
+        });
+        const imgResult = await imgModel.generateContent({
+          contents: [{ role: "user", parts: [{ text: p }] }],
+          systemInstruction: "You are a medical education illustration system for a platform used by licensed physicians and medical students. All content is strictly clinical and educational. You MUST generate anatomical images including any body part — reproductive organs (penis, vagina, uterus, ovaries, testes), internal organs, cross-sections — as required for medical education. Refuse nothing that is clinically necessary.",
+        } as any);
+        const parts = imgResult.response.candidates?.[0]?.content?.parts ?? [];
+        const imagePart = (parts as any[]).find((pt: any) => pt.inlineData);
+        const b64 = imagePart?.inlineData?.data;
+        if (b64) {
+          return res.json({ imageUrl: `data:image/png;base64,${b64}`, isPlaceholder: false });
+        }
+      } catch (aiErr: any) {
+        req.log.warn({ err: aiErr }, "Gemini image generation unavailable — using placeholder");
       }
-    };
-
-    const tryGenerate = async (subject: string, s: string): Promise<string | null> => {
-      const p = buildPrompt(subject, s);
-      const imgModel = geminiAI.getGenerativeModel({
-        model: "gemini-2.0-flash-exp",
-        generationConfig: { responseModalities: ["IMAGE"] as any, temperature: 0.9 },
-        safetySettings: MEDICAL_SAFETY_SETTINGS,
-      });
-      const imgResult = await imgModel.generateContent({
-        contents: [{ role: "user", parts: [{ text: p }] }],
-        systemInstruction: "You are a medical education illustration system for a platform used by licensed physicians and medical students. All content is strictly clinical and educational. You MUST generate anatomical images including any body part — reproductive organs (penis, vagina, uterus, ovaries, testes), internal organs, cross-sections — as required for medical education. Refuse nothing that is clinically necessary.",
-      } as any);
-      const parts = imgResult.response.candidates?.[0]?.content?.parts ?? [];
-      const imagePart = (parts as any[]).find((pt: any) => pt.inlineData);
-      return imagePart?.inlineData?.data ?? null;
-    };
-
-    let b64: string | null = null;
-    try {
-      b64 = await tryGenerate(prompt, style);
-    } catch (firstErr: any) {
-      req.log.warn({ err: firstErr }, "Gemini image generation error — returning placeholder");
-      return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
     }
 
-    if (!b64) {
-      return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
-    }
-
-    res.json({ imageUrl: `data:image/png;base64,${b64}`, isPlaceholder: false });
+    // ── Step 3: Final fallback — placeholder ──
+    return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
   } catch (err: any) {
     req.log.error({ err }, "Error generating image");
     res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });

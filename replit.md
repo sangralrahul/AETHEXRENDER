@@ -78,12 +78,13 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 ---
 
 ### AI Backend (April 2026)
-- **Groq API** — Primary AI backend using `groq-sdk`. Models: `llama-3.3-70b-versatile` → `llama-3.1-8b-instant` → `mixtral-8x7b-32768` (auto-fallback on rate limits)
-- **Gemini** — Secondary fallback: `gemini-2.5-flash` → `gemini-2.0-flash` → `gemini-2.5-flash-lite` (used if all Groq models rate-limited)
-- **Vision** — Groq `llama-3.2-90b-vision-preview` for image analysis, Gemini as fallback
-- **Image generation** — Wikipedia REST API primary; `gemini-2.5-flash-image` as bonus fallback (paid plans only)
-- **Helper functions** in `ai.ts`: `aiGenerate()`, `aiChat()`, `aiVision()` — all auto-cascade through Groq → Gemini models
-- **Required secrets**: `GROQ_API_KEY`, `GEMINI_API_KEY`
+- **Groq API** — Sole AI backend using `groq-sdk`. No Gemini dependency.
+- **Text models**: `llama-3.3-70b-versatile` → `llama-3.1-8b-instant` → `mixtral-8x7b-32768` (auto-fallback on rate limits)
+- **Vision**: Groq `llama-3.2-90b-vision-preview` for medical image analysis
+- **Image generation**: Wikipedia REST API (free, reliable) with placeholder fallback
+- **Helper functions** in `ai.ts`: `aiGenerate()`, `aiChat()`, `aiVision()` — all cascade through Groq models
+- **All 3 route files** (`ai.ts`, `contact.ts`, `medknowledge.ts`) use Groq exclusively
+- **Required secret**: `GROQ_API_KEY` only
 
 - Home page with hero section, 8-category grid, featured products, Study Hub section, AI assistant banner
 - Products page with category filters, search, and sort (Featured / Price / Highest Rated)

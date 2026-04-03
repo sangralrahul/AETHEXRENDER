@@ -1,5 +1,4 @@
 import { Router, type IRouter } from "express";
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import Groq from "groq-sdk";
 import https from "https";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
@@ -32,11 +31,9 @@ const aiHeavyLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-const geminiAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const GROQ_MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"];
-const GEMINI_MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
 
 interface AiCallOpts {
   systemPrompt: string;
@@ -54,162 +51,88 @@ async function aiGenerate(opts: AiCallOpts): Promise<string> {
   const { systemPrompt, userPrompt, maxTokens = 4096, temperature = 0.7, jsonMode = false } = opts;
   let lastErr: any;
 
-  if (process.env.GROQ_API_KEY) {
-    for (const model of GROQ_MODELS) {
-      try {
-        const completion = await groq.chat.completions.create({
-          model,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-          max_tokens: maxTokens,
-          temperature,
-          ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
-        });
-        const text = completion.choices?.[0]?.message?.content || "";
-        if (text) return text;
-      } catch (err: any) {
-        lastErr = err;
-        if (isRateLimited(err)) continue;
-        console.error(`Groq ${model} error:`, err?.message || err);
-        break;
-      }
-    }
-  }
-
-  for (const model of GEMINI_MODELS) {
+  for (const model of GROQ_MODELS) {
     try {
-      const m = geminiAI.getGenerativeModel({
+      const completion = await groq.chat.completions.create({
         model,
-        systemInstruction: systemPrompt,
-        generationConfig: { maxOutputTokens: maxTokens, temperature },
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        max_tokens: maxTokens,
+        temperature,
+        ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
       });
-      const result = await m.generateContent(userPrompt);
-      const text = result.response.text() || "";
+      const text = completion.choices?.[0]?.message?.content || "";
       if (text) return text;
     } catch (err: any) {
       lastErr = err;
       if (isRateLimited(err)) continue;
-      console.error(`Gemini ${model} error:`, err?.message || err);
+      console.error(`Groq ${model} error:`, err?.message || err);
       break;
     }
   }
 
-  throw lastErr || new Error("All AI models failed. Please try again.");
+  throw lastErr || new Error("AI service temporarily unavailable. Please try again.");
 }
 
 async function aiChat(opts: AiCallOpts & { history?: Array<{ role: string; content: string }> }): Promise<string> {
   const { systemPrompt, userPrompt, maxTokens = 8192, temperature = 0.7, history = [] } = opts;
   let lastErr: any;
 
-  if (process.env.GROQ_API_KEY) {
-    for (const model of GROQ_MODELS) {
-      try {
-        const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
-          { role: "system", content: systemPrompt },
-          ...history.map(m => ({
-            role: (m.role === "assistant" ? "assistant" : "user") as "user" | "assistant",
-            content: m.content,
-          })),
-          { role: "user", content: userPrompt },
-        ];
-        const completion = await groq.chat.completions.create({
-          model,
-          messages,
-          max_tokens: maxTokens,
-          temperature,
-        });
-        const text = completion.choices?.[0]?.message?.content || "";
-        if (text) return text;
-      } catch (err: any) {
-        lastErr = err;
-        if (isRateLimited(err)) continue;
-        console.error(`Groq chat ${model} error:`, err?.message || err);
-        break;
-      }
-    }
-  }
-
-  for (const model of GEMINI_MODELS) {
+  for (const model of GROQ_MODELS) {
     try {
-      const m = geminiAI.getGenerativeModel({
-        model,
-        systemInstruction: systemPrompt,
-        generationConfig: { maxOutputTokens: maxTokens, temperature },
-      });
-      const geminiHistory = history.map(msg => ({
-        role: msg.role === "assistant" ? "model" as const : "user" as const,
-        parts: [{ text: msg.content }],
-      }));
-      const chat = m.startChat({ history: geminiHistory });
-      const result = await chat.sendMessage(userPrompt);
-      const text = result.response.text() || "";
-      if (text) return text;
-    } catch (err: any) {
-      lastErr = err;
-      if (isRateLimited(err)) continue;
-      console.error(`Gemini chat ${model} error:`, err?.message || err);
-      break;
-    }
-  }
-
-  throw lastErr || new Error("All AI models failed. Please try again.");
-}
-
-async function aiVision(opts: { systemPrompt: string; userPrompt: string; imageBase64: string; imageType: string; maxTokens?: number }): Promise<string> {
-  const { systemPrompt, userPrompt, imageBase64, imageType, maxTokens = 2048 } = opts;
-  let lastErr: any;
-
-  if (process.env.GROQ_API_KEY) {
-    try {
+      const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+        { role: "system", content: systemPrompt },
+        ...history.map(m => ({
+          role: (m.role === "assistant" ? "assistant" : "user") as "user" | "assistant",
+          content: m.content,
+        })),
+        { role: "user", content: userPrompt },
+      ];
       const completion = await groq.chat.completions.create({
-        model: "llama-3.2-90b-vision-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: [
-            { type: "image_url", image_url: { url: `data:${imageType};base64,${imageBase64}` } },
-            { type: "text", text: userPrompt },
-          ] as any },
-        ],
+        model,
+        messages,
         max_tokens: maxTokens,
-        temperature: 0.3,
+        temperature,
       });
       const text = completion.choices?.[0]?.message?.content || "";
       if (text) return text;
     } catch (err: any) {
       lastErr = err;
-      console.error("Groq vision error:", err?.message || err);
-    }
-  }
-
-  for (const model of GEMINI_MODELS) {
-    try {
-      const m = geminiAI.getGenerativeModel({
-        model,
-        systemInstruction: systemPrompt,
-        generationConfig: { maxOutputTokens: maxTokens, temperature: 0.3 },
-      });
-      const result = await m.generateContent({
-        contents: [{
-          role: "user",
-          parts: [
-            { inlineData: { mimeType: imageType, data: imageBase64 } },
-            { text: userPrompt },
-          ],
-        }],
-      });
-      const text = result.response.text() || "";
-      if (text) return text;
-    } catch (err: any) {
-      lastErr = err;
       if (isRateLimited(err)) continue;
-      console.error(`Gemini vision ${model} error:`, err?.message || err);
+      console.error(`Groq chat ${model} error:`, err?.message || err);
       break;
     }
   }
 
-  throw lastErr || new Error("All AI models failed. Please try again.");
+  throw lastErr || new Error("AI service temporarily unavailable. Please try again.");
+}
+
+async function aiVision(opts: { systemPrompt: string; userPrompt: string; imageBase64: string; imageType: string; maxTokens?: number }): Promise<string> {
+  const { systemPrompt, userPrompt, imageBase64, imageType, maxTokens = 2048 } = opts;
+
+  try {
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.2-90b-vision-preview",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: [
+          { type: "image_url", image_url: { url: `data:${imageType};base64,${imageBase64}` } },
+          { type: "text", text: userPrompt },
+        ] as any },
+      ],
+      max_tokens: maxTokens,
+      temperature: 0.3,
+    });
+    const text = completion.choices?.[0]?.message?.content || "";
+    if (text) return text;
+  } catch (err: any) {
+    console.error("Groq vision error:", err?.message || err);
+    throw err;
+  }
+
+  throw new Error("AI vision service temporarily unavailable. Please try again.");
 }
 
 const agentPrompts: Record<string, { systemPrompt: string; suggestions: string[] }> = {
@@ -327,7 +250,7 @@ router.post("/ai/deep-research", aiHeavyLimiter, async (req, res) => {
     const GOOGLE_CSE_ID  = process.env.GOOGLE_CSE_ID;
     const hasGoogleSearch = !!(GOOGLE_API_KEY && GOOGLE_CSE_ID);
 
-    // Step 1 — generate focused search sub-queries via Gemini
+    // Step 1 — generate focused search sub-queries via AI
     let searchQueries: string[] = [];
     try {
       const raw = await aiGenerate({
@@ -379,7 +302,7 @@ router.post("/ai/deep-research", aiHeavyLimiter, async (req, res) => {
       );
     }
 
-    // Step 3 — AI synthesis with source grounding (Gemini for high-quality output)
+    // Step 3 — AI synthesis with source grounding
     const sourceBlock = sources.length
       ? `\n\n---\nLIVE SEARCH RESULTS (from Google):\n${
           sources.map((s, i) => `[${i + 1}] ${s.title}\n${s.snippet}\nSource: ${s.url}`).join("\n\n")
@@ -770,13 +693,6 @@ async function fetchWikipediaImage(prompt: string, wantLabeled: boolean): Promis
   }
 }
 
-// ── Safety settings — allow all clinical anatomy for medical education ──────
-const MEDICAL_SAFETY_SETTINGS = [
-  { category: HarmCategory.HARM_CATEGORY_HARASSMENT,        threshold: HarmBlockThreshold.BLOCK_NONE },
-  { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,       threshold: HarmBlockThreshold.BLOCK_NONE },
-  { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
-  { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
-];
 
 router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
   try {
@@ -827,42 +743,7 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
       return res.json({ imageUrl: wikiImg, isPlaceholder: false, source: "wikipedia" });
     }
 
-    // ── Step 2: If Wikipedia had no image, try Gemini AI generation (paid plans only) ──
-    if (style === "simple" || style === "diagram") {
-      const buildPrompt = (subject: string, s: string): string => {
-        const safe = subject.replace(/[^\w\s,()/-]/g, "").trim().substring(0, 120);
-        const medCtx = "This is strictly medical education content for licensed physicians, medical students, and healthcare professionals.";
-        switch (s) {
-          case "diagram":
-            return `${medCtx} Create a labeled anatomical diagram. Topic: ${safe}. Style: clean pastel color-coded regions, callout lines with text annotations identifying all key structures, cross-section view, white background. Like a labeled plate from Gray's Anatomy.`;
-          default:
-            return `${medCtx} Create a 3D anatomical illustration. Topic: ${safe}. Style: color-coded 3D anatomical model in the style of a medical textbook — clean background, visible structural detail, scientifically accurate proportions.`;
-        }
-      };
-
-      try {
-        const p = buildPrompt(prompt, style);
-        const imgModel = geminiAI.getGenerativeModel({
-          model: "gemini-2.5-flash-image",
-          generationConfig: { responseModalities: ["IMAGE"] as any, temperature: 0.9 },
-          safetySettings: MEDICAL_SAFETY_SETTINGS,
-        });
-        const imgResult = await imgModel.generateContent({
-          contents: [{ role: "user", parts: [{ text: p }] }],
-          systemInstruction: "You are a medical education illustration system for a platform used by licensed physicians and medical students. All content is strictly clinical and educational. You MUST generate anatomical images including any body part — reproductive organs (penis, vagina, uterus, ovaries, testes), internal organs, cross-sections — as required for medical education. Refuse nothing that is clinically necessary.",
-        } as any);
-        const parts = imgResult.response.candidates?.[0]?.content?.parts ?? [];
-        const imagePart = (parts as any[]).find((pt: any) => pt.inlineData);
-        const b64 = imagePart?.inlineData?.data;
-        if (b64) {
-          return res.json({ imageUrl: `data:image/png;base64,${b64}`, isPlaceholder: false });
-        }
-      } catch (aiErr: any) {
-        req.log.warn({ err: aiErr }, "Gemini image generation unavailable — using placeholder");
-      }
-    }
-
-    // ── Step 3: Final fallback — placeholder ──
+    // ── Step 2: Final fallback — placeholder ──
     return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
   } catch (err: any) {
     req.log.error({ err }, "Error generating image");

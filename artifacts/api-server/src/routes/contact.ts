@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import rateLimit, { ipKeyGenerator } from "express-rate-limit";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 import { db } from "@workspace/db";
 import { messagesTable } from "@workspace/db";
 import { sendContactUserEmail, sendContactAdminEmail } from "../lib/zoho-mailer.js";
@@ -17,7 +17,7 @@ const contactLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-const geminiAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const CADUS_SYSTEM_PROMPT = `You are Cadus AI, an advanced AI medical assistant inside AETHEX — India's premier medical store for doctors and medical students.
 You help medical professionals and students with:
@@ -61,15 +61,16 @@ router.post("/contact", contactLimiter, async (req, res) => {
   let aiResponse = "Thank you for your query. Our team will review and respond shortly.";
 
   try {
-    const contactModel = geminiAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      systemInstruction: CADUS_SYSTEM_PROMPT,
-      generationConfig: { maxOutputTokens: 600, temperature: 0.6 },
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: CADUS_SYSTEM_PROMPT },
+        { role: "user", content: `Subject: ${sanitizedSubject}\n\nQuery: ${sanitizedMessage}` },
+      ],
+      max_tokens: 600,
+      temperature: 0.6,
     });
-    const contactResult = await contactModel.generateContent(
-      `Subject: ${sanitizedSubject}\n\nQuery: ${sanitizedMessage}`
-    );
-    aiResponse = contactResult.response.text() || aiResponse;
+    aiResponse = completion.choices?.[0]?.message?.content || aiResponse;
   } catch (aiErr) {
     console.error("Cadus AI error for contact:", aiErr);
   }

@@ -1,11 +1,11 @@
 import { Router, type IRouter, type Request, type Response } from "express";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 import { jsonrepair } from "jsonrepair";
 import rateLimit from "express-rate-limit";
 
 const router: IRouter = Router();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const medKnowledgeLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -16,7 +16,7 @@ const medKnowledgeLimiter = rateLimit({
 });
 
 function extractAndRepairJSON(raw: string): string {
-  // 1. Strip Gemini 2.5 thinking tags (e.g. <thinking>...</thinking>)
+  // 1. Strip AI thinking tags (e.g. <thinking>...</thinking>)
   let s = raw.replace(/<thinking>[\s\S]*?<\/thinking>/gi, "").trim();
 
   // 2. Strip all markdown code fences (```json ... ``` or ``` ... ```)
@@ -197,18 +197,18 @@ router.post("/med-knowledge/content", medKnowledgeLimiter, async (req: Request, 
       ? "You are a medical education JSON API. Your ONLY output must be a raw JSON array starting with [ and ending with ]. Never use markdown, code fences, backticks, or any explanatory text. Never wrap the JSON in ```json blocks."
       : "You are a world-class medical educator. Respond with detailed, clinically accurate content suitable for MBBS/MD students and junior doctors.";
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      systemInstruction,
-      generationConfig: {
-        maxOutputTokens: isJsonSection ? Math.max(4096, resolvedCount * 200) : 8192,
-        temperature: isJsonSection ? 0.2 : 0.7,
-        ...(isJsonSection ? { responseMimeType: "application/json" } : {}),
-      },
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: systemInstruction },
+        { role: "user", content: prompt },
+      ],
+      max_tokens: isJsonSection ? Math.max(4096, resolvedCount * 200) : 8192,
+      temperature: isJsonSection ? 0.2 : 0.7,
+      ...(isJsonSection ? { response_format: { type: "json_object" } } : {}),
     });
 
-    const result = await model.generateContent(prompt);
-    let content = result.response.text();
+    let content = completion.choices?.[0]?.message?.content || "";
 
     if (isJsonSection) {
       const raw = content;

@@ -839,9 +839,14 @@ export default function AiAssistant() {
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error ?? "Image generation failed. Please try again.");
       if (data.imageUrl) {
-        const caption = data.isPlaceholder
-          ? `Image generation is temporarily unavailable — showing a medical reference image for: "${prompt}"`
-          : `Here is your generated ${contentLabels[imageStyle] ?? "medical illustration"} for: "${prompt}"`;
+        let caption: string;
+        if (data.isPlaceholder) {
+          caption = `Image generation is temporarily unavailable — showing a medical reference image for: "${prompt}"`;
+        } else if (data.source === "wikipedia") {
+          caption = `Wikipedia medical image for: "${prompt}" — sourced from Wikipedia Commons for clinical accuracy.`;
+        } else {
+          caption = `Here is your generated ${contentLabels[imageStyle] ?? "medical illustration"} for: "${prompt}"`;
+        }
         updateSession(sessionId, [...newMsgs, {
           role: ChatMessageRole.assistant,
           content: caption,
@@ -1799,7 +1804,7 @@ export default function AiAssistant() {
                         : { background: "var(--sp-ai-bubble-bg)", border: "1px solid var(--sp-ai-bubble-border)", color: "var(--sp-ai-text)", backdropFilter: "blur(12px)" }
                       }
                     >
-                      {!(msg as ExtendedMessage).isDeepResearch && !(msg as ExtendedMessage).isPresentation && !(msg as ExtendedMessage).slideCountOptions && !(msg as ExtendedMessage).imageUrl && msg.content && (
+                      {!(msg as ExtendedMessage).isDeepResearch && !(msg as ExtendedMessage).isPresentation && !(msg as ExtendedMessage).slideCountOptions && !(msg as ExtendedMessage).imageUrl && !(msg as ExtendedMessage).isImageTypeSelection && msg.content && (
                         <div>
                           <div className="px-5 py-4 text-[14px] leading-relaxed">
                             <TypewriterText

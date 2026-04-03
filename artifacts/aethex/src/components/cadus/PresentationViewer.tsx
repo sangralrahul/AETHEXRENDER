@@ -855,10 +855,10 @@ export default function PresentationViewer({ data, onClose, pdfBase64, docxBase6
       </div>
 
       {/* ── Stage — dark bg, slide centered ── */}
-      <div style={{ flex: 1, display: "flex", alignItems: "center", minHeight: 0, background: "#0B1221" }}>
+      <div style={{ flex: 1, display: "flex", alignItems: "stretch", minHeight: 0, background: "#0B1221" }}>
         {/* Prev arrow */}
         <button onClick={prev} disabled={idx === 0} style={{
-          flexShrink: 0, width: 52, alignSelf: "stretch",
+          flexShrink: 0, width: 52,
           display: "flex", alignItems: "center", justifyContent: "center",
           background: "transparent", border: "none", cursor: idx === 0 ? "default" : "pointer",
           color: "white", opacity: idx === 0 ? 0.1 : 0.55, transition: "opacity 0.2s",
@@ -866,16 +866,16 @@ export default function PresentationViewer({ data, onClose, pdfBase64, docxBase6
           <ChevronLeft style={{ width: 32, height: 32 }} />
         </button>
 
-        {/* Slide with drop shadow */}
-        <div style={{ flex: 1, minWidth: 0, height: "100%", display: "flex", alignItems: "stretch", padding: "18px 0" }}>
-          <div style={{ flex: 1, boxShadow: "0 24px 60px rgba(0,0,0,0.65)", borderRadius: 4, overflow: "hidden" }}>
+        {/* Slide with drop shadow — fills the stage vertically */}
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", padding: "18px 0" }}>
+          <div style={{ flex: 1, minHeight: 0, boxShadow: "0 24px 60px rgba(0,0,0,0.65)", borderRadius: 4, overflow: "hidden", position: "relative" }}>
             {slide && renderSlide(slide, data, idx + 1, total)}
           </div>
         </div>
 
         {/* Next arrow */}
         <button onClick={next} disabled={idx === total - 1} style={{
-          flexShrink: 0, width: 52, alignSelf: "stretch",
+          flexShrink: 0, width: 52,
           display: "flex", alignItems: "center", justifyContent: "center",
           background: "transparent", border: "none", cursor: idx === total - 1 ? "default" : "pointer",
           color: "white", opacity: idx === total - 1 ? 0.1 : 0.55, transition: "opacity 0.2s",

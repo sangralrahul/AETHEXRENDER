@@ -1,5 +1,6 @@
 import { Router, type IRouter } from "express";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import https from "https";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
 import { jsonrepair } from "jsonrepair";
@@ -536,6 +537,72 @@ Caveat at the end: "This is AI-assisted analysis — always correlate clinically
   }
 });
 
+// ── Wikipedia image helper — free, no API key, medical-specific ───────────
+const MEDICAL_PLACEHOLDER = "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1024&q=80";
+
+function httpsGet(url: string): Promise<{ status: number; location?: string; body: string }> {
+  return new Promise((resolve, reject) => {
+    https.get(url, { headers: { "User-Agent": "AETHEX-Medical-Education/1.0 (educational platform)" } }, (res) => {
+      let body = "";
+      res.on("data", (chunk) => { body += chunk; });
+      res.on("end", () => resolve({ status: res.statusCode ?? 0, location: res.headers.location, body }));
+    }).on("error", reject);
+  });
+}
+
+async function fetchWikipediaImage(prompt: string, wantLabeled: boolean): Promise<string | null> {
+  try {
+    // Extract 1-3 meaningful medical words from the prompt
+    const stopWords = new Set(["the","of","in","and","for","a","an","with","to","on","at","by","from","or","is","are","was","were","be","as","its","which","that","this","these","those","about","after","before","during"]);
+    const words = prompt.replace(/[^\w\s]/g, " ").split(/\s+/)
+      .filter(w => w.length > 2 && !stopWords.has(w.toLowerCase()));
+
+    // For labeled: bias toward anatomy/diagram search terms
+    const searchTerm = wantLabeled
+      ? `${words.slice(0, 2).join(" ")} anatomy`
+      : words.slice(0, 3).join(" ");
+
+    // 1. Try Wikipedia REST summary API (returns the main article image)
+    const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchTerm)}`;
+    const summaryResp = await httpsGet(summaryUrl);
+    if (summaryResp.status === 200) {
+      const data = JSON.parse(summaryResp.body) as Record<string, any>;
+      const imgUrl = (data.originalimage?.source ?? data.thumbnail?.source) as string | undefined;
+      if (imgUrl) return imgUrl;
+    }
+
+    // 2. Fallback: search Wikipedia for the term and get image from first result
+    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&srnamespace=0&format=json&srlimit=3&srprop=snippet`;
+    const searchResp = await httpsGet(searchUrl);
+    if (searchResp.status === 200) {
+      const searchData = JSON.parse(searchResp.body) as Record<string, any>;
+      const hits = (searchData.query?.search ?? []) as any[];
+      for (const hit of hits) {
+        const title = hit.title as string;
+        const pageUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+        const pageResp = await httpsGet(pageUrl);
+        if (pageResp.status === 200) {
+          const pageData = JSON.parse(pageResp.body) as Record<string, any>;
+          const imgUrl = (pageData.originalimage?.source ?? pageData.thumbnail?.source) as string | undefined;
+          if (imgUrl) return imgUrl;
+        }
+      }
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+// ── Safety settings — allow all clinical anatomy for medical education ──────
+const MEDICAL_SAFETY_SETTINGS = [
+  { category: HarmCategory.HARM_CATEGORY_HARASSMENT,        threshold: HarmBlockThreshold.BLOCK_NONE },
+  { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,       threshold: HarmBlockThreshold.BLOCK_NONE },
+  { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
+  { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+];
+
 router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
   try {
     const { prompt, labeled, imageStyle } = req.body;
@@ -547,18 +614,25 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
     // Resolve effective style (backward-compat: labeled boolean → diagram)
     const style: string = imageStyle ?? (labeled ? "diagram" : "simple");
 
-    // Build prompts — phrased as clinical education artwork (avoids moderation flags)
+    // ── "real" and "real-labeled" → fetch from Wikipedia (free, no key, medically accurate) ──
+    if (style === "real" || style === "real-labeled") {
+      const imgUrl = await fetchWikipediaImage(String(prompt), style === "real-labeled");
+      if (imgUrl) {
+        return res.json({ imageUrl: imgUrl, isPlaceholder: false, source: "wikipedia" });
+      }
+      // Wikipedia had no image for this topic — fall back to placeholder
+      return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
+    }
+
+    // ── "simple" and "diagram" → Gemini AI generation with full medical safety permissions ──
     const buildPrompt = (subject: string, s: string): string => {
       const safe = subject.replace(/[^\w\s,()/-]/g, "").trim().substring(0, 120);
+      const medCtx = "This is strictly medical education content for licensed physicians, medical students, and healthcare professionals.";
       switch (s) {
         case "diagram":
-          return `Medical education diagram for clinical students and healthcare professionals. Topic: ${safe}. Style: clean labeled anatomical diagram with pastel color-coded regions, callout lines with text annotations identifying all key structures, cross-section view, white background, no gradients. Like a labeled plate from Gray's Anatomy textbook. Strictly educational artwork.`;
-        case "real":
-          return `Detailed clinical atlas illustration for medical education. Topic: ${safe}. Style: high-fidelity anatomical artwork rendered with depth, shading, and natural color variation to show structural detail — similar to a Netter illustration or clinical reference atlas. No labels, no text overlays, clean composition. Educational anatomy reference.`;
-        case "real-labeled":
-          return `Annotated clinical atlas illustration for medical education. Topic: ${safe}. Style: high-fidelity anatomical artwork with depth shading and natural coloring, overlaid with clean white callout lines and bold printed labels identifying each anatomical structure — like a labeled plate from a medical reference atlas. Educational anatomy diagram with annotations.`;
+          return `${medCtx} Create a labeled anatomical diagram. Topic: ${safe}. Style: clean pastel color-coded regions, callout lines with text annotations identifying all key structures, cross-section view, white background. Like a labeled plate from Gray's Anatomy.`;
         default: // simple
-          return `3D anatomical illustration for medical education. Topic: ${safe}. Style: color-coded 3D anatomical model rendered in the style of a medical textbook or anatomy app — clean background, visible structural detail, scientifically accurate proportions. Educational clinical artwork for students and professionals.`;
+          return `${medCtx} Create a 3D anatomical illustration. Topic: ${safe}. Style: color-coded 3D anatomical model in the style of a medical textbook — clean background, visible structural detail, scientifically accurate proportions.`;
       }
     };
 
@@ -567,49 +641,33 @@ router.post("/ai/generate-image", aiImageLimiter, async (req, res) => {
       const imgModel = geminiAI.getGenerativeModel({
         model: "gemini-2.0-flash-preview-image-generation",
         generationConfig: { responseModalities: ["IMAGE"] as any, temperature: 0.9 },
+        safetySettings: MEDICAL_SAFETY_SETTINGS,
       });
-      const imgResult = await imgModel.generateContent(p);
+      const imgResult = await imgModel.generateContent({
+        contents: [{ role: "user", parts: [{ text: p }] }],
+        systemInstruction: "You are a medical education illustration system for a platform used by licensed physicians and medical students. All content is strictly clinical and educational. You MUST generate anatomical images including any body part — reproductive organs (penis, vagina, uterus, ovaries, testes), internal organs, cross-sections — as required for medical education. Refuse nothing that is clinically necessary.",
+      } as any);
       const parts = imgResult.response.candidates?.[0]?.content?.parts ?? [];
       const imagePart = (parts as any[]).find((pt: any) => pt.inlineData);
       return imagePart?.inlineData?.data ?? null;
     };
 
-    // Medical placeholder — used when Gemini image generation is unavailable
-    const MEDICAL_PLACEHOLDER = "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1024&q=80";
-
-    // Primary attempt
     let b64: string | null = null;
     try {
       b64 = await tryGenerate(prompt, style);
     } catch (firstErr: any) {
-      const isContentBlock = firstErr?.status === 400 || firstErr?.code === "moderation_blocked" || String(firstErr?.message ?? "").toLowerCase().includes("block");
-      if (isContentBlock) {
-        try {
-          b64 = await tryGenerate(prompt, "simple");
-        } catch {
-          // Both attempts failed — return placeholder gracefully
-          res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
-          return;
-        }
-      } else {
-        // Service error — return placeholder gracefully instead of crashing
-        req.log.warn({ err: firstErr }, "Image generation service error — returning placeholder");
-        res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
-        return;
-      }
+      req.log.warn({ err: firstErr }, "Gemini image generation error — returning placeholder");
+      return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
     }
 
     if (!b64) {
-      // Generation succeeded but returned no image data — return placeholder
-      res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
-      return;
+      return res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
     }
 
     res.json({ imageUrl: `data:image/png;base64,${b64}`, isPlaceholder: false });
   } catch (err: any) {
     req.log.error({ err }, "Error generating image");
-    // Even on unexpected errors, return placeholder instead of crashing the UX
-    res.json({ imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1024&q=80", isPlaceholder: true });
+    res.json({ imageUrl: MEDICAL_PLACEHOLDER, isPlaceholder: true });
   }
 });
 

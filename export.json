@@ -1,0 +1,1973 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "Scrubs & Uniforms",
+      "slug": "scrubs",
+      "description": "Professional medical scrubs and uniforms for doctors and nurses",
+      "product_count": 3,
+      "icon_name": "Shirt"
+    },
+    {
+      "id": 2,
+      "name": "Aprons & Coats",
+      "slug": "aprons",
+      "description": "Lab coats, aprons and protective wear for medical professionals",
+      "product_count": 3,
+      "icon_name": "Shield"
+    },
+    {
+      "id": 3,
+      "name": "Books & Study Material",
+      "slug": "books",
+      "description": "Medical textbooks, NEET-PG guides, and study resources",
+      "product_count": 3,
+      "icon_name": "BookOpen"
+    },
+    {
+      "id": 4,
+      "name": "Stethoscopes",
+      "slug": "stethoscopes",
+      "description": "High-quality stethoscopes from leading brands",
+      "product_count": 3,
+      "icon_name": "Stethoscope"
+    },
+    {
+      "id": 5,
+      "name": "Surgical Instruments",
+      "slug": "surgical",
+      "description": "Precision surgical instruments and tools",
+      "product_count": 3,
+      "icon_name": "Scissors"
+    },
+    {
+      "id": 7,
+      "name": "Cardiology",
+      "slug": "cardiac-care",
+      "description": "Cardiac monitors, ECG machines, and heart care equipment for cardiologists",
+      "product_count": 3,
+      "icon_name": "HeartPulse"
+    },
+    {
+      "id": 8,
+      "name": "Orthopaedics",
+      "slug": "orthopaedic",
+      "description": "Braces, orthopaedic tools, implants and rehabilitation devices",
+      "product_count": 3,
+      "icon_name": "Bone"
+    },
+    {
+      "id": 9,
+      "name": "Neurology",
+      "slug": "neurology",
+      "description": "Neurological diagnostic tools, reflex hammers, EEG consumables and books",
+      "product_count": 3,
+      "icon_name": "Brain"
+    },
+    {
+      "id": 11,
+      "name": "Nephrology",
+      "slug": "nephrology",
+      "description": "Kidney function test kits, dialysis supplies and renal care equipment",
+      "product_count": 3,
+      "icon_name": "Droplets"
+    },
+    {
+      "id": 12,
+      "name": "Pulmonology",
+      "slug": "pulmonology",
+      "description": "Peak flow meters, nebulizers, spirometers and respiratory care devices",
+      "product_count": 3,
+      "icon_name": "Wind"
+    },
+    {
+      "id": 13,
+      "name": "Ophthalmology",
+      "slug": "ophthalmology",
+      "description": "Ophthalmoscopes, vision charts, slit-lamp accessories and eye-care tools",
+      "product_count": 3,
+      "icon_name": "Eye"
+    },
+    {
+      "id": 14,
+      "name": "Paediatrics",
+      "slug": "paediatric",
+      "description": "Paediatric stethoscopes, growth charts, child-safe diagnostic equipment",
+      "product_count": 3,
+      "icon_name": "Baby"
+    },
+    {
+      "id": 15,
+      "name": "Dermatology",
+      "slug": "dermatology",
+      "description": "Dermatoscopes, skin diagnostic tools and dermatology consumables",
+      "product_count": 3,
+      "icon_name": "ScanLine"
+    },
+    {
+      "id": 16,
+      "name": "ENT",
+      "slug": "ent",
+      "description": "Otoscopes, tuning forks, nasal speculums and ENT diagnostic sets",
+      "product_count": 3,
+      "icon_name": "Waves"
+    },
+    {
+      "id": 17,
+      "name": "Gynaecology & Obs",
+      "slug": "gynaecology",
+      "description": "Foetal dopplers, speculums, obstetric instruments and women's health tools",
+      "product_count": 3,
+      "icon_name": "HeartHandshake"
+    },
+    {
+      "id": 18,
+      "name": "Endocrinology",
+      "slug": "endocrinology",
+      "description": "Glucometers, HbA1c kits, thyroid diagnostic tools and diabetes care",
+      "product_count": 3,
+      "icon_name": "Dna"
+    },
+    {
+      "id": 19,
+      "name": "Emergency Medicine",
+      "slug": "emergency",
+      "description": "First-aid kits, AED pads, emergency airway supplies and resuscitation tools",
+      "product_count": 3,
+      "icon_name": "AlertTriangle"
+    },
+    {
+      "id": 20,
+      "name": "Radiology",
+      "slug": "radiology",
+      "description": "X-ray viewers, DICOM accessories, radiation protection and imaging tools",
+      "product_count": 3,
+      "icon_name": "Scan"
+    },
+    {
+      "id": 21,
+      "name": "Oncology",
+      "slug": "oncology",
+      "description": "Chemotherapy accessories, port-a-cath kits, oncology nursing supplies",
+      "product_count": 3,
+      "icon_name": "Microscope"
+    },
+    {
+      "id": 22,
+      "name": "Anaesthesia",
+      "slug": "anaesthesia",
+      "description": "Laryngoscopes, airway management kits, regional anaesthesia equipment",
+      "product_count": 3,
+      "icon_name": "Pipette"
+    },
+    {
+      "id": 23,
+      "name": "Physiotherapy",
+      "slug": "physiotherapy",
+      "description": "TENS units, therabands, hot-cold packs and rehabilitation equipment",
+      "product_count": 3,
+      "icon_name": "Dumbbell"
+    },
+    {
+      "id": 24,
+      "name": "Sports Medicine",
+      "slug": "sports-medicine",
+      "description": "Athletic taping, compression gear, sports injury diagnosis and rehab tools",
+      "product_count": 3,
+      "icon_name": "Gauge"
+    },
+    {
+      "id": 27,
+      "name": "Nutrition & Dietetics",
+      "slug": "nutrition",
+      "description": "Body composition scales, skinfold callipers, diet planning and nutrition books",
+      "product_count": 3,
+      "icon_name": "Apple"
+    },
+    {
+      "id": 6,
+      "name": "Medical Equipment",
+      "slug": "equipment",
+      "description": "BP machines, oximeters, thermometers and diagnostic devices",
+      "product_count": 4,
+      "icon_name": "Thermometer"
+    },
+    {
+      "id": 10,
+      "name": "Gastroenterology",
+      "slug": "gastroenterology",
+      "description": "GI diagnostic kits, endoscopy accessories and hepatology equipment",
+      "product_count": 3,
+      "icon_name": "FlaskConical"
+    },
+    {
+      "id": 25,
+      "name": "Psychiatry",
+      "slug": "psychiatry",
+      "description": "Mental health assessment scales, DSM-5, cognitive therapy tools and books",
+      "product_count": 3,
+      "icon_name": "BrainCircuit"
+    },
+    {
+      "id": 26,
+      "name": "Urology",
+      "slug": "urology",
+      "description": "Urodynamic consumables, catheter kits, urinalysis strips and renal tools",
+      "product_count": 3,
+      "icon_name": "TestTube2"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Premium Stretch Scrub Top - Navy Blue",
+      "description": "Ultra-comfortable 4-way stretch scrub top with antimicrobial fabric. Perfect for long hospital shifts. Machine washable.",
+      "price": 1299,
+      "original_price": 1799,
+      "category": "Scrubs & Uniforms",
+      "category_slug": "scrubs",
+      "brand": "MedWear Pro",
+      "image_url": "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 234,
+      "in_stock": true,
+      "tags": [
+        "scrubs",
+        "medical uniform"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.714782"
+    },
+    {
+      "id": 2,
+      "name": "Professional Scrub Set - Ceil Blue",
+      "description": "Complete scrub set with top and pants. Moisture-wicking fabric. Multiple pockets for medical tools.",
+      "price": 2199,
+      "original_price": 2999,
+      "category": "Scrubs & Uniforms",
+      "category_slug": "scrubs",
+      "brand": "DoctorFit",
+      "image_url": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 189,
+      "in_stock": true,
+      "tags": [
+        "scrubs",
+        "set"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.717816"
+    },
+    {
+      "id": 3,
+      "name": "Women's Fitted Scrub Pants - Charcoal",
+      "description": "Tailored fit scrub pants with cargo pockets, drawstring waist, soft cotton-polyester blend.",
+      "price": 999,
+      "original_price": 1299,
+      "category": "Scrubs & Uniforms",
+      "category_slug": "scrubs",
+      "brand": "MedWear Pro",
+      "image_url": "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=400&q=80",
+      "rating": 4.3,
+      "review_count": 156,
+      "in_stock": true,
+      "tags": [
+        "scrub pants",
+        "women"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.72049"
+    },
+    {
+      "id": 4,
+      "name": "White Lab Coat - Full Length",
+      "description": "Classic white lab coat in 100% cotton. Full length with 3 spacious pockets. Name badge slot included.",
+      "price": 1499,
+      "original_price": 1999,
+      "category": "Aprons & Coats",
+      "category_slug": "aprons",
+      "brand": "LabCraft",
+      "image_url": "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 312,
+      "in_stock": true,
+      "tags": [
+        "lab coat",
+        "doctor"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.723245"
+    },
+    {
+      "id": 5,
+      "name": "Short Lab Coat for Medical Students",
+      "description": "Half-length white coat ideal for MBBS students. Lightweight cotton-polyester blend. Embroidery-ready.",
+      "price": 799,
+      "original_price": 999,
+      "category": "Aprons & Coats",
+      "category_slug": "aprons",
+      "brand": "MedStudent",
+      "image_url": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80",
+      "rating": 4.4,
+      "review_count": 445,
+      "in_stock": true,
+      "tags": [
+        "lab coat",
+        "student"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.72579"
+    },
+    {
+      "id": 6,
+      "name": "Surgical Gown - Sterile Pack of 10",
+      "description": "Disposable sterile surgical gown for OT use. SMS non-woven fabric. Level 2 barrier protection.",
+      "price": 1199,
+      "original_price": null,
+      "category": "Aprons & Coats",
+      "category_slug": "aprons",
+      "brand": "SterileGuard",
+      "image_url": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80",
+      "rating": 4.2,
+      "review_count": 89,
+      "in_stock": true,
+      "tags": [
+        "surgical gown",
+        "sterile"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.729034"
+    },
+    {
+      "id": 7,
+      "name": "Harrison's Principles of Internal Medicine - 21st Ed",
+      "description": "The gold-standard internal medicine textbook. Updated with latest clinical guidelines and case studies.",
+      "price": 8999,
+      "original_price": 11999,
+      "category": "Books & Study Material",
+      "category_slug": "books",
+      "brand": "McGraw-Hill",
+      "image_url": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 567,
+      "in_stock": true,
+      "tags": [
+        "harrison",
+        "internal medicine"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.731959"
+    },
+    {
+      "id": 8,
+      "name": "NEET-PG Grand Test Series 2026 - Complete Pack",
+      "description": "30 full-length mock tests, subject-wise Q-banks and detailed explanations for NEET-PG preparation.",
+      "price": 3499,
+      "original_price": 4999,
+      "category": "Books & Study Material",
+      "category_slug": "books",
+      "brand": "DAMS",
+      "image_url": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 823,
+      "in_stock": true,
+      "tags": [
+        "NEET-PG",
+        "mock test"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.734366"
+    },
+    {
+      "id": 9,
+      "name": "Gray's Anatomy - 42nd Edition",
+      "description": "Definitive anatomy reference with stunning illustrations and clinical correlations. Indispensable for medical students.",
+      "price": 7499,
+      "original_price": 9999,
+      "category": "Books & Study Material",
+      "category_slug": "books",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 342,
+      "in_stock": true,
+      "tags": [
+        "anatomy",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.737013"
+    },
+    {
+      "id": 10,
+      "name": "3M Littmann Classic III Stethoscope",
+      "description": "India's most popular stethoscope. Excellent acoustics for respiratory and cardiovascular assessments.",
+      "price": 9999,
+      "original_price": 12999,
+      "category": "Stethoscopes",
+      "category_slug": "stethoscopes",
+      "brand": "3M Littmann",
+      "image_url": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 1203,
+      "in_stock": true,
+      "tags": [
+        "stethoscope",
+        "Littmann"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.739818"
+    },
+    {
+      "id": 11,
+      "name": "3M Littmann Cardiology IV Stethoscope",
+      "description": "Professional-grade stethoscope for cardiologists. Superior acoustic sensitivity. Pediatric and adult diaphragm.",
+      "price": 22999,
+      "original_price": 27999,
+      "category": "Stethoscopes",
+      "category_slug": "stethoscopes",
+      "brand": "3M Littmann",
+      "image_url": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80",
+      "rating": 5,
+      "review_count": 456,
+      "in_stock": true,
+      "tags": [
+        "stethoscope",
+        "cardiology"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.742683"
+    },
+    {
+      "id": 12,
+      "name": "MDF Acoustica Stethoscope for Students",
+      "description": "Affordable stethoscope with excellent sound quality. Extra ear tips and case included. Lifetime warranty.",
+      "price": 2999,
+      "original_price": 3999,
+      "category": "Stethoscopes",
+      "category_slug": "stethoscopes",
+      "brand": "MDF Instruments",
+      "image_url": "https://images.unsplash.com/photo-1590959651373-a3db0f38a961?w=400&q=80",
+      "rating": 4.4,
+      "review_count": 789,
+      "in_stock": true,
+      "tags": [
+        "stethoscope",
+        "student"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.745019"
+    },
+    {
+      "id": 13,
+      "name": "Basic Surgical Instrument Set - 12 Pieces",
+      "description": "Complete set for minor surgical procedures. German stainless steel, autoclavable. Includes scissors, forceps, clamps.",
+      "price": 4999,
+      "original_price": 6999,
+      "category": "Surgical Instruments",
+      "category_slug": "surgical",
+      "brand": "SurgiMed",
+      "image_url": "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 234,
+      "in_stock": true,
+      "tags": [
+        "surgical instruments",
+        "set"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.747147"
+    },
+    {
+      "id": 14,
+      "name": "Kocher's Forceps - Straight 18cm",
+      "description": "316L surgical-grade stainless steel Kocher's forceps. Autoclavable. Ideal for tissue grasping.",
+      "price": 699,
+      "original_price": 899,
+      "category": "Surgical Instruments",
+      "category_slug": "surgical",
+      "brand": "IndoSurgicals",
+      "image_url": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&q=80",
+      "rating": 4.3,
+      "review_count": 167,
+      "in_stock": true,
+      "tags": [
+        "forceps",
+        "surgical"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.74922"
+    },
+    {
+      "id": 15,
+      "name": "Disposable Scalpel Blades - Box of 100",
+      "description": "Sterile single-use carbon steel blades. Available in sizes 10, 11, 15, 20, 22. Individually packaged.",
+      "price": 1299,
+      "original_price": null,
+      "category": "Surgical Instruments",
+      "category_slug": "surgical",
+      "brand": "SterileEdge",
+      "image_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 312,
+      "in_stock": true,
+      "tags": [
+        "scalpel",
+        "blade"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.753032"
+    },
+    {
+      "id": 16,
+      "name": "OMRON HEM-7156 BP Monitor",
+      "description": "Clinically validated automatic blood pressure monitor with irregular heartbeat detection and 60-reading memory.",
+      "price": 3499,
+      "original_price": 4499,
+      "category": "Medical Equipment",
+      "category_slug": "equipment",
+      "brand": "OMRON",
+      "image_url": "https://images.unsplash.com/photo-1559841644-08984562005b?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 1456,
+      "in_stock": true,
+      "tags": [
+        "BP machine",
+        "OMRON"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.755261"
+    },
+    {
+      "id": 17,
+      "name": "Pulse Oximeter - Fingertip SpO2 Monitor",
+      "description": "Accurate fingertip oximeter for oxygen saturation and pulse rate. Fast reading, auto shutoff.",
+      "price": 999,
+      "original_price": 1499,
+      "category": "Medical Equipment",
+      "category_slug": "equipment",
+      "brand": "Dr. Trust",
+      "image_url": "https://images.unsplash.com/photo-1584931423298-c576fda54bd2?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 2341,
+      "in_stock": true,
+      "tags": [
+        "oximeter",
+        "SpO2"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.758112"
+    },
+    {
+      "id": 18,
+      "name": "Non-Contact Infrared Thermometer",
+      "description": "Contactless forehead thermometer. 1-second reading, fever alarm, 32-memory storage. Ideal for clinics.",
+      "price": 1299,
+      "original_price": 1799,
+      "category": "Medical Equipment",
+      "category_slug": "equipment",
+      "brand": "Carent",
+      "image_url": "https://images.unsplash.com/photo-1583911613052-fac6af762f5a?w=400&q=80",
+      "rating": 4.4,
+      "review_count": 892,
+      "in_stock": true,
+      "tags": [
+        "thermometer",
+        "infrared"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.760573"
+    },
+    {
+      "id": 19,
+      "name": "Accu-Chek Glucometer Kit",
+      "description": "Complete blood glucose kit with 25 test strips, lancets and lancing device. Results in 5 seconds.",
+      "price": 1799,
+      "original_price": 2499,
+      "category": "Medical Equipment",
+      "category_slug": "equipment",
+      "brand": "Accu-Chek",
+      "image_url": "https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 1123,
+      "in_stock": true,
+      "tags": [
+        "glucometer",
+        "diabetes"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.763903"
+    },
+    {
+      "id": 20,
+      "name": "12-Lead ECG Machine - Portable",
+      "description": "Compact 12-lead ECG recorder with thermal printer. Touchscreen display, USB data export, 3-hour battery. Ideal for clinics and ICUs.",
+      "price": 28999,
+      "original_price": 36999,
+      "category": "Cardiology",
+      "category_slug": "cardiac-care",
+      "brand": "BPL Medical",
+      "image_url": "https://images.unsplash.com/photo-1579154204601-01588f351e67?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 189,
+      "in_stock": true,
+      "tags": [
+        "ECG",
+        "cardiology",
+        "cardiac monitor"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.766822"
+    },
+    {
+      "id": 21,
+      "name": "Holter Monitor - 24-Hour Ambulatory",
+      "description": "Lightweight 3-channel Holter monitor for 24-48 hour cardiac recording. Wireless data transfer, comprehensive analysis software.",
+      "price": 12999,
+      "original_price": 16999,
+      "category": "Cardiology",
+      "category_slug": "cardiac-care",
+      "brand": "Schiller",
+      "image_url": "https://images.unsplash.com/photo-1628348070889-cb656235b4eb?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 94,
+      "in_stock": true,
+      "tags": [
+        "Holter",
+        "cardiac",
+        "ambulatory"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.76942"
+    },
+    {
+      "id": 22,
+      "name": "Clinical Cardiology - Braunwald 12th Ed",
+      "description": "Braunwald's Heart Disease – the definitive cardiology textbook. Latest evidence-based guidelines, imaging, interventions.",
+      "price": 9499,
+      "original_price": 12999,
+      "category": "Cardiology",
+      "category_slug": "cardiac-care",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 312,
+      "in_stock": true,
+      "tags": [
+        "cardiology",
+        "textbook",
+        "Braunwald"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.772489"
+    },
+    {
+      "id": 23,
+      "name": "Knee Immobiliser Brace - Universal",
+      "description": "Adjustable knee immobiliser for post-surgical recovery and ligament injuries. Lightweight aluminium stays, breathable lining.",
+      "price": 1299,
+      "original_price": 1799,
+      "category": "Orthopaedics",
+      "category_slug": "orthopaedic",
+      "brand": "Tynor",
+      "image_url": "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 456,
+      "in_stock": true,
+      "tags": [
+        "knee brace",
+        "orthopaedic",
+        "immobiliser"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.774958"
+    },
+    {
+      "id": 24,
+      "name": "Lumbar Sacral Belt - Rigid Support",
+      "description": "Medical-grade back support for lumbar disc prolapse, muscle strain and post-operative care. Contoured rigid stays.",
+      "price": 999,
+      "original_price": 1399,
+      "category": "Orthopaedics",
+      "category_slug": "orthopaedic",
+      "brand": "Tynor",
+      "image_url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80",
+      "rating": 4.4,
+      "review_count": 387,
+      "in_stock": true,
+      "tags": [
+        "back support",
+        "lumbar",
+        "orthopaedic"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.777681"
+    },
+    {
+      "id": 25,
+      "name": "Campbell's Operative Orthopaedics - 13th Ed",
+      "description": "The comprehensive orthopaedic surgery reference. 4-volume set covering all subspecialties with surgical techniques.",
+      "price": 24999,
+      "original_price": 31999,
+      "category": "Orthopaedics",
+      "category_slug": "orthopaedic",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 156,
+      "in_stock": true,
+      "tags": [
+        "orthopaedics",
+        "textbook",
+        "Campbell"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.780378"
+    },
+    {
+      "id": 26,
+      "name": "Taylor Percussion Reflex Hammer",
+      "description": "Classic Taylor reflex hammer with triangular rubber head. Chrome-plated handle. Essential for neurological examination.",
+      "price": 399,
+      "original_price": 599,
+      "category": "Neurology",
+      "category_slug": "neurology",
+      "brand": "IndoSurgicals",
+      "image_url": "https://images.unsplash.com/photo-1576670159805-381ef8a92f52?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 892,
+      "in_stock": true,
+      "tags": [
+        "reflex hammer",
+        "neurology",
+        "neurological exam"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.783135"
+    },
+    {
+      "id": 27,
+      "name": "Neurological Examination Kit - 7-piece",
+      "description": "Complete kit: reflex hammer, tuning fork 128Hz, 512Hz, ophthalmoscope, penlight, skinfold callipers and sensory pins.",
+      "price": 2199,
+      "original_price": 2999,
+      "category": "Neurology",
+      "category_slug": "neurology",
+      "brand": "MedDiag",
+      "image_url": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 234,
+      "in_stock": true,
+      "tags": [
+        "neurology kit",
+        "examination",
+        "tuning fork"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.786775"
+    },
+    {
+      "id": 28,
+      "name": "Clinical Neurology - Mumenthaler 5th Ed",
+      "description": "Comprehensive neurology textbook covering localisation, diagnosis and treatment of neurological disorders with detailed case studies.",
+      "price": 5499,
+      "original_price": 7499,
+      "category": "Neurology",
+      "category_slug": "neurology",
+      "brand": "Thieme",
+      "image_url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 178,
+      "in_stock": true,
+      "tags": [
+        "neurology",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.789151"
+    },
+    {
+      "id": 29,
+      "name": "H. Pylori Rapid Antigen Test Kit - 25 Tests",
+      "description": "FDA-cleared rapid stool antigen test for H. pylori detection. Results in 10 minutes. High sensitivity 97.3%.",
+      "price": 2499,
+      "original_price": 3299,
+      "category": "Gastroenterology",
+      "category_slug": "gastroenterology",
+      "brand": "SD Bioline",
+      "image_url": "https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 213,
+      "in_stock": true,
+      "tags": [
+        "H. pylori",
+        "gastroenterology",
+        "rapid test"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.792068"
+    },
+    {
+      "id": 30,
+      "name": "Hepatitis B Surface Antigen Rapid Test - 25 Pack",
+      "description": "One-step HBsAg rapid test for screening hepatitis B infection. Results in 15 minutes. WHO pre-qualified.",
+      "price": 1899,
+      "original_price": 2499,
+      "category": "Gastroenterology",
+      "category_slug": "gastroenterology",
+      "brand": "J. Mitra",
+      "image_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 178,
+      "in_stock": true,
+      "tags": [
+        "HBsAg",
+        "hepatitis",
+        "rapid test"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.79492"
+    },
+    {
+      "id": 31,
+      "name": "Sleisenger & Fordtran's GI & Liver Disease - 11th Ed",
+      "description": "The definitive gastroenterology and hepatology textbook. Updated chapters on IBD, NAFLD, GI cancers and endoscopy.",
+      "price": 11999,
+      "original_price": 15999,
+      "category": "Gastroenterology",
+      "category_slug": "gastroenterology",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 143,
+      "in_stock": true,
+      "tags": [
+        "gastroenterology",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.797317"
+    },
+    {
+      "id": 32,
+      "name": "Urine Analyser Strips - 10 Parameters (100 strips)",
+      "description": "Multi-parameter urine test strips for glucose, protein, ketones, pH, blood, nitrite, bilirubin and more. Results in 60 seconds.",
+      "price": 799,
+      "original_price": 1099,
+      "category": "Nephrology",
+      "category_slug": "nephrology",
+      "brand": "Erba Mannheim",
+      "image_url": "https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 567,
+      "in_stock": true,
+      "tags": [
+        "urine strips",
+        "urinalysis",
+        "nephrology"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.799658"
+    },
+    {
+      "id": 33,
+      "name": "Foley Catheter Kit - Size 14Fr",
+      "description": "Complete sterile Foley catheter kit with 2-way silicone-coated catheter, urine bag, lubricant and draping. Single use.",
+      "price": 349,
+      "original_price": 499,
+      "category": "Nephrology",
+      "category_slug": "nephrology",
+      "brand": "Romsons",
+      "image_url": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80",
+      "rating": 4.4,
+      "review_count": 389,
+      "in_stock": true,
+      "tags": [
+        "catheter",
+        "Foley",
+        "urology"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.801842"
+    },
+    {
+      "id": 34,
+      "name": "Brenner & Rector's The Kidney - 11th Ed",
+      "description": "The authoritative reference in nephrology. Covers CKD, AKI, glomerular diseases, dialysis and transplantation.",
+      "price": 13999,
+      "original_price": 18999,
+      "category": "Nephrology",
+      "category_slug": "nephrology",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 97,
+      "in_stock": true,
+      "tags": [
+        "nephrology",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.804155"
+    },
+    {
+      "id": 35,
+      "name": "Peak Flow Meter - Mini-Wright Standard",
+      "description": "Durable peak expiratory flow meter for asthma monitoring. Range 60-800 L/min. Reusable mouthpiece included.",
+      "price": 799,
+      "original_price": 1099,
+      "category": "Pulmonology",
+      "category_slug": "pulmonology",
+      "brand": "Clement Clarke",
+      "image_url": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 445,
+      "in_stock": true,
+      "tags": [
+        "peak flow",
+        "asthma",
+        "pulmonology"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.807229"
+    },
+    {
+      "id": 36,
+      "name": "Mesh Nebulizer - Silent & Portable",
+      "description": "Ultra-quiet mesh nebulizer. Particle size 3–5 μm. USB rechargeable, 45-minute battery. Ideal for asthma and COPD.",
+      "price": 3499,
+      "original_price": 4999,
+      "category": "Pulmonology",
+      "category_slug": "pulmonology",
+      "brand": "Omron",
+      "image_url": "https://images.unsplash.com/photo-1584931423298-c576fda54bd2?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 678,
+      "in_stock": true,
+      "tags": [
+        "nebulizer",
+        "asthma",
+        "COPD"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.809315"
+    },
+    {
+      "id": 37,
+      "name": "Murray & Nadel's Textbook of Respiratory Medicine",
+      "description": "Definitive pulmonology reference. Latest evidence on ARDS, ILD, pulmonary hypertension and lung cancer.",
+      "price": 12999,
+      "original_price": 16999,
+      "category": "Pulmonology",
+      "category_slug": "pulmonology",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 112,
+      "in_stock": true,
+      "tags": [
+        "pulmonology",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.811451"
+    },
+    {
+      "id": 38,
+      "name": "Direct Ophthalmoscope - LED Illuminated",
+      "description": "High-quality direct ophthalmoscope with 7 apertures, 5 filters and LED illumination. Crisp fundus images. Rechargeable handle.",
+      "price": 4999,
+      "original_price": 6999,
+      "category": "Ophthalmology",
+      "category_slug": "ophthalmology",
+      "brand": "Welch Allyn",
+      "image_url": "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 234,
+      "in_stock": true,
+      "tags": [
+        "ophthalmoscope",
+        "fundus",
+        "ophthalmology"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.81376"
+    },
+    {
+      "id": 39,
+      "name": "Snellen Eye Chart - Backlit LED Board",
+      "description": "Standard Snellen visual acuity chart with LED backlighting. 6-metre and 3-metre charts included. Wall-mounted bracket.",
+      "price": 2499,
+      "original_price": 3499,
+      "category": "Ophthalmology",
+      "category_slug": "ophthalmology",
+      "brand": "MedDiag",
+      "image_url": "https://images.unsplash.com/photo-1576670159805-381ef8a92f52?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 167,
+      "in_stock": true,
+      "tags": [
+        "Snellen chart",
+        "vision",
+        "eye test"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.816252"
+    },
+    {
+      "id": 40,
+      "name": "Kanski's Clinical Ophthalmology - 9th Ed",
+      "description": "The most comprehensive ophthalmology atlas. Beautifully illustrated with high-quality clinical photographs. Essential for ophthalmologists.",
+      "price": 8999,
+      "original_price": 11999,
+      "category": "Ophthalmology",
+      "category_slug": "ophthalmology",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 198,
+      "in_stock": true,
+      "tags": [
+        "ophthalmology",
+        "textbook",
+        "Kanski"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.819162"
+    },
+    {
+      "id": 41,
+      "name": "Paediatric Stethoscope - 3M Littmann Classic III",
+      "description": "Paediatric-sized Littmann stethoscope with smaller chestpiece. Superior acoustics for children's heart and lung sounds.",
+      "price": 8999,
+      "original_price": 10999,
+      "category": "Paediatrics",
+      "category_slug": "paediatric",
+      "brand": "3M Littmann",
+      "image_url": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 345,
+      "in_stock": true,
+      "tags": [
+        "paediatric",
+        "stethoscope",
+        "children"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.821237"
+    },
+    {
+      "id": 42,
+      "name": "Height & Weight Growth Chart - WHO Standards (Pack of 25)",
+      "description": "WHO growth chart pads for boys and girls (0-5 years and 5-19 years). Perforated for file storage. Standard clinic size.",
+      "price": 499,
+      "original_price": 699,
+      "category": "Paediatrics",
+      "category_slug": "paediatric",
+      "brand": "MedPrint",
+      "image_url": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 712,
+      "in_stock": true,
+      "tags": [
+        "growth chart",
+        "WHO",
+        "paediatrics"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.823408"
+    },
+    {
+      "id": 43,
+      "name": "Nelson Textbook of Pediatrics - 21st Ed",
+      "description": "The gold standard paediatrics reference. Complete coverage of newborn, developmental and evidence-based clinical care.",
+      "price": 9999,
+      "original_price": 12999,
+      "category": "Paediatrics",
+      "category_slug": "paediatric",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 489,
+      "in_stock": true,
+      "tags": [
+        "paediatrics",
+        "Nelson",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.826734"
+    },
+    {
+      "id": 44,
+      "name": "Dermatoscope - Polarised LED 10x",
+      "description": "Polarised LED dermatoscope with 10x magnification. Clear dermoscopic images for mole, lesion and skin cancer assessment. Rechargeable.",
+      "price": 6999,
+      "original_price": 9499,
+      "category": "Dermatology",
+      "category_slug": "dermatology",
+      "brand": "Heine",
+      "image_url": "https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 156,
+      "in_stock": true,
+      "tags": [
+        "dermatoscope",
+        "dermoscopy",
+        "skin"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.828871"
+    },
+    {
+      "id": 45,
+      "name": "Wood's Lamp - UV Skin Diagnostic Light",
+      "description": "Professional UV Wood's lamp for fungal infection, vitiligo, hyperpigmentation and porphyria diagnosis. Compact, portable design.",
+      "price": 3499,
+      "original_price": 4999,
+      "category": "Dermatology",
+      "category_slug": "dermatology",
+      "brand": "MedDiag",
+      "image_url": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 213,
+      "in_stock": true,
+      "tags": [
+        "Wood's lamp",
+        "UV",
+        "dermatology"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.831188"
+    },
+    {
+      "id": 46,
+      "name": "Fitzpatrick's Dermatology - 9th Edition (2-Vol Set)",
+      "description": "The definitive dermatology reference. Comprehensive coverage of skin diseases with outstanding clinical photography.",
+      "price": 16999,
+      "original_price": 22999,
+      "category": "Dermatology",
+      "category_slug": "dermatology",
+      "brand": "McGraw-Hill",
+      "image_url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 134,
+      "in_stock": true,
+      "tags": [
+        "dermatology",
+        "Fitzpatrick",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.833591"
+    },
+    {
+      "id": 47,
+      "name": "Otoscope - LED Illuminated with 5 Specula",
+      "description": "Professional LED otoscope for ear canal and tympanic membrane examination. 5 disposable speculum sizes. Wide-angle view.",
+      "price": 2499,
+      "original_price": 3499,
+      "category": "ENT",
+      "category_slug": "ent",
+      "brand": "Welch Allyn",
+      "image_url": "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 389,
+      "in_stock": true,
+      "tags": [
+        "otoscope",
+        "ENT",
+        "ear exam"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.83626"
+    },
+    {
+      "id": 48,
+      "name": "Tuning Fork Set - 128Hz, 256Hz, 512Hz",
+      "description": "Medical-grade aluminium alloy tuning fork set for hearing assessment (Rinne & Weber tests) and vibration sense testing.",
+      "price": 799,
+      "original_price": 1099,
+      "category": "ENT",
+      "category_slug": "ent",
+      "brand": "IndoSurgicals",
+      "image_url": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 567,
+      "in_stock": true,
+      "tags": [
+        "tuning fork",
+        "ENT",
+        "hearing test"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.838524"
+    },
+    {
+      "id": 49,
+      "name": "Cummings Otolaryngology - Head & Neck Surgery 7th Ed",
+      "description": "The authoritative ENT reference. Covers all subspecialties including head/neck surgery, rhinology, otology and laryngology.",
+      "price": 14999,
+      "original_price": 19999,
+      "category": "ENT",
+      "category_slug": "ent",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 123,
+      "in_stock": true,
+      "tags": [
+        "ENT",
+        "textbook",
+        "Cummings"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.840973"
+    },
+    {
+      "id": 50,
+      "name": "Foetal Doppler - 3MHz Handheld",
+      "description": "Compact pocket-sized foetal Doppler for home and clinical foetal heartbeat monitoring from 12 weeks. LED display, earphone included.",
+      "price": 2999,
+      "original_price": 3999,
+      "category": "Gynaecology & Obs",
+      "category_slug": "gynaecology",
+      "brand": "Bistos",
+      "image_url": "https://images.unsplash.com/photo-1576670159805-381ef8a92f52?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 456,
+      "in_stock": true,
+      "tags": [
+        "foetal Doppler",
+        "pregnancy",
+        "obstetrics"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.843451"
+    },
+    {
+      "id": 51,
+      "name": "Cusco's Vaginal Speculum - Medium (Pack of 10)",
+      "description": "Sterile single-use Cusco bivalve specula. Smooth surface, easy-click locking mechanism. Transparent polystyrene for clear visualisation.",
+      "price": 599,
+      "original_price": 799,
+      "category": "Gynaecology & Obs",
+      "category_slug": "gynaecology",
+      "brand": "Romsons",
+      "image_url": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80",
+      "rating": 4.4,
+      "review_count": 312,
+      "in_stock": true,
+      "tags": [
+        "speculum",
+        "gynaecology",
+        "disposable"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.845851"
+    },
+    {
+      "id": 52,
+      "name": "Williams Obstetrics - 26th Edition",
+      "description": "The most comprehensive obstetrics reference. Evidence-based guidance on normal and high-risk pregnancy, labour and delivery.",
+      "price": 7999,
+      "original_price": 10999,
+      "category": "Gynaecology & Obs",
+      "category_slug": "gynaecology",
+      "brand": "McGraw-Hill",
+      "image_url": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 267,
+      "in_stock": true,
+      "tags": [
+        "obstetrics",
+        "Williams",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.848266"
+    },
+    {
+      "id": 53,
+      "name": "HbA1c Rapid Test Kit - 25 Tests (POCT)",
+      "description": "Point-of-care HbA1c analyser cartridges for 3-month average blood glucose control. Results in 5 minutes. No lab needed.",
+      "price": 4999,
+      "original_price": 6499,
+      "category": "Endocrinology",
+      "category_slug": "endocrinology",
+      "brand": "SD Biosensor",
+      "image_url": "https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 234,
+      "in_stock": true,
+      "tags": [
+        "HbA1c",
+        "diabetes",
+        "endocrinology"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.850535"
+    },
+    {
+      "id": 54,
+      "name": "Insulin Syringes U-100 - Box of 100 (0.5ml, 30G)",
+      "description": "Ultra-fine 30-gauge insulin syringes for subcutaneous injection. 0.5ml capacity. Minimal pain, clear barrel for accurate dosing.",
+      "price": 399,
+      "original_price": 549,
+      "category": "Endocrinology",
+      "category_slug": "endocrinology",
+      "brand": "BD",
+      "image_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 1234,
+      "in_stock": true,
+      "tags": [
+        "insulin syringe",
+        "diabetes",
+        "injection"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.852883"
+    },
+    {
+      "id": 55,
+      "name": "Williams Textbook of Endocrinology - 14th Ed",
+      "description": "The definitive endocrinology reference. Covers pituitary, thyroid, adrenal, reproductive and metabolic diseases with clinical focus.",
+      "price": 9499,
+      "original_price": 12999,
+      "category": "Endocrinology",
+      "category_slug": "endocrinology",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 156,
+      "in_stock": true,
+      "tags": [
+        "endocrinology",
+        "textbook",
+        "Williams"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.855477"
+    },
+    {
+      "id": 56,
+      "name": "AED Training Pad Set - Adult & Paediatric",
+      "description": "High-quality AED electrode training pads compatible with most AED trainers. Adult and paediatric variants. Set of 2 pairs.",
+      "price": 1299,
+      "original_price": 1799,
+      "category": "Emergency Medicine",
+      "category_slug": "emergency",
+      "brand": "Philips",
+      "image_url": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 178,
+      "in_stock": true,
+      "tags": [
+        "AED",
+        "defibrillator",
+        "emergency"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.857604"
+    },
+    {
+      "id": 57,
+      "name": "Advanced First-Aid Kit - 85 Piece",
+      "description": "Comprehensive first-aid kit for clinics and hospitals. Includes wound care, trauma dressings, airway adjuncts, gloves and CPR mask.",
+      "price": 2999,
+      "original_price": 3999,
+      "category": "Emergency Medicine",
+      "category_slug": "emergency",
+      "brand": "MedKit Pro",
+      "image_url": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 389,
+      "in_stock": true,
+      "tags": [
+        "first aid",
+        "emergency kit",
+        "trauma"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.860048"
+    },
+    {
+      "id": 58,
+      "name": "Tintinalli's Emergency Medicine - 9th Edition",
+      "description": "The most comprehensive emergency medicine textbook. Covers resuscitation, toxicology, trauma, paediatric EM and procedures.",
+      "price": 9999,
+      "original_price": 13999,
+      "category": "Emergency Medicine",
+      "category_slug": "emergency",
+      "brand": "McGraw-Hill",
+      "image_url": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 312,
+      "in_stock": true,
+      "tags": [
+        "emergency medicine",
+        "Tintinalli",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.863151"
+    },
+    {
+      "id": 59,
+      "name": "Lead Apron - X-Ray Radiation Protection (0.5mm Pb)",
+      "description": "0.5mm lead-equivalent radiation protection apron for X-ray procedures. Lightweight design, adjustable buckles. Unisex sizing.",
+      "price": 8999,
+      "original_price": 11999,
+      "category": "Radiology",
+      "category_slug": "radiology",
+      "brand": "Infab Corp",
+      "image_url": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 123,
+      "in_stock": true,
+      "tags": [
+        "lead apron",
+        "radiation protection",
+        "X-ray"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.866046"
+    },
+    {
+      "id": 60,
+      "name": "X-Ray Film Viewer - LED Illuminated (Single Bay)",
+      "description": "Slim LED X-ray film viewer with uniform bright illumination. 40x50cm viewing area. On/off switch. Wall-mountable.",
+      "price": 3499,
+      "original_price": 4999,
+      "category": "Radiology",
+      "category_slug": "radiology",
+      "brand": "MedDiag",
+      "image_url": "https://images.unsplash.com/photo-1576670159805-381ef8a92f52?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 167,
+      "in_stock": true,
+      "tags": [
+        "X-ray viewer",
+        "LED",
+        "radiology"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.868654"
+    },
+    {
+      "id": 61,
+      "name": "Grainger & Allison's Diagnostic Radiology - 7th Ed",
+      "description": "The definitive radiology reference. Covers all imaging modalities with stunning radiographs, CT and MRI images.",
+      "price": 18999,
+      "original_price": 24999,
+      "category": "Radiology",
+      "category_slug": "radiology",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 98,
+      "in_stock": true,
+      "tags": [
+        "radiology",
+        "textbook",
+        "imaging"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.87113"
+    },
+    {
+      "id": 62,
+      "name": "Port-A-Cath Needle Set - 20G Huber (Box of 10)",
+      "description": "Sterile non-coring Huber needles for subcutaneous port access during chemotherapy. 90° angle, 20G. Luer lock connection.",
+      "price": 1999,
+      "original_price": 2699,
+      "category": "Oncology",
+      "category_slug": "oncology",
+      "brand": "Bard Access",
+      "image_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 145,
+      "in_stock": true,
+      "tags": [
+        "port needle",
+        "Huber",
+        "chemotherapy"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.873489"
+    },
+    {
+      "id": 63,
+      "name": "Oncology Nursing Gloves - Chemo-Rated Nitrile (100 pcs)",
+      "description": "Double-certified chemotherapy-rated nitrile gloves. ASTM D6978 compliant. Extra-thick 8mil, powder-free, textured grip.",
+      "price": 1499,
+      "original_price": 1999,
+      "category": "Oncology",
+      "category_slug": "oncology",
+      "brand": "Aurelia",
+      "image_url": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 312,
+      "in_stock": true,
+      "tags": [
+        "chemo gloves",
+        "oncology",
+        "nitrile"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.876308"
+    },
+    {
+      "id": 64,
+      "name": "DeVita, Hellman & Rosenberg's Cancer - 12th Ed",
+      "description": "The foremost oncology reference. Covers all cancer types with surgical, medical and radiation oncology approaches.",
+      "price": 14999,
+      "original_price": 19999,
+      "category": "Oncology",
+      "category_slug": "oncology",
+      "brand": "Wolters Kluwer",
+      "image_url": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 87,
+      "in_stock": true,
+      "tags": [
+        "oncology",
+        "textbook",
+        "cancer"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.879036"
+    },
+    {
+      "id": 65,
+      "name": "Laryngoscope Handle + Blade Set (Macintosh 3 & 4)",
+      "description": "Reusable fibre-optic laryngoscope handle with Macintosh blades sizes 3 and 4. Autoclavable. AA-battery operated.",
+      "price": 3499,
+      "original_price": 4999,
+      "category": "Anaesthesia",
+      "category_slug": "anaesthesia",
+      "brand": "Penlon",
+      "image_url": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 189,
+      "in_stock": true,
+      "tags": [
+        "laryngoscope",
+        "anaesthesia",
+        "intubation"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.88135"
+    },
+    {
+      "id": 66,
+      "name": "LMA Supreme - Size 3 (Laryngeal Mask Airway)",
+      "description": "Single-use LMA Supreme with integrated drain tube. Second-generation supraglottic airway with gastric access channel.",
+      "price": 799,
+      "original_price": 999,
+      "category": "Anaesthesia",
+      "category_slug": "anaesthesia",
+      "brand": "Teleflex",
+      "image_url": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 256,
+      "in_stock": true,
+      "tags": [
+        "LMA",
+        "airway",
+        "anaesthesia"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.88313"
+    },
+    {
+      "id": 67,
+      "name": "Miller's Anaesthesia - 9th Edition (2-Volume)",
+      "description": "The definitive anaesthesiology textbook. Covers pharmacology, equipment, regional techniques, paediatric and critical care anaesthesia.",
+      "price": 16999,
+      "original_price": 22999,
+      "category": "Anaesthesia",
+      "category_slug": "anaesthesia",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 134,
+      "in_stock": true,
+      "tags": [
+        "anaesthesia",
+        "Miller",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.885599"
+    },
+    {
+      "id": 68,
+      "name": "TENS Unit - Digital 4-Channel with 8 Pads",
+      "description": "Professional-grade TENS unit for pain relief. 4-channel, 20 preset programs, intensity and timer control. 8 self-adhesive pads included.",
+      "price": 2999,
+      "original_price": 3999,
+      "category": "Physiotherapy",
+      "category_slug": "physiotherapy",
+      "brand": "Healthmate Forever",
+      "image_url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 567,
+      "in_stock": true,
+      "tags": [
+        "TENS",
+        "physiotherapy",
+        "pain relief"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.887439"
+    },
+    {
+      "id": 69,
+      "name": "Resistance Theraband Set - 6 Levels (1.5m each)",
+      "description": "Progressive resistance band set for physiotherapy and strength training. 6 colour-coded resistance levels. Latex-free available.",
+      "price": 999,
+      "original_price": 1399,
+      "category": "Physiotherapy",
+      "category_slug": "physiotherapy",
+      "brand": "TheraBand",
+      "image_url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 892,
+      "in_stock": true,
+      "tags": [
+        "theraband",
+        "resistance",
+        "physiotherapy"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.890185"
+    },
+    {
+      "id": 70,
+      "name": "Kisner & Colby - Therapeutic Exercise 7th Ed",
+      "description": "The classic physiotherapy exercise textbook. Evidence-based techniques for musculoskeletal, cardiopulmonary and neurological rehabilitation.",
+      "price": 5499,
+      "original_price": 7499,
+      "category": "Physiotherapy",
+      "category_slug": "physiotherapy",
+      "brand": "F.A. Davis",
+      "image_url": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 234,
+      "in_stock": true,
+      "tags": [
+        "physiotherapy",
+        "exercise",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.892071"
+    },
+    {
+      "id": 71,
+      "name": "Athletic Strapping Tape - 3.8cm x 10m (6-Pack)",
+      "description": "Rigid zinc oxide sports strapping tape for joint support and injury prevention. High-strength adhesive, non-stretch. Used by sports physios.",
+      "price": 899,
+      "original_price": 1199,
+      "category": "Sports Medicine",
+      "category_slug": "sports-medicine",
+      "brand": "Leukoplast",
+      "image_url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 678,
+      "in_stock": true,
+      "tags": [
+        "strapping tape",
+        "sports",
+        "athletic"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.895418"
+    },
+    {
+      "id": 72,
+      "name": "Kinesio Tex Gold Tape - 5cm x 5m (Blue)",
+      "description": "Original Kinesiology tape for muscle support and lymphatic drainage. Elastic, breathable, hypoallergenic. Water-resistant. 2-pack.",
+      "price": 799,
+      "original_price": 1099,
+      "category": "Sports Medicine",
+      "category_slug": "sports-medicine",
+      "brand": "Kinesio",
+      "image_url": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 892,
+      "in_stock": true,
+      "tags": [
+        "kinesio tape",
+        "sports",
+        "muscle support"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.897733"
+    },
+    {
+      "id": 73,
+      "name": "DeLee & Drez's Orthopaedic Sports Medicine 4th Ed",
+      "description": "The premier sports medicine reference. Covers anatomy, biomechanics, sports injuries, surgical and non-surgical management.",
+      "price": 11999,
+      "original_price": 15999,
+      "category": "Sports Medicine",
+      "category_slug": "sports-medicine",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 145,
+      "in_stock": true,
+      "tags": [
+        "sports medicine",
+        "textbook",
+        "orthopaedics"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.900284"
+    },
+    {
+      "id": 74,
+      "name": "PHQ-9 & GAD-7 Assessment Pads (50 sheets each)",
+      "description": "Pre-printed PHQ-9 (depression) and GAD-7 (anxiety) screening questionnaire pads. Standard validated tools for clinical practice.",
+      "price": 399,
+      "original_price": 549,
+      "category": "Psychiatry",
+      "category_slug": "psychiatry",
+      "brand": "MedPrint",
+      "image_url": "https://images.unsplash.com/photo-1576670159805-381ef8a92f52?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 456,
+      "in_stock": true,
+      "tags": [
+        "PHQ-9",
+        "GAD-7",
+        "psychiatry",
+        "screening"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.902937"
+    },
+    {
+      "id": 75,
+      "name": "DSM-5-TR - Diagnostic & Statistical Manual",
+      "description": "The definitive psychiatric diagnostic manual. Updated DSM-5 text revision with latest criteria for all mental disorders.",
+      "price": 4999,
+      "original_price": 6499,
+      "category": "Psychiatry",
+      "category_slug": "psychiatry",
+      "brand": "APA",
+      "image_url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 567,
+      "in_stock": true,
+      "tags": [
+        "DSM-5",
+        "psychiatry",
+        "diagnosis"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.905393"
+    },
+    {
+      "id": 76,
+      "name": "Kaplan & Sadock's Comprehensive Textbook of Psychiatry",
+      "description": "The most comprehensive psychiatry reference. Neuroscience, psychopathology, treatment and subspecialty psychiatry all covered.",
+      "price": 19999,
+      "original_price": 26999,
+      "category": "Psychiatry",
+      "category_slug": "psychiatry",
+      "brand": "Wolters Kluwer",
+      "image_url": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 123,
+      "in_stock": true,
+      "tags": [
+        "psychiatry",
+        "Kaplan",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.908014"
+    },
+    {
+      "id": 77,
+      "name": "Urodynamic Catheter Kit - 7Fr Dual Lumen",
+      "description": "Sterile urodynamic catheter kit for cystometry and uroflow studies. 7Fr dual-lumen with pressure transducer fittings.",
+      "price": 2499,
+      "original_price": 3299,
+      "category": "Urology",
+      "category_slug": "urology",
+      "brand": "Laborie",
+      "image_url": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80",
+      "rating": 4.5,
+      "review_count": 134,
+      "in_stock": true,
+      "tags": [
+        "urodynamics",
+        "catheter",
+        "urology"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.910665"
+    },
+    {
+      "id": 78,
+      "name": "Urine Pregnancy Test Strips - 50 Pack (HCG)",
+      "description": "Highly sensitive HCG urine pregnancy test strips. 10 mIU/mL sensitivity. Results in 3 minutes. Individually foil-sealed.",
+      "price": 299,
+      "original_price": 449,
+      "category": "Urology",
+      "category_slug": "urology",
+      "brand": "Piramal",
+      "image_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 789,
+      "in_stock": true,
+      "tags": [
+        "pregnancy test",
+        "HCG",
+        "urology"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.91317"
+    },
+    {
+      "id": 79,
+      "name": "Campbell-Walsh-Wein Urology - 12th Edition",
+      "description": "The definitive urology reference. Covers urologic oncology, endourology, reconstructive urology and sexual medicine.",
+      "price": 22999,
+      "original_price": 29999,
+      "category": "Urology",
+      "category_slug": "urology",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80",
+      "rating": 4.9,
+      "review_count": 98,
+      "in_stock": true,
+      "tags": [
+        "urology",
+        "textbook",
+        "Campbell-Walsh"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.915578"
+    },
+    {
+      "id": 80,
+      "name": "Body Composition Analyser Scale - Bioimpedance 8-Electrode",
+      "description": "Medical-grade 8-electrode bioimpedance analyser measuring body fat, muscle mass, visceral fat, BMR and hydration. Bluetooth connectivity.",
+      "price": 7999,
+      "original_price": 10999,
+      "category": "Nutrition & Dietetics",
+      "category_slug": "nutrition",
+      "brand": "Tanita",
+      "image_url": "https://images.unsplash.com/photo-1576670159805-381ef8a92f52?w=400&q=80",
+      "rating": 4.7,
+      "review_count": 234,
+      "in_stock": true,
+      "tags": [
+        "body composition",
+        "BMI",
+        "nutrition",
+        "dietetics"
+      ],
+      "featured": true,
+      "created_at": "2026-03-31T17:41:22.918642"
+    },
+    {
+      "id": 81,
+      "name": "Skinfold Calliper - Harpenden Standard",
+      "description": "Precision Harpenden skinfold calliper for body fat percentage measurement. Constant pressure jaw, direct-reading dial. Includes measurement guide.",
+      "price": 3999,
+      "original_price": 5499,
+      "category": "Nutrition & Dietetics",
+      "category_slug": "nutrition",
+      "brand": "Baty International",
+      "image_url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80",
+      "rating": 4.6,
+      "review_count": 178,
+      "in_stock": true,
+      "tags": [
+        "calliper",
+        "body fat",
+        "anthropometry"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.921053"
+    },
+    {
+      "id": 82,
+      "name": "Krause and Mahan's Food & the Nutrition Care Process",
+      "description": "The comprehensive dietetics and clinical nutrition textbook. Medical nutrition therapy for all major disease conditions.",
+      "price": 6999,
+      "original_price": 8999,
+      "category": "Nutrition & Dietetics",
+      "category_slug": "nutrition",
+      "brand": "Elsevier",
+      "image_url": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=80",
+      "rating": 4.8,
+      "review_count": 267,
+      "in_stock": true,
+      "tags": [
+        "nutrition",
+        "dietetics",
+        "textbook"
+      ],
+      "featured": false,
+      "created_at": "2026-03-31T17:41:22.923512"
+    }
+  ],
+  "auth_users": [
+    {
+      "id": 1,
+      "email": "rishumvis007@gmail.com",
+      "phone": null,
+      "name": null,
+      "plan": "free",
+      "created_at": "2026-03-31T17:49:48.843051+00:00",
+      "last_login_at": null
+    }
+  ],
+  "orders": null,
+  "cart_items": null,
+  "blog_posts": null,
+  "blog_comments": null,
+  "messages": null,
+  "notifications": null,
+  "newsletter_subscribers": null,
+  "email_logs": null,
+  "sms_logs": null,
+  "otp_requests": [
+    {
+      "id": 2,
+      "email": "rishumvis007@gmail.com",
+      "hashed_otp": "$2b$10$owQKn3KY/ZHAoDqPWiTwkeFq1GhqMDde.n0/II48y7qDQq2V9M7V6",
+      "expires_at": "2026-03-31T17:54:15.844+00:00",
+      "attempts": 0,
+      "used": true,
+      "created_at": "2026-03-31T17:49:15.845158+00:00"
+    },
+    {
+      "id": 3,
+      "email": "test@example.com",
+      "hashed_otp": "$2b$10$KD//D/zFIhSPaaLiVX07mOdZ8HinnaPXnL1nrJ/eJnAbrlTnKIctS",
+      "expires_at": "2026-03-31T21:14:25.504+00:00",
+      "attempts": 0,
+      "used": false,
+      "created_at": "2026-03-31T21:09:25.505857+00:00"
+    },
+    {
+      "id": 5,
+      "email": "doctor@example.com",
+      "hashed_otp": "$2b$10$akAUUSELLAA7O4FCi/Hjze11ws8zw7V5p7WlE3sYJF9TsOtC.WyYW",
+      "expires_at": "2026-03-31T21:16:08.691+00:00",
+      "attempts": 0,
+      "used": false,
+      "created_at": "2026-03-31T21:11:08.692161+00:00"
+    }
+  ],
+  "phone_otp_requests": null
+}

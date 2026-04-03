@@ -6,3 +6,9 @@ id = "EP3CXdXu_cxSdDLbGmxRo"
 uri = "file://downloads/AiAssistant.txt"
 type = "text"
 title = "AiAssistant.tsx — Cadus AI Full Source Code"
+
+[[outputs]]
+id = "0WbrWG43CGQW1FH1dDCPI"
+uri = "file://export.json"
+type = "unspecified"
+title = "Database Export"

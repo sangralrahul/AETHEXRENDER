@@ -163,7 +163,7 @@ router.post("/ai/deep-research", aiHeavyLimiter, async (req, res) => {
     let searchQueries: string[] = [];
     try {
       const queryGenModel = geminiAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         systemInstruction: "You are a medical research query generator. Generate 4 targeted Google search queries to comprehensively research the given medical topic from multiple angles (pathophysiology, clinical, guidelines, Indian context). Return ONLY a JSON array of strings, no other text. Example: [\"query1\",\"query2\",\"query3\",\"query4\"]",
         generationConfig: { maxOutputTokens: 300, temperature: 0.2 },
       });
@@ -244,7 +244,7 @@ Requirements:
 - Be factually accurate — this is read by medical professionals`;
 
     const synthesisModel = geminiAI.getGenerativeModel({
-      model: "gemini-1.5-pro",
+      model: "gemini-2.5-flash",
       systemInstruction: systemPrompt,
       generationConfig: { maxOutputTokens: 8192, temperature: 0.6 },
     });

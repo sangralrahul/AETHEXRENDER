@@ -174,7 +174,7 @@ router.post("/med-knowledge/content", medKnowledgeLimiter, async (req: Request, 
     const isJsonSection = section === "mcq" || section === "flashcards";
     const prompt = buildPrompt(section, topic || "", subject || "", conditionName, department);
 
-    const modelName = isJsonSection ? "gemini-1.5-flash" : "gemini-1.5-pro";
+    const modelName = "gemini-2.5-flash";
 
     const systemInstruction = isJsonSection
       ? "You are a medical education JSON API. Output ONLY a valid JSON array starting with [ and ending with ]. Absolutely no markdown, no code fences, no explanation text before or after the JSON."

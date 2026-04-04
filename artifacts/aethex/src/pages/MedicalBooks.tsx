@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import {
   BookOpen, Search, ShoppingCart, Star, ChevronRight,
   GraduationCap, Library, Tag, TrendingUp, BookMarked,
-  Sparkles, Trophy, ChevronDown, X, Filter,
+  Sparkles, Trophy, ChevronDown, X, Filter, ExternalLink,
 } from "lucide-react";
 import { useAddToCart } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -30,6 +30,33 @@ function coverFor(name: string) {
 function discount(price: number, mrp: number) {
   if (!mrp || mrp <= price) return 0;
   return Math.round(((mrp - price) / mrp) * 100);
+}
+
+// ── Official catalogue URL per publisher ──────────────────────────────────
+function catalogueUrl(book: CurrBook): string {
+  const q = encodeURIComponent(book.name);
+  const pub = book.publisher.toLowerCase();
+  if (pub.includes("elsevier") || pub.includes("reed"))
+    return `https://www.elsevier.com/search-results?query=${q}`;
+  if (pub.includes("cbs"))
+    return `https://www.cbspd.com/search/?q=${q}`;
+  if (pub.includes("jaypee"))
+    return `https://www.jaypeedigital.com/search?q=${q}`;
+  if (pub.includes("wolters") || pub.includes("lww") || pub.includes("lippincott"))
+    return `https://shop.lww.com/search?q=${q}`;
+  if (pub.includes("oxford") || pub.includes("oup"))
+    return `https://global.oup.com/academic/search/?q=${q}`;
+  if (pub.includes("mcgraw") || pub.includes("hill"))
+    return `https://www.mheducation.com/search.html#q%3D${q}`;
+  if (pub.includes("springer") || pub.includes("thieme"))
+    return `https://link.springer.com/search?query=${q}`;
+  if (pub.includes("cambridge"))
+    return `https://www.cambridge.org/core/search?q=${q}`;
+  if (pub.includes("arya") || pub.includes("bi publications") || pub.includes("jp medical"))
+    return `https://www.jpmedpub.com/search?q=${q}`;
+  // Fallback — Amazon India search
+  const ak = encodeURIComponent(`${book.name} ${book.author}`);
+  return `https://www.amazon.in/s?k=${ak}&i=stripbooks`;
 }
 
 // ── Book Card ─────────────────────────────────────────────────────────────
@@ -125,19 +152,32 @@ function BookCard({
           )}
         </div>
 
-        {/* Cart button */}
-        <button
-          onClick={() => dbId && onCart(dbId)}
-          className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold transition-all hover:opacity-90 active:scale-95 mt-1"
-          style={{
-            background: dbId ? `linear-gradient(135deg,${color},${color}CC)` : "#E5E5EA",
-            color: dbId ? "#fff" : "#AEAEB2",
-          }}
-          disabled={!dbId}
-        >
-          <ShoppingCart className="w-3 h-3" />
-          {dbId ? "Add to Cart" : "Request Book"}
-        </button>
+        {/* Action buttons row */}
+        <div className="flex gap-1.5 mt-1">
+          <button
+            onClick={() => dbId && onCart(dbId)}
+            className="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-[11px] font-bold transition-all hover:opacity-90 active:scale-95"
+            style={{
+              background: dbId ? `linear-gradient(135deg,${color},${color}CC)` : "#E5E5EA",
+              color: dbId ? "#fff" : "#AEAEB2",
+            }}
+            disabled={!dbId}
+          >
+            <ShoppingCart className="w-3 h-3" />
+            {dbId ? "Add to Cart" : "Request"}
+          </button>
+          <a
+            href={catalogueUrl(book)}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View Official Publisher Catalogue"
+            className="flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-[11px] font-semibold transition-all hover:opacity-90 active:scale-95 shrink-0"
+            style={{ background: `${color}14`, color, border: `1px solid ${color}30` }}
+          >
+            <ExternalLink className="w-3 h-3" />
+            <span>Catalogue</span>
+          </a>
+        </div>
       </div>
     </div>
   );

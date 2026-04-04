@@ -31,6 +31,7 @@ export interface Degree {
   label: string;
   shortLabel: string;
   color: string;
+  isPG?: boolean; // true for MD/MS/MCh/DM → years = specialties, subjects = Year 1/2/3
   years: CurriculumYear[];
 }
 
@@ -335,315 +336,317 @@ export const CURRICULUM: Degree[] = [
     label: "MD",
     shortLabel: "MD",
     color: "#5856D6",
+    isPG: true,
     years: [
-      // ── MD Year 1 ───────────────────────────────────────────────────
+
+      // ─────────────── MD Medicine ───────────────
       {
-        id: "md-year1",
-        label: "Year 1",
+        id: "md-medicine",
+        label: "MD Medicine",
         subjects: [
           {
-            id: "md-y1-common",
-            name: "Common Foundation",
-            color: "#636366",
-            books: [
-              { name: "ICMR Guidelines for Biomedical Research on Human Participants", author: "ICMR", publisher: "ICMR Publications", price: 499, mrp: 699, edition: "2017 Ed", featured: true, matchTags: ["ICMR","biomedical research","ethics"] },
-              { name: "Biostatistics — Basic Concepts & Methodology for Health Sciences 10th Ed", author: "Wayne Daniel & Chad Cross", publisher: "Wiley", price: 3999, mrp: 5299, edition: "10th Ed", matchTags: ["biostatistics","Daniel"] },
-              { name: "Research Methodology in Health Sciences 3rd Ed", author: "Suresh K Sharma", publisher: "Jaypee Brothers", price: 1299, mrp: 1799, edition: "3rd Ed", matchTags: ["research methodology","Suresh Sharma"] },
-              { name: "Medical Ethics & Communication Skills 2nd Ed", author: "P Chakraborti", publisher: "Jaypee Brothers", price: 799, mrp: 1099, edition: "2nd Ed", matchTags: ["medical ethics","communication"] },
-            ],
-          },
-          {
-            id: "md-y1-medicine",
-            name: "Internal Medicine — Year 1",
-            color: "#007AFF",
+            id: "md-med-y1", name: "Year 1", color: "#007AFF",
             books: [
               { name: "API Textbook of Medicine 11th Ed", author: "Siddharth Shah", publisher: "Jaypee Brothers", price: 5999, mrp: 7999, edition: "11th Ed", featured: true, matchTags: ["API","medicine","India"] },
               { name: "Talley & O'Connor Clinical Examination 8th Ed", author: "Nicholas Talley", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "8th Ed", matchTags: ["Talley O'Connor","clinical examination"] },
               { name: "Davidson's Principles & Practice of Medicine 24th Ed", author: "Penman, Walker, Ralston", publisher: "Elsevier", price: 4999, mrp: 6999, edition: "24th Ed", matchTags: ["Davidson","medicine"] },
               { name: "Hutchison's Clinical Methods 25th Ed", author: "Glynn & Drake", publisher: "Elsevier", price: 3499, mrp: 4799, edition: "25th Ed", matchTags: ["Hutchison","clinical methods"] },
+              { name: "ICMR Guidelines for Biomedical Research 2017", author: "ICMR", publisher: "ICMR Publications", price: 499, mrp: 699, edition: "2017 Ed", matchTags: ["ICMR","biomedical research","ethics"] },
             ],
           },
           {
-            id: "md-y1-pathology",
-            name: "Pathology — Year 1",
-            color: "#FF3B30",
+            id: "md-med-y2", name: "Year 2", color: "#007AFF",
+            books: [
+              { name: "Harrison's Principles of Internal Medicine 21st Ed (2-Vol Set)", author: "Loscalzo, Fauci, Kasper", publisher: "McGraw-Hill", price: 8999, mrp: 12999, edition: "21st Ed", featured: true, matchTags: ["Harrison","Internal Medicine"] },
+              { name: "Oxford Textbook of Medicine 6th Ed", author: "Firth, Conlon, Cox", publisher: "Oxford University Press", price: 9999, mrp: 13999, edition: "6th Ed", matchTags: ["Oxford textbook","medicine"] },
+              { name: "Ferri's Clinical Advisor 2025", author: "Fred Ferri", publisher: "Elsevier", price: 7499, mrp: 9999, edition: "2025 Ed", matchTags: ["Ferri","clinical advisor"] },
+              { name: "Cecil Essentials of Medicine 10th Ed", author: "Ivor Benjamin", publisher: "Elsevier", price: 6499, mrp: 8499, edition: "10th Ed", matchTags: ["Cecil essentials","medicine"] },
+            ],
+          },
+          {
+            id: "md-med-y3", name: "Year 3", color: "#007AFF",
+            books: [
+              { name: "Current Medical Diagnosis & Treatment 2025", author: "Maxine Papadakis", publisher: "McGraw-Hill", price: 6499, mrp: 8499, edition: "2025 Ed", featured: true, matchTags: ["CMDT","current medical","diagnosis treatment"] },
+              { name: "Kumar & Clark's Clinical Medicine 10th Ed", author: "Adam Feather", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "10th Ed", matchTags: ["Kumar Clark","clinical medicine"] },
+              { name: "PG Entrance Revision in Medicine 4th Ed", author: "Ajay Mathur", publisher: "Jaypee Brothers", price: 2999, mrp: 3999, edition: "4th Ed", matchTags: ["PG entrance","medicine","revision"] },
+              { name: "Washington Manual of Medical Therapeutics 37th Ed", author: "Brent Foster et al.", publisher: "Wolters Kluwer", price: 3999, mrp: 5299, edition: "37th Ed", matchTags: ["Washington Manual","therapeutics"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── MD Pathology ───────────────
+      {
+        id: "md-pathology",
+        label: "MD Pathology",
+        subjects: [
+          {
+            id: "md-path-y1", name: "Year 1", color: "#FF3B30",
             books: [
               { name: "Harsh Mohan Textbook of Pathology 8th Ed", author: "Harsh Mohan", publisher: "Jaypee Brothers", price: 2999, mrp: 3999, edition: "8th Ed", featured: true, matchTags: ["Harsh Mohan","pathology","India"] },
               { name: "Robbins Basic Pathology 11th Ed", author: "Kumar, Abbas, Aster", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "11th Ed", matchTags: ["Robbins Basic","pathology"] },
               { name: "Underwood's Pathology 7th Ed", author: "Cross & Underwood", publisher: "Elsevier", price: 3999, mrp: 5499, edition: "7th Ed", matchTags: ["Underwood","pathology"] },
+              { name: "Lippincott Illustrated Reviews: Pathology 3rd Ed", author: "Rubin & Strayer", publisher: "Wolters Kluwer", price: 4499, mrp: 5999, edition: "3rd Ed", matchTags: ["Lippincott","pathology"] },
             ],
           },
           {
-            id: "md-y1-pharmacology",
-            name: "Pharmacology — Year 1",
-            color: "#FF9500",
+            id: "md-path-y2", name: "Year 2", color: "#FF3B30",
+            books: [
+              { name: "Robbins & Cotran Pathologic Basis of Disease 10th Ed", author: "Kumar, Abbas, Aster", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "10th Ed", featured: true, matchTags: ["Robbins Cotran","pathology"] },
+              { name: "Sternberg's Diagnostic Surgical Pathology 6th Ed", author: "Sternberg, Goldblum, Hong", publisher: "Wolters Kluwer", price: 9999, mrp: 13999, edition: "6th Ed", matchTags: ["Sternberg","surgical pathology"] },
+              { name: "Bancroft's Theory & Practice of Histological Techniques 8th Ed", author: "Suvarna, Layton, Bancroft", publisher: "Elsevier", price: 6999, mrp: 9499, edition: "8th Ed", matchTags: ["Bancroft","histology"] },
+              { name: "Damjanov Pathology for the Board Examinations 4th Ed", author: "Ivan Damjanov", publisher: "JP Medical", price: 3999, mrp: 5299, edition: "4th Ed", matchTags: ["Damjanov","pathology boards"] },
+            ],
+          },
+          {
+            id: "md-path-y3", name: "Year 3", color: "#FF3B30",
+            books: [
+              { name: "Rosai & Ackerman's Surgical Pathology 11th Ed", author: "Juan Rosai", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "11th Ed", featured: true, matchTags: ["Rosai Ackerman","surgical pathology"] },
+              { name: "WHO Classification of Tumours 5th Ed Series", author: "WHO", publisher: "IARC Press", price: 8999, mrp: 11999, edition: "5th Ed", matchTags: ["WHO classification","tumours"] },
+              { name: "Molecular Pathology in Clinical Practice 3rd Ed", author: "Kamel & Bhargava", publisher: "Springer", price: 8999, mrp: 11999, edition: "3rd Ed", matchTags: ["molecular pathology","clinical practice"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── MD Pharmacology ───────────────
+      {
+        id: "md-pharmacology",
+        label: "MD Pharmacology",
+        subjects: [
+          {
+            id: "md-pharm-y1", name: "Year 1", color: "#FF9500",
             books: [
               { name: "KD Tripathi Essentials of Medical Pharmacology 8th Ed", author: "KD Tripathi", publisher: "Jaypee Brothers", price: 1799, mrp: 2499, edition: "8th Ed", featured: true, matchTags: ["KD Tripathi","pharmacology","India"] },
               { name: "Katzung Basic & Clinical Pharmacology 16th Ed", author: "Bertram Katzung", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "16th Ed", matchTags: ["Katzung","pharmacology"] },
               { name: "Lippincott Illustrated Reviews: Pharmacology 8th Ed", author: "Karen Whalen", publisher: "Wolters Kluwer", price: 3999, mrp: 5299, edition: "8th Ed", matchTags: ["Lippincott","pharmacology"] },
+              { name: "Research Methodology in Health Sciences 3rd Ed", author: "Suresh K Sharma", publisher: "Jaypee Brothers", price: 1299, mrp: 1799, edition: "3rd Ed", matchTags: ["research methodology","pharmacology"] },
             ],
           },
           {
-            id: "md-y1-microbiology",
-            name: "Microbiology — Year 1",
-            color: "#00C2A8",
+            id: "md-pharm-y2", name: "Year 2", color: "#FF9500",
+            books: [
+              { name: "Goodman & Gilman's Pharmacological Basis of Therapeutics 14th Ed", author: "Brunton, Knollmann, Hilal-Dandan", publisher: "McGraw-Hill", price: 8999, mrp: 11999, edition: "14th Ed", featured: true, matchTags: ["Goodman Gilman","pharmacology"] },
+              { name: "Stahl's Essential Psychopharmacology 5th Ed", author: "Stephen Stahl", publisher: "Cambridge University Press", price: 5999, mrp: 7999, edition: "5th Ed", matchTags: ["Stahl","psychopharmacology"] },
+              { name: "Rang & Dale's Pharmacology 10th Ed", author: "Rang, Ritter, Flower, Henderson", publisher: "Elsevier", price: 4999, mrp: 6499, edition: "10th Ed", matchTags: ["Rang Dale","pharmacology"] },
+              { name: "Basic & Clinical Pharmacology Exam Review (Katzung & Trevor)", author: "Katzung & Trevor", publisher: "McGraw-Hill", price: 3499, mrp: 4799, edition: "9th Ed", matchTags: ["Katzung Trevor","pharmacology review"] },
+            ],
+          },
+          {
+            id: "md-pharm-y3", name: "Year 3", color: "#FF9500",
+            books: [
+              { name: "Applied Biopharmaceutics & Pharmacokinetics 7th Ed", author: "Leon Shargel & Andrew Yu", publisher: "McGraw-Hill", price: 5499, mrp: 7299, edition: "7th Ed", featured: true, matchTags: ["pharmacokinetics","biopharmaceutics"] },
+              { name: "Drug Information: A Guide for Pharmacists 7th Ed", author: "Malone, Malone, Park", publisher: "McGraw-Hill", price: 4499, mrp: 5999, edition: "7th Ed", matchTags: ["drug information","pharmacists"] },
+              { name: "Clinical Pharmacology Made Ridiculously Simple 5th Ed", author: "James Olson", publisher: "MedMaster", price: 1999, mrp: 2699, edition: "5th Ed", matchTags: ["clinical pharmacology","ridiculously simple"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── MD Microbiology ───────────────
+      {
+        id: "md-microbiology",
+        label: "MD Microbiology",
+        subjects: [
+          {
+            id: "md-micro-y1", name: "Year 1", color: "#00C2A8",
             books: [
               { name: "Ananthanarayan & Paniker Textbook of Microbiology 11th Ed", author: "CK Jayaram Paniker", publisher: "Universities Press", price: 1299, mrp: 1799, edition: "11th Ed", featured: true, matchTags: ["Ananthanarayan","microbiology","India"] },
               { name: "Murray's Manual of Clinical Microbiology 13th Ed", author: "Carroll, Pfaller, Landry", publisher: "ASM Press", price: 9999, mrp: 13499, edition: "13th Ed", matchTags: ["Murray","clinical microbiology"] },
               { name: "Jawetz Melnick & Adelberg's Medical Microbiology 28th Ed", author: "Carroll, Butel, Morse", publisher: "McGraw-Hill", price: 4999, mrp: 6699, edition: "28th Ed", matchTags: ["Jawetz","microbiology"] },
+              { name: "Medical Microbiology: An Introduction to Infectious Diseases 7th Ed", author: "Ryan & Ray", publisher: "McGraw-Hill", price: 4499, mrp: 5999, edition: "7th Ed", matchTags: ["Ryan Ray","microbiology infectious diseases"] },
             ],
           },
           {
-            id: "md-y1-radiology",
-            name: "Radiodiagnosis — Year 1",
-            color: "#636366",
+            id: "md-micro-y2", name: "Year 2", color: "#00C2A8",
+            books: [
+              { name: "Mandell Douglas & Bennett's Principles of Infectious Diseases 9th Ed", author: "Bennett, Dolin, Blaser", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "9th Ed", featured: true, matchTags: ["Mandell Douglas","infectious diseases"] },
+              { name: "Topley & Wilson's Microbiology & Microbial Infections 10th Ed", author: "Collier, Balows, Sussman", publisher: "Hodder Arnold", price: 9999, mrp: 13499, edition: "10th Ed", matchTags: ["Topley Wilson","microbiology"] },
+              { name: "Harrison's Infectious Diseases 3rd Ed", author: "Kasper & Fauci", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "3rd Ed", matchTags: ["Harrison","infectious diseases"] },
+            ],
+          },
+          {
+            id: "md-micro-y3", name: "Year 3", color: "#00C2A8",
+            books: [
+              { name: "Clinical Microbiology Made Ridiculously Simple 8th Ed", author: "Mark Gladwin", publisher: "MedMaster", price: 1999, mrp: 2699, edition: "8th Ed", featured: true, matchTags: ["clinical microbiology","ridiculously simple"] },
+              { name: "Bailey & Scott's Diagnostic Microbiology 14th Ed", author: "Sandora & Weinstein", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "14th Ed", matchTags: ["Bailey Scott","diagnostic microbiology"] },
+              { name: "Sherris Medical Microbiology 7th Ed", author: "Ryan, Carroll, Morse", publisher: "McGraw-Hill", price: 4999, mrp: 6699, edition: "7th Ed", matchTags: ["Sherris","medical microbiology"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── MD Radiodiagnosis ───────────────
+      {
+        id: "md-radiodiagnosis",
+        label: "MD Radiodiagnosis",
+        subjects: [
+          {
+            id: "md-radio-y1", name: "Year 1", color: "#636366",
             books: [
               { name: "Sutton's Textbook of Radiology & Imaging 7th Ed", author: "David Sutton", publisher: "Churchill Livingstone", price: 7999, mrp: 10999, edition: "7th Ed", featured: true, matchTags: ["Sutton","radiology"] },
               { name: "CT Teaching Manual 4th Ed", author: "Matthias Hofer", publisher: "Thieme", price: 4999, mrp: 6499, edition: "4th Ed", matchTags: ["CT","teaching manual","radiology"] },
               { name: "Essentials of Radiology 3rd Ed", author: "Fred Mettler", publisher: "Elsevier", price: 4999, mrp: 6499, edition: "3rd Ed", matchTags: ["Mettler","radiology","essentials"] },
+              { name: "Fundamentals of Diagnostic Radiology 5th Ed", author: "Brant & Helms", publisher: "Wolters Kluwer", price: 6999, mrp: 9499, edition: "5th Ed", matchTags: ["Brant Helms","diagnostic radiology"] },
             ],
           },
           {
-            id: "md-y1-anaesthesia",
-            name: "Anaesthesiology — Year 1",
-            color: "#8E8E93",
+            id: "md-radio-y2", name: "Year 2", color: "#636366",
+            books: [
+              { name: "Grainger & Allison's Diagnostic Radiology 6th Ed", author: "Adam, Dixon, Gillard", publisher: "Churchill Livingstone", price: 12999, mrp: 17999, edition: "6th Ed", featured: true, matchTags: ["Grainger Allison","diagnostic radiology"] },
+              { name: "Diagnostic Ultrasound 5th Ed", author: "Rumack, Levine, Charboneau", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "5th Ed", matchTags: ["Rumack","ultrasound","diagnostic"] },
+              { name: "Weir & Abrahams' Imaging Atlas of Human Anatomy 5th Ed", author: "Abrahams, Spratt, Loukas", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "5th Ed", matchTags: ["Weir Abrahams","anatomy imaging atlas"] },
+            ],
+          },
+          {
+            id: "md-radio-y3", name: "Year 3", color: "#636366",
+            books: [
+              { name: "Dahnert's Radiology Review Manual 8th Ed", author: "Wolfgang Dahnert", publisher: "Wolters Kluwer", price: 6499, mrp: 8499, edition: "8th Ed", featured: true, matchTags: ["Dahnert","radiology review"] },
+              { name: "MRI in Clinical Practice 2nd Ed", author: "Borley, Reznek, Husband", publisher: "Springer", price: 6999, mrp: 9499, edition: "2nd Ed", matchTags: ["MRI","clinical practice"] },
+              { name: "Nuclear Medicine: The Requisites 5th Ed", author: "Ziessman, O'Malley, Thrall", publisher: "Elsevier", price: 5499, mrp: 7499, edition: "5th Ed", matchTags: ["nuclear medicine","requisites"] },
+              { name: "Practical Interventional Radiology 2nd Ed", author: "Kessel & Robertson", publisher: "Springer", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["interventional radiology"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── MD Anaesthesiology ───────────────
+      {
+        id: "md-anaesthesia",
+        label: "MD Anaesthesiology",
+        subjects: [
+          {
+            id: "md-anaes-y1", name: "Year 1", color: "#8E8E93",
             books: [
               { name: "Morgan & Mikhail's Clinical Anesthesiology 6th Ed", author: "Butterworth, Mackey, Wasnick", publisher: "McGraw-Hill", price: 5499, mrp: 7299, edition: "6th Ed", featured: true, matchTags: ["Morgan Mikhail","anaesthesia"] },
               { name: "Nunn's Applied Respiratory Physiology 8th Ed", author: "Andrew Lumb", publisher: "Elsevier", price: 6999, mrp: 9299, edition: "8th Ed", matchTags: ["Nunn","respiratory physiology","anaesthesia"] },
               { name: "Stoelting's Pharmacology & Physiology in Anesthetic Practice 5th Ed", author: "Flood, Rathmell, Shafer", publisher: "Wolters Kluwer", price: 6999, mrp: 9299, edition: "5th Ed", matchTags: ["Stoelting","anaesthesia pharmacology"] },
+              { name: "Principles & Practice of Anesthesiology 3rd Ed", author: "Longnecker, Mackey, Newman", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "3rd Ed", matchTags: ["principles anaesthesiology"] },
             ],
           },
           {
-            id: "md-y1-psychiatry",
-            name: "Psychiatry — Year 1",
-            color: "#5856D6",
+            id: "md-anaes-y2", name: "Year 2", color: "#8E8E93",
+            books: [
+              { name: "Barash Clinical Anesthesia 8th Ed", author: "Barash, Cullen, Stoelting", publisher: "Wolters Kluwer", price: 9999, mrp: 13999, edition: "8th Ed", featured: true, matchTags: ["Barash","clinical anesthesia"] },
+              { name: "Yao & Artusio's Anesthesiology 8th Ed", author: "Fun-Sun Yao", publisher: "Wolters Kluwer", price: 6999, mrp: 9499, edition: "8th Ed", matchTags: ["Yao Artusio","anesthesiology"] },
+              { name: "Pardo & Miller's Basics of Anesthesia 8th Ed", author: "Pardo & Miller", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "8th Ed", matchTags: ["Pardo Miller","basics anesthesia"] },
+              { name: "Obstetric Anesthesia 6th Ed", author: "Chesnut, Wong, Tsen", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "6th Ed", matchTags: ["obstetric anesthesia"] },
+            ],
+          },
+          {
+            id: "md-anaes-y3", name: "Year 3", color: "#8E8E93",
+            books: [
+              { name: "Miller's Anesthesia 9th Ed (2-Vol Set)", author: "Miller et al.", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "9th Ed", featured: true, matchTags: ["Miller","anesthesia"] },
+              { name: "Principles of Critical Care 4th Ed", author: "Hall, Schmidt, Kress", publisher: "McGraw-Hill", price: 7499, mrp: 9999, edition: "4th Ed", matchTags: ["critical care","principles"] },
+              { name: "ACLS Provider Manual 2022", author: "American Heart Association", publisher: "AHA", price: 1999, mrp: 2699, edition: "2022 Ed", matchTags: ["ACLS","advanced cardiac life support"] },
+              { name: "Regional Anesthesia & Acute Pain Management 2nd Ed", author: "Rathmell & Neal", publisher: "Wolters Kluwer", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["regional anesthesia","pain management"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── MD Psychiatry ───────────────
+      {
+        id: "md-psychiatry",
+        label: "MD Psychiatry",
+        subjects: [
+          {
+            id: "md-psych-y1", name: "Year 1", color: "#5856D6",
             books: [
               { name: "DSM-5-TR Diagnostic & Statistical Manual 2022 Ed", author: "American Psychiatric Association", publisher: "APA Publishing", price: 3999, mrp: 5499, edition: "2022 Ed", featured: true, matchTags: ["DSM-5","psychiatry"] },
-              { name: "Synopsis of Psychiatry 12th Ed", author: "Benjamin Sadock", publisher: "Wolters Kluwer", price: 5499, mrp: 7499, edition: "12th Ed", matchTags: ["Sadock","synopsis","psychiatry"] },
-              { name: "Ahuja Textbook of Postgraduate Psychiatry 3rd Ed", author: "Niraj Ahuja", publisher: "Jaypee Brothers", price: 1999, mrp: 2699, edition: "3rd Ed", matchTags: ["Ahuja","psychiatry","India"] },
+              { name: "Synopsis of Psychiatry (Kaplan & Sadock) 12th Ed", author: "Sadock, Sadock, Ruiz", publisher: "Wolters Kluwer", price: 6999, mrp: 9499, edition: "12th Ed", matchTags: ["Kaplan Sadock","synopsis psychiatry"] },
+              { name: "Textbook of Psychiatry 3rd Ed (Ahuja)", author: "NK Ahuja", publisher: "CBS Publishers", price: 1299, mrp: 1799, edition: "3rd Ed", matchTags: ["Ahuja","psychiatry","India"] },
+              { name: "ICD-11 Classification of Mental & Behavioural Disorders", author: "World Health Organization", publisher: "WHO", price: 1499, mrp: 1999, edition: "2022 Ed", matchTags: ["ICD-11","mental disorders","WHO"] },
             ],
           },
           {
-            id: "md-y1-dermatology",
-            name: "Dermatology — Year 1",
-            color: "#BF5AF2",
+            id: "md-psych-y2", name: "Year 2", color: "#5856D6",
             books: [
-              { name: "IADVL Textbook of Dermatology 4th Ed", author: "RG Valia", publisher: "Bhalani Publishing", price: 8999, mrp: 12999, edition: "4th Ed", featured: true, matchTags: ["IADVL","dermatology"] },
-              { name: "Inamadar's Textbook of Dermatology 3rd Ed", author: "Arun Inamadar", publisher: "Jaypee Brothers", price: 3999, mrp: 5299, edition: "3rd Ed", matchTags: ["Inamadar","dermatology","India"] },
-              { name: "Andrews Diseases of the Skin 13th Ed", author: "Elston, Ferringer, Ko", publisher: "Elsevier", price: 6999, mrp: 9299, edition: "13th Ed", matchTags: ["Andrews","skin diseases","dermatology"] },
+              { name: "Kaplan & Sadock's Comprehensive Textbook of Psychiatry 11th Ed", author: "Sadock, Sadock, Ruiz", publisher: "Wolters Kluwer", price: 13999, mrp: 18999, edition: "11th Ed", featured: true, matchTags: ["Kaplan Sadock","comprehensive psychiatry"] },
+              { name: "New Oxford Textbook of Psychiatry 3rd Ed", author: "Geddes, Andreasen, Goodwin", publisher: "Oxford University Press", price: 9999, mrp: 13999, edition: "3rd Ed", matchTags: ["Oxford","psychiatry"] },
+              { name: "Stahl's Essential Psychopharmacology 5th Ed", author: "Stephen Stahl", publisher: "Cambridge University Press", price: 5999, mrp: 7999, edition: "5th Ed", matchTags: ["Stahl","psychopharmacology"] },
+              { name: "Clinical Neuropsychology 5th Ed", author: "Heilman & Valenstein", publisher: "Oxford University Press", price: 6999, mrp: 9499, edition: "5th Ed", matchTags: ["neuropsychology","clinical"] },
             ],
           },
           {
-            id: "md-y1-emergency",
-            name: "Emergency Medicine — Year 1",
-            color: "#FF3B30",
+            id: "md-psych-y3", name: "Year 3", color: "#5856D6",
             books: [
-              { name: "Roberts & Hedges' Clinical Procedures in Emergency Medicine 7th Ed", author: "Roberts & Hedges", publisher: "Elsevier", price: 7999, mrp: 10499, edition: "7th Ed", featured: true, matchTags: ["Roberts Hedges","emergency medicine","procedures"] },
-              { name: "Emergency Medicine Manual 8th Ed", author: "O. John Ma et al.", publisher: "McGraw-Hill", price: 3499, mrp: 4799, edition: "8th Ed", matchTags: ["Emergency","manual","McGraw"] },
-              { name: "Atlas of Emergency Medicine 5th Ed", author: "Kevin Knoop et al.", publisher: "McGraw-Hill", price: 4999, mrp: 6699, edition: "5th Ed", matchTags: ["Atlas","Emergency","Knoop"] },
+              { name: "Rutter's Child & Adolescent Psychiatry 6th Ed", author: "Rutter, Bishop, Pine", publisher: "Wiley-Blackwell", price: 9999, mrp: 13999, edition: "6th Ed", featured: true, matchTags: ["Rutter","child psychiatry"] },
+              { name: "Cognitive Behavioral Therapy: Basics & Beyond 3rd Ed", author: "Judith Beck", publisher: "Guilford Press", price: 3999, mrp: 5299, edition: "3rd Ed", matchTags: ["CBT","cognitive behavioral therapy"] },
+              { name: "Psychiatry in Old Age 4th Ed", author: "Jacoby, Oppenheimer, Dening", publisher: "Oxford University Press", price: 6999, mrp: 9499, edition: "4th Ed", matchTags: ["old age psychiatry","geriatric"] },
             ],
           },
         ],
       },
 
-      // ── MD Year 2 ───────────────────────────────────────────────────
+      // ─────────────── MD Dermatology ───────────────
       {
-        id: "md-year2",
-        label: "Year 2",
+        id: "md-dermatology",
+        label: "MD Dermatology",
         subjects: [
           {
-            id: "md-y2-medicine",
-            name: "Internal Medicine — Year 2",
-            color: "#007AFF",
+            id: "md-derm-y1", name: "Year 1", color: "#FF6B35",
             books: [
-              { name: "Harrison's Principles of Internal Medicine 21st Ed (2-Vol Set)", author: "Loscalzo, Fauci, Kasper", publisher: "McGraw-Hill", price: 8999, mrp: 12999, edition: "21st Ed", featured: true, matchTags: ["Harrison","Internal Medicine"] },
-              { name: "Oxford Textbook of Medicine 6th Ed", author: "Warrell, Cox, Firth", publisher: "Oxford University Press", price: 19999, mrp: 24999, edition: "6th Ed", matchTags: ["Oxford Textbook","Medicine"] },
-              { name: "Ferri's Clinical Advisor 2025", author: "Fred Ferri", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "2025 Ed", matchTags: ["Ferri","clinical advisor"] },
-              { name: "Cecil Essentials of Medicine 10th Ed", author: "Carpenter, Griggs, Loscalzo", publisher: "Elsevier", price: 5499, mrp: 7499, edition: "10th Ed", matchTags: ["Cecil","medicine"] },
+              { name: "IADVL Textbook of Dermatology 4th Ed", author: "Valia & Valia", publisher: "Bhalani Publishing", price: 4999, mrp: 6499, edition: "4th Ed", featured: true, matchTags: ["IADVL","dermatology","India"] },
+              { name: "Inamadar's Textbook of Dermatology 3rd Ed", author: "Arun Inamadar", publisher: "Jaypee Brothers", price: 2999, mrp: 3999, edition: "3rd Ed", matchTags: ["Inamadar","dermatology","India"] },
+              { name: "Andrews' Diseases of the Skin 13th Ed", author: "Elston, Ferringer, Ko", publisher: "Elsevier", price: 6999, mrp: 9499, edition: "13th Ed", matchTags: ["Andrews","skin diseases"] },
+              { name: "Clinical Dermatology 7th Ed", author: "Thomas Habif", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "7th Ed", matchTags: ["Habif","clinical dermatology"] },
             ],
           },
           {
-            id: "md-y2-pathology",
-            name: "Pathology — Year 2",
-            color: "#FF3B30",
+            id: "md-derm-y2", name: "Year 2", color: "#FF6B35",
             books: [
-              { name: "Robbins & Cotran Pathologic Basis of Disease 10th Ed", author: "Kumar, Abbas, Aster", publisher: "Elsevier", price: 7499, mrp: 9999, edition: "10th Ed", featured: true, matchTags: ["Robbins","pathology"] },
-              { name: "Sternberg's Diagnostic Surgical Pathology 7th Ed", author: "Mills et al.", publisher: "Wolters Kluwer", price: 12999, mrp: 17999, edition: "7th Ed", matchTags: ["Sternberg","pathology"] },
-              { name: "Bancroft's Theory & Practice of Histological Techniques 8th Ed", author: "Suvarna, Layton & Bancroft", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "8th Ed", matchTags: ["Bancroft","histology"] },
-              { name: "Damjanov Atlas of Histopathology 2nd Ed", author: "Ivan Damjanov", publisher: "Jaypee Brothers", price: 3999, mrp: 5299, edition: "2nd Ed", matchTags: ["Damjanov","histopathology"] },
+              { name: "Fitzpatrick's Dermatology 9th Ed (2-Vol Set)", author: "Kang, Amagai, Bruckner", publisher: "McGraw-Hill", price: 14999, mrp: 19999, edition: "9th Ed", featured: true, matchTags: ["Fitzpatrick","dermatology"] },
+              { name: "Bologna Schaffer & Cerroni Dermatology 4th Ed", author: "Bologna, Schaffer, Cerroni", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "4th Ed", matchTags: ["Bologna","dermatology"] },
+              { name: "Contact & Occupational Dermatology 4th Ed", author: "Rietschel & Fowler", publisher: "People's Medical Publishing House", price: 6999, mrp: 9499, edition: "4th Ed", matchTags: ["contact dermatology","occupational"] },
             ],
           },
           {
-            id: "md-y2-pharmacology",
-            name: "Pharmacology — Year 2",
-            color: "#FF9500",
+            id: "md-derm-y3", name: "Year 3", color: "#FF6B35",
             books: [
-              { name: "Goodman & Gilman's Pharmacological Basis of Therapeutics 14th Ed", author: "Brunton, Knollmann", publisher: "McGraw-Hill", price: 9499, mrp: 12999, edition: "14th Ed", featured: true, matchTags: ["Goodman Gilman","pharmacology"] },
-              { name: "Stahl's Essential Psychopharmacology 5th Ed", author: "Stephen M Stahl", publisher: "Cambridge University Press", price: 4999, mrp: 6999, edition: "5th Ed", matchTags: ["Stahl","psychopharmacology"] },
-              { name: "Rang & Dale's Pharmacology 9th Ed", author: "Rang, Dale, Ritter", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "9th Ed", matchTags: ["Rang Dale","pharmacology"] },
-            ],
-          },
-          {
-            id: "md-y2-microbiology",
-            name: "Microbiology — Year 2",
-            color: "#00C2A8",
-            books: [
-              { name: "Mandell Douglas & Bennett's Infectious Diseases 9th Ed", author: "Bennett, Dolin, Blaser", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "9th Ed", featured: true, matchTags: ["Mandell","infectious diseases"] },
-              { name: "Topley & Wilson's Microbiology & Microbial Infections", author: "Borriello, Murray, Funke", publisher: "Hodder Arnold", price: 19999, mrp: 24999, edition: "11th Ed", matchTags: ["Topley Wilson","microbiology"] },
-              { name: "Harrison's Infectious Diseases 3rd Ed", author: "Dennis Kasper & Anthony Fauci", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "3rd Ed", matchTags: ["Harrison","infectious diseases"] },
-            ],
-          },
-          {
-            id: "md-y2-radiology",
-            name: "Radiodiagnosis — Year 2",
-            color: "#636366",
-            books: [
-              { name: "Grainger & Allison's Diagnostic Radiology 6th Ed", author: "Gillard, Waldman, Donoghue", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "6th Ed", featured: true, matchTags: ["Grainger Allison","radiology"] },
-              { name: "Diagnostic Ultrasound by Rumack Wilson 5th Ed", author: "Carol Rumack", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "5th Ed", matchTags: ["Rumack","ultrasound","radiology"] },
-              { name: "Weir & Abrahams' Imaging Atlas of Human Anatomy 5th Ed", author: "Jonathan Spratt", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "5th Ed", matchTags: ["Weir Abrahams","imaging atlas","anatomy"] },
-            ],
-          },
-          {
-            id: "md-y2-anaesthesia",
-            name: "Anaesthesiology — Year 2",
-            color: "#8E8E93",
-            books: [
-              { name: "Barash Clinical Anesthesia 9th Ed", author: "Barash, Cullen, Stoelting", publisher: "Wolters Kluwer", price: 7999, mrp: 10499, edition: "9th Ed", featured: true, matchTags: ["Barash","anaesthesia"] },
-              { name: "Yao & Artusio's Anesthesiology 9th Ed", author: "Fun-Sun Yao", publisher: "Wolters Kluwer", price: 5999, mrp: 7999, edition: "9th Ed", matchTags: ["Yao Artusio","anaesthesia"] },
-              { name: "Pardo & Miller's Basics of Anesthesia 8th Ed", author: "Manuel Pardo & Ronald Miller", publisher: "Elsevier", price: 4999, mrp: 6499, edition: "8th Ed", matchTags: ["Pardo Miller","basics anesthesia"] },
-            ],
-          },
-          {
-            id: "md-y2-psychiatry",
-            name: "Psychiatry — Year 2",
-            color: "#5856D6",
-            books: [
-              { name: "Kaplan & Sadock's Comprehensive Textbook of Psychiatry 11th Ed", author: "Sadock, Sadock, Ruiz", publisher: "Wolters Kluwer", price: 14999, mrp: 19999, edition: "11th Ed", featured: true, matchTags: ["Kaplan Sadock","comprehensive psychiatry"] },
-              { name: "New Oxford Textbook of Psychiatry 3rd Ed", author: "Gelder, Andreasen, Lopez-Ibor", publisher: "Oxford University Press", price: 14999, mrp: 19999, edition: "3rd Ed", matchTags: ["Oxford","psychiatry"] },
-              { name: "ICD-11 Classification of Mental & Behavioural Disorders", author: "WHO", publisher: "WHO Publications", price: 1499, mrp: 1999, edition: "2023 Ed", matchTags: ["ICD-11","mental disorders","WHO"] },
-            ],
-          },
-          {
-            id: "md-y2-dermatology",
-            name: "Dermatology — Year 2",
-            color: "#BF5AF2",
-            books: [
-              { name: "Fitzpatrick's Dermatology in General Medicine 9th Ed", author: "Kang, Amagai, Bruckner", publisher: "McGraw-Hill", price: 14999, mrp: 19999, edition: "9th Ed", featured: true, matchTags: ["Fitzpatrick","dermatology"] },
-              { name: "Bologna Schaffer & Cerroni Dermatology 5th Ed", author: "Brownell, Bordeaux, Bhutani", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "5th Ed", matchTags: ["Bologna","dermatology"] },
-              { name: "Contact & Occupational Dermatology 3rd Ed", author: "Marks & Elsner", publisher: "Mosby", price: 5999, mrp: 7999, edition: "3rd Ed", matchTags: ["Contact","dermatology","occupational"] },
-            ],
-          },
-          {
-            id: "md-y2-emergency",
-            name: "Emergency Medicine — Year 2",
-            color: "#FF3B30",
-            books: [
-              { name: "Tintinalli's Emergency Medicine 9th Ed", author: "Judith Tintinalli et al.", publisher: "McGraw-Hill", price: 9999, mrp: 13999, edition: "9th Ed", featured: true, matchTags: ["Tintinalli","emergency medicine"] },
-              { name: "Rosen's Emergency Medicine 9th Ed", author: "Walls, Hockberger, Gausche-Hill", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "9th Ed", matchTags: ["Rosen","emergency medicine"] },
-              { name: "Marx's Rosen's Emergency Medicine 9th Ed", author: "Ron Walls", publisher: "Elsevier", price: 8499, mrp: 11499, edition: "9th Ed", matchTags: ["Marx Rosen","emergency"] },
+              { name: "Rook's Textbook of Dermatology 9th Ed (4-Vol Set)", author: "Griffiths, Barker, Bleiker", publisher: "Wiley-Blackwell", price: 19999, mrp: 27999, edition: "9th Ed", featured: true, matchTags: ["Rook","textbook dermatology"] },
+              { name: "Dermatologic Surgery 4th Ed", author: "Roenigk & Roenigk", publisher: "Informa Healthcare", price: 7999, mrp: 10999, edition: "4th Ed", matchTags: ["dermatologic surgery"] },
+              { name: "Photodermatology 1st Ed", author: "Lim & Hawk", publisher: "Informa Healthcare", price: 5999, mrp: 7999, edition: "1st Ed", matchTags: ["photodermatology","photobiology"] },
+              { name: "Hair & Scalp Disorders 2nd Ed", author: "Blume-Peytavi, Tosti, Whiting", publisher: "Informa Healthcare", price: 5499, mrp: 7499, edition: "2nd Ed", matchTags: ["hair disorders","scalp"] },
             ],
           },
         ],
       },
 
-      // ── MD Year 3 ───────────────────────────────────────────────────
+      // ─────────────── MD Emergency Medicine ───────────────
       {
-        id: "md-year3",
-        label: "Year 3",
+        id: "md-emergency",
+        label: "MD Emergency Medicine",
         subjects: [
           {
-            id: "md-y3-medicine",
-            name: "Internal Medicine — Year 3",
-            color: "#007AFF",
+            id: "md-em-y1", name: "Year 1", color: "#FF2D55",
             books: [
-              { name: "Current Medical Diagnosis & Treatment 2025", author: "Papadakis, McPhee, Rabow", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "2025 Ed", featured: true, matchTags: ["CMDT","current medical diagnosis","treatment"] },
-              { name: "Kumar & Clark's Clinical Medicine 10th Ed", author: "Adam Feather", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "10th Ed", matchTags: ["Kumar Clark","clinical medicine"] },
-              { name: "PG Entrance Revision in Medicine 4th Ed", author: "Praveen Aggarwal", publisher: "Jaypee Brothers", price: 1999, mrp: 2699, edition: "4th Ed", matchTags: ["PG entrance","medicine","revision"] },
+              { name: "Roberts & Hedges' Clinical Procedures in Emergency Medicine 7th Ed", author: "Roberts, Custalow, Thomsen", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "7th Ed", featured: true, matchTags: ["Roberts Hedges","emergency procedures"] },
+              { name: "Emergency Medicine Manual 8th Ed", author: "Cline, Ma, Cydulka", publisher: "McGraw-Hill", price: 4499, mrp: 5999, edition: "8th Ed", matchTags: ["emergency medicine","manual"] },
+              { name: "Atlas of Emergency Medicine 4th Ed", author: "Knoop, Stack, Storrow", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "4th Ed", matchTags: ["atlas","emergency medicine"] },
+              { name: "Critical Care Medicine 5th Ed", author: "Parrillo & Dellinger", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "5th Ed", matchTags: ["critical care","ICU"] },
             ],
           },
           {
-            id: "md-y3-pathology",
-            name: "Pathology — Year 3",
-            color: "#FF3B30",
+            id: "md-em-y2", name: "Year 2", color: "#FF2D55",
             books: [
-              { name: "Rosai & Ackerman's Surgical Pathology 11th Ed", author: "Rosai", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "11th Ed", featured: true, matchTags: ["Rosai Ackerman","surgical pathology"] },
-              { name: "WHO Classification of Tumours 5th Ed Series", author: "WHO", publisher: "IARC Press", price: 6999, mrp: 9499, edition: "5th Ed", matchTags: ["WHO","tumours","cancer classification"] },
-              { name: "Molecular Pathology 2nd Ed", author: "Coleman & Tsongalis", publisher: "Elsevier", price: 7999, mrp: 10499, edition: "2nd Ed", matchTags: ["Molecular pathology","Coleman"] },
+              { name: "Tintinalli's Emergency Medicine 9th Ed", author: "Tintinalli, Ma, Yealy", publisher: "McGraw-Hill", price: 9999, mrp: 13999, edition: "9th Ed", featured: true, matchTags: ["Tintinalli","emergency medicine"] },
+              { name: "Rosen's Emergency Medicine 9th Ed (2-Vol Set)", author: "Walls, Hockberger, Gausche-Hill", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "9th Ed", matchTags: ["Rosen","emergency medicine"] },
+              { name: "ATLS Advanced Trauma Life Support 10th Ed", author: "American College of Surgeons", publisher: "ACS", price: 2499, mrp: 3499, edition: "10th Ed", matchTags: ["ATLS","trauma","emergency"] },
             ],
           },
           {
-            id: "md-y3-pharmacology",
-            name: "Pharmacology — Year 3",
-            color: "#FF9500",
+            id: "md-em-y3", name: "Year 3", color: "#FF2D55",
             books: [
-              { name: "Bertram & Trevor's Pharmacology Examination & Board Review 13th Ed", author: "Bertram Katzung", publisher: "McGraw-Hill", price: 3499, mrp: 4799, edition: "13th Ed", featured: true, matchTags: ["Bertram Trevor","pharmacology","review"] },
-              { name: "Applied Pharmacokinetics & Pharmacodynamics 4th Ed", author: "Burton et al.", publisher: "Wolters Kluwer", price: 5499, mrp: 7299, edition: "4th Ed", matchTags: ["pharmacokinetics","pharmacodynamics"] },
-              { name: "Drug Information: A Guide for Pharmacists 6th Ed", author: "Malone et al.", publisher: "McGraw-Hill", price: 4999, mrp: 6499, edition: "6th Ed", matchTags: ["drug information","pharmacists"] },
-            ],
-          },
-          {
-            id: "md-y3-microbiology",
-            name: "Microbiology — Year 3",
-            color: "#00C2A8",
-            books: [
-              { name: "Clinical Microbiology Made Ridiculously Simple 7th Ed", author: "Mark Gladwin et al.", publisher: "MedMaster", price: 1999, mrp: 2699, edition: "7th Ed", featured: true, matchTags: ["clinical microbiology","ridiculously simple"] },
-              { name: "WHO GLASS Report 2023 — Antimicrobial Resistance", author: "WHO", publisher: "WHO Publications", price: 799, mrp: 1099, edition: "2023 Ed", matchTags: ["AMR","antimicrobial resistance","WHO GLASS"] },
-              { name: "Bailey & Scott's Diagnostic Microbiology 15th Ed", author: "Mahon, Lehman, Manuselis", publisher: "Elsevier", price: 6999, mrp: 9299, edition: "15th Ed", matchTags: ["Bailey Scott","diagnostic microbiology"] },
-            ],
-          },
-          {
-            id: "md-y3-radiology",
-            name: "Radiodiagnosis — Year 3",
-            color: "#636366",
-            books: [
-              { name: "MRI in Clinical Practice 3rd Ed", author: "Gary Liney", publisher: "Springer", price: 5999, mrp: 7999, edition: "3rd Ed", featured: true, matchTags: ["MRI","radiology"] },
-              { name: "Dahnert's Radiology Review Manual 8th Ed", author: "Wolfgang Dahnert", publisher: "Wolters Kluwer", price: 5999, mrp: 7999, edition: "8th Ed", matchTags: ["Dahnert","radiology review"] },
-              { name: "Nuclear Medicine: Practical Physics, Artifacts, and Pitfalls", author: "Farrokh Dehdashti", publisher: "Oxford University Press", price: 5499, mrp: 7299, edition: "1st Ed", matchTags: ["nuclear medicine","physics","radiology"] },
-            ],
-          },
-          {
-            id: "md-y3-anaesthesia",
-            name: "Anaesthesiology — Year 3",
-            color: "#8E8E93",
-            books: [
-              { name: "Miller's Anaesthesia 9th Ed (2-Vol)", author: "Michael Gropper", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "9th Ed", featured: true, matchTags: ["Miller","anaesthesia"] },
-              { name: "Principles of Critical Care 5th Ed", author: "Hall, Schmidt, Kress", publisher: "McGraw-Hill", price: 7999, mrp: 10499, edition: "5th Ed", matchTags: ["principles","critical care"] },
-              { name: "ACLS Provider Manual 2020 Ed", author: "American Heart Association", publisher: "AHA", price: 1999, mrp: 2699, edition: "2020 Ed", matchTags: ["ACLS","advanced cardiac life support"] },
-            ],
-          },
-          {
-            id: "md-y3-psychiatry",
-            name: "Psychiatry — Year 3",
-            color: "#5856D6",
-            books: [
-              { name: "Stahl's Essential Psychopharmacology 5th Ed", author: "Stephen M Stahl", publisher: "Cambridge University Press", price: 4999, mrp: 6999, edition: "5th Ed", featured: true, matchTags: ["Stahl","psychopharmacology"] },
-              { name: "Sadock's Comprehensive Textbook of Child & Adolescent Psychiatry 7th Ed", author: "Mina Dulcan", publisher: "Wolters Kluwer", price: 8999, mrp: 11999, edition: "7th Ed", matchTags: ["child psychiatry","Dulcan"] },
-              { name: "Cognitive Behaviour Therapy: Basics & Beyond 3rd Ed", author: "Judith Beck", publisher: "Guilford Press", price: 3499, mrp: 4799, edition: "3rd Ed", matchTags: ["CBT","cognitive behaviour therapy","Beck"] },
-            ],
-          },
-          {
-            id: "md-y3-dermatology",
-            name: "Dermatology — Year 3",
-            color: "#BF5AF2",
-            books: [
-              { name: "Rook's Textbook of Dermatology (4-Vol Set) 9th Ed", author: "Griffiths, Barker, Bleiker", publisher: "Wiley-Blackwell", price: 24999, mrp: 34999, edition: "9th Ed", featured: true, matchTags: ["Rook's","dermatology"] },
-              { name: "Dermatologic Surgery: A Manual of Defect Repair Options 3rd Ed", author: "GJ Nouri", publisher: "McGraw-Hill", price: 5499, mrp: 7299, edition: "3rd Ed", matchTags: ["dermatologic surgery","Nouri"] },
-              { name: "Photodermatology 1st Ed", author: "Henry Lim & Herbert Hönigsmann", publisher: "Informa Healthcare", price: 5999, mrp: 7999, edition: "1st Ed", matchTags: ["photodermatology","Lim"] },
-            ],
-          },
-          {
-            id: "md-y3-emergency",
-            name: "Emergency Medicine — Year 3",
-            color: "#FF3B30",
-            books: [
-              { name: "Emergency Ultrasound 3rd Ed", author: "Ma, Mateer, Reardon", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "3rd Ed", featured: true, matchTags: ["emergency ultrasound","POCUS"] },
-              { name: "Critical Care Medicine: Principles of Diagnosis and Management 5th Ed", author: "Parrillo & Dellinger", publisher: "Elsevier", price: 7999, mrp: 10499, edition: "5th Ed", matchTags: ["critical care","Parrillo"] },
-              { name: "Wilderness Medicine 7th Ed", author: "Paul Auerbach", publisher: "Elsevier", price: 7499, mrp: 9999, edition: "7th Ed", matchTags: ["wilderness medicine","Auerbach"] },
+              { name: "Emergency Ultrasound 3rd Ed", author: "Ma & Mateer", publisher: "McGraw-Hill", price: 5499, mrp: 7499, edition: "3rd Ed", featured: true, matchTags: ["emergency ultrasound","POCUS"] },
+              { name: "Toxicological Emergencies 9th Ed", author: "Goldfrank et al.", publisher: "McGraw-Hill", price: 7999, mrp: 10999, edition: "9th Ed", matchTags: ["toxicology","poisoning","emergency"] },
+              { name: "Wilderness Medicine 7th Ed", author: "Auerbach", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "7th Ed", matchTags: ["wilderness medicine"] },
             ],
           },
         ],
       },
-    ],
+
+    ],  // end MD years
   },
 
   // ──────────────────────────────── MS ─────────────────────────────────
@@ -652,193 +655,183 @@ export const CURRICULUM: Degree[] = [
     label: "MS",
     shortLabel: "MS",
     color: "#FF6B35",
+    isPG: true,
     years: [
-      // ── MS Year 1 ───────────────────────────────────────────────────
+
+      // ─────────────── MS General Surgery ───────────────
       {
-        id: "ms-year1",
-        label: "Year 1",
+        id: "ms-general-surgery",
+        label: "MS General Surgery",
         subjects: [
           {
-            id: "ms-y1-common",
-            name: "Surgical Foundation",
-            color: "#636366",
-            books: [
-              { name: "Research Methodology in Surgery 2nd Ed", author: "Bhansali & Bedi", publisher: "Jaypee Brothers", price: 1299, mrp: 1799, edition: "2nd Ed", featured: true, matchTags: ["research methodology","surgery"] },
-              { name: "Surgical Anatomy & Operative Surgery 5th Ed", author: "GS Ramachandran", publisher: "CBS Publishers", price: 1499, mrp: 1999, edition: "5th Ed", matchTags: ["surgical anatomy","operative surgery"] },
-              { name: "Principles of Surgery — Schwartz's Pretest 10th Ed", author: "Brunicardi", publisher: "McGraw-Hill", price: 2999, mrp: 3999, edition: "10th Ed", matchTags: ["Schwartz","surgery pretest"] },
-            ],
-          },
-          {
-            id: "ms-y1-general",
-            name: "General Surgery — Year 1",
-            color: "#FF6B35",
+            id: "ms-gen-y1", name: "Year 1", color: "#FF6B35",
             books: [
               { name: "Bailey & Love's Short Practice of Surgery 27th Ed", author: "Williams, O'Connell, McCaskie", publisher: "Taylor & Francis", price: 5499, mrp: 7499, edition: "27th Ed", featured: true, matchTags: ["Bailey Love","surgery"] },
-              { name: "SRB's Manual of Surgery 6th Ed", author: "Sriram Bhat", publisher: "Jaypee Brothers", price: 2499, mrp: 3299, edition: "6th Ed", matchTags: ["SRB","surgery","India"] },
-              { name: "Das — A Manual on Clinical Surgery 12th Ed", author: "S Das", publisher: "S Das Publishing", price: 999, mrp: 1399, edition: "12th Ed", matchTags: ["Das","clinical surgery","India"] },
+              { name: "SRB's Manual of Surgery 6th Ed", author: "Sriram Bhat", publisher: "Jaypee Brothers", price: 2999, mrp: 3999, edition: "6th Ed", matchTags: ["SRB","surgery manual","India"] },
+              { name: "Das Manual of Surgery 4th Ed", author: "Somen Das", publisher: "GK Brothers", price: 2499, mrp: 3299, edition: "4th Ed", matchTags: ["Das","surgery","India"] },
+              { name: "Clinical Surgery in General 4th Ed", author: "Kirk, Ribbans, Taylor", publisher: "Churchill Livingstone", price: 3999, mrp: 5299, edition: "4th Ed", matchTags: ["clinical surgery","general"] },
             ],
           },
           {
-            id: "ms-y1-ortho",
-            name: "Orthopaedics — Year 1",
-            color: "#8E7355",
-            books: [
-              { name: "Apley & Solomon's Orthopaedics & Fractures 10th Ed", author: "Louis Solomon", publisher: "Taylor & Francis", price: 4999, mrp: 6999, edition: "10th Ed", featured: true, matchTags: ["Apley Solomon","orthopaedics"] },
-              { name: "Maheshwari Essential Orthopaedics 5th Ed", author: "J Maheshwari", publisher: "Mehta Publishers", price: 1299, mrp: 1699, edition: "5th Ed", matchTags: ["Maheshwari","orthopaedics","India"] },
-              { name: "Clinical Orthopaedic Examination 6th Ed", author: "Ronald McRae", publisher: "Churchill Livingstone", price: 3499, mrp: 4799, edition: "6th Ed", matchTags: ["McRae","orthopaedic examination"] },
-            ],
-          },
-          {
-            id: "ms-y1-ent",
-            name: "ENT Surgery — Year 1",
-            color: "#AF52DE",
-            books: [
-              { name: "Dhingra Diseases of Ear Nose & Throat 7th Ed", author: "PL Dhingra", publisher: "Elsevier", price: 1299, mrp: 1699, edition: "7th Ed", featured: true, matchTags: ["Dhingra","ENT","India"] },
-              { name: "Flint Cummings Essential Otolaryngology 12th Ed", author: "K. Lee", publisher: "McGraw-Hill", price: 6999, mrp: 9499, edition: "12th Ed", matchTags: ["Flint","essential otolaryngology"] },
-              { name: "Logan Turner's Diseases of the Nose, Throat & Ear 11th Ed", author: "Hall & Clarke", publisher: "Hodder Arnold", price: 4999, mrp: 6699, edition: "11th Ed", matchTags: ["Logan Turner","ENT"] },
-            ],
-          },
-          {
-            id: "ms-y1-ophth",
-            name: "Ophthalmology — Year 1",
-            color: "#32ADE6",
-            books: [
-              { name: "AK Khurana Comprehensive Ophthalmology 7th Ed", author: "AK Khurana", publisher: "CBS Publishers", price: 1699, mrp: 2299, edition: "7th Ed", featured: true, matchTags: ["AK Khurana","ophthalmology","India"] },
-              { name: "Clinical Ophthalmology: A Systematic Approach 9th Ed", author: "Jack Kanski", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "9th Ed", matchTags: ["Kanski clinical","ophthalmology"] },
-              { name: "Parson's Diseases of the Eye 23rd Ed", author: "Ramanjit Sihota & Radhika Tandon", publisher: "Elsevier", price: 1499, mrp: 1999, edition: "23rd Ed", matchTags: ["Parson","diseases eye","India"] },
-            ],
-          },
-          {
-            id: "ms-y1-obgyn",
-            name: "Obstetrics & Gynaecology — Year 1",
-            color: "#FF2D92",
-            books: [
-              { name: "DC Dutta Textbook of Obstetrics 9th Ed", author: "Hiralal Konar", publisher: "Jaypee Brothers", price: 1699, mrp: 2299, edition: "9th Ed", featured: true, matchTags: ["DC Dutta","obstetrics","India"] },
-              { name: "Shaw's Textbook of Gynaecology 17th Ed", author: "VG Padubidri & Shirish Daftary", publisher: "Elsevier", price: 1799, mrp: 2399, edition: "17th Ed", matchTags: ["Shaw","gynaecology","India"] },
-              { name: "Mahajan & Rangnekar Diagnosis & Management 4th Ed", author: "Mahajan & Rangnekar", publisher: "Jaypee Brothers", price: 999, mrp: 1399, edition: "4th Ed", matchTags: ["Mahajan","gynaecology","India"] },
-            ],
-          },
-        ],
-      },
-
-      // ── MS Year 2 ───────────────────────────────────────────────────
-      {
-        id: "ms-year2",
-        label: "Year 2",
-        subjects: [
-          {
-            id: "ms-y2-general",
-            name: "General Surgery — Year 2",
-            color: "#FF6B35",
+            id: "ms-gen-y2", name: "Year 2", color: "#FF6B35",
             books: [
               { name: "Sabiston Textbook of Surgery 21st Ed", author: "Townsend, Beauchamp, Evers", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "21st Ed", featured: true, matchTags: ["Sabiston","surgery"] },
-              { name: "Schwartz's Principles of Surgery 11th Ed", author: "Brunicardi, Andersen, Billiar", publisher: "McGraw-Hill", price: 8999, mrp: 11999, edition: "11th Ed", matchTags: ["Schwartz","surgery"] },
-              { name: "Maingot's Abdominal Operations 12th Ed", author: "Zinner & Ashley", publisher: "McGraw-Hill", price: 8999, mrp: 11999, edition: "12th Ed", matchTags: ["Maingot","abdominal surgery"] },
-              { name: "Surgical Oncology: A Practical & Comprehensive Approach 1st Ed", author: "Tanabe & Edge", publisher: "Springer", price: 6999, mrp: 9499, edition: "1st Ed", matchTags: ["surgical oncology","Tanabe"] },
+              { name: "Schwartz's Principles of Surgery 11th Ed", author: "Brunicardi et al.", publisher: "McGraw-Hill", price: 9999, mrp: 13999, edition: "11th Ed", matchTags: ["Schwartz","surgery principles"] },
+              { name: "Maingot's Abdominal Operations 13th Ed", author: "Zinner & Ashley", publisher: "McGraw-Hill", price: 7999, mrp: 10999, edition: "13th Ed", matchTags: ["Maingot","abdominal surgery"] },
+              { name: "Surgical Oncology (Oxford Specialist Handbooks) 2nd Ed", author: "Neil Mortensen", publisher: "Oxford University Press", price: 4499, mrp: 5999, edition: "2nd Ed", matchTags: ["surgical oncology","Oxford"] },
             ],
           },
           {
-            id: "ms-y2-ortho",
-            name: "Orthopaedics — Year 2",
-            color: "#8E7355",
+            id: "ms-gen-y3", name: "Year 3", color: "#FF6B35",
             books: [
-              { name: "Watson-Jones Fractures & Joint Injuries 8th Ed", author: "Bucholz, Heckman, Court-Brown", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "8th Ed", featured: true, matchTags: ["Watson-Jones","fractures"] },
-              { name: "Rockwood & Green's Fractures in Adults 9th Ed", author: "Heckman, Tornetta, McKee", publisher: "Wolters Kluwer", price: 9999, mrp: 13999, edition: "9th Ed", matchTags: ["Rockwood Green","fractures"] },
-              { name: "AO Manual of Fracture Management 2nd Ed", author: "Rüedi, Murphy", publisher: "Thieme", price: 7999, mrp: 10499, edition: "2nd Ed", matchTags: ["AO Manual","fracture","orthopaedics"] },
-            ],
-          },
-          {
-            id: "ms-y2-ent",
-            name: "ENT Surgery — Year 2",
-            color: "#AF52DE",
-            books: [
-              { name: "Cummings Otolaryngology Head & Neck Surgery 7th Ed", author: "Flint, Haughey, Lund", publisher: "Elsevier", price: 15999, mrp: 21999, edition: "7th Ed", featured: true, matchTags: ["Cummings","otolaryngology"] },
-              { name: "Scott-Brown's Otorhinolaryngology 8th Ed", author: "Watkinson & Clarke", publisher: "Taylor & Francis", price: 12999, mrp: 17999, edition: "8th Ed", matchTags: ["Scott-Brown","ENT"] },
-              { name: "Ballenger's Otorhinolaryngology 18th Ed", author: "James Snow Jr", publisher: "PMPH USA", price: 9999, mrp: 13999, edition: "18th Ed", matchTags: ["Ballenger","ENT"] },
-            ],
-          },
-          {
-            id: "ms-y2-ophth",
-            name: "Ophthalmology — Year 2",
-            color: "#32ADE6",
-            books: [
-              { name: "Kanski's Clinical Ophthalmology 9th Ed", author: "Brad Bowling", publisher: "Elsevier", price: 6499, mrp: 8999, edition: "9th Ed", featured: true, matchTags: ["Kanski","ophthalmology"] },
-              { name: "Yanoff & Duker Ophthalmology 5th Ed", author: "Myron Yanoff & Jay Duker", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "5th Ed", matchTags: ["Yanoff","ophthalmology"] },
-              { name: "Duke-Elder's System of Ophthalmology Vol 1-15", author: "Sir Stewart Duke-Elder", publisher: "Henry Kimpton", price: 9999, mrp: 12999, edition: "15 Vol Set", matchTags: ["Duke-Elder","ophthalmology"] },
-            ],
-          },
-          {
-            id: "ms-y2-obgyn",
-            name: "Obstetrics & Gynaecology — Year 2",
-            color: "#FF2D92",
-            books: [
-              { name: "Williams Obstetrics 26th Ed", author: "Cunningham, Leveno, Dashe", publisher: "McGraw-Hill", price: 8999, mrp: 11999, edition: "26th Ed", featured: true, matchTags: ["Williams","obstetrics"] },
-              { name: "Novak's Gynecology 16th Ed", author: "Berek & Novak", publisher: "Wolters Kluwer", price: 7999, mrp: 10999, edition: "16th Ed", matchTags: ["Novak","gynecology"] },
-              { name: "Comprehensive Gynecology 8th Ed", author: "Lobo, Gershenson, Lentz", publisher: "Elsevier", price: 7499, mrp: 9999, edition: "8th Ed", matchTags: ["Comprehensive Gynecology"] },
+              { name: "Mastery of Surgery 7th Ed", author: "Baker, Fischer, Jones", publisher: "Wolters Kluwer", price: 9999, mrp: 13999, edition: "7th Ed", featured: true, matchTags: ["Mastery","surgery"] },
+              { name: "Hepatobiliary & Pancreatic Surgery 5th Ed", author: "Garden, Parks, Wigmore", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "5th Ed", matchTags: ["hepatobiliary","pancreatic surgery"] },
+              { name: "Vascular & Endovascular Surgery 6th Ed", author: "Moore & Ahn", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "6th Ed", matchTags: ["vascular surgery","endovascular"] },
+              { name: "Colorectal Surgery 5th Ed", author: "Nicholls & Dozois", publisher: "Elsevier", price: 7499, mrp: 9999, edition: "5th Ed", matchTags: ["colorectal","surgery"] },
             ],
           },
         ],
       },
 
-      // ── MS Year 3 ───────────────────────────────────────────────────
+      // ─────────────── MS Orthopaedics ───────────────
       {
-        id: "ms-year3",
-        label: "Year 3",
+        id: "ms-orthopaedics",
+        label: "MS Orthopaedics",
         subjects: [
           {
-            id: "ms-y3-general",
-            name: "General Surgery — Year 3",
-            color: "#FF6B35",
+            id: "ms-ortho-y1", name: "Year 1", color: "#007AFF",
             books: [
-              { name: "Mastery of Surgery 7th Ed", author: "Fischer et al.", publisher: "Wolters Kluwer", price: 9999, mrp: 13499, edition: "7th Ed", featured: true, matchTags: ["Mastery","surgery"] },
-              { name: "Colorectal Surgery: A Companion to Specialist Surgical Practice 6th Ed", author: "Hartley & Monson", publisher: "Elsevier", price: 6999, mrp: 9499, edition: "6th Ed", matchTags: ["colorectal surgery","Hartley"] },
-              { name: "Hepatobiliary & Pancreatic Surgery 5th Ed", author: "Garden, Parks, Wigmore", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "5th Ed", matchTags: ["hepatobiliary","pancreatic surgery"] },
-              { name: "Vascular & Endovascular Surgery 6th Ed", author: "Donnelly & Wyatt", publisher: "Elsevier", price: 6999, mrp: 9499, edition: "6th Ed", matchTags: ["vascular","endovascular surgery"] },
+              { name: "Apley & Solomon's System of Orthopaedics & Trauma 10th Ed", author: "Anand Apley & Louis Solomon", publisher: "Taylor & Francis", price: 5499, mrp: 7499, edition: "10th Ed", featured: true, matchTags: ["Apley Solomon","orthopaedics"] },
+              { name: "Maheshwari's Essential Orthopaedics 5th Ed", author: "J Maheshwari", publisher: "Mehta Publishers", price: 1499, mrp: 1999, edition: "5th Ed", matchTags: ["Maheshwari","orthopaedics","India"] },
+              { name: "Clinical Examination of the Musculoskeletal System 3rd Ed", author: "Ombregt", publisher: "Churchill Livingstone", price: 4999, mrp: 6699, edition: "3rd Ed", matchTags: ["musculoskeletal examination","orthopaedics"] },
+              { name: "Anatomy for Surgeons Vol 3 — Back & Limbs", author: "Henry Hollinshead", publisher: "Harper & Row", price: 3999, mrp: 5299, edition: "3rd Ed", matchTags: ["anatomy surgeons","limbs","orthopaedics"] },
             ],
           },
           {
-            id: "ms-y3-ortho",
-            name: "Orthopaedics — Year 3",
-            color: "#8E7355",
+            id: "ms-ortho-y2", name: "Year 2", color: "#007AFF",
             books: [
-              { name: "Campbell's Operative Orthopaedics 14th Ed", author: "Azar, Beaty, Canale", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "14th Ed", featured: true, matchTags: ["Campbell","operative orthopaedics"] },
-              { name: "Spine Surgery 4th Ed", author: "Bradford & Zdeblick", publisher: "Thieme", price: 7999, mrp: 10499, edition: "4th Ed", matchTags: ["spine surgery","Bradford"] },
-              { name: "Revision Total Hip & Knee Arthroplasty 2nd Ed", author: "Bono & Scott", publisher: "Wolters Kluwer", price: 6999, mrp: 9299, edition: "2nd Ed", matchTags: ["revision arthroplasty","hip knee"] },
+              { name: "Watson-Jones Fractures & Joint Injuries 8th Ed", author: "Bucholz, Court-Brown, Heckman", publisher: "Churchill Livingstone", price: 7999, mrp: 10999, edition: "8th Ed", featured: true, matchTags: ["Watson Jones","fractures","orthopaedics"] },
+              { name: "Rockwood & Green's Fractures in Adults 9th Ed", author: "Court-Brown, Heckman, McQueen", publisher: "Wolters Kluwer", price: 12999, mrp: 17999, edition: "9th Ed", matchTags: ["Rockwood Green","fractures adults"] },
+              { name: "AO Manual of Fracture Management 2nd Ed", author: "Rüedi, Buckley, Moran", publisher: "Thieme", price: 9999, mrp: 13999, edition: "2nd Ed", matchTags: ["AO manual","fracture management"] },
+              { name: "Tachdjian's Pediatric Orthopaedics 5th Ed", author: "Herring", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "5th Ed", matchTags: ["Tachdjian","pediatric orthopaedics"] },
             ],
           },
           {
-            id: "ms-y3-ent",
-            name: "ENT Surgery — Year 3",
-            color: "#AF52DE",
+            id: "ms-ortho-y3", name: "Year 3", color: "#007AFF",
             books: [
-              { name: "Endoscopic Sinus Surgery 3rd Ed", author: "Schaefer & Close", publisher: "Thieme", price: 5999, mrp: 7999, edition: "3rd Ed", featured: true, matchTags: ["endoscopic sinus surgery","ENT"] },
-              { name: "Otosclerosis & Stapes Surgery 2nd Ed", author: "Häusler", publisher: "Karger", price: 4999, mrp: 6999, edition: "2nd Ed", matchTags: ["otosclerosis","stapes surgery"] },
-              { name: "Head & Neck Surgery: Otolaryngology 6th Ed", author: "Byron Bailey", publisher: "Wolters Kluwer", price: 9999, mrp: 13499, edition: "6th Ed", matchTags: ["head neck surgery","Bailey","otolaryngology"] },
-            ],
-          },
-          {
-            id: "ms-y3-ophth",
-            name: "Ophthalmology — Year 3",
-            color: "#32ADE6",
-            books: [
-              { name: "American Academy of Ophthalmology BCSC Complete Set", author: "AAO", publisher: "AAO Publications", price: 19999, mrp: 27999, edition: "2024 Ed", featured: true, matchTags: ["AAO","BCSC","ophthalmology"] },
-              { name: "Ryan's Retina 6th Ed", author: "SJ Ryan", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "6th Ed", matchTags: ["Ryan","retina","ophthalmology"] },
-              { name: "The Wills Eye Manual 8th Ed", author: "Halepas et al.", publisher: "Wolters Kluwer", price: 3999, mrp: 5299, edition: "8th Ed", matchTags: ["Wills Eye","manual","ophthalmology"] },
-            ],
-          },
-          {
-            id: "ms-y3-obgyn",
-            name: "Obstetrics & Gynaecology — Year 3",
-            color: "#FF2D92",
-            books: [
-              { name: "Te Linde's Operative Gynecology 12th Ed", author: "Rock, Howard, Joanes", publisher: "Wolters Kluwer", price: 9999, mrp: 13999, edition: "12th Ed", featured: true, matchTags: ["Te Linde","operative gynecology"] },
-              { name: "Maternal Fetal Medicine 8th Ed", author: "Resnik, Lockwood, Moore", publisher: "Elsevier", price: 8999, mrp: 12499, edition: "8th Ed", matchTags: ["maternal fetal medicine","MFM"] },
-              { name: "Gynecologic Oncology 6th Ed", author: "Di Saia & Creasman", publisher: "Elsevier", price: 7999, mrp: 10499, edition: "6th Ed", matchTags: ["gynecologic oncology","Di Saia"] },
+              { name: "Campbell's Operative Orthopaedics 14th Ed (4-Vol Set)", author: "Azar, Beaty, Canale", publisher: "Elsevier", price: 19999, mrp: 27999, edition: "14th Ed", featured: true, matchTags: ["Campbell","operative orthopaedics"] },
+              { name: "Spine Surgery 3rd Ed (Frymoyer)", author: "Herkowitz, Garfin, Eismont", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "3rd Ed", matchTags: ["spine surgery","orthopaedics"] },
+              { name: "Revision Total Knee Arthroplasty 1st Ed", author: "Bono & Scott", publisher: "Springer", price: 7999, mrp: 10999, edition: "1st Ed", matchTags: ["knee arthroplasty","revision","orthopaedics"] },
+              { name: "Orthopaedic Sports Medicine 4th Ed", author: "DeLee, Drez, Miller", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "4th Ed", matchTags: ["sports medicine","orthopaedics"] },
             ],
           },
         ],
       },
-    ],
+
+      // ─────────────── MS ENT ───────────────
+      {
+        id: "ms-ent",
+        label: "MS ENT",
+        subjects: [
+          {
+            id: "ms-ent-y1", name: "Year 1", color: "#00C2A8",
+            books: [
+              { name: "Dhingra's Diseases of Ear Nose & Throat 8th Ed", author: "PL Dhingra & Shruti Dhingra", publisher: "Elsevier", price: 2499, mrp: 3299, edition: "8th Ed", featured: true, matchTags: ["Dhingra","ENT","India"] },
+              { name: "Flint Cummings Otolaryngology — Essential Clinical Companion 2nd Ed", author: "Flint et al.", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "2nd Ed", matchTags: ["Cummings","ENT essential"] },
+              { name: "Logan Turner's Diseases of the Nose Throat & Ear 11th Ed", author: "Maran, O'Neill, Stevenson", publisher: "CRC Press", price: 3999, mrp: 5299, edition: "11th Ed", matchTags: ["Logan Turner","ENT"] },
+              { name: "Snow & Wackym Ballenger's Otorhinolaryngology 18th Ed", author: "Ballenger & Snow", publisher: "People's Medical Publishing", price: 7999, mrp: 10999, edition: "18th Ed", matchTags: ["Ballenger","otorhinolaryngology"] },
+            ],
+          },
+          {
+            id: "ms-ent-y2", name: "Year 2", color: "#00C2A8",
+            books: [
+              { name: "Cummings Otolaryngology 7th Ed (3-Vol Set)", author: "Flint, Francis, Haughey", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "7th Ed", featured: true, matchTags: ["Cummings","otolaryngology"] },
+              { name: "Scott-Brown's Otorhinolaryngology Head & Neck Surgery 8th Ed", author: "Gleeson et al.", publisher: "CRC Press", price: 12999, mrp: 17999, edition: "8th Ed", matchTags: ["Scott-Brown","otorhinolaryngology"] },
+              { name: "Textbook of Otolaryngology & Head & Neck Surgery (Narula)", author: "AK Narula", publisher: "CBS Publishers", price: 3999, mrp: 5299, edition: "2nd Ed", matchTags: ["Narula","ENT India","head neck"] },
+            ],
+          },
+          {
+            id: "ms-ent-y3", name: "Year 3", color: "#00C2A8",
+            books: [
+              { name: "Endoscopic Sinus Surgery 3rd Ed", author: "Stammberger & Hawke", publisher: "Thieme", price: 6999, mrp: 9499, edition: "3rd Ed", featured: true, matchTags: ["endoscopic sinus surgery","FESS"] },
+              { name: "Head & Neck Surgery Oncology 5th Ed", author: "Shah, Patel, Singh", publisher: "Mosby", price: 9999, mrp: 13999, edition: "5th Ed", matchTags: ["head neck surgery","oncology"] },
+              { name: "Otosclerosis & Stapes Surgery 1st Ed", author: "Fisch & May", publisher: "Thieme", price: 5999, mrp: 7999, edition: "1st Ed", matchTags: ["otosclerosis","stapes surgery"] },
+              { name: "Rhinology 4th Ed", author: "Stammberger, Kennedy, Bolger", publisher: "Thieme", price: 7499, mrp: 9999, edition: "4th Ed", matchTags: ["rhinology","nasal surgery"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── MS Ophthalmology ───────────────
+      {
+        id: "ms-ophthalmology",
+        label: "MS Ophthalmology",
+        subjects: [
+          {
+            id: "ms-ophthal-y1", name: "Year 1", color: "#5856D6",
+            books: [
+              { name: "AK Khurana Comprehensive Ophthalmology 7th Ed", author: "AK Khurana", publisher: "New Age International", price: 1299, mrp: 1799, edition: "7th Ed", featured: true, matchTags: ["Khurana","ophthalmology","India"] },
+              { name: "Clinical Ophthalmology: A Systematic Approach 8th Ed", author: "Kanski & Bowling", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "8th Ed", matchTags: ["Kanski","clinical ophthalmology"] },
+              { name: "Parson's Diseases of the Eye 23rd Ed", author: "Ramanjit Sihota & Radhika Tandon", publisher: "Elsevier", price: 1999, mrp: 2699, edition: "23rd Ed", matchTags: ["Parson's","eye diseases","India"] },
+              { name: "Emery & Rimoin Principles & Practice of Medical Genetics 6th Ed", author: "Rimoin, Pyeritz, Korf", publisher: "Academic Press", price: 7999, mrp: 10999, edition: "6th Ed", matchTags: ["medical genetics","ophthalmology"] },
+            ],
+          },
+          {
+            id: "ms-ophthal-y2", name: "Year 2", color: "#5856D6",
+            books: [
+              { name: "Kanski's Clinical Ophthalmology 9th Ed", author: "Brad Bowling", publisher: "Elsevier", price: 6499, mrp: 8999, edition: "9th Ed", featured: true, matchTags: ["Kanski","ophthalmology"] },
+              { name: "Yanoff & Duker Ophthalmology 5th Ed", author: "Yanoff & Duker", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "5th Ed", matchTags: ["Yanoff Duker","ophthalmology"] },
+              { name: "Ryan's Retina 6th Ed (3-Vol Set)", author: "Sadda, Hinton, Schachat", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "6th Ed", matchTags: ["Ryan's Retina","vitreoretinal"] },
+              { name: "Duke-Elder System of Ophthalmology (Selected Vol)", author: "Stewart Duke-Elder", publisher: "Henry Kimpton", price: 4999, mrp: 6699, edition: "Classic", matchTags: ["Duke-Elder","ophthalmology"] },
+            ],
+          },
+          {
+            id: "ms-ophthal-y3", name: "Year 3", color: "#5856D6",
+            books: [
+              { name: "American Academy of Ophthalmology BCSC Series 2023–24", author: "AAO", publisher: "AAO", price: 9999, mrp: 13999, edition: "2023-24 Ed", featured: true, matchTags: ["AAO BCSC","ophthalmology"] },
+              { name: "Wills Eye Manual 8th Ed", author: "Duker, Bhavsar, Golberg", publisher: "Wolters Kluwer", price: 3999, mrp: 5299, edition: "8th Ed", matchTags: ["Wills Eye","manual"] },
+              { name: "Glaucoma 3rd Ed", author: "Ritch, Shields, Krupin", publisher: "Mosby", price: 9999, mrp: 13999, edition: "3rd Ed", matchTags: ["glaucoma","ophthalmology"] },
+              { name: "Cornea 4th Ed", author: "Krachmer, Mannis, Holland", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "4th Ed", matchTags: ["cornea","ophthalmology"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── MS Obstetrics & Gynaecology ───────────────
+      {
+        id: "ms-obstetrics",
+        label: "MS Obstetrics & Gynaecology",
+        subjects: [
+          {
+            id: "ms-obsgyn-y1", name: "Year 1", color: "#FF2D55",
+            books: [
+              { name: "DC Dutta's Textbook of Obstetrics 9th Ed", author: "Hiralal Konar", publisher: "Jaypee Brothers", price: 1799, mrp: 2499, edition: "9th Ed", featured: true, matchTags: ["DC Dutta","obstetrics","India"] },
+              { name: "Shaw's Textbook of Gynaecology 17th Ed", author: "VG Padubidri", publisher: "Elsevier", price: 1499, mrp: 1999, edition: "17th Ed", matchTags: ["Shaw","gynaecology","India"] },
+              { name: "Mahajan & Rangnekar's Obstetrics & Gynaecology 5th Ed", author: "BN Purandare", publisher: "Vora Medical Publications", price: 1999, mrp: 2699, edition: "5th Ed", matchTags: ["Mahajan Rangnekar","obstetrics India"] },
+              { name: "FOGSI Textbook of Labour Room Emergency Management", author: "FOGSI", publisher: "Jaypee Brothers", price: 1499, mrp: 1999, edition: "1st Ed", matchTags: ["FOGSI","labour room","emergency"] },
+            ],
+          },
+          {
+            id: "ms-obsgyn-y2", name: "Year 2", color: "#FF2D55",
+            books: [
+              { name: "Williams Obstetrics 26th Ed", author: "Cunningham, Leveno, Dashe", publisher: "McGraw-Hill", price: 8999, mrp: 11999, edition: "26th Ed", featured: true, matchTags: ["Williams","obstetrics"] },
+              { name: "Novak's Gynecology 16th Ed", author: "Berek & Novak", publisher: "Wolters Kluwer", price: 7999, mrp: 10999, edition: "16th Ed", matchTags: ["Novak","gynecology","Berek"] },
+              { name: "Comprehensive Gynecology 8th Ed", author: "Lobo, Gershenson, Lentz", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "8th Ed", matchTags: ["comprehensive gynecology"] },
+              { name: "Maternal Fetal Medicine 8th Ed", author: "Creasy, Resnik, Iams", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "8th Ed", matchTags: ["maternal fetal medicine","MFM"] },
+            ],
+          },
+          {
+            id: "ms-obsgyn-y3", name: "Year 3", color: "#FF2D55",
+            books: [
+              { name: "Te Linde's Operative Gynaecology 12th Ed", author: "Rock, Jones, Howard", publisher: "Wolters Kluwer", price: 9999, mrp: 13999, edition: "12th Ed", featured: true, matchTags: ["Te Linde","operative gynaecology"] },
+              { name: "Gynecologic Oncology 7th Ed", author: "Berek & Hacker", publisher: "Wolters Kluwer", price: 7999, mrp: 10999, edition: "7th Ed", matchTags: ["gynecologic oncology"] },
+              { name: "Infertility in Practice 4th Ed", author: "Balen & Bhide", publisher: "CRC Press", price: 5999, mrp: 7999, edition: "4th Ed", matchTags: ["infertility","ART","reproductive"] },
+            ],
+          },
+        ],
+      },
+
+    ],  // end MS years
   },
 
   // ──────────────────────────────── MCh ────────────────────────────────
@@ -847,218 +840,205 @@ export const CURRICULUM: Degree[] = [
     label: "MCh",
     shortLabel: "MCh",
     color: "#FF3B30",
+    isPG: true,
     years: [
-      // ── MCh Year 1 ──────────────────────────────────────────────────
+
+      // ─────────────── MCh Neurosurgery ───────────────
       {
-        id: "mch-year1",
-        label: "Year 1",
+        id: "mch-neurosurgery",
+        label: "MCh Neurosurgery",
         subjects: [
           {
-            id: "mch-y1-foundation",
-            name: "Super-Specialty Foundation",
-            color: "#636366",
+            id: "mch-neuro-y1", name: "Year 1", color: "#007AFF",
             books: [
-              { name: "Clinical Research Methodology & Biostatistics 4th Ed", author: "PK Sashidharan", publisher: "Jaypee Brothers", price: 1299, mrp: 1799, edition: "4th Ed", featured: true, matchTags: ["clinical research","biostatistics","PG"] },
-              { name: "Perioperative Medicine: The Pathophysiologic Basis 1st Ed", author: "Micheal Mythen", publisher: "Churchill Livingstone", price: 4999, mrp: 6499, edition: "1st Ed", matchTags: ["perioperative","medicine","pathophysiology"] },
+              { name: "Rengachary & Ellenbogen Principles of Neurosurgery 3rd Ed", author: "Rengachary & Ellenbogen", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "3rd Ed", featured: true, matchTags: ["Rengachary","neurosurgery"] },
+              { name: "Greenberg Handbook of Neurosurgery 9th Ed", author: "Mark Greenberg", publisher: "Thieme", price: 6499, mrp: 8499, edition: "9th Ed", matchTags: ["Greenberg","neurosurgery handbook"] },
+              { name: "Netter's Neuroscience 3rd Ed", author: "David Felten", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "3rd Ed", matchTags: ["Netter","neuroscience"] },
+              { name: "Neuroanatomy: An Atlas of Structures 9th Ed", author: "Haines & Mihailoff", publisher: "Wolters Kluwer", price: 4499, mrp: 5999, edition: "9th Ed", matchTags: ["neuroanatomy","atlas"] },
             ],
           },
           {
-            id: "mch-y1-neuro",
-            name: "Neurosurgery — Year 1",
-            color: "#5856D6",
+            id: "mch-neuro-y2", name: "Year 2", color: "#007AFF",
             books: [
-              { name: "Rengachary Principles of Neurosurgery 3rd Ed", author: "Rengachary & Ellenbogen", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "3rd Ed", featured: true, matchTags: ["Rengachary","neurosurgery"] },
-              { name: "Greenberg Handbook of Neurosurgery 9th Ed", author: "Mark Greenberg", publisher: "Thieme", price: 5999, mrp: 7999, edition: "9th Ed", matchTags: ["Greenberg","neurosurgery"] },
-              { name: "Netter's Neuroscience 3rd Ed", author: "David Felten et al.", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "3rd Ed", matchTags: ["Netter","neuroscience"] },
+              { name: "Youmans & Winn Neurological Surgery 7th Ed (4-Vol Set)", author: "Richard Winn", publisher: "Elsevier", price: 22999, mrp: 29999, edition: "7th Ed", featured: true, matchTags: ["Youmans Winn","neurological surgery"] },
+              { name: "Operative Neurosurgery 2nd Ed", author: "Cohen, Bhate, Ratliff", publisher: "Thieme", price: 9999, mrp: 13999, edition: "2nd Ed", matchTags: ["operative neurosurgery"] },
+              { name: "Spine Surgery (Frymoyer) 3rd Ed", author: "Herkowitz, Garfin, Eismont", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "3rd Ed", matchTags: ["spine surgery","neurosurgery"] },
             ],
           },
           {
-            id: "mch-y1-cardio",
-            name: "Cardiothoracic Surgery — Year 1",
-            color: "#FF3B30",
+            id: "mch-neuro-y3", name: "Year 3", color: "#007AFF",
             books: [
-              { name: "Sabiston & Spencer Surgery of the Chest 8th Ed", author: "Frank Sellke et al.", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "8th Ed", featured: true, matchTags: ["Sabiston Spencer","chest surgery"] },
-              { name: "Cohn Cardiac Surgery in the Adult 5th Ed", author: "Lawrence H. Cohn", publisher: "McGraw-Hill", price: 9999, mrp: 13499, edition: "5th Ed", matchTags: ["Cohn","cardiac surgery"] },
-              { name: "Thoracic Surgery Clinics 2024 — Key Topics", author: "Various", publisher: "Elsevier", price: 2999, mrp: 3999, edition: "2024 Ed", matchTags: ["thoracic surgery","clinics"] },
-            ],
-          },
-          {
-            id: "mch-y1-plastic",
-            name: "Plastic Surgery — Year 1",
-            color: "#FF9500",
-            books: [
-              { name: "Principles of Plastic Surgery McCarthy 2nd Ed", author: "Joseph G McCarthy", publisher: "Saunders", price: 12999, mrp: 17999, edition: "2nd Ed", featured: true, matchTags: ["McCarthy","plastic surgery"] },
-              { name: "Plastic Surgery: Principles & Practice 2nd Ed", author: "Neligan, Rodriguez, Losee", publisher: "Elsevier", price: 9999, mrp: 13499, edition: "2nd Ed", matchTags: ["Neligan","plastic surgery"] },
-            ],
-          },
-          {
-            id: "mch-y1-urology",
-            name: "Urology — Year 1",
-            color: "#FF9500",
-            books: [
-              { name: "Smith & Tanagho General Urology 18th Ed", author: "McAninch & Lue", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "18th Ed", featured: true, matchTags: ["Smith Tanagho","urology"] },
-              { name: "EAU Guidelines on Urological Infections 2024", author: "EAU", publisher: "EAU Publications", price: 999, mrp: 1499, edition: "2024 Ed", matchTags: ["EAU","guidelines","urology"] },
-              { name: "Urosurgical Anatomy Atlas 2nd Ed", author: "John Libertino", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["urosurgical","anatomy atlas"] },
-            ],
-          },
-          {
-            id: "mch-y1-paed",
-            name: "Paediatric Surgery — Year 1",
-            color: "#FF2D92",
-            books: [
-              { name: "O'Neill's Pediatric Surgery 6th Ed", author: "Coran et al.", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "6th Ed", featured: true, matchTags: ["O'Neill","pediatric surgery"] },
-              { name: "Pediatric Surgical Oncology 2nd Ed", author: "Andrassy", publisher: "Elsevier", price: 6999, mrp: 9299, edition: "2nd Ed", matchTags: ["pediatric surgical oncology","Andrassy"] },
-            ],
-          },
-          {
-            id: "mch-y1-onco",
-            name: "Surgical Oncology — Year 1",
-            color: "#00C2A8",
-            books: [
-              { name: "AJCC Cancer Staging Manual 9th Ed", author: "American Joint Committee on Cancer", publisher: "Springer", price: 4999, mrp: 6499, edition: "9th Ed", featured: true, matchTags: ["AJCC","cancer staging"] },
-              { name: "NCCN Clinical Practice Guidelines in Oncology 2024", author: "NCCN", publisher: "NCCN Publications", price: 2999, mrp: 3999, edition: "2024 Ed", matchTags: ["NCCN","oncology","guidelines"] },
-              { name: "Surgical Pathology of the GI Tract & Liver 3rd Ed", author: "Odze & Goldblum", publisher: "Elsevier", price: 9999, mrp: 13499, edition: "3rd Ed", matchTags: ["surgical pathology","GI tract","Odze"] },
+              { name: "Stereotactic & Functional Neurosurgery 5th Ed", author: "Lozano & Gildenberg", publisher: "McGraw-Hill", price: 8999, mrp: 11999, edition: "5th Ed", featured: true, matchTags: ["stereotactic","functional neurosurgery"] },
+              { name: "Endovascular Neurosurgery 1st Ed", author: "Jafar, Russell, Woo", publisher: "Thieme", price: 7999, mrp: 10999, edition: "1st Ed", matchTags: ["endovascular neurosurgery"] },
+              { name: "Neuro-ICU: Clinical Practice Guide 1st Ed", author: "Badjatia & Mainali", publisher: "Springer", price: 5999, mrp: 7999, edition: "1st Ed", matchTags: ["neuro ICU","neurocritical care"] },
             ],
           },
         ],
       },
 
-      // ── MCh Year 2 ──────────────────────────────────────────────────
+      // ─────────────── MCh Cardiothoracic Surgery ───────────────
       {
-        id: "mch-year2",
-        label: "Year 2",
+        id: "mch-cardiothoracic",
+        label: "MCh Cardiothoracic Surgery",
         subjects: [
           {
-            id: "mch-y2-neuro",
-            name: "Neurosurgery — Year 2",
-            color: "#5856D6",
+            id: "mch-ctv-y1", name: "Year 1", color: "#FF3B30",
             books: [
-              { name: "Youmans & Winn Neurological Surgery 7th Ed", author: "H. Richard Winn", publisher: "Elsevier", price: 19999, mrp: 27999, edition: "7th Ed", featured: true, matchTags: ["Youmans","neurosurgery"] },
-              { name: "Spinal Instrumentation: Surgical Techniques 2nd Ed", author: "Haid et al.", publisher: "Thieme", price: 7999, mrp: 10499, edition: "2nd Ed", matchTags: ["spinal instrumentation","neurosurgery"] },
-              { name: "Operative Neurosurgery 2nd Ed", author: "Cohen, Haines, Rengachary", publisher: "Wolters Kluwer", price: 9999, mrp: 13499, edition: "2nd Ed", matchTags: ["operative neurosurgery"] },
+              { name: "Sabiston & Spencer Surgery of the Chest 9th Ed", author: "Sellke, del Nido, Swanson", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "9th Ed", featured: true, matchTags: ["Sabiston Spencer","chest surgery","cardiothoracic"] },
+              { name: "Cohn's Cardiac Surgery in the Adult 5th Ed", author: "Lawrence Cohn", publisher: "McGraw-Hill", price: 9999, mrp: 13999, edition: "5th Ed", matchTags: ["Cohn","cardiac surgery"] },
+              { name: "Thoracic Surgery Clinics (Subscription)", author: "Various", publisher: "Elsevier", price: 3999, mrp: 5299, edition: "Annual", matchTags: ["thoracic surgery","clinics"] },
             ],
           },
           {
-            id: "mch-y2-cardio",
-            name: "Cardiothoracic Surgery — Year 2",
-            color: "#FF3B30",
+            id: "mch-ctv-y2", name: "Year 2", color: "#FF3B30",
             books: [
-              { name: "Kirklin/Barratt-Boyes Cardiac Surgery 4th Ed", author: "Kirklin, Barratt-Boyes", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "4th Ed", featured: true, matchTags: ["Kirklin","cardiac surgery"] },
-              { name: "Atlas of Cardiac Surgery 2nd Ed", author: "Quaegebeur & Ravekes", publisher: "Springer", price: 8999, mrp: 11999, edition: "2nd Ed", matchTags: ["atlas","cardiac surgery"] },
-              { name: "Congenital Heart Disease in Adults 4th Ed", author: "Warnes & Webb", publisher: "Elsevier", price: 7999, mrp: 10499, edition: "4th Ed", matchTags: ["congenital heart disease","adults"] },
+              { name: "Kirklin/Barratt-Boyes Cardiac Surgery 4th Ed", author: "Kirklin & Blackstone", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "4th Ed", featured: true, matchTags: ["Kirklin","cardiac surgery"] },
+              { name: "Atlas of Cardiac Surgery 1st Ed", author: "Sellke & del Nido", publisher: "Cambridge University Press", price: 7999, mrp: 10999, edition: "1st Ed", matchTags: ["atlas cardiac surgery"] },
+              { name: "Congenital Heart Disease in Adults 4th Ed", author: "Warnes", publisher: "Elsevier", price: 6999, mrp: 9499, edition: "4th Ed", matchTags: ["congenital heart","adults","cardiology"] },
             ],
           },
           {
-            id: "mch-y2-plastic",
-            name: "Plastic Surgery — Year 2",
-            color: "#FF9500",
+            id: "mch-ctv-y3", name: "Year 3", color: "#FF3B30",
             books: [
-              { name: "Grabb and Smith's Plastic Surgery 7th Ed", author: "Thorne et al.", publisher: "Wolters Kluwer", price: 9999, mrp: 13999, edition: "7th Ed", featured: true, matchTags: ["Grabb Smith","plastic surgery"] },
-              { name: "Mathes & Nahai Flap Reconstruction 2nd Ed", author: "Mathes & Nahai", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "2nd Ed", matchTags: ["Mathes Nahai","flap","plastic surgery"] },
-              { name: "Burn Surgery: The Management of Difficult Wounds", author: "Lee et al.", publisher: "Springer", price: 5999, mrp: 7999, edition: "1st Ed", matchTags: ["burn surgery","wound management"] },
-            ],
-          },
-          {
-            id: "mch-y2-urology",
-            name: "Urology — Year 2",
-            color: "#FF9500",
-            books: [
-              { name: "Campbell-Walsh-Wein Urology 12th Ed", author: "Partin, Dmochowski, Kavoussi", publisher: "Elsevier", price: 19999, mrp: 26999, edition: "12th Ed", featured: true, matchTags: ["Campbell Walsh","urology"] },
-              { name: "Hinman's Atlas of Urologic Surgery 4th Ed", author: "Hinman, Droller", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "4th Ed", matchTags: ["Hinman","urologic surgery"] },
-              { name: "Laparoscopic Urology 2nd Ed", author: "Ralph Clayman", publisher: "McGraw-Hill", price: 6999, mrp: 9299, edition: "2nd Ed", matchTags: ["laparoscopic urology","Clayman"] },
-            ],
-          },
-          {
-            id: "mch-y2-paed",
-            name: "Paediatric Surgery — Year 2",
-            color: "#FF2D92",
-            books: [
-              { name: "Ashcraft's Pediatric Surgery 6th Ed", author: "Holcomb, Murphy, Ostlie", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "6th Ed", featured: true, matchTags: ["Ashcraft","pediatric surgery"] },
-              { name: "Spitz & Coran Operative Pediatric Surgery 7th Ed", author: "Spitz & Coran", publisher: "Taylor & Francis", price: 9999, mrp: 13999, edition: "7th Ed", matchTags: ["Spitz Coran","pediatric surgery"] },
-              { name: "Paediatric Urology 2nd Ed", author: "Woodhouse & Wilcox", publisher: "Elsevier", price: 6999, mrp: 9299, edition: "2nd Ed", matchTags: ["paediatric urology","Woodhouse"] },
-            ],
-          },
-          {
-            id: "mch-y2-onco",
-            name: "Surgical Oncology — Year 2",
-            color: "#00C2A8",
-            books: [
-              { name: "DeVita Hellman & Rosenberg's Cancer 11th Ed", author: "DeVita, Lawrence, Rosenberg", publisher: "Wolters Kluwer", price: 14999, mrp: 19999, edition: "11th Ed", featured: true, matchTags: ["DeVita","cancer"] },
-              { name: "Bland & Copeland The Breast 5th Ed", author: "Bland & Copeland", publisher: "Elsevier", price: 9999, mrp: 13499, edition: "5th Ed", matchTags: ["Bland Copeland","breast surgery"] },
-              { name: "Atlas of Surgical Oncology 2nd Ed", author: "Cameron, Sandone", publisher: "Wolters Kluwer", price: 7999, mrp: 10499, edition: "2nd Ed", matchTags: ["surgical oncology atlas"] },
+              { name: "Mechanical Circulatory Support 2nd Ed", author: "Goldstein & Oz", publisher: "Informa Healthcare", price: 6999, mrp: 9499, edition: "2nd Ed", featured: true, matchTags: ["mechanical circulatory support","LVAD"] },
+              { name: "Transcatheter Aortic Valve Implantation 2nd Ed", author: "Grube & Laborde", publisher: "Krause & Pachernegg", price: 6999, mrp: 9499, edition: "2nd Ed", matchTags: ["TAVI","transcatheter aortic valve"] },
+              { name: "Cardiac Transplantation 2nd Ed", author: "Baumgartner et al.", publisher: "Blackwell", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["cardiac transplantation"] },
             ],
           },
         ],
       },
 
-      // ── MCh Year 3 ──────────────────────────────────────────────────
+      // ─────────────── MCh Plastic Surgery ───────────────
       {
-        id: "mch-year3",
-        label: "Year 3",
+        id: "mch-plastic",
+        label: "MCh Plastic Surgery",
         subjects: [
           {
-            id: "mch-y3-neuro",
-            name: "Neurosurgery — Year 3",
-            color: "#5856D6",
+            id: "mch-plas-y1", name: "Year 1", color: "#FF9500",
             books: [
-              { name: "Principles of Stereotactic Neurosurgery 2nd Ed", author: "Lozano & Gildenberg", publisher: "Springer", price: 7999, mrp: 10499, edition: "2nd Ed", featured: true, matchTags: ["stereotactic","neurosurgery","Lozano"] },
-              { name: "Endovascular Neurosurgery 2nd Ed", author: "Higashida & Niimi", publisher: "Thieme", price: 6999, mrp: 9299, edition: "2nd Ed", matchTags: ["endovascular neurosurgery"] },
-              { name: "Neuro-ICU Book 2nd Ed", author: "Wijdicks", publisher: "McGraw-Hill", price: 4999, mrp: 6699, edition: "2nd Ed", matchTags: ["neuro ICU","Wijdicks"] },
+              { name: "McCarthy's Plastic Surgery 2nd Ed (8-Vol Set)", author: "Rodríguez, Losee, Neligan", publisher: "Elsevier", price: 22999, mrp: 29999, edition: "2nd Ed", featured: true, matchTags: ["McCarthy","plastic surgery"] },
+              { name: "Neligan Plastic Surgery 4th Ed (6-Vol Set)", author: "Peter Neligan", publisher: "Elsevier", price: 22999, mrp: 29999, edition: "4th Ed", matchTags: ["Neligan","plastic surgery"] },
+              { name: "Burn Surgery: Reconstruction & Rehabilitation", author: "Spires & Jeng", publisher: "Elsevier", price: 6999, mrp: 9499, edition: "1st Ed", matchTags: ["burn surgery","rehabilitation"] },
             ],
           },
           {
-            id: "mch-y3-cardio",
-            name: "Cardiothoracic Surgery — Year 3",
-            color: "#FF3B30",
+            id: "mch-plas-y2", name: "Year 2", color: "#FF9500",
             books: [
-              { name: "Surgical Treatment of Heart Failure 2nd Ed", author: "Panza & Bonow", publisher: "Springer", price: 6999, mrp: 9299, edition: "2nd Ed", featured: true, matchTags: ["heart failure","surgical treatment"] },
-              { name: "Transcatheter Aortic Valve Implantation 2nd Ed", author: "Lefèvre & Serruys", publisher: "PCR Publishing", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["TAVI","aortic valve","transcatheter"] },
-              { name: "Mechanical Circulatory Support 2nd Ed", author: "Arabia & Joyce", publisher: "Springer", price: 5499, mrp: 7299, edition: "2nd Ed", matchTags: ["mechanical circulatory support","LVAD"] },
+              { name: "Grabb & Smith's Plastic Surgery 8th Ed", author: "Thorne, Chung, Gosain", publisher: "Wolters Kluwer", price: 9999, mrp: 13999, edition: "8th Ed", featured: true, matchTags: ["Grabb Smith","plastic surgery"] },
+              { name: "Mathes & Nahai Reconstructive Surgery 2nd Ed (3-Vol)", author: "Mathes & Nahai", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "2nd Ed", matchTags: ["Mathes Nahai","reconstructive surgery"] },
+              { name: "Microsurgery: Free Flap Reconstruction 1st Ed", author: "Wei & Mardini", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "1st Ed", matchTags: ["microsurgery","free flap"] },
             ],
           },
           {
-            id: "mch-y3-plastic",
-            name: "Plastic Surgery — Year 3",
-            color: "#FF9500",
+            id: "mch-plas-y3", name: "Year 3", color: "#FF9500",
             books: [
-              { name: "Microsurgery: Free Tissue Transfer & Replantation 2nd Ed", author: "Wei & Mardini", publisher: "Elsevier", price: 9999, mrp: 13499, edition: "2nd Ed", featured: true, matchTags: ["microsurgery","free flap","replantation"] },
-              { name: "Craniofacial Surgery 2nd Ed", author: "Tessier et al.", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "2nd Ed", matchTags: ["craniofacial surgery","Tessier"] },
-              { name: "Aesthetic Surgery of the Face 2nd Ed", author: "Nahai & Nahai", publisher: "Thieme", price: 7999, mrp: 10499, edition: "2nd Ed", matchTags: ["aesthetic surgery","face","rhinoplasty"] },
-            ],
-          },
-          {
-            id: "mch-y3-urology",
-            name: "Urology — Year 3",
-            color: "#FF9500",
-            books: [
-              { name: "Robotic Urologic Surgery 3rd Ed", author: "Patel et al.", publisher: "Springer", price: 7999, mrp: 10499, edition: "3rd Ed", featured: true, matchTags: ["robotic urology","Patel"] },
-              { name: "Urodynamics Made Easy 4th Ed", author: "WF Abrams", publisher: "Elsevier", price: 3499, mrp: 4699, edition: "4th Ed", matchTags: ["urodynamics","Abrams"] },
-              { name: "Reconstructive Urology 2nd Ed", author: "Graham", publisher: "Elsevier", price: 6499, mrp: 8699, edition: "2nd Ed", matchTags: ["reconstructive urology","Graham"] },
-            ],
-          },
-          {
-            id: "mch-y3-paed",
-            name: "Paediatric Surgery — Year 3",
-            color: "#FF2D92",
-            books: [
-              { name: "Operative Pediatric Surgery 8th Ed", author: "Lister & Irving", publisher: "Taylor & Francis", price: 9999, mrp: 13499, edition: "8th Ed", featured: true, matchTags: ["operative pediatric surgery","Lister"] },
-              { name: "Pediatric Minimally Invasive Surgery 2nd Ed", author: "Georgeson & Owings", publisher: "Springer", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["pediatric minimally invasive surgery"] },
-              { name: "Pediatric Liver Transplantation 1st Ed", author: "McDiarmid", publisher: "Elsevier", price: 5499, mrp: 7299, edition: "1st Ed", matchTags: ["pediatric liver transplant","McDiarmid"] },
-            ],
-          },
-          {
-            id: "mch-y3-onco",
-            name: "Surgical Oncology — Year 3",
-            color: "#00C2A8",
-            books: [
-              { name: "Hepatobiliary Cancers: ESMO Clinical Practice Guidelines 2024", author: "ESMO", publisher: "ESMO Publications", price: 1999, mrp: 2699, edition: "2024 Ed", featured: true, matchTags: ["hepatobiliary cancer","ESMO","guidelines"] },
-              { name: "Cytoreductive Surgery & Hyperthermic Intraperitoneal Chemotherapy", author: "Sugarbaker", publisher: "Jones & Bartlett", price: 6999, mrp: 9299, edition: "3rd Ed", matchTags: ["HIPEC","cytoreductive surgery","Sugarbaker"] },
-              { name: "Robotic Surgery in Oncology 1st Ed", author: "Marescaux", publisher: "Springer", price: 6499, mrp: 8699, edition: "1st Ed", matchTags: ["robotic surgery","oncology","Marescaux"] },
+              { name: "Craniofacial Surgery 2nd Ed", author: "Wolfe, Berkowitz, Kawamoto", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "2nd Ed", featured: true, matchTags: ["craniofacial surgery"] },
+              { name: "Principles & Techniques in Aesthetic Surgery 2nd Ed", author: "Rohrich, Kenkel, Adams", publisher: "Thieme", price: 8999, mrp: 11999, edition: "2nd Ed", matchTags: ["aesthetic surgery","principles"] },
+              { name: "Hand Surgery 3rd Ed", author: "Green, Hotchkiss, Pederson", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "3rd Ed", matchTags: ["hand surgery","plastic"] },
             ],
           },
         ],
       },
-    ],
+
+      // ─────────────── MCh Urology ───────────────
+      {
+        id: "mch-urology",
+        label: "MCh Urology",
+        subjects: [
+          {
+            id: "mch-uro-y1", name: "Year 1", color: "#00C2A8",
+            books: [
+              { name: "Smith & Tanagho's General Urology 19th Ed", author: "McAninch & Lue", publisher: "McGraw-Hill", price: 5499, mrp: 7299, edition: "19th Ed", featured: true, matchTags: ["Smith Tanagho","urology"] },
+              { name: "EAU Guidelines 2024 (Urology)", author: "European Association of Urology", publisher: "EAU", price: 1999, mrp: 2699, edition: "2024 Ed", matchTags: ["EAU guidelines","urology"] },
+              { name: "Anatomy for Urological Surgeons 2nd Ed", author: "Mouriquand & Gorduza", publisher: "Springer", price: 4999, mrp: 6699, edition: "2nd Ed", matchTags: ["anatomy","urology","urological surgeons"] },
+              { name: "Urological Anatomy Atlas 1st Ed", author: "Hinman & Stempen", publisher: "WB Saunders", price: 3999, mrp: 5299, edition: "1st Ed", matchTags: ["urology","anatomy atlas"] },
+            ],
+          },
+          {
+            id: "mch-uro-y2", name: "Year 2", color: "#00C2A8",
+            books: [
+              { name: "Campbell-Walsh-Wein Urology 12th Ed (4-Vol Set)", author: "Partin, Dmochowski, Kavoussi", publisher: "Elsevier", price: 19999, mrp: 27999, edition: "12th Ed", featured: true, matchTags: ["Campbell Walsh","urology"] },
+              { name: "Hinman's Atlas of Urological Surgery 4th Ed", author: "Hinman, Smith, Glassberg", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "4th Ed", matchTags: ["Hinman atlas","urological surgery"] },
+              { name: "Laparoscopic & Robot-Assisted Urology 2nd Ed", author: "Stolzenburg et al.", publisher: "Springer", price: 7999, mrp: 10999, edition: "2nd Ed", matchTags: ["laparoscopic","robotic urology"] },
+            ],
+          },
+          {
+            id: "mch-uro-y3", name: "Year 3", color: "#00C2A8",
+            books: [
+              { name: "Robotic Urologic Surgery 3rd Ed", author: "Patel et al.", publisher: "Springer", price: 7999, mrp: 10999, edition: "3rd Ed", featured: true, matchTags: ["robotic urology","Da Vinci"] },
+              { name: "Urodynamics Made Easy 4th Ed", author: "Abrams", publisher: "Churchill Livingstone", price: 3999, mrp: 5299, edition: "4th Ed", matchTags: ["urodynamics","urology"] },
+              { name: "Reconstructive Urology 1st Ed", author: "Haab & Zimmern", publisher: "Springer", price: 5999, mrp: 7999, edition: "1st Ed", matchTags: ["reconstructive urology","repair"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── MCh Paediatric Surgery ───────────────
+      {
+        id: "mch-paediatric-surgery",
+        label: "MCh Paediatric Surgery",
+        subjects: [
+          {
+            id: "mch-ped-y1", name: "Year 1", color: "#34C759",
+            books: [
+              { name: "O'Neill's Principles of Pediatric Surgery 3rd Ed", author: "Grosfeld, O'Neill, Fonkalsrud", publisher: "Mosby", price: 9999, mrp: 13999, edition: "3rd Ed", featured: true, matchTags: ["O'Neill","pediatric surgery"] },
+              { name: "Pediatric Surgical Pathology 3rd Ed", author: "Stocker & Dehner", publisher: "Wolters Kluwer", price: 6999, mrp: 9499, edition: "3rd Ed", matchTags: ["pediatric surgical pathology"] },
+              { name: "Basic Sciences for Paediatric Surgery 1st Ed", author: "Spitz & Coran", publisher: "Springer", price: 5999, mrp: 7999, edition: "1st Ed", matchTags: ["basic sciences","paediatric surgery"] },
+            ],
+          },
+          {
+            id: "mch-ped-y2", name: "Year 2", color: "#34C759",
+            books: [
+              { name: "Ashcraft's Pediatric Surgery 7th Ed", author: "Holcomb, Murphy, Ostlie", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "7th Ed", featured: true, matchTags: ["Ashcraft","pediatric surgery"] },
+              { name: "Spitz & Coran Operative Pediatric Surgery 7th Ed", author: "Coran, Caldamone, Adzick", publisher: "CRC Press", price: 9999, mrp: 13999, edition: "7th Ed", matchTags: ["Spitz Coran","operative pediatric surgery"] },
+              { name: "Pediatric Urology 4th Ed", author: "Gearhart, Rink, Mouriquand", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "4th Ed", matchTags: ["pediatric urology","children"] },
+            ],
+          },
+          {
+            id: "mch-ped-y3", name: "Year 3", color: "#34C759",
+            books: [
+              { name: "Operative Pediatric Surgery 7th Ed (Irwin)", author: "Irwin et al.", publisher: "Springer", price: 7999, mrp: 10999, edition: "7th Ed", featured: true, matchTags: ["operative pediatric surgery"] },
+              { name: "Pediatric Minimal Access Surgery 2nd Ed", author: "Bax, Georgeson, Rothenberg", publisher: "Informa Healthcare", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["pediatric","minimal access","laparoscopy"] },
+              { name: "Pediatric Liver Transplantation 2nd Ed", author: "Millis & Cronin", publisher: "Informa Healthcare", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["pediatric liver transplant"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── MCh Surgical Oncology ───────────────
+      {
+        id: "mch-surgical-oncology",
+        label: "MCh Surgical Oncology",
+        subjects: [
+          {
+            id: "mch-surgo-y1", name: "Year 1", color: "#8E8E93",
+            books: [
+              { name: "AJCC Cancer Staging Manual 9th Ed", author: "American Joint Committee on Cancer", publisher: "Springer", price: 5999, mrp: 7999, edition: "9th Ed", featured: true, matchTags: ["AJCC","cancer staging"] },
+              { name: "NCCN Clinical Practice Guidelines in Oncology 2024", author: "NCCN", publisher: "NCCN", price: 2999, mrp: 3999, edition: "2024 Ed", matchTags: ["NCCN","guidelines","oncology"] },
+              { name: "Surgical Pathology of the GI Tract 4th Ed", author: "Goldblum, Lamps, McKenney", publisher: "Elsevier", price: 6999, mrp: 9499, edition: "4th Ed", matchTags: ["GI tract","surgical pathology","oncology"] },
+              { name: "Principles of Surgical Oncology 2nd Ed", author: "Bland & Karakousis", publisher: "Springer", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["surgical oncology","principles"] },
+            ],
+          },
+          {
+            id: "mch-surgo-y2", name: "Year 2", color: "#8E8E93",
+            books: [
+              { name: "DeVita Hellman & Rosenberg's Cancer 12th Ed", author: "Devita, Lawrence, Rosenberg", publisher: "Wolters Kluwer", price: 12999, mrp: 17999, edition: "12th Ed", featured: true, matchTags: ["DeVita","cancer","oncology"] },
+              { name: "Bland & Copeland The Breast 6th Ed", author: "Bland & Copeland", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "6th Ed", matchTags: ["breast surgery","Bland Copeland"] },
+              { name: "Atlas of Surgical Oncology 2nd Ed", author: "Bland, Karakousis, Copeland", publisher: "WB Saunders", price: 7999, mrp: 10999, edition: "2nd Ed", matchTags: ["atlas","surgical oncology"] },
+            ],
+          },
+          {
+            id: "mch-surgo-y3", name: "Year 3", color: "#8E8E93",
+            books: [
+              { name: "Cytoreductive Surgery & HIPEC 2nd Ed", author: "Sugarbaker", publisher: "Ludann", price: 6999, mrp: 9499, edition: "2nd Ed", featured: true, matchTags: ["HIPEC","Sugarbaker","cytoreductive surgery"] },
+              { name: "Robotic Surgery in Oncology 1st Ed", author: "Patel & Seer", publisher: "Springer", price: 5999, mrp: 7999, edition: "1st Ed", matchTags: ["robotic surgery","oncology"] },
+              { name: "Hepatocellular Carcinoma 2nd Ed", author: "Tang & Poon", publisher: "Springer", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["hepatocellular carcinoma","liver cancer"] },
+            ],
+          },
+        ],
+      },
+
+    ],  // end MCh years
   },
 
   // ──────────────────────────────── DM ─────────────────────────────────
@@ -1066,315 +1046,304 @@ export const CURRICULUM: Degree[] = [
     id: "dm",
     label: "DM",
     shortLabel: "DM",
-    color: "#00C2A8",
+    color: "#FF9500",
+    isPG: true,
     years: [
-      // ── DM Year 1 ───────────────────────────────────────────────────
+
+      // ─────────────── DM Cardiology ───────────────
       {
-        id: "dm-year1",
-        label: "Year 1",
+        id: "dm-cardiology",
+        label: "DM Cardiology",
         subjects: [
           {
-            id: "dm-y1-common",
-            name: "Super-Specialty Foundation",
-            color: "#636366",
+            id: "dm-cardio-y1", name: "Year 1", color: "#FF3B30",
             books: [
-              { name: "ICMR Ethical Guidelines for Biomedical & Health Research 2017", author: "ICMR", publisher: "ICMR Publications", price: 499, mrp: 699, edition: "2017 Ed", featured: true, matchTags: ["ICMR","biomedical research","ethics","DM"] },
-              { name: "Medical Statistics from Scratch 4th Ed", author: "David Bowers", publisher: "Wiley", price: 2999, mrp: 3999, edition: "4th Ed", matchTags: ["medical statistics","Bowers"] },
-              { name: "How to Read a Paper: Evidence-Based Medicine 6th Ed", author: "Trisha Greenhalgh", publisher: "Wiley-Blackwell", price: 2499, mrp: 3299, edition: "6th Ed", matchTags: ["evidence based medicine","Greenhalgh","how to read paper"] },
+              { name: "Hurst's The Heart 14th Ed (2-Vol Set)", author: "Fuster, Harrington, Narula", publisher: "McGraw-Hill", price: 9999, mrp: 13999, edition: "14th Ed", featured: true, matchTags: ["Hurst","heart","cardiology"] },
+              { name: "Chou's Electrocardiography in Clinical Practice 6th Ed", author: "Surawicz & Knilans", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "6th Ed", matchTags: ["ECG","electrocardiography","Chou"] },
+              { name: "ESC Textbook of Cardiovascular Medicine 3rd Ed", author: "Camm, Lüscher, Serruys", publisher: "Oxford University Press", price: 9999, mrp: 13999, edition: "3rd Ed", matchTags: ["ESC","cardiovascular medicine"] },
+              { name: "Echocardiography Board Review 3rd Ed", author: "Ragavendra Baliga", publisher: "Wiley-Blackwell", price: 3999, mrp: 5299, edition: "3rd Ed", matchTags: ["echo board review","echocardiography"] },
             ],
           },
           {
-            id: "dm-y1-cardio",
-            name: "Cardiology — Year 1",
-            color: "#FF3B30",
+            id: "dm-cardio-y2", name: "Year 2", color: "#FF3B30",
             books: [
-              { name: "Hurst's The Heart 15th Ed", author: "Fuster, Harrington, Narula", publisher: "McGraw-Hill", price: 9999, mrp: 13499, edition: "15th Ed", featured: true, matchTags: ["Hurst","heart"] },
-              { name: "Chou's Electrocardiography in Clinical Practice 6th Ed", author: "Surawicz & Knilans", publisher: "Elsevier", price: 4999, mrp: 6499, edition: "6th Ed", matchTags: ["Chou","ECG","electrocardiography"] },
-              { name: "ESC Textbook of Cardiovascular Medicine 3rd Ed", author: "Camm, Lüscher, Maurer", publisher: "Oxford University Press", price: 8999, mrp: 11999, edition: "3rd Ed", matchTags: ["ESC","cardiovascular"] },
-              { name: "Echocardiography Board Review 3rd Ed", author: "Ragavendra Baliga", publisher: "Wiley-Blackwell", price: 3999, mrp: 5299, edition: "3rd Ed", matchTags: ["echocardiography","board review"] },
+              { name: "Braunwald's Heart Disease 12th Ed (2-Vol Set)", author: "Libby, Bonow, Zipes, Mann", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "12th Ed", featured: true, matchTags: ["Braunwald","heart disease"] },
+              { name: "Ellenbogen Cardiac Pacing & ICDs 7th Ed", author: "Ellenbogen, Wilkoff, Kay", publisher: "Wiley-Blackwell", price: 6999, mrp: 9499, edition: "7th Ed", matchTags: ["cardiac pacing","ICD","Ellenbogen"] },
+              { name: "Otto's Textbook of Clinical Echocardiography 6th Ed", author: "Catherine Otto", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "6th Ed", matchTags: ["clinical echocardiography","Otto"] },
+              { name: "Interventional Cardiology 3rd Ed", author: "Bhatt", publisher: "JP Medical Ltd", price: 7999, mrp: 10999, edition: "3rd Ed", matchTags: ["interventional cardiology","PCI"] },
             ],
           },
           {
-            id: "dm-y1-neuro",
-            name: "Neurology — Year 1",
-            color: "#5856D6",
+            id: "dm-cardio-y3", name: "Year 3", color: "#FF3B30",
             books: [
-              { name: "Hauser's Harrison's Neurology 4th Ed", author: "Stephen Hauser", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "4th Ed", featured: true, matchTags: ["Hauser","neurology"] },
-              { name: "Rowland & Pedley Merritt's Neurology 14th Ed", author: "Lewis Rowland", publisher: "Wolters Kluwer", price: 5999, mrp: 7999, edition: "14th Ed", matchTags: ["Merritt","neurology"] },
-              { name: "Clinical Neurology for Psychiatrists 8th Ed", author: "David Kaufman", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "8th Ed", matchTags: ["clinical neurology","psychiatrists","Kaufman"] },
-            ],
-          },
-          {
-            id: "dm-y1-gastro",
-            name: "Gastroenterology — Year 1",
-            color: "#FF9500",
-            books: [
-              { name: "Makharia & Ahuja Textbook of Gastroenterology 2nd Ed", author: "Makharia, Ahuja", publisher: "CBS Publishers", price: 3999, mrp: 5299, edition: "2nd Ed", featured: true, matchTags: ["Makharia","gastroenterology","India"] },
-              { name: "Pocket Guide to Gastrointestinal Drugs 1st Ed", author: "Blonski & Lichtenstein", publisher: "Wiley-Blackwell", price: 2999, mrp: 3999, edition: "1st Ed", matchTags: ["GI drugs","gastroenterology","pocket guide"] },
-              { name: "Clinical Gastroenterology 5th Ed", author: "Howard Spiro", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "5th Ed", matchTags: ["clinical gastroenterology","Spiro"] },
-            ],
-          },
-          {
-            id: "dm-y1-nephro",
-            name: "Nephrology — Year 1",
-            color: "#007AFF",
-            books: [
-              { name: "Clinical Nephrology by Berl & Bonventre 2nd Ed", author: "Tomas Berl", publisher: "Atlas Medical Publishing", price: 5999, mrp: 7999, edition: "2nd Ed", featured: true, matchTags: ["Berl","nephrology"] },
-              { name: "Pocket Companion to Brenner & Rector's The Kidney 9th Ed", author: "Taal et al.", publisher: "Elsevier", price: 3999, mrp: 5299, edition: "9th Ed", matchTags: ["Brenner Rector pocket","nephrology"] },
-              { name: "Dialysis Therapy 3rd Ed", author: "Nissenson & Fine", publisher: "Hanley & Belfus", price: 4999, mrp: 6699, edition: "3rd Ed", matchTags: ["dialysis","therapy","nephrology"] },
-            ],
-          },
-          {
-            id: "dm-y1-endo",
-            name: "Endocrinology — Year 1",
-            color: "#FFD60A",
-            books: [
-              { name: "Greenspan's Basic & Clinical Endocrinology 10th Ed", author: "Shoback & Gardner", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "10th Ed", featured: true, matchTags: ["Greenspan","endocrinology"] },
-              { name: "Braverman & Cooper Werner & Ingbar The Thyroid 11th Ed", author: "Braverman & Cooper", publisher: "Wolters Kluwer", price: 7999, mrp: 10499, edition: "11th Ed", matchTags: ["Braverman Cooper","thyroid"] },
-              { name: "Goljan Rapid Review: Endocrinology 3rd Ed", author: "Edward Goljan", publisher: "Elsevier", price: 2999, mrp: 3999, edition: "3rd Ed", matchTags: ["Goljan","endocrinology","rapid review"] },
-            ],
-          },
-          {
-            id: "dm-y1-pulmo",
-            name: "Pulmonology — Year 1",
-            color: "#5AC8FA",
-            books: [
-              { name: "GOLD COPD Global Initiative Guidelines 2024", author: "GOLD Committee", publisher: "GOLD Publications", price: 999, mrp: 1499, edition: "2024 Ed", featured: true, matchTags: ["GOLD","COPD","guidelines"] },
-              { name: "GINA Asthma Guidelines 2024", author: "GINA Committee", publisher: "GINA Publications", price: 999, mrp: 1499, edition: "2024 Ed", matchTags: ["GINA","asthma"] },
-              { name: "Clinical Respiratory Medicine 4th Ed", author: "Spiro, Silvestri, Agusti", publisher: "Elsevier", price: 7999, mrp: 10499, edition: "4th Ed", matchTags: ["clinical respiratory","medicine","Spiro"] },
-            ],
-          },
-          {
-            id: "dm-y1-haem",
-            name: "Haematology — Year 1",
-            color: "#FF3B30",
-            books: [
-              { name: "Hoffbrand & Steensma Essential Haematology 8th Ed", author: "AV Hoffbrand", publisher: "Wiley-Blackwell", price: 4999, mrp: 6499, edition: "8th Ed", featured: true, matchTags: ["Hoffbrand","haematology"] },
-              { name: "Lee's Synopsis of Haematology 3rd Ed", author: "Lee, Bain, Provan", publisher: "Oxford University Press", price: 3999, mrp: 5299, edition: "3rd Ed", matchTags: ["Lee's","haematology"] },
-              { name: "Blood Transfusion in Clinical Practice 1st Ed", author: "Misra et al.", publisher: "InTech", price: 1999, mrp: 2699, edition: "1st Ed", matchTags: ["blood transfusion","clinical practice"] },
-            ],
-          },
-          {
-            id: "dm-y1-rheuma",
-            name: "Rheumatology — Year 1",
-            color: "#FF6B35",
-            books: [
-              { name: "Oxford Textbook of Rheumatology 5th Ed", author: "Watts, Conaghan, Doherty", publisher: "Oxford University Press", price: 6999, mrp: 9499, edition: "5th Ed", featured: true, matchTags: ["Oxford","rheumatology"] },
-              { name: "Dubois' Lupus Erythematosus & Related Syndromes 9th Ed", author: "Wallace & Hahn", publisher: "Elsevier", price: 7999, mrp: 10499, edition: "9th Ed", matchTags: ["Dubois","lupus","rheumatology"] },
-              { name: "Rheumatology Secrets 4th Ed", author: "Sterling West", publisher: "Elsevier", price: 3999, mrp: 5299, edition: "4th Ed", matchTags: ["rheumatology secrets","West"] },
-            ],
-          },
-          {
-            id: "dm-y1-onco",
-            name: "Medical Oncology — Year 1",
-            color: "#00C2A8",
-            books: [
-              { name: "NCCN Clinical Practice Guidelines in Oncology 2024", author: "NCCN", publisher: "NCCN Publications", price: 2999, mrp: 3999, edition: "2024 Ed", featured: true, matchTags: ["NCCN","oncology","guidelines"] },
-              { name: "Oxford American Oncology Library 4-Vol Set", author: "Oxford Medicine", publisher: "Oxford University Press", price: 6999, mrp: 9299, edition: "2023 Ed", matchTags: ["Oxford","oncology library"] },
-              { name: "Oncology Board Review 4th Ed", author: "Preston Gable", publisher: "Demos Medical", price: 3499, mrp: 4799, edition: "4th Ed", matchTags: ["oncology board review","Gable"] },
+              { name: "Braunwald's Heart Disease: A Companion Series (Set)", author: "Various", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "Latest Ed", featured: true, matchTags: ["Braunwald companion","heart disease"] },
+              { name: "ACC/AHA Clinical Practice Guidelines 2024", author: "ACC/AHA", publisher: "Elsevier", price: 1999, mrp: 2699, edition: "2024 Ed", matchTags: ["ACC AHA guidelines","cardiology"] },
+              { name: "Cardio-Oncology 2nd Ed", author: "Fradley & Larsen", publisher: "Springer", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["cardio-oncology","cancer cardiology"] },
             ],
           },
         ],
       },
 
-      // ── DM Year 2 ───────────────────────────────────────────────────
+      // ─────────────── DM Neurology ───────────────
       {
-        id: "dm-year2",
-        label: "Year 2",
+        id: "dm-neurology",
+        label: "DM Neurology",
         subjects: [
           {
-            id: "dm-y2-cardio",
-            name: "Cardiology — Year 2",
-            color: "#FF3B30",
+            id: "dm-neuro-y1", name: "Year 1", color: "#5856D6",
             books: [
-              { name: "Braunwald's Heart Disease 12th Ed (2-Vol)", author: "Libby, Bonow, Mann", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "12th Ed", featured: true, matchTags: ["Braunwald","heart disease"] },
-              { name: "Clinical Cardiac Pacing Defibrillation & Resynchronization 4th Ed", author: "Ellenbogen, Wilkoff, Kay", publisher: "Elsevier", price: 7999, mrp: 10499, edition: "4th Ed", matchTags: ["Ellenbogen","pacing","cardiology"] },
-              { name: "Otto's Textbook of Clinical Echocardiography 7th Ed", author: "Catherine Otto", publisher: "Elsevier", price: 6999, mrp: 9299, edition: "7th Ed", matchTags: ["Otto","echocardiography","clinical"] },
-              { name: "Interventional Cardiology: Principles & Practice 2nd Ed", author: "Bhatt et al.", publisher: "Wiley-Blackwell", price: 7999, mrp: 10499, edition: "2nd Ed", matchTags: ["interventional cardiology","Bhatt"] },
+              { name: "Hauser's Harrison's Neurology 4th Ed", author: "Stephen Hauser", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "4th Ed", featured: true, matchTags: ["Harrison's neurology","Hauser"] },
+              { name: "Merritt's Neurology 13th Ed", author: "Rowland & Pedley", publisher: "Wolters Kluwer", price: 6999, mrp: 9499, edition: "13th Ed", matchTags: ["Merritt","neurology"] },
+              { name: "Clinical Neurology 9th Ed", author: "Greenberg, Aminoff, Simon", publisher: "McGraw-Hill", price: 4999, mrp: 6699, edition: "9th Ed", matchTags: ["clinical neurology","Greenberg Aminoff"] },
+              { name: "DeJong's The Neurological Examination 7th Ed", author: "Campbell", publisher: "Wolters Kluwer", price: 4999, mrp: 6699, edition: "7th Ed", matchTags: ["neurological examination","DeJong"] },
             ],
           },
           {
-            id: "dm-y2-neuro",
-            name: "Neurology — Year 2",
-            color: "#5856D6",
+            id: "dm-neuro-y2", name: "Year 2", color: "#5856D6",
             books: [
-              { name: "Adams & Victor's Principles of Neurology 12th Ed", author: "Ropper, Samuels, Klein", publisher: "McGraw-Hill", price: 8999, mrp: 11999, edition: "12th Ed", featured: true, matchTags: ["Adams Victor","neurology"] },
-              { name: "Osborn's Brain 3rd Ed", author: "Anne Osborn", publisher: "Elsevier", price: 9999, mrp: 13499, edition: "3rd Ed", matchTags: ["Osborn","brain","neuroradiology"] },
-              { name: "Epilepsy: A Comprehensive Textbook 2nd Ed", author: "Engel & Pedley", publisher: "Wolters Kluwer", price: 8999, mrp: 11999, edition: "2nd Ed", matchTags: ["epilepsy","Engel","Pedley"] },
-              { name: "Stroke: Pathophysiology, Diagnosis & Management 7th Ed", author: "Mohr et al.", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "7th Ed", matchTags: ["stroke","Mohr"] },
+              { name: "Adams & Victor's Principles of Neurology 11th Ed", author: "Ropper, Samuels, Klein", publisher: "McGraw-Hill", price: 7999, mrp: 10999, edition: "11th Ed", featured: true, matchTags: ["Adams Victor","neurology"] },
+              { name: "Osborn's Brain: Imaging Diagnosis & Anatomy 3rd Ed", author: "Anne Osborn", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "3rd Ed", matchTags: ["Osborn","brain imaging","neuroradiology"] },
+              { name: "Epilepsy: A Comprehensive Textbook 2nd Ed", author: "Engel & Pedley", publisher: "Wolters Kluwer", price: 9999, mrp: 13999, edition: "2nd Ed", matchTags: ["epilepsy","neurology"] },
+              { name: "Stroke: Pathophysiology Diagnosis & Management 6th Ed", author: "Grotta, Albers, Broderick", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "6th Ed", matchTags: ["stroke","cerebrovascular"] },
             ],
           },
           {
-            id: "dm-y2-gastro",
-            name: "Gastroenterology — Year 2",
-            color: "#FF9500",
+            id: "dm-neuro-y3", name: "Year 3", color: "#5856D6",
             books: [
-              { name: "Sleisenger & Fordtran's Gastrointestinal and Liver Disease 11th Ed", author: "Feldman, Friedman, Brandt", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "11th Ed", featured: true, matchTags: ["Sleisenger","gastroenterology"] },
-              { name: "Yamada's Textbook of Gastroenterology 6th Ed", author: "Podolsky et al.", publisher: "Wiley-Blackwell", price: 14999, mrp: 19999, edition: "6th Ed", matchTags: ["Yamada","gastroenterology"] },
-              { name: "ERCP: The Fundamentals 2nd Ed", author: "Cotton & Leung", publisher: "Wiley-Blackwell", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["ERCP","endoscopy","gastroenterology"] },
-            ],
-          },
-          {
-            id: "dm-y2-nephro",
-            name: "Nephrology — Year 2",
-            color: "#007AFF",
-            books: [
-              { name: "Brenner & Rector's The Kidney 11th Ed", author: "Taal, Chertow, Marsden", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "11th Ed", featured: true, matchTags: ["Brenner Rector","kidney","nephrology"] },
-              { name: "Schrier's Diseases of Kidney & Urinary Tract 9th Ed", author: "Coffman, Falk, Molitoris", publisher: "Wolters Kluwer", price: 9999, mrp: 13499, edition: "9th Ed", matchTags: ["Schrier","kidney disease"] },
-              { name: "Continuous Renal Replacement Therapy 2nd Ed", author: "Kellum & Bellomo", publisher: "Oxford University Press", price: 4999, mrp: 6699, edition: "2nd Ed", matchTags: ["CRRT","renal replacement","nephrology"] },
-            ],
-          },
-          {
-            id: "dm-y2-endo",
-            name: "Endocrinology — Year 2",
-            color: "#FFD60A",
-            books: [
-              { name: "Williams Textbook of Endocrinology 14th Ed", author: "Melmed, Auchus, Goldfine", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "14th Ed", featured: true, matchTags: ["Williams","endocrinology"] },
-              { name: "Jameson & DeGroot Endocrinology: Adult & Pediatric 7th Ed", author: "Jameson et al.", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "7th Ed", matchTags: ["Jameson DeGroot","endocrinology"] },
-              { name: "Thyroid Ultrasound & Ultrasound-Guided FNA 3rd Ed", author: "Baskin & Duick", publisher: "Springer", price: 4999, mrp: 6699, edition: "3rd Ed", matchTags: ["thyroid ultrasound","FNA","endocrinology"] },
-            ],
-          },
-          {
-            id: "dm-y2-pulmo",
-            name: "Pulmonology — Year 2",
-            color: "#5AC8FA",
-            books: [
-              { name: "Murray & Nadel's Textbook of Respiratory Medicine 7th Ed", author: "Broaddus et al.", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "7th Ed", featured: true, matchTags: ["Murray Nadel","respiratory","pulmonology"] },
-              { name: "Fishman's Pulmonary Diseases & Disorders 5th Ed", author: "Grippi et al.", publisher: "McGraw-Hill", price: 9999, mrp: 13499, edition: "5th Ed", matchTags: ["Fishman","pulmonary"] },
-              { name: "Flexible Bronchoscopy 3rd Ed", author: "Ko-Pen Wang", publisher: "Wiley-Blackwell", price: 5999, mrp: 7999, edition: "3rd Ed", matchTags: ["bronchoscopy","flexible","pulmonology"] },
-            ],
-          },
-          {
-            id: "dm-y2-haem",
-            name: "Haematology — Year 2",
-            color: "#FF3B30",
-            books: [
-              { name: "Williams Hematology 10th Ed", author: "Kaushansky, Prchal, Burns", publisher: "McGraw-Hill", price: 9999, mrp: 13499, edition: "10th Ed", featured: true, matchTags: ["Williams","hematology"] },
-              { name: "Wintrobe's Clinical Hematology 14th Ed", author: "Greer et al.", publisher: "Wolters Kluwer", price: 9999, mrp: 13499, edition: "14th Ed", matchTags: ["Wintrobe","hematology"] },
-              { name: "Bone Marrow Pathology 5th Ed", author: "Bain, Clark, Wilkins", publisher: "Wiley-Blackwell", price: 6999, mrp: 9299, edition: "5th Ed", matchTags: ["bone marrow","pathology","haematology"] },
-            ],
-          },
-          {
-            id: "dm-y2-rheuma",
-            name: "Rheumatology — Year 2",
-            color: "#FF6B35",
-            books: [
-              { name: "Firestein Budd Kelley's Textbook of Rheumatology 11th Ed", author: "Firestein, Budd, Gabriel", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "11th Ed", featured: true, matchTags: ["Firestein Kelley","rheumatology"] },
-              { name: "Hochberg's Rheumatology 8th Ed", author: "Hochberg, Gravallese, Smolen", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "8th Ed", matchTags: ["Hochberg","rheumatology"] },
-              { name: "Musculoskeletal Ultrasound 3rd Ed", author: "Ronald McNally", publisher: "Oxford University Press", price: 5999, mrp: 7999, edition: "3rd Ed", matchTags: ["musculoskeletal ultrasound","rheumatology"] },
-            ],
-          },
-          {
-            id: "dm-y2-onco",
-            name: "Medical Oncology — Year 2",
-            color: "#00C2A8",
-            books: [
-              { name: "DeVita Hellman & Rosenberg's Cancer 11th Ed", author: "DeVita, Lawrence, Rosenberg", publisher: "Wolters Kluwer", price: 14999, mrp: 19999, edition: "11th Ed", featured: true, matchTags: ["DeVita","cancer"] },
-              { name: "Holland-Frei Cancer Medicine 9th Ed", author: "Bast, Croce, Hait", publisher: "Wiley-Blackwell", price: 9999, mrp: 13499, edition: "9th Ed", matchTags: ["Holland Frei","cancer medicine"] },
-              { name: "Cancer Immunotherapy: Immune Suppression & Tumor Growth 3rd Ed", author: "Bhardwaj", publisher: "Academic Press", price: 5999, mrp: 7999, edition: "3rd Ed", matchTags: ["cancer immunotherapy","tumor"] },
+              { name: "Movement Disorders 4th Ed", author: "Watts, Bhidayasiri, Bhatt", publisher: "McGraw-Hill", price: 7999, mrp: 10999, edition: "4th Ed", featured: true, matchTags: ["movement disorders","Parkinson","neurology"] },
+              { name: "Neurology Secrets 6th Ed", author: "Rolak & Sriram", publisher: "Elsevier", price: 3999, mrp: 5299, edition: "6th Ed", matchTags: ["neurology secrets","Q&A"] },
+              { name: "Interventional Neurology 2nd Ed", author: "Chimowitz & Lynn", publisher: "Karger", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["interventional neurology","neurointerventional"] },
             ],
           },
         ],
       },
 
-      // ── DM Year 3 ───────────────────────────────────────────────────
+      // ─────────────── DM Gastroenterology ───────────────
       {
-        id: "dm-year3",
-        label: "Year 3",
+        id: "dm-gastroenterology",
+        label: "DM Gastroenterology",
         subjects: [
           {
-            id: "dm-y3-cardio",
-            name: "Cardiology — Year 3",
-            color: "#FF3B30",
+            id: "dm-gastro-y1", name: "Year 1", color: "#FF9500",
             books: [
-              { name: "Zipes Libby Bonow Braunwald's Heart Disease 10th Ed Companion", author: "Various", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "Companion Ed", featured: true, matchTags: ["Braunwald","heart disease","companion"] },
-              { name: "ACC/AHA Pocket Cardiology Guidelines 2024", author: "ACC/AHA", publisher: "ACC/AHA Publications", price: 1499, mrp: 1999, edition: "2024 Ed", matchTags: ["ACC AHA","cardiology","guidelines"] },
-              { name: "Cardio-Oncology 1st Ed", author: "Herrmann et al.", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "1st Ed", matchTags: ["cardio-oncology","Herrmann"] },
+              { name: "Makharia & Ahuja's Textbook of Gastroenterology 1st Ed", author: "Govind Makharia", publisher: "Jaypee Brothers", price: 3999, mrp: 5299, edition: "1st Ed", featured: true, matchTags: ["Makharia Ahuja","gastroenterology","India"] },
+              { name: "Clinical Gastroenterology & Hepatology 3rd Ed", author: "Feldman, Friedman, Brandt", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "3rd Ed", matchTags: ["clinical gastroenterology","hepatology"] },
+              { name: "Pocket Guide to GI Drugs 3rd Ed", author: "Wolfe & Davis", publisher: "Wiley-Blackwell", price: 2499, mrp: 3299, edition: "3rd Ed", matchTags: ["GI drugs","gastroenterology","pocket"] },
             ],
           },
           {
-            id: "dm-y3-neuro",
-            name: "Neurology — Year 3",
-            color: "#5856D6",
+            id: "dm-gastro-y2", name: "Year 2", color: "#FF9500",
             books: [
-              { name: "Movement Disorders: Neurological Principles & Practice 3rd Ed", author: "Watts & Koller", publisher: "McGraw-Hill", price: 7999, mrp: 10499, edition: "3rd Ed", featured: true, matchTags: ["movement disorders","Watts","neurology"] },
-              { name: "Neurology Secrets 7th Ed", author: "Loren Rolak", publisher: "Elsevier", price: 3999, mrp: 5299, edition: "7th Ed", matchTags: ["neurology secrets","Rolak"] },
-              { name: "Interventional Neurology 2nd Ed", author: "Bogousslavsky et al.", publisher: "Karger", price: 5499, mrp: 7299, edition: "2nd Ed", matchTags: ["interventional neurology","Bogousslavsky"] },
+              { name: "Sleisenger & Fordtran's Gastrointestinal & Liver Disease 11th Ed (2-Vol)", author: "Feldman, Friedman, Brandt", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "11th Ed", featured: true, matchTags: ["Sleisenger Fordtran","GI liver disease"] },
+              { name: "Yamada's Textbook of Gastroenterology 6th Ed (2-Vol)", author: "Yamada, Alpers, Kaplowitz", publisher: "Wiley-Blackwell", price: 12999, mrp: 17999, edition: "6th Ed", matchTags: ["Yamada","gastroenterology"] },
+              { name: "ERCP 3rd Ed", author: "Baron & Kozarek", publisher: "Elsevier", price: 6999, mrp: 9499, edition: "3rd Ed", matchTags: ["ERCP","endoscopy","gastroenterology"] },
             ],
           },
           {
-            id: "dm-y3-gastro",
-            name: "Gastroenterology — Year 3",
-            color: "#FF9500",
+            id: "dm-gastro-y3", name: "Year 3", color: "#FF9500",
             books: [
-              { name: "Shackelford's Surgery of the Alimentary Tract 8th Ed", author: "Yeo, Matthews, McFadden", publisher: "Elsevier", price: 9999, mrp: 13499, edition: "8th Ed", featured: true, matchTags: ["Shackelford","alimentary tract","surgery"] },
-              { name: "Hepatology: A Clinical Textbook 12th Ed", author: "Mauss, Berg, Rockstroh", publisher: "Flying Publisher", price: 1499, mrp: 1999, edition: "12th Ed", matchTags: ["hepatology","Mauss","Berg"] },
-              { name: "Advanced Therapeutic Endoscopy 1st Ed", author: "Bhatt et al.", publisher: "Springer", price: 5999, mrp: 7999, edition: "1st Ed", matchTags: ["therapeutic endoscopy","advanced","GI"] },
-            ],
-          },
-          {
-            id: "dm-y3-nephro",
-            name: "Nephrology — Year 3",
-            color: "#007AFF",
-            books: [
-              { name: "Kidney Transplantation: Principles & Practice 8th Ed", author: "Morris & Knechtle", publisher: "Elsevier", price: 9999, mrp: 13499, edition: "8th Ed", featured: true, matchTags: ["kidney transplant","Morris","nephrology"] },
-              { name: "Comprehensive Clinical Nephrology 7th Ed", author: "Johnson, Floege, Tonelli", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "7th Ed", matchTags: ["comprehensive nephrology","Johnson","Floege"] },
-              { name: "Nephrology Secrets 4th Ed", author: "McGill & Rennke", publisher: "Elsevier", price: 3999, mrp: 5299, edition: "4th Ed", matchTags: ["nephrology secrets","McGill"] },
-            ],
-          },
-          {
-            id: "dm-y3-endo",
-            name: "Endocrinology — Year 3",
-            color: "#FFD60A",
-            books: [
-              { name: "Endocrinology: Adult & Pediatric 8th Ed (Companion)", author: "Jameson et al.", publisher: "Elsevier", price: 7999, mrp: 10499, edition: "8th Ed", featured: true, matchTags: ["endocrinology","adult pediatric","companion"] },
-              { name: "ADA Standards of Medical Care in Diabetes 2024", author: "American Diabetes Association", publisher: "ADA Publications", price: 999, mrp: 1499, edition: "2024 Ed", matchTags: ["ADA","diabetes","standards"] },
-              { name: "Endocrinology Secrets 6th Ed", author: "Michael McDermott", publisher: "Elsevier", price: 3499, mrp: 4799, edition: "6th Ed", matchTags: ["endocrinology secrets","McDermott"] },
-            ],
-          },
-          {
-            id: "dm-y3-pulmo",
-            name: "Pulmonology — Year 3",
-            color: "#5AC8FA",
-            books: [
-              { name: "Principles of Pulmonary Medicine 8th Ed", author: "Weinberger & Cockrill", publisher: "Elsevier", price: 4999, mrp: 6699, edition: "8th Ed", featured: true, matchTags: ["pulmonary medicine","Weinberger"] },
-              { name: "Lung Transplantation 3rd Ed", author: "Vigneswaran & Garrity", publisher: "Taylor & Francis", price: 7999, mrp: 10499, edition: "3rd Ed", matchTags: ["lung transplantation","pulmonology"] },
-              { name: "Sleep Medicine: Essentials & Review 2nd Ed", author: "Abou-Khalil & Lue", publisher: "Oxford University Press", price: 3499, mrp: 4799, edition: "2nd Ed", matchTags: ["sleep medicine","review","pulmonology"] },
-            ],
-          },
-          {
-            id: "dm-y3-haem",
-            name: "Haematology — Year 3",
-            color: "#FF3B30",
-            books: [
-              { name: "Hematopoietic Cell Transplantation 5th Ed", author: "Forman, Negrin, Antin", publisher: "Wiley-Blackwell", price: 8999, mrp: 11999, edition: "5th Ed", featured: true, matchTags: ["bone marrow transplant","HSCT","haematology"] },
-              { name: "Haematology at a Glance 5th Ed", author: "Mehta & Hoffbrand", publisher: "Wiley-Blackwell", price: 2999, mrp: 3999, edition: "5th Ed", matchTags: ["haematology at a glance","Mehta","Hoffbrand"] },
-              { name: "EHA Guidelines for Haematological Malignancies 2024", author: "EHA", publisher: "EHA Publications", price: 1499, mrp: 1999, edition: "2024 Ed", matchTags: ["EHA","guidelines","haematological malignancies"] },
-            ],
-          },
-          {
-            id: "dm-y3-rheuma",
-            name: "Rheumatology — Year 3",
-            color: "#FF6B35",
-            books: [
-              { name: "EULAR Recommendations for Rheumatoid Arthritis 2024", author: "EULAR", publisher: "EULAR Publications", price: 1499, mrp: 1999, edition: "2024 Ed", featured: true, matchTags: ["EULAR","rheumatoid arthritis","guidelines"] },
-              { name: "Myositis 2nd Ed", author: "Oddis & Aggarwal", publisher: "Taylor & Francis", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["myositis","Oddis","rheumatology"] },
-              { name: "Rheumatology 8th Ed", author: "Hochberg, Gravallese, Smolen", publisher: "Elsevier", price: 9999, mrp: 13499, edition: "8th Ed", matchTags: ["rheumatology","Hochberg","advanced"] },
-            ],
-          },
-          {
-            id: "dm-y3-onco",
-            name: "Medical Oncology — Year 3",
-            color: "#00C2A8",
-            books: [
-              { name: "Molecular Oncology: Causes of Cancer & Targets for Treatment 2nd Ed", author: "Mendelsohn et al.", publisher: "Cambridge University Press", price: 5999, mrp: 7999, edition: "2nd Ed", featured: true, matchTags: ["molecular oncology","Mendelsohn","targeted therapy"] },
-              { name: "Immunotherapy of Cancer 3rd Ed", author: "Kaufman, Disis", publisher: "Wiley-Blackwell", price: 5499, mrp: 7299, edition: "3rd Ed", matchTags: ["immunotherapy","cancer","DM oncology"] },
-              { name: "Palliative Care Formulary 7th Ed", author: "Twycross et al.", publisher: "Pharmaceutical Press", price: 2999, mrp: 3999, edition: "7th Ed", matchTags: ["palliative care","formulary","oncology"] },
+              { name: "Hepatology: Diagnosis & Clinical Management 2nd Ed", author: "Jones & Heathcote", publisher: "Wiley-Blackwell", price: 5999, mrp: 7999, edition: "2nd Ed", featured: true, matchTags: ["hepatology","liver","gastroenterology"] },
+              { name: "Advanced Therapeutic Endoscopy 2nd Ed", author: "Waye, Rex, Williams", publisher: "Wiley-Blackwell", price: 6999, mrp: 9499, edition: "2nd Ed", matchTags: ["therapeutic endoscopy","GI"] },
+              { name: "Liver Transplantation 4th Ed", author: "Maddrey, Schiff, Sorrell", publisher: "Lippincott Williams & Wilkins", price: 7999, mrp: 10999, edition: "4th Ed", matchTags: ["liver transplantation","hepatology"] },
             ],
           },
         ],
       },
-    ],
+
+      // ─────────────── DM Nephrology ───────────────
+      {
+        id: "dm-nephrology",
+        label: "DM Nephrology",
+        subjects: [
+          {
+            id: "dm-neph-y1", name: "Year 1", color: "#007AFF",
+            books: [
+              { name: "Comprehensive Clinical Nephrology 6th Ed", author: "Feehally, Floege, Tonelli, Johnson", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "6th Ed", featured: true, matchTags: ["comprehensive nephrology","clinical"] },
+              { name: "Pocket Companion to Brenner & Rector's 9th Ed", author: "Rector, Brenner, Bhatt", publisher: "Elsevier", price: 3999, mrp: 5299, edition: "9th Ed", matchTags: ["Brenner Rector","pocket","nephrology"] },
+              { name: "Dialysis Therapy 3rd Ed", author: "Nissenson & Fine", publisher: "Hanley & Belfus", price: 4999, mrp: 6699, edition: "3rd Ed", matchTags: ["dialysis","renal replacement therapy"] },
+            ],
+          },
+          {
+            id: "dm-neph-y2", name: "Year 2", color: "#007AFF",
+            books: [
+              { name: "Brenner & Rector's The Kidney 11th Ed (2-Vol Set)", author: "Yu, Chertow, Luyckx", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "11th Ed", featured: true, matchTags: ["Brenner Rector","kidney"] },
+              { name: "Schrier's Diseases of the Kidney 9th Ed", author: "Coffman, Falk, Molitoris", publisher: "Wolters Kluwer", price: 9999, mrp: 13999, edition: "9th Ed", matchTags: ["Schrier","kidney diseases"] },
+              { name: "Continuous Renal Replacement Therapy 2nd Ed", author: "Ronco, Bellomo, Kellum", publisher: "Oxford University Press", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["CRRT","continuous renal replacement"] },
+            ],
+          },
+          {
+            id: "dm-neph-y3", name: "Year 3", color: "#007AFF",
+            books: [
+              { name: "Kidney Transplantation 9th Ed", author: "Morris & Lechler", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "9th Ed", featured: true, matchTags: ["kidney transplant","nephrology"] },
+              { name: "Nephrology Secrets 4th Ed", author: "Lerma, Sparks, Topf", publisher: "Elsevier", price: 3999, mrp: 5299, edition: "4th Ed", matchTags: ["nephrology secrets","Q&A"] },
+              { name: "Renal Pathology with Clinical & Functional Correlations 3rd Ed", author: "Tisher & Brenner", publisher: "JP Lippincott", price: 6999, mrp: 9499, edition: "3rd Ed", matchTags: ["renal pathology","nephrology"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── DM Endocrinology ───────────────
+      {
+        id: "dm-endocrinology",
+        label: "DM Endocrinology",
+        subjects: [
+          {
+            id: "dm-endo-y1", name: "Year 1", color: "#00C2A8",
+            books: [
+              { name: "Greenspan's Basic & Clinical Endocrinology 10th Ed", author: "Gardner & Shoback", publisher: "McGraw-Hill", price: 5999, mrp: 7999, edition: "10th Ed", featured: true, matchTags: ["Greenspan","endocrinology"] },
+              { name: "Werner & Ingbar's The Thyroid 10th Ed", author: "Braverman & Cooper", publisher: "Wolters Kluwer", price: 7999, mrp: 10999, edition: "10th Ed", matchTags: ["Werner Ingbar","thyroid","endocrinology"] },
+              { name: "Joslin's Diabetes Mellitus 14th Ed", author: "Kahn et al.", publisher: "Wolters Kluwer", price: 6999, mrp: 9499, edition: "14th Ed", matchTags: ["Joslin's","diabetes mellitus"] },
+            ],
+          },
+          {
+            id: "dm-endo-y2", name: "Year 2", color: "#00C2A8",
+            books: [
+              { name: "Williams Textbook of Endocrinology 14th Ed", author: "Melmed, Auchus, Goldfine", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "14th Ed", featured: true, matchTags: ["Williams","endocrinology"] },
+              { name: "Jameson & DeGroot Endocrinology 7th Ed (3-Vol Set)", author: "Jameson, DeGroot, de Kretser", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "7th Ed", matchTags: ["Jameson DeGroot","endocrinology"] },
+              { name: "Thyroid Ultrasound & Ultrasound-Guided FNA 4th Ed", author: "Baskin & Duick", publisher: "Springer", price: 5999, mrp: 7999, edition: "4th Ed", matchTags: ["thyroid ultrasound","FNA","endocrinology"] },
+            ],
+          },
+          {
+            id: "dm-endo-y3", name: "Year 3", color: "#00C2A8",
+            books: [
+              { name: "ADA Standards of Medical Care in Diabetes 2025", author: "American Diabetes Association", publisher: "ADA", price: 1499, mrp: 1999, edition: "2025 Ed", featured: true, matchTags: ["ADA","diabetes standards","guidelines"] },
+              { name: "Endocrinology Secrets 6th Ed", author: "Pertsemlidis & Kase", publisher: "Elsevier", price: 3499, mrp: 4799, edition: "6th Ed", matchTags: ["endocrinology secrets","Q&A"] },
+              { name: "Pediatric Endocrinology 5th Ed", author: "Sperling", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "5th Ed", matchTags: ["pediatric endocrinology","children"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── DM Pulmonology ───────────────
+      {
+        id: "dm-pulmonology",
+        label: "DM Pulmonology",
+        subjects: [
+          {
+            id: "dm-pulmo-y1", name: "Year 1", color: "#636366",
+            books: [
+              { name: "GOLD COPD Report 2024", author: "Global Initiative for COPD", publisher: "GOLD", price: 999, mrp: 1499, edition: "2024 Ed", featured: true, matchTags: ["GOLD","COPD","guidelines"] },
+              { name: "GINA Asthma Management & Prevention 2024", author: "Global Initiative for Asthma", publisher: "GINA", price: 999, mrp: 1499, edition: "2024 Ed", matchTags: ["GINA","asthma","guidelines"] },
+              { name: "Clinical Respiratory Medicine 5th Ed", author: "Spiro, Silvestri, Agusti", publisher: "Elsevier", price: 7999, mrp: 10999, edition: "5th Ed", matchTags: ["clinical respiratory medicine","pulmonology"] },
+              { name: "Pulmonary Physiology 9th Ed", author: "Michael Levitzky", publisher: "McGraw-Hill", price: 3999, mrp: 5299, edition: "9th Ed", matchTags: ["pulmonary physiology","respiratory"] },
+            ],
+          },
+          {
+            id: "dm-pulmo-y2", name: "Year 2", color: "#636366",
+            books: [
+              { name: "Murray & Nadel's Textbook of Respiratory Medicine 7th Ed (2-Vol)", author: "Broaddus, Ernst, King", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "7th Ed", featured: true, matchTags: ["Murray Nadel","respiratory medicine"] },
+              { name: "Fishman's Pulmonary Diseases & Disorders 5th Ed (2-Vol)", author: "Grippi, Elias, Fishman", publisher: "McGraw-Hill", price: 12999, mrp: 17999, edition: "5th Ed", matchTags: ["Fishman","pulmonary diseases"] },
+              { name: "Flexible Bronchoscopy 4th Ed", author: "Ko & Lee", publisher: "Wiley-Blackwell", price: 5999, mrp: 7999, edition: "4th Ed", matchTags: ["bronchoscopy","flexible"] },
+            ],
+          },
+          {
+            id: "dm-pulmo-y3", name: "Year 3", color: "#636366",
+            books: [
+              { name: "Principles of Pulmonary Medicine 7th Ed", author: "Weinberger, Cockrill, Mandel", publisher: "Elsevier", price: 4499, mrp: 5999, edition: "7th Ed", featured: true, matchTags: ["pulmonary medicine","principles"] },
+              { name: "Lung Transplantation 2nd Ed", author: "Vigneswaran & Garrity", publisher: "Informa Healthcare", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["lung transplant","pulmonology"] },
+              { name: "Sleep Medicine 3rd Ed", author: "Kryger, Roth, Goldstein", publisher: "Elsevier", price: 6999, mrp: 9499, edition: "3rd Ed", matchTags: ["sleep medicine","polysomnography"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── DM Haematology ───────────────
+      {
+        id: "dm-haematology",
+        label: "DM Haematology",
+        subjects: [
+          {
+            id: "dm-haem-y1", name: "Year 1", color: "#FF2D55",
+            books: [
+              { name: "Hoffbrand's Essential Haematology 8th Ed", author: "Hoffbrand & Steensma", publisher: "Wiley-Blackwell", price: 4499, mrp: 5999, edition: "8th Ed", featured: true, matchTags: ["Hoffbrand","haematology"] },
+              { name: "Lee's Synopsis of Haematology 2nd Ed", author: "McCann, Marshall, Lloyd", publisher: "Arnold", price: 4999, mrp: 6699, edition: "2nd Ed", matchTags: ["Lee","synopsis haematology"] },
+              { name: "Blood Transfusion in Clinical Practice 2nd Ed", author: "Tovey", publisher: "Blackwell Scientific", price: 3999, mrp: 5299, edition: "2nd Ed", matchTags: ["blood transfusion","haematology"] },
+            ],
+          },
+          {
+            id: "dm-haem-y2", name: "Year 2", color: "#FF2D55",
+            books: [
+              { name: "Williams Hematology 10th Ed", author: "Kaushansky, Lichtman, Prchal", publisher: "McGraw-Hill", price: 9999, mrp: 13999, edition: "10th Ed", featured: true, matchTags: ["Williams","hematology"] },
+              { name: "Wintrobe's Clinical Hematology 14th Ed (2-Vol)", author: "Greer, Arber, Glader", publisher: "Wolters Kluwer", price: 12999, mrp: 17999, edition: "14th Ed", matchTags: ["Wintrobe","clinical hematology"] },
+              { name: "Bone Marrow Pathology 4th Ed", author: "Clark, Foucar, Orazi", publisher: "Wiley-Blackwell", price: 6999, mrp: 9499, edition: "4th Ed", matchTags: ["bone marrow","pathology","haematology"] },
+            ],
+          },
+          {
+            id: "dm-haem-y3", name: "Year 3", color: "#FF2D55",
+            books: [
+              { name: "Hematopoietic Cell Transplantation 5th Ed", author: "Forman, Negrin, Antin", publisher: "Wiley-Blackwell", price: 9999, mrp: 13999, edition: "5th Ed", featured: true, matchTags: ["hematopoietic","stem cell transplant","BMT"] },
+              { name: "Haematology at a Glance 5th Ed", author: "Mehta & Hoffbrand", publisher: "Wiley-Blackwell", price: 2999, mrp: 3999, edition: "5th Ed", matchTags: ["haematology at a glance","revision"] },
+              { name: "EHA-ESMO Guidelines: Haematological Malignancies 2024", author: "EHA/ESMO", publisher: "Elsevier", price: 1999, mrp: 2699, edition: "2024 Ed", matchTags: ["EHA","ESMO","haematology guidelines"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── DM Rheumatology ───────────────
+      {
+        id: "dm-rheumatology",
+        label: "DM Rheumatology",
+        subjects: [
+          {
+            id: "dm-rheum-y1", name: "Year 1", color: "#34C759",
+            books: [
+              { name: "Oxford Textbook of Rheumatology 4th Ed", author: "Isenberg, Maddison, Woo", publisher: "Oxford University Press", price: 9999, mrp: 13999, edition: "4th Ed", featured: true, matchTags: ["Oxford","rheumatology"] },
+              { name: "Dubois' Lupus Erythematosus & Related Syndromes 9th Ed", author: "Wallace & Hahn", publisher: "Elsevier", price: 8999, mrp: 11999, edition: "9th Ed", matchTags: ["Dubois","lupus","SLE","rheumatology"] },
+              { name: "Rheumatology Secrets 4th Ed", author: "West", publisher: "Elsevier", price: 3999, mrp: 5299, edition: "4th Ed", matchTags: ["rheumatology secrets","Q&A"] },
+            ],
+          },
+          {
+            id: "dm-rheum-y2", name: "Year 2", color: "#34C759",
+            books: [
+              { name: "Firestein & Kelley's Textbook of Rheumatology 11th Ed (2-Vol)", author: "Firestein, Budd, Gabriel", publisher: "Elsevier", price: 14999, mrp: 19999, edition: "11th Ed", featured: true, matchTags: ["Firestein Kelley","rheumatology"] },
+              { name: "Hochberg's Rheumatology 8th Ed (2-Vol)", author: "Hochberg, Gravallese, Silman", publisher: "Elsevier", price: 12999, mrp: 17999, edition: "8th Ed", matchTags: ["Hochberg","rheumatology"] },
+              { name: "Musculoskeletal Ultrasound in Rheumatology 2nd Ed", author: "Backhaus & Bruyn", publisher: "Thieme", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["musculoskeletal ultrasound","rheumatology"] },
+            ],
+          },
+          {
+            id: "dm-rheum-y3", name: "Year 3", color: "#34C759",
+            books: [
+              { name: "EULAR Recommendations 2024 (Full Set)", author: "EULAR", publisher: "BMJ Publishing", price: 1999, mrp: 2699, edition: "2024 Ed", featured: true, matchTags: ["EULAR","recommendations","rheumatology"] },
+              { name: "Myositis & Idiopathic Inflammatory Myopathies 2nd Ed", author: "Dalakas", publisher: "Elsevier", price: 5999, mrp: 7999, edition: "2nd Ed", matchTags: ["myositis","inflammatory myopathy","rheumatology"] },
+              { name: "Ankylosing Spondylitis & the Spondyloarthropathies 1st Ed", author: "Calin & Taurog", publisher: "Mosby", price: 4999, mrp: 6699, edition: "1st Ed", matchTags: ["ankylosing spondylitis","spondyloarthropathy"] },
+            ],
+          },
+        ],
+      },
+
+      // ─────────────── DM Medical Oncology ───────────────
+      {
+        id: "dm-medical-oncology",
+        label: "DM Medical Oncology",
+        subjects: [
+          {
+            id: "dm-onco-y1", name: "Year 1", color: "#8E8E93",
+            books: [
+              { name: "NCCN Clinical Practice Guidelines in Oncology 2025", author: "NCCN", publisher: "NCCN", price: 2999, mrp: 3999, edition: "2025 Ed", featured: true, matchTags: ["NCCN","guidelines","oncology"] },
+              { name: "Oxford American Oncology Library Handbook", author: "Oxford", publisher: "Oxford University Press", price: 3999, mrp: 5299, edition: "2024 Ed", matchTags: ["Oxford","oncology","handbook"] },
+              { name: "Clinical Oncology (Abeloff) 6th Ed", author: "Niederhuber, Armitage, Doroshow", publisher: "Elsevier", price: 9999, mrp: 13999, edition: "6th Ed", matchTags: ["Abeloff","clinical oncology"] },
+            ],
+          },
+          {
+            id: "dm-onco-y2", name: "Year 2", color: "#8E8E93",
+            books: [
+              { name: "DeVita Hellman & Rosenberg's Cancer 12th Ed", author: "Devita, Lawrence, Rosenberg", publisher: "Wolters Kluwer", price: 12999, mrp: 17999, edition: "12th Ed", featured: true, matchTags: ["DeVita","cancer","oncology"] },
+              { name: "Holland-Frei Cancer Medicine 9th Ed", author: "Bast, Hait, Hong", publisher: "Wiley-Blackwell", price: 9999, mrp: 13999, edition: "9th Ed", matchTags: ["Holland Frei","cancer medicine"] },
+              { name: "Cancer Immunotherapy 3rd Ed", author: "Kaufman & Wolchok", publisher: "Academic Press", price: 7999, mrp: 10999, edition: "3rd Ed", matchTags: ["cancer immunotherapy","immunology"] },
+            ],
+          },
+          {
+            id: "dm-onco-y3", name: "Year 3", color: "#8E8E93",
+            books: [
+              { name: "Molecular Oncology: Causes of Cancer & Targets for Treatment 2nd Ed", author: "Bradshaw & Dennis", publisher: "Cambridge University Press", price: 6999, mrp: 9499, edition: "2nd Ed", featured: true, matchTags: ["molecular oncology","targeted therapy"] },
+              { name: "Palliative Care Formulary 8th Ed", author: "Twycross, Wilcock, Howard", publisher: "Pharmaceutical Press", price: 4999, mrp: 6699, edition: "8th Ed", matchTags: ["palliative care","oncology","formulary"] },
+              { name: "Targeted Therapies in Oncology 3rd Ed", author: "Giaccone & Soria", publisher: "CRC Press", price: 6999, mrp: 9499, edition: "3rd Ed", matchTags: ["targeted therapy","precision oncology"] },
+            ],
+          },
+        ],
+      },
+
+    ],  // end DM years
   },
 
   // ──────────────────────────────── DNB ─────────────────────────────────

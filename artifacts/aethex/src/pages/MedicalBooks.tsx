@@ -286,6 +286,7 @@ export default function MedicalBooks() {
   const [search, setSearch] = useState("");
   const [activeDegreeId, setActiveDegreeId] = useState(CURRICULUM[0].id);
   const [activeYearId, setActiveYearId] = useState(CURRICULUM[0].years[0].id);
+  const [activeSubjectId, setActiveSubjectId] = useState<string>("");
   const [dbProducts, setDbProducts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const yearScrollRef = useRef<HTMLDivElement>(null);
@@ -297,11 +298,26 @@ export default function MedicalBooks() {
 
   const activeDegree = CURRICULUM.find(d => d.id === activeDegreeId) ?? CURRICULUM[0];
   const activeYear = activeDegree.years.find(y => y.id === activeYearId) ?? activeDegree.years[0];
+  // For PG degrees: the "subject" is the selected year (Year 1/2/3) within the specialty
+  const activeSubject = activeDegree.isPG
+    ? (activeYear.subjects.find(s => s.id === activeSubjectId) ?? activeYear.subjects[0])
+    : null;
 
-  // When degree changes, reset to first year
+  // When degree changes, reset to first specialty/year
   useEffect(() => {
-    setActiveYearId(activeDegree.years[0].id);
+    const firstYear = activeDegree.years[0];
+    setActiveYearId(firstYear.id);
+    if (activeDegree.isPG) {
+      setActiveSubjectId(firstYear.subjects[0]?.id ?? "");
+    }
   }, [activeDegreeId]);
+
+  // When specialty changes (PG mode), reset to first year within specialty
+  useEffect(() => {
+    if (activeDegree.isPG) {
+      setActiveSubjectId(activeYear.subjects[0]?.id ?? "");
+    }
+  }, [activeYearId, activeDegree.id]);
 
   // Build a lookup map: lowercase name fragment / tag → product ID from DB
   useEffect(() => {
@@ -569,36 +585,59 @@ export default function MedicalBooks() {
           <div className="flex gap-8">
 
             {/* ── Sidebar: Year/Course navigation ── */}
-            <aside className="hidden lg:block w-52 shrink-0 sticky self-start" style={{ top: "130px", maxHeight: "calc(100vh - 150px)", overflowY: "auto", background: "rgba(255,255,255,0.6)", backdropFilter: "blur(16px)", borderRadius: "20px", border: "1px solid rgba(255,255,255,0.8)", padding: "16px 12px", boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}>
+            <aside className="hidden lg:block w-56 shrink-0 sticky self-start" style={{ top: "130px", maxHeight: "calc(100vh - 150px)", overflowY: "auto", background: "rgba(255,255,255,0.6)", backdropFilter: "blur(16px)", borderRadius: "20px", border: "1px solid rgba(255,255,255,0.8)", padding: "16px 12px", boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}>
               <p className="text-[10px] font-bold uppercase tracking-wider mb-3" style={{ color: "#AEAEB2" }}>
-                {activeDegree.id === "mbbs" ? "Academic Year" :
-                  activeDegree.id === "md" ? "Specialty" :
-                    activeDegree.id === "ms" ? "Surgical Branch" :
-                      activeDegree.id === "mch" ? "Super-Specialty" :
-                        activeDegree.id === "dm" ? "Discipline" : "Category"}
+                {activeDegree.isPG ? "Specialty" : "Academic Year"}
               </p>
               {activeDegree.years.map(yr => {
-                const isActive = yr.id === activeYearId;
+                const isActiveSpecialty = yr.id === activeYearId;
                 const count = yr.subjects.reduce((s, sub) => s + sub.books.length, 0);
                 return (
-                  <button
-                    key={yr.id}
-                    onClick={() => setActiveYearId(yr.id)}
-                    className="w-full flex items-start gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs font-semibold transition-all mb-0.5"
-                    style={isActive
-                      ? { background: `${activeDegree.color}14`, color: activeDegree.color }
-                      : { color: "#636366" }}
-                  >
-                    <div
-                      className="w-1.5 h-1.5 rounded-full shrink-0 mt-1"
-                      style={{ background: isActive ? activeDegree.color : "#C7C7CC" }}
-                    />
-                    <span className="flex-1 leading-snug">{yr.label}</span>
-                    <span className="text-[9px] font-bold rounded-full px-1.5 py-0.5 shrink-0"
-                      style={{ background: isActive ? `${activeDegree.color}20` : "rgba(60,60,67,0.08)", color: isActive ? activeDegree.color : "#AEAEB2" }}>
-                      {count}
-                    </span>
-                  </button>
+                  <div key={yr.id}>
+                    <button
+                      onClick={() => setActiveYearId(yr.id)}
+                      className="w-full flex items-start gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs font-semibold transition-all mb-0.5"
+                      style={isActiveSpecialty
+                        ? { background: `${activeDegree.color}14`, color: activeDegree.color }
+                        : { color: "#636366" }}
+                    >
+                      <div
+                        className="w-1.5 h-1.5 rounded-full shrink-0 mt-1"
+                        style={{ background: isActiveSpecialty ? activeDegree.color : "#C7C7CC" }}
+                      />
+                      <span className="flex-1 leading-snug">{yr.label}</span>
+                      <span className="text-[9px] font-bold rounded-full px-1.5 py-0.5 shrink-0"
+                        style={{ background: isActiveSpecialty ? `${activeDegree.color}20` : "rgba(60,60,67,0.08)", color: isActiveSpecialty ? activeDegree.color : "#AEAEB2" }}>
+                        {count}
+                      </span>
+                    </button>
+
+                    {/* Year sub-items — only shown when this specialty is active and degree is PG */}
+                    {activeDegree.isPG && isActiveSpecialty && (
+                      <div className="ml-4 mb-1 mt-0.5 flex flex-col gap-0.5">
+                        {yr.subjects.map(sub => {
+                          const isActiveYear = sub.id === (activeSubject?.id ?? yr.subjects[0].id);
+                          return (
+                            <button
+                              key={sub.id}
+                              onClick={() => setActiveSubjectId(sub.id)}
+                              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left text-[11px] font-semibold transition-all"
+                              style={isActiveYear
+                                ? { color: activeDegree.color, background: `${activeDegree.color}12` }
+                                : { color: "#8E8E93" }}
+                            >
+                              <div className="w-1 h-1 rounded-full shrink-0"
+                                style={{ background: isActiveYear ? activeDegree.color : "#D1D1D6" }} />
+                              <span className="flex-1">{sub.name}</span>
+                              <span className="text-[9px]" style={{ color: isActiveYear ? activeDegree.color : "#AEAEB2" }}>
+                                {sub.books.length}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </aside>
@@ -606,8 +645,8 @@ export default function MedicalBooks() {
             {/* ── Main: Year panel ── */}
             <main className="flex-1 min-w-0">
 
-              {/* Mobile year pills */}
-              <div className="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-6 lg:hidden" ref={yearScrollRef}>
+              {/* Mobile pills — specialties for PG, years for UG */}
+              <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-3 lg:hidden" ref={yearScrollRef}>
                 {activeDegree.years.map(yr => {
                   const isActive = yr.id === activeYearId;
                   return (
@@ -624,23 +663,50 @@ export default function MedicalBooks() {
                   );
                 })}
               </div>
+              {/* Mobile year sub-pills — only shown in PG mode */}
+              {activeDegree.isPG && (
+                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-6 lg:hidden">
+                  {activeYear.subjects.map(sub => {
+                    const isActive = sub.id === (activeSubject?.id ?? activeYear.subjects[0].id);
+                    return (
+                      <button
+                        key={sub.id}
+                        onClick={() => setActiveSubjectId(sub.id)}
+                        className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all"
+                        style={isActive
+                          ? { background: `${activeDegree.color}22`, color: activeDegree.color, border: `1px solid ${activeDegree.color}40` }
+                          : { background: "#F2F2F7", color: "#8E8E93", border: "1px solid rgba(60,60,67,0.12)" }}
+                      >
+                        {sub.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
 
-              {/* Degree + Year header */}
+              {/* Content header */}
               <div className="flex items-center gap-3 mb-7 p-5 rounded-2xl"
                 style={{ background: `linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.4))`, backdropFilter: "blur(16px)", border: `1px solid ${activeDegree.color}30`, boxShadow: `0 4px 24px ${activeDegree.color}14` }}>
                 <GraduationCap className="w-7 h-7 shrink-0" style={{ color: activeDegree.color }} />
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: `${activeDegree.color}20`, color: activeDegree.color }}>
                       {activeDegree.label}
                     </span>
                     <ChevronRight className="w-3 h-3" style={{ color: "#AEAEB2" }} />
                     <span className="text-xs font-semibold" style={{ color: "#636366" }}>{activeYear.label}</span>
+                    {activeDegree.isPG && activeSubject && (
+                      <>
+                        <ChevronRight className="w-3 h-3" style={{ color: "#AEAEB2" }} />
+                        <span className="text-xs font-semibold" style={{ color: "#636366" }}>{activeSubject.name}</span>
+                      </>
+                    )}
                   </div>
                   <p className="text-lg font-display font-bold mt-0.5" style={{ color: "#1C1C1E" }}>
-                    {activeYear.label} — {activeYear.subjects.length} Subject{activeYear.subjects.length !== 1 ? "s" : ""}
-                    {" · "}
-                    {activeYear.subjects.reduce((s, sub) => s + sub.books.length, 0)} Books
+                    {activeDegree.isPG && activeSubject
+                      ? `${activeYear.label} · ${activeSubject.name} — ${activeSubject.books.length} Books`
+                      : `${activeYear.label} — ${activeYear.subjects.length} Subject${activeYear.subjects.length !== 1 ? "s" : ""} · ${activeYear.subjects.reduce((s, sub) => s + sub.books.length, 0)} Books`
+                    }
                   </p>
                 </div>
               </div>
@@ -658,6 +724,14 @@ export default function MedicalBooks() {
                     </div>
                   ))}
                 </div>
+              ) : activeDegree.isPG && activeSubject ? (
+                /* PG mode: show only the selected year's books */
+                <SubjectSection
+                  subj={activeSubject}
+                  degreeColor={activeDegree.color}
+                  dbProducts={dbProducts}
+                  onCart={handleCart}
+                />
               ) : (
                 <YearPanel
                   year={activeYear}

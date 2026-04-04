@@ -147,6 +147,7 @@ export function Navbar() {
     { href: "/shop", label: "Shop" },
     { href: "/study-hub", label: "Study Hub" },
     { href: "/cme-hub", label: "CME Hub" },
+    { href: "/neet-pg", label: "NEET-PG" },
   ];
 
   return (
@@ -430,6 +431,7 @@ export function Navbar() {
                 { href: "/ai-assistant", label: "Try Cadus AI" },
                 { href: "/study-hub", label: "Study Hub" },
                 { href: "/cme-hub", label: "CME Hub" },
+                { href: "/neet-pg", label: "NEET-PG" },
                 { href: "/drug-reference", label: "Drug Reference" },
                 { href: "/pricing", label: "Pricing" },
                 { href: "/tools", label: "Clinical Tools" },

@@ -53,6 +53,7 @@ import MedicalDisclaimer from "@/pages/MedicalDisclaimer";
 
 import InstitutionHub from "@/pages/InstitutionHub";
 import CmeHub from "@/pages/CmeHub";
+import NeetPg from "@/pages/NeetPg";
 import MedicalKnowledgeHub from "@/pages/StudyHub/MedicalKnowledgeHub/index";
 import SubjectPage from "@/pages/StudyHub/MedicalKnowledgeHub/SubjectPage";
 import TopicPage from "@/pages/StudyHub/MedicalKnowledgeHub/TopicPage";
@@ -161,6 +162,7 @@ function Router() {
                 {/* Study Hub */}
                 <Route path="/study-hub" component={StudyHub} />
                 <Route path="/cme-hub" component={CmeHub} />
+                <Route path="/neet-pg" component={NeetPg} />
 
                 {/* Medical Knowledge Hub */}
                 <Route path="/study-hub/medical-knowledge-hub" component={MedicalKnowledgeHub} />

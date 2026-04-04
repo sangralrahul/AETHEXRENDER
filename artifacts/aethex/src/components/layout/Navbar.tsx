@@ -146,6 +146,7 @@ export function Navbar() {
   const simpleLinks = [
     { href: "/shop", label: "Shop" },
     { href: "/study-hub", label: "Study Hub" },
+    { href: "/cme-hub", label: "CME Hub" },
   ];
 
   return (
@@ -428,6 +429,7 @@ export function Navbar() {
                 { href: "/shop", label: "Shop All Products" },
                 { href: "/ai-assistant", label: "Try Cadus AI" },
                 { href: "/study-hub", label: "Study Hub" },
+                { href: "/cme-hub", label: "CME Hub" },
                 { href: "/drug-reference", label: "Drug Reference" },
                 { href: "/pricing", label: "Pricing" },
                 { href: "/tools", label: "Clinical Tools" },

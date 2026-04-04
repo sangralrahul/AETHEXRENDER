@@ -52,6 +52,7 @@ import TermsOfService from "@/pages/TermsOfService";
 import MedicalDisclaimer from "@/pages/MedicalDisclaimer";
 
 import InstitutionHub from "@/pages/InstitutionHub";
+import CmeHub from "@/pages/CmeHub";
 import MedicalKnowledgeHub from "@/pages/StudyHub/MedicalKnowledgeHub/index";
 import SubjectPage from "@/pages/StudyHub/MedicalKnowledgeHub/SubjectPage";
 import TopicPage from "@/pages/StudyHub/MedicalKnowledgeHub/TopicPage";
@@ -159,6 +160,7 @@ function Router() {
 
                 {/* Study Hub */}
                 <Route path="/study-hub" component={StudyHub} />
+                <Route path="/cme-hub" component={CmeHub} />
 
                 {/* Medical Knowledge Hub */}
                 <Route path="/study-hub/medical-knowledge-hub" component={MedicalKnowledgeHub} />

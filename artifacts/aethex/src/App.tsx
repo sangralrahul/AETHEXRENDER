@@ -29,6 +29,7 @@ import BlogPost from "@/pages/BlogPost";
 import MedicalNews from "@/pages/News";
 import AdminBlog from "@/pages/AdminBlog";
 import ClinicalTools from "@/pages/ClinicalTools";
+import DrugReference from "@/pages/DrugReference";
 import BMICalculator from "@/pages/tools/BMICalculator";
 import DrugInteractionChecker from "@/pages/tools/DrugInteractionChecker";
 import DosageCalculator from "@/pages/tools/DosageCalculator";
@@ -137,6 +138,9 @@ function Router() {
 
                 {/* Account */}
                 <Route path="/account" component={Account} />
+
+                {/* Drug Reference */}
+                <Route path="/drug-reference" component={DrugReference} />
 
                 {/* Clinical Tools */}
                 <Route path="/tools" component={ClinicalTools} />

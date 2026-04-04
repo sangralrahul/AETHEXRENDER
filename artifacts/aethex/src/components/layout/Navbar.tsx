@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useUserAuth } from "@/hooks/use-user-auth";
@@ -249,6 +249,20 @@ export function Navbar() {
                 );
               })()}
 
+              {/* Drug Reference link */}
+              {(() => {
+                const active = location === "/drug-reference";
+                return (
+                  <Link href="/drug-reference"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden lg:block"
+                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
+                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
+                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
+                    Drug Reference
+                  </Link>
+                );
+              })()}
+
               {/* Colleges & Hospitals link */}
               {(() => {
                 const active = location === "/institutions" || location.startsWith("/institutions/");
@@ -391,6 +405,7 @@ export function Navbar() {
                 { href: "/shop", label: "Shop All Products" },
                 { href: "/ai-assistant", label: "Start Chat (Cadus AI)" },
                 { href: "/tools", label: "Clinical Tools" },
+                { href: "/drug-reference", label: "Drug Reference" },
                 { href: "/study-hub", label: "Study Hub" },
                 { href: "/institutions", label: "Colleges & Hospitals" },
                 { href: "/blog", label: "Blog" },

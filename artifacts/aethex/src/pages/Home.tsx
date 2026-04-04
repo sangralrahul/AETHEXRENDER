@@ -309,73 +309,77 @@ function BlogNewsSection() {
   };
 
   return (
-    <section className="py-20" style={{ background: "#F2F2F7", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0A0F1E 0%, #0D1B2A 100%)" }}>
+      {/* Background glows */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none" style={{ background: "rgba(0,122,255,0.07)" }} />
+      <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl pointer-events-none" style={{ background: "rgba(0,194,168,0.07)" }} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
-        <div className="flex items-end justify-between mb-12">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4"
-              style={{ background: "rgba(0,122,255,0.1)", border: "1px solid rgba(0,122,255,0.2)", color: "#007AFF" }}>
-              <Rss className="w-3.5 h-3.5" />
-              Blog &amp; News
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-display font-bold" style={{ color: "#1C1C1E" }}>
-              Latest from <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>Aethex</span>
-            </h2>
-            <p className="mt-2" style={{ color: "#636366" }}>Clinical insights, study tips &amp; live medical news</p>
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5"
+            style={{ background: "rgba(0,122,255,0.15)", border: "1px solid rgba(0,122,255,0.3)", color: "#60A5FA" }}>
+            <Rss className="w-3.5 h-3.5" />
+            Blog &amp; News
           </div>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-3">
+            Latest from <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg,#60A5FA,#2DD4BF)" }}>Aethex</span>
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.5)" }}>Clinical insights, study tips &amp; live medical news</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
           {/* ── Blog Column ── */}
           <div>
             <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,122,255,0.1)" }}>
-                  <Rss className="w-4 h-4" style={{ color: "#007AFF" }} />
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,122,255,0.2)", border: "1px solid rgba(0,122,255,0.3)" }}>
+                  <Rss className="w-4 h-4" style={{ color: "#60A5FA" }} />
                 </div>
-                <span className="font-bold text-lg" style={{ color: "#1C1C1E" }}>From the Blog</span>
+                <span className="font-bold text-base" style={{ color: "rgba(255,255,255,0.9)" }}>From the Blog</span>
               </div>
-              <Link href="/blog" className="flex items-center gap-1 text-sm font-semibold" style={{ color: "#007AFF" }}>
-                All articles <ArrowRight className="w-3.5 h-3.5" />
+              <Link href="/blog" className="flex items-center gap-1 text-xs font-semibold transition-all hover:opacity-80" style={{ color: "#60A5FA" }}>
+                All articles <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {loadingBlog ? (
-                [1, 2, 3].map(i => <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ background: "rgba(120,120,128,0.1)" }} />)
+                [1, 2, 3].map(i => <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ background: "rgba(255,255,255,0.05)" }} />)
               ) : blogPosts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 rounded-2xl text-center"
-                  style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)" }}>
-                  <Rss className="w-8 h-8 mb-3" style={{ color: "#AEAEB2" }} />
-                  <p className="font-semibold text-sm" style={{ color: "#636366" }}>Blog posts coming soon</p>
-                  <Link href="/blog" className="mt-3 text-sm font-semibold" style={{ color: "#007AFF" }}>Visit the Blog →</Link>
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                  <Rss className="w-8 h-8 mb-3" style={{ color: "rgba(255,255,255,0.2)" }} />
+                  <p className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>Blog posts coming soon</p>
+                  <Link href="/blog" className="mt-3 text-sm font-semibold" style={{ color: "#60A5FA" }}>Visit the Blog →</Link>
                 </div>
-              ) : blogPosts.map((post, i) => (
+              ) : blogPosts.map((post) => (
                 <Link key={post.id} href={`/blog/${post.slug}`}
-                  className="flex gap-4 p-4 rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-md group"
-                  style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.08)" }}>
+                  className="flex gap-4 p-4 rounded-2xl transition-all hover:-translate-y-0.5 group"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,122,255,0.1)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(0,122,255,0.3)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.05)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.08)"; }}>
                   {post.featuredImage && (
-                    <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0">
+                    <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
                       <img src={post.featuredImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
                     {post.category && (
-                      <span className="inline-block text-xs font-bold px-2 py-0.5 rounded-full mb-2"
-                        style={{ background: `${BLOG_CAT_COLORS[post.category] ?? "#007AFF"}18`, color: BLOG_CAT_COLORS[post.category] ?? "#007AFF" }}>
+                      <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full mb-1.5"
+                        style={{ background: `${BLOG_CAT_COLORS[post.category] ?? "#007AFF"}25`, color: BLOG_CAT_COLORS[post.category] ?? "#60A5FA", border: `1px solid ${BLOG_CAT_COLORS[post.category] ?? "#007AFF"}40` }}>
                         {post.category}
                       </span>
                     )}
-                    <h3 className="font-bold text-sm leading-snug mb-1.5 line-clamp-2 group-hover:text-[#007AFF] transition-colors" style={{ color: "#1C1C1E" }}>{post.title}</h3>
-                    <div className="flex items-center gap-2 text-xs" style={{ color: "#AEAEB2" }}>
-                      <span className="font-medium" style={{ color: "#636366" }}>{post.authorName}</span>
-                      <span>·</span>
+                    <h3 className="font-bold text-sm leading-snug mb-1.5 line-clamp-2 transition-colors" style={{ color: "rgba(255,255,255,0.9)" }}>{post.title}</h3>
+                    {post.excerpt && <p className="text-xs line-clamp-1 mb-2" style={{ color: "rgba(255,255,255,0.4)" }}>{post.excerpt}</p>}
+                    <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
                       <Clock className="w-3 h-3" />
-                      <span>{post.readTime} min</span>
+                      <span>{post.readTime} min read</span>
                       <span>·</span>
                       <span>{formatDate(post.createdAt)}</span>
+                      <span className="ml-auto text-xs font-semibold" style={{ color: "#60A5FA" }}>Read More →</span>
                     </div>
                   </div>
                 </Link>
@@ -386,38 +390,40 @@ function BlogNewsSection() {
           {/* ── News Column ── */}
           <div>
             <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,194,168,0.1)" }}>
-                  <Globe className="w-4 h-4" style={{ color: "#00C2A8" }} />
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,194,168,0.2)", border: "1px solid rgba(0,194,168,0.3)" }}>
+                  <Globe className="w-4 h-4" style={{ color: "#2DD4BF" }} />
                 </div>
-                <span className="font-bold text-lg" style={{ color: "#1C1C1E" }}>Medical News</span>
-                <span className="flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
-                  style={{ background: "rgba(52,199,89,0.1)", color: "#34C759" }}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#34C759] animate-pulse" />
+                <span className="font-bold text-base" style={{ color: "rgba(255,255,255,0.9)" }}>Medical News</span>
+                <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
+                  style={{ background: "rgba(52,199,89,0.15)", color: "#4ADE80", border: "1px solid rgba(52,199,89,0.3)" }}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse inline-block" />
                   Live
                 </span>
               </div>
-              <Link href="/news" className="flex items-center gap-1 text-sm font-semibold" style={{ color: "#007AFF" }}>
-                All news <ArrowRight className="w-3.5 h-3.5" />
+              <Link href="/news" className="flex items-center gap-1 text-xs font-semibold transition-all hover:opacity-80" style={{ color: "#2DD4BF" }}>
+                All news <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {loadingNews ? (
-                [1, 2, 3].map(i => <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ background: "rgba(120,120,128,0.1)" }} />)
+                [1, 2, 3].map(i => <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ background: "rgba(255,255,255,0.05)" }} />)
               ) : newsArticles.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 rounded-2xl text-center"
-                  style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)" }}>
-                  <Globe className="w-8 h-8 mb-3" style={{ color: "#AEAEB2" }} />
-                  <p className="font-semibold text-sm" style={{ color: "#636366" }}>News loading…</p>
-                  <Link href="/news" className="mt-3 text-sm font-semibold" style={{ color: "#007AFF" }}>Visit News →</Link>
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                  <Globe className="w-8 h-8 mb-3" style={{ color: "rgba(255,255,255,0.2)" }} />
+                  <p className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>News loading…</p>
+                  <Link href="/news" className="mt-3 text-sm font-semibold" style={{ color: "#2DD4BF" }}>Visit News →</Link>
                 </div>
               ) : newsArticles.map((article, i) => (
                 <a key={i} href={article.url ?? "#"} target="_blank" rel="noopener noreferrer"
-                  className="flex gap-4 p-4 rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-md group"
-                  style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.08)", textDecoration: "none" }}>
+                  className="flex gap-4 p-4 rounded-2xl transition-all hover:-translate-y-0.5 group"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", textDecoration: "none" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,194,168,0.1)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(0,194,168,0.3)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.05)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.08)"; }}>
                   {article.urlToImage && (
-                    <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0">
+                    <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
                       <img src={article.urlToImage} alt={article.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"
                         onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
@@ -425,16 +431,19 @@ function BlogNewsSection() {
                   )}
                   <div className="flex-1 min-w-0">
                     {article.source?.name && (
-                      <span className="inline-block text-xs font-bold px-2 py-0.5 rounded-full mb-2"
-                        style={{ background: "rgba(0,194,168,0.1)", color: "#00A893" }}>
+                      <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full mb-1.5"
+                        style={{ background: "rgba(0,194,168,0.2)", color: "#2DD4BF", border: "1px solid rgba(0,194,168,0.3)" }}>
                         {article.source.name}
                       </span>
                     )}
-                    <h3 className="font-bold text-sm leading-snug mb-1.5 line-clamp-2 group-hover:text-[#007AFF] transition-colors" style={{ color: "#1C1C1E" }}>{article.title}</h3>
-                    <div className="flex items-center gap-2 text-xs" style={{ color: "#AEAEB2" }}>
+                    <h3 className="font-bold text-sm leading-snug mb-1.5 line-clamp-2 transition-colors" style={{ color: "rgba(255,255,255,0.9)" }}>{article.title}</h3>
+                    {article.description && <p className="text-xs line-clamp-1 mb-2" style={{ color: "rgba(255,255,255,0.4)" }}>{article.description}</p>}
+                    <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
                       <Clock className="w-3 h-3" />
                       <span>{timeAgo(article.publishedAt ?? new Date().toISOString())}</span>
-                      <ExternalLink className="w-3 h-3 ml-auto" style={{ color: "#007AFF" }} />
+                      <span className="ml-auto flex items-center gap-1 font-semibold" style={{ color: "#2DD4BF" }}>
+                        Read More <ExternalLink className="w-3 h-3" />
+                      </span>
                     </div>
                   </div>
                 </a>
@@ -448,12 +457,14 @@ function BlogNewsSection() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12">
           <Link href="/blog"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all hover:opacity-90"
-            style={{ background: "#007AFF", color: "#FFFFFF", boxShadow: "0 2px 12px rgba(0,122,255,0.25)" }}>
+            style={{ background: "linear-gradient(135deg,#007AFF,#3B82F6)", color: "#FFFFFF", boxShadow: "0 2px 16px rgba(0,122,255,0.35)" }}>
             <Rss className="w-4 h-4" /> Read all blog articles
           </Link>
           <Link href="/news"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all hover:shadow-md"
-            style={{ background: "#FFFFFF", color: "#1C1C1E", border: "1px solid rgba(60,60,67,0.15)" }}>
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all"
+            style={{ background: "rgba(0,194,168,0.15)", color: "#2DD4BF", border: "1px solid rgba(0,194,168,0.3)" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,194,168,0.25)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,194,168,0.15)"; }}>
             <Globe className="w-4 h-4" /> Browse medical news
           </Link>
         </div>

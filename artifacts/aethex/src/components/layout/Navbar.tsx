@@ -11,8 +11,7 @@ import { AuthModal } from "@/components/AuthModal";
 export function AnnouncementBar() {
   return (
     <div className="no-print w-full text-center py-2.5 px-4 text-xs font-medium" style={{ background: "#1c1c1e", color: "rgba(255,255,255,0.8)" }}>
-      Free delivery on orders above ₹999 · Trusted by 50,000+ doctors · Use code{" "}
-      <span className="font-bold" style={{ color: "#007AFF" }}>AETHEX10</span> for 10% off
+      India's Medical Platform for Doctors &amp; Students · Trusted by Physicians across India
     </div>
   );
 }
@@ -147,8 +146,6 @@ export function Navbar() {
   const simpleLinks = [
     { href: "/shop", label: "Shop" },
     { href: "/study-hub", label: "Study Hub" },
-    { href: "/blog", label: "Blog" },
-    { href: "/news", label: "News" },
   ];
 
   return (
@@ -202,17 +199,17 @@ export function Navbar() {
 
             {/* Right Navigation */}
             <div className="flex items-center gap-1 shrink-0">
-              {/* Start Chat — unchanged */}
+              {/* Try Cadus AI — primary CTA */}
               <Link
                 href="/ai-assistant"
                 className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-[10px] font-semibold text-sm transition-all hover:opacity-90"
                 style={{ background: "#007AFF", color: "#FFFFFF" }}
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Start Chat</span>
+                <span>Try Cadus AI</span>
               </Link>
 
-              {/* Simple nav links with hover background */}
+              {/* Simple nav links: Shop, Study Hub */}
               {simpleLinks.map((item) => {
                 const active = location === item.href || location.startsWith(item.href + "/");
                 return (
@@ -235,7 +232,35 @@ export function Navbar() {
                 );
               })}
 
-              {/* Tools link */}
+              {/* Drug Reference */}
+              {(() => {
+                const active = location === "/drug-reference";
+                return (
+                  <Link href="/drug-reference"
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden lg:block"
+                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
+                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
+                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
+                    Drug Reference
+                  </Link>
+                );
+              })()}
+
+              {/* Pricing */}
+              {(() => {
+                const active = location === "/pricing";
+                return (
+                  <Link href="/pricing"
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden lg:block"
+                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
+                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
+                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
+                    Pricing
+                  </Link>
+                );
+              })()}
+
+              {/* Tools */}
               {(() => {
                 const active = location === "/tools" || location.startsWith("/tools/");
                 return (
@@ -249,21 +274,7 @@ export function Navbar() {
                 );
               })()}
 
-              {/* Drug Reference link */}
-              {(() => {
-                const active = location === "/drug-reference";
-                return (
-                  <Link href="/drug-reference"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden lg:block"
-                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
-                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
-                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
-                    Drug Reference
-                  </Link>
-                );
-              })()}
-
-              {/* Colleges & Hospitals link */}
+              {/* Colleges & Hospitals */}
               {(() => {
                 const active = location === "/institutions" || location.startsWith("/institutions/");
                 return (
@@ -276,6 +287,18 @@ export function Navbar() {
                   </Link>
                 );
               })()}
+
+              {/* Login / Sign Up — ghost button (only when not logged in) */}
+              {!isLoggedIn && (
+                <button
+                  onClick={openLogin}
+                  className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-[10px] font-semibold text-sm transition-all hover:bg-[#007AFF] hover:text-white"
+                  style={{ border: "1px solid rgba(0,122,255,0.5)", color: "#007AFF", background: "transparent" }}
+                >
+                  <User className="w-3.5 h-3.5" />
+                  Login / Sign Up
+                </button>
+              )}
 
               {/* Account Dropdown */}
               <div ref={accountRef} className="relative hidden md:block">
@@ -403,13 +426,12 @@ export function Navbar() {
               </form>
               {[
                 { href: "/shop", label: "Shop All Products" },
-                { href: "/ai-assistant", label: "Start Chat (Cadus AI)" },
-                { href: "/tools", label: "Clinical Tools" },
-                { href: "/drug-reference", label: "Drug Reference" },
+                { href: "/ai-assistant", label: "Try Cadus AI" },
                 { href: "/study-hub", label: "Study Hub" },
+                { href: "/drug-reference", label: "Drug Reference" },
+                { href: "/pricing", label: "Pricing" },
+                { href: "/tools", label: "Clinical Tools" },
                 { href: "/institutions", label: "Colleges & Hospitals" },
-                { href: "/blog", label: "Blog" },
-                { href: "/news", label: "Medical News" },
                 { href: "/orders/track", label: "Track Order" },
               ].map(item => {
                 const active = location === item.href || location.startsWith(item.href + "/");

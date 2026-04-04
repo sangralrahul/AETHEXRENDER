@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import {
   BookOpen, Search, ShoppingCart, Star, ChevronRight,
   GraduationCap, Library, Tag, TrendingUp, BookMarked,
-  Sparkles, Trophy, ChevronDown, X, Filter, ExternalLink,
+  Sparkles, Trophy, ChevronDown, X, Filter,
 } from "lucide-react";
 import { useAddToCart } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -12,51 +12,77 @@ import { CURRICULUM, type Degree, type CurriculumYear, type SubjectGroup, type C
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-const COVER_IMGS = [
-  "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&q=80",
-  "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300&q=80",
-  "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&q=80",
-  "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=300&q=80",
-  "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&q=80",
-];
+// ── Book cover: Open Library API with throttled fetch queue ──────────────
+const coverCache = new Map<string, string | false>();
+const coverInFlight = new Set<string>();
+type QueueItem = { key: string; name: string; author: string; resolve: (v: string | false) => void };
+const fetchQueue: QueueItem[] = [];
+let activeFetches = 0;
+const MAX_CONCURRENT = 4;
 
-// ── Helpers ──────────────────────────────────────────────────────────────
-function coverFor(name: string) {
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-  return COVER_IMGS[h % COVER_IMGS.length];
+function processQueue() {
+  while (activeFetches < MAX_CONCURRENT && fetchQueue.length > 0) {
+    const item = fetchQueue.shift()!;
+    activeFetches++;
+    fetch(
+      `https://openlibrary.org/search.json?title=${encodeURIComponent(item.name)}&author=${encodeURIComponent(item.author)}&limit=1&fields=cover_i`,
+      { signal: AbortSignal.timeout(8000) }
+    )
+      .then(r => r.json())
+      .then(data => {
+        const coverId = data?.docs?.[0]?.cover_i;
+        const url = coverId
+          ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
+          : false;
+        coverCache.set(item.key, url);
+        coverInFlight.delete(item.key);
+        item.resolve(url);
+      })
+      .catch(() => {
+        coverCache.set(item.key, false);
+        coverInFlight.delete(item.key);
+        item.resolve(false);
+      })
+      .finally(() => {
+        activeFetches--;
+        setTimeout(processQueue, 80);
+      });
+  }
 }
 
+function enqueueBookCover(key: string, name: string, author: string): Promise<string | false> {
+  return new Promise(resolve => {
+    fetchQueue.push({ key, name, author, resolve });
+    processQueue();
+  });
+}
+
+function useBookCover(name: string, author: string, enabled: boolean) {
+  const key = `${name}|${author}`;
+  const cached = coverCache.get(key);
+  const [url, setUrl] = useState<string | false>(cached !== undefined ? cached : false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!enabled) return;
+    if (coverCache.has(key)) { setUrl(coverCache.get(key)!); return; }
+    if (coverInFlight.has(key)) return;
+    coverInFlight.add(key);
+    setLoading(true);
+    enqueueBookCover(key, name, author).then(v => {
+      setUrl(v);
+      setLoading(false);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, enabled]);
+
+  return { url, loading };
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
 function discount(price: number, mrp: number) {
   if (!mrp || mrp <= price) return 0;
   return Math.round(((mrp - price) / mrp) * 100);
-}
-
-// ── Official catalogue URL per publisher ──────────────────────────────────
-function catalogueUrl(book: CurrBook): string {
-  const q = encodeURIComponent(book.name);
-  const pub = book.publisher.toLowerCase();
-  if (pub.includes("elsevier") || pub.includes("reed"))
-    return `https://www.elsevier.com/search-results?query=${q}`;
-  if (pub.includes("cbs"))
-    return `https://www.cbspd.com/search/?q=${q}`;
-  if (pub.includes("jaypee"))
-    return `https://www.jaypeedigital.com/search?q=${q}`;
-  if (pub.includes("wolters") || pub.includes("lww") || pub.includes("lippincott"))
-    return `https://shop.lww.com/search?q=${q}`;
-  if (pub.includes("oxford") || pub.includes("oup"))
-    return `https://global.oup.com/academic/search/?q=${q}`;
-  if (pub.includes("mcgraw") || pub.includes("hill"))
-    return `https://www.mheducation.com/search.html#q%3D${q}`;
-  if (pub.includes("springer") || pub.includes("thieme"))
-    return `https://link.springer.com/search?query=${q}`;
-  if (pub.includes("cambridge"))
-    return `https://www.cambridge.org/core/search?q=${q}`;
-  if (pub.includes("arya") || pub.includes("bi publications") || pub.includes("jp medical"))
-    return `https://www.jpmedpub.com/search?q=${q}`;
-  // Fallback — Amazon India search
-  const ak = encodeURIComponent(`${book.name} ${book.author}`);
-  return `https://www.amazon.in/s?k=${ak}&i=stripbooks`;
 }
 
 // ── Book Card ─────────────────────────────────────────────────────────────
@@ -72,28 +98,51 @@ function BookCard({
   onCart: (id: number) => void;
 }) {
   const disc = discount(book.price, book.mrp);
-  const cover = coverFor(book.name);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { rootMargin: "200px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  const { url: coverUrl, loading: coverLoading } = useBookCover(book.name, book.author, visible);
 
   return (
     <div
+      ref={cardRef}
       className="group flex flex-col rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
       style={{ background: "rgba(255,255,255,0.85)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.9)", boxShadow: "0 2px 14px rgba(0,0,0,0.07)" }}
     >
       {/* Cover */}
-      <div className="relative shrink-0 overflow-hidden" style={{ height: 160 }}>
-        <img
-          src={cover}
-          alt={book.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          style={{ filter: "brightness(0.55)" }}
-        />
-        {/* Gradient tint */}
-        <div className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${color}BB 0%, ${color}33 100%)` }} />
-        {/* Spine */}
-        <div className="absolute left-0 top-0 bottom-0 w-2.5" style={{ background: "rgba(0,0,0,0.35)", borderRight: "1px solid rgba(255,255,255,0.12)" }} />
+      <div className="relative shrink-0 overflow-hidden flex items-center justify-center" style={{ height: 180, background: `linear-gradient(160deg,${color}22,${color}08)` }}>
+        {coverLoading && (
+          <div className="absolute inset-0 animate-pulse" style={{ background: `linear-gradient(135deg,${color}22,${color}10)` }} />
+        )}
+        {coverUrl ? (
+          <img
+            src={coverUrl}
+            alt={book.name}
+            className="h-full w-full object-contain group-hover:scale-105 transition-transform duration-500 p-2"
+            style={{ objectPosition: "center" }}
+          />
+        ) : !coverLoading ? (
+          /* Fallback — styled book spine if no cover found */
+          <div className="flex flex-col items-center justify-center gap-2 px-4 py-6 text-center h-full w-full"
+            style={{ background: `linear-gradient(160deg,${color}DD,${color}88)` }}>
+            <BookOpen className="w-8 h-8 text-white opacity-70" />
+            <p className="text-[10px] font-bold text-white opacity-80 line-clamp-3 leading-tight">
+              {book.name.replace(/\s+\d+(?:st|nd|rd|th)\s+Ed(?:ition)?.*$/i, "")}
+            </p>
+          </div>
+        ) : null}
 
         {/* Badges */}
-        <div className="absolute top-2 left-4 flex gap-1.5">
+        <div className="absolute top-2 left-2 flex gap-1.5">
           {disc >= 10 && (
             <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md" style={{ background: "#FF3B30", color: "#fff" }}>
               {disc}% OFF
@@ -106,16 +155,17 @@ function BookCard({
           )}
         </div>
         {book.forExam?.length && (
-          <div className="absolute bottom-2 right-3 flex gap-1">
+          <div className="absolute bottom-2 right-2 flex gap-1">
             {book.forExam.slice(0, 2).map(e => (
-              <span key={e} className="text-[8px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: "rgba(0,0,0,0.5)", color: "#fff", backdropFilter: "blur(4px)" }}>
+              <span key={e} className="text-[8px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: "rgba(0,0,0,0.55)", color: "#fff", backdropFilter: "blur(4px)" }}>
                 {e}
               </span>
             ))}
           </div>
         )}
         {/* Edition */}
-        <div className="absolute top-2 right-3 text-[9px] font-bold" style={{ color: "rgba(255,255,255,0.75)" }}>
+        <div className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-md"
+          style={{ background: "rgba(0,0,0,0.45)", color: "rgba(255,255,255,0.9)", backdropFilter: "blur(4px)" }}>
           {book.edition}
         </div>
       </div>
@@ -152,32 +202,19 @@ function BookCard({
           )}
         </div>
 
-        {/* Action buttons row */}
-        <div className="flex gap-1.5 mt-1">
-          <button
-            onClick={() => dbId && onCart(dbId)}
-            className="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-[11px] font-bold transition-all hover:opacity-90 active:scale-95"
-            style={{
-              background: dbId ? `linear-gradient(135deg,${color},${color}CC)` : "#E5E5EA",
-              color: dbId ? "#fff" : "#AEAEB2",
-            }}
-            disabled={!dbId}
-          >
-            <ShoppingCart className="w-3 h-3" />
-            {dbId ? "Add to Cart" : "Request"}
-          </button>
-          <a
-            href={catalogueUrl(book)}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="View Official Publisher Catalogue"
-            className="flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-[11px] font-semibold transition-all hover:opacity-90 active:scale-95 shrink-0"
-            style={{ background: `${color}14`, color, border: `1px solid ${color}30` }}
-          >
-            <ExternalLink className="w-3 h-3" />
-            <span>Catalogue</span>
-          </a>
-        </div>
+        {/* Cart button */}
+        <button
+          onClick={() => dbId && onCart(dbId)}
+          className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold transition-all hover:opacity-90 active:scale-95 mt-1"
+          style={{
+            background: dbId ? `linear-gradient(135deg,${color},${color}CC)` : "#E5E5EA",
+            color: dbId ? "#fff" : "#AEAEB2",
+          }}
+          disabled={!dbId}
+        >
+          <ShoppingCart className="w-3 h-3" />
+          {dbId ? "Add to Cart" : "Request Book"}
+        </button>
       </div>
     </div>
   );

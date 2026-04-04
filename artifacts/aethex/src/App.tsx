@@ -54,6 +54,7 @@ import MedicalDisclaimer from "@/pages/MedicalDisclaimer";
 import InstitutionHub from "@/pages/InstitutionHub";
 import CmeHub from "@/pages/CmeHub";
 import NeetPg from "@/pages/NeetPg";
+import MedicalBooks from "@/pages/MedicalBooks";
 import MedicalKnowledgeHub from "@/pages/StudyHub/MedicalKnowledgeHub/index";
 import SubjectPage from "@/pages/StudyHub/MedicalKnowledgeHub/SubjectPage";
 import TopicPage from "@/pages/StudyHub/MedicalKnowledgeHub/TopicPage";
@@ -122,6 +123,9 @@ function Router() {
             <main className="flex-1 pt-[104px]">
               <Switch>
                 <Route path="/" component={Home} />
+
+                {/* Books Library */}
+                <Route path="/books" component={MedicalBooks} />
 
                 {/* Shop routes (also alias /products) */}
                 <Route path="/shop" component={Products} />

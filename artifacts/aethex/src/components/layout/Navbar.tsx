@@ -145,6 +145,7 @@ export function Navbar() {
 
   const simpleLinks = [
     { href: "/shop", label: "Shop" },
+    { href: "/books", label: "Books" },
     { href: "/study-hub", label: "Study Hub" },
     { href: "/cme-hub", label: "CME Hub" },
     { href: "/neet-pg", label: "NEET-PG" },
@@ -428,6 +429,7 @@ export function Navbar() {
               </form>
               {[
                 { href: "/shop", label: "Shop All Products" },
+                { href: "/books", label: "Medical Books" },
                 { href: "/ai-assistant", label: "Try Cadus AI" },
                 { href: "/study-hub", label: "Study Hub" },
                 { href: "/cme-hub", label: "CME Hub" },

@@ -12,55 +12,13 @@ import { CURRICULUM, type Degree, type CurriculumYear, type SubjectGroup, type C
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-// ── Book cover: Open Library API with throttled fetch queue ──────────────
+// ── Book cover: proxied via our own API server (caches + throttles Google Books)
 const coverCache = new Map<string, string | false>();
 const coverInFlight = new Set<string>();
-type QueueItem = { key: string; name: string; author: string; resolve: (v: string | false) => void };
-const fetchQueue: QueueItem[] = [];
-let activeFetches = 0;
-const MAX_CONCURRENT = 4;
 
-function processQueue() {
-  while (activeFetches < MAX_CONCURRENT && fetchQueue.length > 0) {
-    const item = fetchQueue.shift()!;
-    activeFetches++;
-    fetch(
-      `https://openlibrary.org/search.json?title=${encodeURIComponent(item.name)}&author=${encodeURIComponent(item.author)}&limit=1&fields=cover_i`,
-      { signal: AbortSignal.timeout(8000) }
-    )
-      .then(r => r.json())
-      .then(data => {
-        const coverId = data?.docs?.[0]?.cover_i;
-        const url = coverId
-          ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
-          : false;
-        coverCache.set(item.key, url);
-        coverInFlight.delete(item.key);
-        item.resolve(url);
-      })
-      .catch(() => {
-        coverCache.set(item.key, false);
-        coverInFlight.delete(item.key);
-        item.resolve(false);
-      })
-      .finally(() => {
-        activeFetches--;
-        setTimeout(processQueue, 80);
-      });
-  }
-}
-
-function enqueueBookCover(key: string, name: string, author: string): Promise<string | false> {
-  return new Promise(resolve => {
-    fetchQueue.push({ key, name, author, resolve });
-    processQueue();
-  });
-}
-
-function useBookCover(name: string, author: string, enabled: boolean) {
-  const key = `${name}|${author}`;
-  const cached = coverCache.get(key);
-  const [url, setUrl] = useState<string | false>(cached !== undefined ? cached : false);
+function useBookCover(title: string, author: string, enabled: boolean) {
+  const key = `${title}|${author}`;
+  const [url, setUrl] = useState<string | false>(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -69,10 +27,24 @@ function useBookCover(name: string, author: string, enabled: boolean) {
     if (coverInFlight.has(key)) return;
     coverInFlight.add(key);
     setLoading(true);
-    enqueueBookCover(key, name, author).then(v => {
-      setUrl(v);
-      setLoading(false);
-    });
+    fetch(
+      `${BASE}/api/book-cover?title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}`,
+      { signal: AbortSignal.timeout(15000) }
+    )
+      .then(r => r.json())
+      .then((data: { url: string | null }) => {
+        const v: string | false = data.url || false;
+        coverCache.set(key, v);
+        coverInFlight.delete(key);
+        setUrl(v);
+        setLoading(false);
+      })
+      .catch(() => {
+        coverCache.set(key, false);
+        coverInFlight.delete(key);
+        setUrl(false);
+        setLoading(false);
+      });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, enabled]);
 
@@ -105,7 +77,7 @@ function BookCard({
     if (!el) return;
     const obs = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin: "200px" }
+      { rootMargin: "80px" }
     );
     obs.observe(el);
     return () => obs.disconnect();

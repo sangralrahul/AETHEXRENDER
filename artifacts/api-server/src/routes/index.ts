@@ -12,10 +12,12 @@ import authRouter from "./auth";
 import contactRouter from "./contact";
 import adminRouter from "./admin";
 import medKnowledgeRouter from "./medknowledge";
+import bookCoverRouter from "./book-cover";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
+router.use(bookCoverRouter);
 router.use(authRouter);
 router.use(adminRouter);
 router.use(contactRouter);

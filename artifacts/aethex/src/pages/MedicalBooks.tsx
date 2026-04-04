@@ -50,7 +50,7 @@ function BookCard({
   return (
     <div
       className="group flex flex-col rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
-      style={{ background: "#fff", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+      style={{ background: "rgba(255,255,255,0.85)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.9)", boxShadow: "0 2px 14px rgba(0,0,0,0.07)" }}
     >
       {/* Cover */}
       <div className="relative shrink-0 overflow-hidden" style={{ height: 160 }}>
@@ -331,7 +331,10 @@ export default function MedicalBooks() {
   const totalDegrees = CURRICULUM.length;
 
   return (
-    <div className="min-h-screen" style={{ background: "#F4F4F6" }}>
+    <div className="min-h-screen" style={{
+      background: "linear-gradient(160deg, #EEF4FF 0%, #F0F7F4 35%, #F5F0FF 65%, #FFF4EE 100%)",
+      backgroundAttachment: "fixed",
+    }}>
 
       {/* ── Hero ── */}
       <div className="relative overflow-hidden py-12"
@@ -436,7 +439,28 @@ export default function MedicalBooks() {
       </div>
 
       {/* ── Body ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative">
+        {/* Decorative background blobs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden>
+          <div className="absolute top-20 left-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-25"
+            style={{ background: "radial-gradient(circle,#007AFF33,transparent 70%)", transform: "translateX(-30%)" }} />
+          <div className="absolute top-80 right-0 w-[400px] h-[400px] rounded-full blur-3xl opacity-20"
+            style={{ background: "radial-gradient(circle,#5856D633,transparent 70%)", transform: "translateX(30%)" }} />
+          <div className="absolute top-[600px] left-1/3 w-[350px] h-[350px] rounded-full blur-3xl opacity-15"
+            style={{ background: "radial-gradient(circle,#00C2A833,transparent 70%)" }} />
+          <div className="absolute top-[1100px] right-1/4 w-[400px] h-[400px] rounded-full blur-3xl opacity-20"
+            style={{ background: "radial-gradient(circle,#FF950033,transparent 70%)" }} />
+          {/* Dot grid */}
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="bookDotGrid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                <circle cx="1.5" cy="1.5" r="1.5" fill="rgba(0,122,255,0.07)" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#bookDotGrid)" />
+          </svg>
+        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
 
         {/* Search Results Mode */}
         {searchResults !== null ? (
@@ -496,7 +520,7 @@ export default function MedicalBooks() {
           <div className="flex gap-8">
 
             {/* ── Sidebar: Year/Course navigation ── */}
-            <aside className="hidden lg:block w-52 shrink-0 sticky self-start" style={{ top: "130px", maxHeight: "calc(100vh - 150px)", overflowY: "auto" }}>
+            <aside className="hidden lg:block w-52 shrink-0 sticky self-start" style={{ top: "130px", maxHeight: "calc(100vh - 150px)", overflowY: "auto", background: "rgba(255,255,255,0.6)", backdropFilter: "blur(16px)", borderRadius: "20px", border: "1px solid rgba(255,255,255,0.8)", padding: "16px 12px", boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}>
               <p className="text-[10px] font-bold uppercase tracking-wider mb-3" style={{ color: "#AEAEB2" }}>
                 {activeDegree.id === "mbbs" ? "Academic Year" :
                   activeDegree.id === "md" ? "Specialty" :
@@ -554,7 +578,7 @@ export default function MedicalBooks() {
 
               {/* Degree + Year header */}
               <div className="flex items-center gap-3 mb-7 p-5 rounded-2xl"
-                style={{ background: `linear-gradient(135deg,${activeDegree.color}10,${activeDegree.color}04)`, border: `1px solid ${activeDegree.color}20` }}>
+                style={{ background: `linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.4))`, backdropFilter: "blur(16px)", border: `1px solid ${activeDegree.color}30`, boxShadow: `0 4px 24px ${activeDegree.color}14` }}>
                 <GraduationCap className="w-7 h-7 shrink-0" style={{ color: activeDegree.color }} />
                 <div>
                   <div className="flex items-center gap-2">
@@ -615,6 +639,7 @@ export default function MedicalBooks() {
           </div>
         )}
       </div>
+      </div>{/* /relative wrapper */}
     </div>
   );
 }

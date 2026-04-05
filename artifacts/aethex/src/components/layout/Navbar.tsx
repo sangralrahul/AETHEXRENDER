@@ -1,5 +1,42 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database, BadgeCheck, Calculator, Briefcase, MessageSquare, Smartphone, Bell, HeadphonesIcon, Megaphone, Download, Gift, ClipboardList, MoreHorizontal } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database, BadgeCheck, Calculator, Briefcase, MessageSquare, Smartphone, Bell, HeadphonesIcon, Megaphone, Download, Gift, ClipboardList, MoreHorizontal, Mic, MicOff, Sun, Moon, Globe } from "lucide-react";
+
+const LANGS = ["EN", "HI", "TA", "TE", "KN"];
+
+function useDarkMode() {
+  const [dark, setDark] = useState<boolean>(() => {
+    try { return localStorage.getItem("aethex_theme") === "light" ? false : true; } catch { return true; }
+  });
+  const toggle = () => {
+    setDark(d => {
+      const next = !d;
+      try { localStorage.setItem("aethex_theme", next ? "dark" : "light"); } catch {}
+      document.documentElement.classList.toggle("aethex-light", !next);
+      return next;
+    });
+  };
+  return { dark, toggle };
+}
+
+function useVoiceSearch(onResult: (text: string) => void) {
+  const [listening, setListening] = useState(false);
+  const recRef = useRef<any>(null);
+  const start = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    const rec = new SpeechRecognition();
+    rec.lang = "en-IN";
+    rec.interimResults = false;
+    rec.onresult = (e: any) => { onResult(e.results[0][0].transcript); setListening(false); };
+    rec.onerror = () => setListening(false);
+    rec.onend = () => setListening(false);
+    recRef.current = rec;
+    rec.start();
+    setListening(true);
+  };
+  const stop = () => { recRef.current?.stop(); setListening(false); };
+  return { listening, start, stop };
+}
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useUserAuth } from "@/hooks/use-user-auth";
@@ -360,6 +397,14 @@ export function Navbar() {
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [toolsOpen, setToolsOpen] = useState(false);
   const [institutionsOpen, setInstitutionsOpen] = useState(false);
+  const [lang, setLang] = useState(() => { try { return localStorage.getItem("aethex_lang") || "EN"; } catch { return "EN"; } });
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
+  const { dark, toggle: toggleDark } = useDarkMode();
+  const { listening: voiceListening, start: startVoice, stop: stopVoice } = useVoiceSearch((text) => {
+    setSearchQuery(text);
+    setLocation(`/shop?search=${encodeURIComponent(text)}`);
+  });
   const accountRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const toolsRef = useRef<HTMLDivElement>(null);
@@ -371,6 +416,7 @@ export function Navbar() {
       if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
       if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) setToolsOpen(false);
       if (institutionsRef.current && !institutionsRef.current.contains(e.target as Node)) setInstitutionsOpen(false);
+      if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -432,14 +478,50 @@ export function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="block w-full pl-9 pr-3 py-2 text-sm focus:outline-none rounded-sm"
+                className="block w-full pl-9 pr-9 py-2 text-sm focus:outline-none rounded-sm"
                 style={{ background: "#FFFFFF", color: "#1C1C1E", border: "none" }}
                 placeholder="Search for medical products, drugs, books and more..."
               />
+              {/* Voice search mic button */}
+              <button type="button" onClick={voiceListening ? stopVoice : startVoice}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center transition-all"
+                title={voiceListening ? "Stop listening" : "Search by voice"}>
+                {voiceListening
+                  ? <Mic className="h-4 w-4 animate-pulse" style={{ color: "#ef4444" }} />
+                  : <Mic className="h-4 w-4" style={{ color: "#636366" }} />}
+              </button>
             </form>
 
             {/* ── RIGHT ACTIONS ── */}
             <div className="flex items-center gap-1 shrink-0">
+
+              {/* Dark/Light mode toggle */}
+              <button onClick={toggleDark} title={dark ? "Switch to light mode" : "Switch to dark mode"}
+                className="p-2 rounded transition-all hidden sm:flex items-center justify-center hover:bg-white/10"
+                style={{ color: "rgba(255,255,255,0.7)" }}>
+                {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+
+              {/* Language selector */}
+              <div ref={langRef} className="relative hidden sm:block">
+                <button onClick={() => setLangOpen(o => !o)}
+                  className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold transition-all hover:bg-white/10"
+                  style={{ color: "rgba(255,255,255,0.7)" }}>
+                  <Globe className="w-3.5 h-3.5" />{lang}
+                </button>
+                {langOpen && (
+                  <div className="absolute right-0 mt-1 w-28 z-[70] rounded shadow-2xl overflow-hidden py-1"
+                    style={{ background: "#212121", border: "1px solid rgba(255,255,255,0.1)" }}>
+                    {LANGS.map(l => (
+                      <button key={l} onClick={() => { setLang(l); try { localStorage.setItem("aethex_lang", l); } catch {} setLangOpen(false); }}
+                        className="w-full text-left px-4 py-2 text-sm transition-all"
+                        style={{ color: lang === l ? "#007AFF" : "rgba(255,255,255,0.75)", background: lang === l ? "rgba(0,122,255,0.1)" : "transparent" }}>
+                        {l === "EN" ? "🇬🇧 English" : l === "HI" ? "🇮🇳 हिन्दी" : l === "TA" ? "🇮🇳 தமிழ்" : l === "TE" ? "🇮🇳 తెలుగు" : "🇮🇳 ಕನ್ನಡ"}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {/* Login dropdown */}
               <div ref={accountRef} className="relative">

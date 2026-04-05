@@ -11,6 +11,37 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 
 ## Features
 
+### Phase 2 Feature Expansion (April 2026)
+
+All 15 Phase 2 features completed:
+
+**10 New Pages:**
+- `/diagnosis` — AI Diagnosis Assistant (symptom selection + Cadus AI, educational-only disclaimer)
+- `/answer-eval` — AI Answer Evaluator (submit med answers, get AI feedback + score)
+- `/learning-path` — Personalized Learning Path (specialty/exam goal selection, milestone tracker)
+- `/flashcards` — Smart Flashcards with SM-2 spaced repetition algorithm
+- `/video-cases` — Video Case Discussions (embedded video cases with commentary)
+- `/webinars` — Live CME Webinars (countdown timers, live/upcoming/past tabs, registration)
+- `/mentorship` — Mentorship Matching (filter mentors by specialty, connect flow)
+- `/leaderboard` — College Leaderboards (recharts bar chart, department filters)
+- `/institution-analytics` — Institution Analytics Dashboard (recharts area/bar/pie charts)
+- `/quiz-builder` — Custom Quiz Builder (faculty create/assign, student quiz mode)
+
+**Navbar Enhancements:**
+- Voice Search: Mic icon in search bar using Web Speech API (en-IN), animates red while listening, fills search query on result
+- Dark/Light Mode: Sun/moon toggle button (stores preference in localStorage, toggles `aethex-light` class on `<html>`)
+- Language Selector: Globe + dropdown with EN / हिन्दी / தமிழ் / తెలుగు / ಕನ್ನಡ (stores in localStorage)
+
+**Settings → WhatsApp Bot tab:**
+- Enable/disable toggle + phone number input + "Connect Bot" link
+- Notification toggles: Weekly Digest, CME Alerts, Quiz Reminders, Mentor Updates
+- Copy-to-clipboard bot link + live status indicator
+
+**PWA Offline Mode:**
+- `vite-plugin-pwa` installed + configured in `vite.config.ts`
+- Web App Manifest with AETHEX name, icons, standalone display, `#007AFF` theme
+- Workbox service worker: CacheFirst for fonts, NetworkFirst for API calls
+
 ### Settings Page (March 2026)
 - **Full-page `/settings` route** — completely standalone black-background settings page at `/settings` (no Navbar/Footer, full-screen like `/ai-assistant`)
 - **Animated particle canvas** — 60 floating dots with faint connecting lines + two ambient radial gradient blobs (teal + purple), all animated

@@ -6,6 +6,7 @@ import {
   Download, Upload, Archive, Trash2, RotateCcw,
   Key, Lock, Cookie, Pencil, Volume2,
   CheckCircle, Activity, Zap, Crown, ArrowLeft,
+  MessageCircle, Bot, Bell, Link2, Eye, EyeOff, Copy,
 } from "lucide-react";
 import {
   loadSettings, saveSettings, type CadusSettings,
@@ -622,18 +623,124 @@ function SectionAbout() {
 }
 
 /* ─────────────────────────────────────────────────────────────────
+   Section: WhatsApp Bot
+───────────────────────────────────────────────────────────────── */
+function SectionWhatsApp() {
+  const [enabled, setEnabled] = useState(() => { try { return localStorage.getItem("wa_bot_enabled") === "true"; } catch { return false; } });
+  const [phone, setPhone] = useState(() => { try { return localStorage.getItem("wa_bot_phone") || ""; } catch { return ""; } });
+  const [weeklyDigest, setWeeklyDigest] = useState(() => { try { return localStorage.getItem("wa_bot_weekly") !== "false"; } catch { return true; } });
+  const [cmeAlerts, setCmeAlerts] = useState(() => { try { return localStorage.getItem("wa_bot_cme") !== "false"; } catch { return true; } });
+  const [quizReminders, setQuizReminders] = useState(() => { try { return localStorage.getItem("wa_bot_quiz") !== "false"; } catch { return true; } });
+  const [mentorUpdates, setMentorUpdates] = useState(() => { try { return localStorage.getItem("wa_bot_mentor") !== "false"; } catch { return true; } });
+  const [copied, setCopied] = useState(false);
+  const BOT_NUMBER = "+91 98765 43210";
+  const BOT_LINK = "https://wa.me/919876543210?text=Hi%20AETHEX";
+
+  const save = (key: string, val: string | boolean) => { try { localStorage.setItem(key, String(val)); } catch {} };
+
+  const handleToggleEnabled = (v: boolean) => { setEnabled(v); save("wa_bot_enabled", v); };
+  const handlePhone = (v: string) => { setPhone(v); save("wa_bot_phone", v); };
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(BOT_LINK).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+  };
+
+  const ToggleRow = ({ label, sub, val, onChange }: { label: string; sub: string; val: boolean; onChange: (v: boolean) => void }) => (
+    <div className="flex items-center justify-between py-3" style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
+      <div>
+        <p className="text-sm font-medium" style={{ color: "#1c1c1e" }}>{label}</p>
+        <p className="text-xs" style={{ color: "rgba(60,60,67,0.5)" }}>{sub}</p>
+      </div>
+      <button onClick={() => onChange(!val)} className="relative w-11 h-6 rounded-full transition-all shrink-0" style={{ background: val ? "#34c759" : "#e5e5ea" }}>
+        <span className="absolute top-0.5 transition-all w-5 h-5 rounded-full shadow bg-white" style={{ left: val ? "calc(100% - 1.375rem)" : "0.125rem" }} />
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="space-y-6">
+      {/* Enable toggle */}
+      <div className="rounded-xl p-5" style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.08)" }}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg,#25D366,#128C7E)" }}>
+              <MessageCircle className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold" style={{ color: "#1c1c1e" }}>AETHEX WhatsApp Bot</p>
+              <p className="text-xs" style={{ color: "rgba(60,60,67,0.5)" }}>Get alerts & daily digests on WhatsApp</p>
+            </div>
+          </div>
+          <button onClick={() => handleToggleEnabled(!enabled)} className="relative w-11 h-6 rounded-full transition-all shrink-0" style={{ background: enabled ? "#34c759" : "#e5e5ea" }}>
+            <span className="absolute top-0.5 transition-all w-5 h-5 rounded-full shadow bg-white" style={{ left: enabled ? "calc(100% - 1.375rem)" : "0.125rem" }} />
+          </button>
+        </div>
+
+        {enabled && (
+          <div className="mt-4 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+            <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(60,60,67,0.6)" }}>Your WhatsApp Number</label>
+            <div className="flex gap-2">
+              <input type="tel" value={phone} onChange={e => handlePhone(e.target.value)} placeholder="+91 98765 43210"
+                className="flex-1 px-3 py-2 rounded-lg text-sm focus:outline-none"
+                style={{ background: "#f2f2f7", border: "1px solid rgba(0,0,0,0.08)", color: "#1c1c1e" }} />
+              <a href={BOT_LINK} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white"
+                style={{ background: "linear-gradient(135deg,#25D366,#128C7E)", whiteSpace: "nowrap" }}>
+                <Bot className="w-3.5 h-3.5" /> Connect Bot
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Quick link */}
+      <div className="rounded-xl p-4" style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.08)" }}>
+        <SectionTitle>Quick Link</SectionTitle>
+        <div className="flex items-center gap-2 mt-1 px-3 py-2 rounded-lg" style={{ background: "#f2f2f7" }}>
+          <Link2 className="w-3.5 h-3.5 shrink-0" style={{ color: "#007AFF" }} />
+          <span className="flex-1 text-xs truncate" style={{ color: "rgba(60,60,67,0.7)" }}>{BOT_LINK}</span>
+          <button onClick={copyLink} className="flex items-center gap-1 text-xs font-semibold" style={{ color: "#007AFF" }}>
+            {copied ? <CheckCircle className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+        <p className="text-xs mt-2" style={{ color: "rgba(60,60,67,0.45)" }}>Bot Number: {BOT_NUMBER}</p>
+      </div>
+
+      {/* Notification types */}
+      <div className="rounded-xl px-5 pt-4 pb-1" style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.08)" }}>
+        <SectionTitle>Notification Preferences</SectionTitle>
+        <ToggleRow label="Weekly Digest" sub="Sunday summary of your progress" val={weeklyDigest} onChange={v => { setWeeklyDigest(v); save("wa_bot_weekly", v); }} />
+        <ToggleRow label="CME & Webinar Alerts" sub="Reminders 1 hour before live events" val={cmeAlerts} onChange={v => { setCmeAlerts(v); save("wa_bot_cme", v); }} />
+        <ToggleRow label="Quiz Reminders" sub="Daily streak nudge if no quiz taken" val={quizReminders} onChange={v => { setQuizReminders(v); save("wa_bot_quiz", v); }} />
+        <ToggleRow label="Mentor Updates" sub="New message from your mentor" val={mentorUpdates} onChange={v => { setMentorUpdates(v); save("wa_bot_mentor", v); }} />
+      </div>
+
+      {/* Status */}
+      <div className="rounded-xl p-4 flex items-center gap-3" style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.08)" }}>
+        <div className="w-2 h-2 rounded-full shrink-0" style={{ background: enabled ? "#34c759" : "#aeaeb2", boxShadow: enabled ? "0 0 6px rgba(52,199,89,0.5)" : "none" }} />
+        <p className="text-sm" style={{ color: "rgba(60,60,67,0.7)" }}>
+          {enabled ? "WhatsApp Bot is active. Messages will be delivered to your linked number." : "WhatsApp Bot is disabled. Enable above to start receiving alerts."}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
    Nav config
 ───────────────────────────────────────────────────────────────── */
-type SectionId = "general" | "interface" | "models" | "chats" | "personalization" | "account" | "about";
+type SectionId = "general" | "interface" | "models" | "chats" | "personalization" | "account" | "whatsapp" | "about";
 
 const NAV: { id: SectionId; label: string; icon: React.ElementType; desc: string }[] = [
-  { id: "general",         label: "General",          icon: Settings,     desc: "Theme, language & voice" },
-  { id: "interface",       label: "Interface",         icon: Monitor,      desc: "Chat & display options" },
-  { id: "models",          label: "Models",            icon: Brain,        desc: "Default AI model" },
-  { id: "chats",           label: "Chats",             icon: MessageSquare,desc: "Import, export & delete" },
-  { id: "personalization", label: "Personalization",   icon: UserCheck,    desc: "Memory & customisation" },
-  { id: "account",         label: "Account",           icon: User,         desc: "Profile & usage" },
-  { id: "about",           label: "About",             icon: Info,         desc: "Version & legal" },
+  { id: "general",         label: "General",          icon: Settings,      desc: "Theme, language & voice" },
+  { id: "interface",       label: "Interface",         icon: Monitor,       desc: "Chat & display options" },
+  { id: "models",          label: "Models",            icon: Brain,         desc: "Default AI model" },
+  { id: "chats",           label: "Chats",             icon: MessageSquare, desc: "Import, export & delete" },
+  { id: "personalization", label: "Personalization",   icon: UserCheck,     desc: "Memory & customisation" },
+  { id: "account",         label: "Account",           icon: User,          desc: "Profile & usage" },
+  { id: "whatsapp",        label: "WhatsApp Bot",      icon: MessageCircle, desc: "Bot number & notifications" },
+  { id: "about",           label: "About",             icon: Info,          desc: "Version & legal" },
 ];
 
 /* ─────────────────────────────────────────────────────────────────
@@ -782,6 +889,7 @@ export default function SettingsPage() {
                 {active === "chats"           && <SectionChats onClearAll={handleClearAllChats} onExport={handleExportChats} />}
                 {active === "personalization" && <SectionPersonalization s={settings} set={set} />}
                 {active === "account"         && <SectionAccount user={user} />}
+                {active === "whatsapp"        && <SectionWhatsApp />}
                 {active === "about"           && <SectionAbout />}
               </div>
             </div>

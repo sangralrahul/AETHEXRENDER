@@ -89,6 +89,17 @@ import Analytics from "@/pages/Analytics";
 import AppWaitlist from "@/pages/AppWaitlist";
 import Enterprise from "@/pages/Enterprise";
 
+import AiDiagnosis from "@/pages/AiDiagnosis";
+import AiAnswerEval from "@/pages/AiAnswerEval";
+import LearningPath from "@/pages/LearningPath";
+import SmartFlashcards from "@/pages/SmartFlashcards";
+import VideoCases from "@/pages/VideoCases";
+import Webinars from "@/pages/Webinars";
+import Mentorship from "@/pages/Mentorship";
+import Leaderboard from "@/pages/Leaderboard";
+import InstitutionAnalytics from "@/pages/InstitutionAnalytics";
+import QuizBuilder from "@/pages/QuizBuilder";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: true, staleTime: 1000 * 30 },
@@ -249,6 +260,17 @@ function Router() {
                 <Route path="/analytics" component={Analytics} />
                 <Route path="/app" component={AppWaitlist} />
                 <Route path="/enterprise" component={Enterprise} />
+
+                <Route path="/diagnosis" component={AiDiagnosis} />
+                <Route path="/answer-eval" component={AiAnswerEval} />
+                <Route path="/learning-path" component={LearningPath} />
+                <Route path="/flashcards" component={SmartFlashcards} />
+                <Route path="/video-cases" component={VideoCases} />
+                <Route path="/webinars" component={Webinars} />
+                <Route path="/mentorship" component={Mentorship} />
+                <Route path="/leaderboard" component={Leaderboard} />
+                <Route path="/institution-analytics" component={InstitutionAnalytics} />
+                <Route path="/quiz-builder" component={QuizBuilder} />
 
                 <Route component={NotFound} />
               </Switch>

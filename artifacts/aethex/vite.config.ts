@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+import { VitePWA } from "vite-plugin-pwa";
 
 const rawPort = process.env.PORT;
 
@@ -32,6 +33,43 @@ export default defineConfig({
     react(),
     tailwindcss(),
     runtimeErrorOverlay(),
+    VitePWA({
+      registerType: "autoUpdate",
+      base: basePath,
+      includeAssets: ["favicon.ico", "apple-touch-icon.png", "favicon-32.png"],
+      manifest: {
+        name: "AETHEX - Medical Store",
+        short_name: "AETHEX",
+        description: "India's trusted medical SaaS platform for doctors and medical students",
+        theme_color: "#007AFF",
+        background_color: "#0B0F1A",
+        display: "standalone",
+        start_url: basePath,
+        scope: basePath,
+        icons: [
+          { src: "favicon-32.png", sizes: "32x32", type: "image/png" },
+          { src: "apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+          { src: "favicon.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
+        ],
+        categories: ["medical", "education", "health"],
+        lang: "en",
+      },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,woff2}"],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: "CacheFirst",
+            options: { cacheName: "google-fonts-cache", expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 } },
+          },
+          {
+            urlPattern: /\/api\/.*/i,
+            handler: "NetworkFirst",
+            options: { cacheName: "api-cache", expiration: { maxEntries: 100, maxAgeSeconds: 60 * 5 } },
+          },
+        ],
+      },
+    }),
     ...(process.env.NODE_ENV !== "production" &&
     process.env.REPL_ID !== undefined
       ? [

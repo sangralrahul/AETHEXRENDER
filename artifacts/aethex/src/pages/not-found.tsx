@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Home, ArrowLeft, Activity, Search } from "lucide-react";
+import { Home, ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
@@ -42,15 +42,14 @@ export default function NotFound() {
         }}
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 mb-10 group">
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}
-          >
-            <Activity className="w-5 h-5 text-white" />
-          </div>
+        <Link href="/" className="flex items-center gap-2.5 mb-10">
+          <img
+            src={`${import.meta.env.BASE_URL}aethex-logo.jpg`}
+            alt="Aethex logo"
+            className="w-10 h-10 object-contain rounded-xl"
+          />
           <span
-            className="text-xl font-display font-extrabold tracking-tight"
+            className="text-xl font-display font-bold tracking-tight"
             style={{ color: "#1C1C1E", letterSpacing: "-0.02em" }}
           >
             aethex

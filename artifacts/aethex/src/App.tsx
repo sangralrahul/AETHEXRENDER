@@ -71,6 +71,10 @@ import SellerOrders from "@/pages/seller/Orders";
 import SellerPayouts from "@/pages/seller/Payouts";
 import SellerAnalytics from "@/pages/seller/Analytics";
 import SellerSettings from "@/pages/seller/Settings";
+import CalculatorPage from "@/pages/Calculator";
+import Jobs from "@/pages/Jobs";
+import Community from "@/pages/Community";
+import ClinicalCases from "@/pages/ClinicalCases";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -209,6 +213,12 @@ function Router() {
                 <Route path="/blog/:slug" component={BlogPost} />
                 <Route path="/blog" component={Blog} />
                 <Route path="/news" component={MedicalNews} />
+
+                {/* New feature pages */}
+                <Route path="/calculator" component={CalculatorPage} />
+                <Route path="/jobs" component={Jobs} />
+                <Route path="/community" component={Community} />
+                <Route path="/cases" component={ClinicalCases} />
 
                 <Route component={NotFound} />
               </Switch>

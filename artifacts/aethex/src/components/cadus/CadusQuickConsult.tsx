@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
-import { X, Send, BotMessageSquare, ChevronDown, Sparkles } from "lucide-react";
-import CadusLogo from "./CadusLogo";
+import { X, Send, BotMessageSquare, Sparkles, Brain } from "lucide-react";
 
-const STORAGE_KEY = "cadus_quick_chat_v1";
+const STORAGE_KEY = "cadus_quick_chat_v2";
 const HIDDEN_ROUTES = ["/ai-assistant"];
 
 interface Message {
@@ -33,8 +32,8 @@ function AssistantBubble({ content }: { content: string }) {
     <div className="flex flex-col gap-1.5">
       {paragraphs.map((p, i) => (
         <p key={i} className="text-sm leading-relaxed" style={{ color: "#1C1C1E", whiteSpace: "pre-wrap" }}>
-          {p.split("\n").map((line, j) => (
-            <span key={j}>{line}{j < p.split("\n").length - 1 && <br />}</span>
+          {p.split("\n").map((line, j, arr) => (
+            <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
           ))}
         </p>
       ))}
@@ -48,23 +47,20 @@ export default function CadusQuickConsult() {
   const [messages, setMessages] = useState<Message[]>(() => loadHistory());
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showLabel, setShowLabel] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
 
   const isHidden = HIDDEN_ROUTES.some(r => location === r || location.startsWith(r + "/"));
 
-  useEffect(() => {
-    saveHistory(messages);
-  }, [messages]);
+  useEffect(() => { saveHistory(messages); }, [messages]);
 
   useEffect(() => {
     if (open) {
-      setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 60);
-      setTimeout(() => inputRef.current?.focus(), 80);
+      setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 80);
+      setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [open, messages]);
+  }, [open, messages.length]);
 
   const sendMessage = useCallback(async () => {
     const text = input.trim();
@@ -90,8 +86,7 @@ export default function CadusQuickConsult() {
       });
       const data = await resp.json();
       const reply = data.message ?? "Sorry, I couldn't process that. Please try again.";
-      const assistantMsg: Message = { role: "assistant", content: reply, ts: Date.now() };
-      setMessages(prev => [...prev, assistantMsg]);
+      setMessages(prev => [...prev, { role: "assistant", content: reply, ts: Date.now() }]);
     } catch {
       setMessages(prev => [...prev, {
         role: "assistant",
@@ -104,98 +99,119 @@ export default function CadusQuickConsult() {
   }, [input, loading, messages, apiBase]);
 
   const handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   };
 
   if (isHidden) return null;
 
   return (
     <>
-      {/* ── Backdrop (mobile only) ── */}
+      {/* ── Global keyframes ── */}
+      <style>{`
+        @keyframes cadus-dot-bounce {
+          0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+          40% { transform: translateY(-5px); opacity: 1; }
+        }
+        @keyframes cadus-fab-pulse {
+          0% { transform: scale(1); opacity: 0.55; }
+          70% { transform: scale(1.65); opacity: 0; }
+          100% { transform: scale(1.65); opacity: 0; }
+        }
+        @keyframes cadus-online-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.45; }
+        }
+      `}</style>
+
+      {/* ── Mobile backdrop ── */}
       {open && (
         <div
           className="fixed inset-0 z-[89] sm:hidden"
-          style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(2px)" }}
+          style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(3px)" }}
           onClick={() => setOpen(false)}
         />
       )}
 
       {/* ── Chat Drawer ── */}
       <div
-        className="fixed z-[90] transition-all duration-300 ease-out"
+        className="fixed z-[90]"
         style={{
-          bottom: open ? 0 : "-520px",
+          bottom: 0,
           right: 0,
           width: "100%",
           maxWidth: "min(420px, 100vw)",
-          height: "520px",
-          borderRadius: "18px 18px 0 0",
+          height: 520,
+          borderRadius: "20px 20px 0 0",
           overflow: "hidden",
           background: "#FFFFFF",
-          boxShadow: open
-            ? "0 -8px 48px rgba(0,0,0,0.16), 0 0 0 1px rgba(60,60,67,0.1)"
-            : "none",
+          boxShadow: open ? "0 -8px 48px rgba(0,0,0,0.18), 0 0 0 1px rgba(60,60,67,0.09)" : "none",
           pointerEvents: open ? "auto" : "none",
           opacity: open ? 1 : 0,
-          transform: open ? "translateY(0)" : "translateY(20px)",
+          transform: open ? "translateY(0)" : "translateY(28px)",
+          transition: "opacity 0.28s cubic-bezier(0.34,1.56,0.64,1), transform 0.28s cubic-bezier(0.34,1.56,0.64,1)",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 shrink-0"
+        <div className="flex items-center justify-between px-4 shrink-0"
           style={{
             background: "linear-gradient(135deg, #007AFF 0%, #00C2A8 100%)",
-            minHeight: 58,
+            height: 60,
           }}>
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(255,255,255,0.15)" }}>
-              <CadusLogo size="sm" thinking={loading} className="scale-75" />
+            {/* Brain icon in a circle */}
+            <div className="relative w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: "rgba(255,255,255,0.18)" }}>
+              <Brain className="w-4.5 h-4.5 text-white" style={{ width: 18, height: 18 }} />
+              {/* Green online dot */}
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white"
+                style={{
+                  background: "#34C759",
+                  animation: "cadus-online-pulse 2.4s ease-in-out infinite",
+                }} />
             </div>
             <div>
-              <p className="font-bold text-sm text-white leading-tight">Cadus AI</p>
-              <p className="text-xs text-white/70 leading-tight">Medical quick consult</p>
+              <div className="flex items-center gap-1.5">
+                <p className="font-bold text-sm text-white leading-tight">Cadus AI</p>
+                <span className="text-xs font-medium text-white/60 leading-tight">· online</span>
+              </div>
+              <p className="text-xs leading-tight" style={{ color: "rgba(255,255,255,0.65)" }}>
+                Powered by Cadus AI — Aethex
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-              style={{ background: "rgba(255,255,255,0.15)", color: "#FFFFFF" }}>
-              Powered by Cadus
-            </span>
-            <button
-              onClick={() => setOpen(false)}
-              className="w-7 h-7 rounded-full flex items-center justify-center transition-all"
-              style={{ background: "rgba(255,255,255,0.15)" }}
-              onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.25)")}
-              onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.15)")}
-            >
-              <X className="w-3.5 h-3.5 text-white" />
-            </button>
-          </div>
+          <button
+            onClick={() => setOpen(false)}
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+            style={{ background: "rgba(255,255,255,0.15)" }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.28)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.15)")}
+            aria-label="Close"
+          >
+            <X className="w-4 h-4 text-white" />
+          </button>
         </div>
 
-        {/* Messages area */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3"
-          style={{ height: "calc(520px - 58px - 64px)", overflowY: "auto" }}>
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3">
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
+            <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-2">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, rgba(0,122,255,0.12) 0%, rgba(0,194,168,0.12) 100%)" }}>
+                style={{ background: "linear-gradient(135deg,rgba(0,122,255,0.12),rgba(0,194,168,0.12))" }}>
                 <BotMessageSquare className="w-6 h-6" style={{ color: "#007AFF" }} />
               </div>
               <div>
                 <p className="font-semibold text-sm" style={{ color: "#1C1C1E" }}>Ask Cadus AI anything</p>
-                <p className="text-xs mt-1" style={{ color: "#8E8E93" }}>Drug info · Dosages · Clinical questions</p>
+                <p className="text-xs mt-0.5" style={{ color: "#8E8E93" }}>Drug info · Dosages · Clinical questions</p>
               </div>
-              <div className="flex flex-wrap gap-1.5 justify-center mt-1">
+              <div className="flex flex-wrap gap-1.5 justify-center">
                 {["What is metformin used for?", "Signs of PE?", "Normal INR range?"].map(q => (
                   <button key={q}
                     onClick={() => { setInput(q); inputRef.current?.focus(); }}
-                    className="text-xs px-3 py-1.5 rounded-full transition-all"
+                    className="text-xs px-3 py-1.5 rounded-full transition-colors"
                     style={{ background: "rgba(0,122,255,0.08)", color: "#007AFF", border: "1px solid rgba(0,122,255,0.15)" }}
-                    onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,122,255,0.14)")}
+                    onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,122,255,0.15)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "rgba(0,122,255,0.08)")}
                   >
                     {q}
@@ -206,23 +222,21 @@ export default function CadusQuickConsult() {
           )}
 
           {messages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} gap-2`}>
+            <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               {msg.role === "assistant" && (
                 <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                   style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>
                   <Sparkles className="w-3 h-3 text-white" />
                 </div>
               )}
-              <div
-                className="max-w-[80%] px-3 py-2.5 rounded-2xl text-sm"
+              <div className="max-w-[82%] px-3 py-2.5 text-sm"
                 style={msg.role === "user"
-                  ? { background: "linear-gradient(135deg,#007AFF,#0056CC)", color: "#FFFFFF", borderRadius: "18px 18px 4px 18px" }
+                  ? { background: "linear-gradient(135deg,#007AFF,#005EC3)", color: "#FFF", borderRadius: "18px 18px 4px 18px" }
                   : { background: "#F2F2F7", color: "#1C1C1E", borderRadius: "4px 18px 18px 18px" }}
               >
                 {msg.role === "assistant"
                   ? <AssistantBubble content={msg.content} />
-                  : <p className="text-sm leading-relaxed">{msg.content}</p>
-                }
+                  : <p className="leading-relaxed">{msg.content}</p>}
               </div>
             </div>
           ))}
@@ -233,26 +247,21 @@ export default function CadusQuickConsult() {
                 style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>
                 <Sparkles className="w-3 h-3 text-white" />
               </div>
-              <div className="px-3 py-2.5 rounded-2xl flex items-center gap-1.5"
+              <div className="px-3.5 py-3 rounded-2xl flex items-center gap-1.5"
                 style={{ background: "#F2F2F7", borderRadius: "4px 18px 18px 18px" }}>
                 {[0, 1, 2].map(d => (
                   <span key={d} className="w-1.5 h-1.5 rounded-full block"
-                    style={{
-                      background: "#007AFF",
-                      opacity: 0.6,
-                      animation: `cadus-dot-bounce 1.2s ease-in-out ${d * 0.2}s infinite`,
-                    }} />
+                    style={{ background: "#007AFF", animation: `cadus-dot-bounce 1.2s ease-in-out ${d * 0.2}s infinite` }} />
                 ))}
               </div>
             </div>
           )}
-
           <div ref={bottomRef} />
         </div>
 
-        {/* Input area */}
+        {/* Input */}
         <div className="px-3 py-2.5 flex items-end gap-2 shrink-0"
-          style={{ borderTop: "1px solid rgba(60,60,67,0.1)", background: "#FFFFFF" }}>
+          style={{ borderTop: "1px solid rgba(60,60,67,0.09)", background: "#FAFAFA" }}>
           <textarea
             ref={inputRef}
             value={input}
@@ -265,9 +274,10 @@ export default function CadusQuickConsult() {
               background: "#F2F2F7",
               border: "1.5px solid rgba(60,60,67,0.1)",
               color: "#1C1C1E",
-              maxHeight: 80,
+              maxHeight: 84,
               minHeight: 40,
               transition: "border-color 0.15s",
+              lineHeight: "1.45",
             }}
             onFocus={e => (e.target.style.borderColor = "#007AFF")}
             onBlur={e => (e.target.style.borderColor = "rgba(60,60,67,0.1)")}
@@ -279,78 +289,66 @@ export default function CadusQuickConsult() {
             style={{
               background: input.trim() && !loading
                 ? "linear-gradient(135deg,#007AFF,#00C2A8)"
-                : "rgba(120,120,128,0.15)",
+                : "rgba(120,120,128,0.12)",
             }}
           >
             <Send className="w-4 h-4"
-              style={{ color: input.trim() && !loading ? "#FFFFFF" : "#AEAEB2" }} />
+              style={{ color: input.trim() && !loading ? "#FFF" : "#AEAEB2" }} />
           </button>
         </div>
       </div>
 
-      {/* ── Floating Action Button ── */}
+      {/* ── FAB ── */}
       <div
-        className="fixed z-[88] flex items-center gap-2 transition-all duration-200"
+        className="fixed z-[88]"
         style={{
           bottom: 24,
-          right: 24,
+          right: 20,
           pointerEvents: open ? "none" : "auto",
           opacity: open ? 0 : 1,
-          transform: open ? "scale(0.85)" : "scale(1)",
+          transform: open ? "scale(0.8) translateY(8px)" : "scale(1)",
+          transition: "opacity 0.22s ease, transform 0.22s ease",
         }}
       >
-        {/* Hover label */}
-        <div
-          className="transition-all duration-200 overflow-hidden"
-          style={{
-            maxWidth: showLabel ? 110 : 0,
-            opacity: showLabel ? 1 : 0,
-          }}
-        >
-          <span className="whitespace-nowrap text-sm font-bold px-3 py-2 rounded-xl block"
-            style={{
-              background: "#1C1C1E",
-              color: "#FFFFFF",
-              boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
-            }}>
-            Ask Cadus
-          </span>
-        </div>
-
         <button
           onClick={() => setOpen(true)}
-          onMouseEnter={() => setShowLabel(true)}
-          onMouseLeave={() => setShowLabel(false)}
-          onFocus={() => setShowLabel(true)}
-          onBlur={() => setShowLabel(false)}
           aria-label="Ask Cadus AI"
-          className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200"
+          className="relative flex items-center gap-2.5 rounded-full transition-all duration-200"
           style={{
             background: "linear-gradient(135deg,#007AFF 0%,#00C2A8 100%)",
-            boxShadow: "0 6px 24px rgba(0,122,255,0.35), 0 2px 8px rgba(0,0,0,0.15)",
+            boxShadow: "0 6px 24px rgba(0,122,255,0.38), 0 2px 8px rgba(0,0,0,0.12)",
+            paddingLeft: 14,
+            paddingRight: 20,
+            height: 52,
           }}
           onMouseEnter={e => {
-            setShowLabel(true);
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 32px rgba(0,122,255,0.45), 0 2px 8px rgba(0,0,0,0.2)";
-            (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.06)";
+            (e.currentTarget as HTMLElement).style.boxShadow = "0 10px 32px rgba(0,122,255,0.48), 0 2px 10px rgba(0,0,0,0.18)";
+            (e.currentTarget as HTMLElement).style.transform = "scale(1.04)";
           }}
           onMouseLeave={e => {
-            setShowLabel(false);
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 6px 24px rgba(0,122,255,0.35), 0 2px 8px rgba(0,0,0,0.15)";
-            (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
+            (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(0,122,255,0.38), 0 2px 8px rgba(0,0,0,0.12)";
+            (e.currentTarget as HTMLElement).style.transform = "scale(1)";
           }}
         >
-          <CadusLogo size="sm" className="scale-[0.72]" />
+          {/* Pulse ring */}
+          <span className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              border: "2px solid rgba(0,122,255,0.55)",
+              animation: "cadus-fab-pulse 2.4s cubic-bezier(0.4,0,0.6,1) infinite",
+            }} />
+
+          {/* Brain icon */}
+          <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
+            style={{ background: "rgba(255,255,255,0.2)" }}>
+            <Brain className="text-white" style={{ width: 16, height: 16 }} />
+          </div>
+
+          {/* Label: always visible on desktop, hidden on mobile */}
+          <span className="hidden sm:block text-sm font-bold text-white whitespace-nowrap">
+            Ask Cadus
+          </span>
         </button>
       </div>
-
-      {/* Dot bounce keyframes */}
-      <style>{`
-        @keyframes cadus-dot-bounce {
-          0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-          40% { transform: translateY(-5px); opacity: 1; }
-        }
-      `}</style>
     </>
   );
 }

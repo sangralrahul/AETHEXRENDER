@@ -469,8 +469,17 @@ export default function CmeHub() {
     <div className="min-h-screen" style={{ background: "#F4F4F6" }}>
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden py-16 lg:py-20"
-        style={{ background: "linear-gradient(135deg, #0A0F1E 0%, #0D1B2A 60%, #0F2040 100%)" }}>
+      <section className="relative overflow-hidden py-16 lg:py-20">
+        {/* Background photo — medical conference / lecture hall */}
+        <div className="absolute inset-0"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1600&q=80')",
+            backgroundSize: "cover",
+            backgroundPosition: "center top",
+          }} />
+        {/* Dark overlay */}
+        <div className="absolute inset-0"
+          style={{ background: "linear-gradient(135deg, rgba(10,15,30,0.82) 0%, rgba(13,27,42,0.78) 60%, rgba(15,32,64,0.84) 100%)" }} />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl pointer-events-none"
           style={{ background: "rgba(0,122,255,0.08)", transform: "translate(30%, -30%)" }} />
         <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl pointer-events-none"

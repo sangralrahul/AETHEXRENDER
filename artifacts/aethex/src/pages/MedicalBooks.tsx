@@ -402,8 +402,17 @@ export default function MedicalBooks() {
     }}>
 
       {/* ── Hero ── */}
-      <div className="relative overflow-hidden py-12"
-        style={{ background: "linear-gradient(135deg,#060A14 0%,#0D1B2A 60%,#102040 100%)" }}>
+      <div className="relative overflow-hidden py-12">
+        {/* Background photo — library / medical books */}
+        <div className="absolute inset-0"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1600&q=80')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }} />
+        {/* Dark overlay so text stays readable */}
+        <div className="absolute inset-0"
+          style={{ background: "linear-gradient(135deg, rgba(6,10,20,0.82) 0%, rgba(13,27,42,0.78) 60%, rgba(16,32,64,0.84) 100%)" }} />
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10"
             style={{ background: "#007AFF", transform: "translate(30%,-30%)" }} />

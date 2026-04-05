@@ -79,10 +79,15 @@ const benefits = [
 ];
 
 const TIER_COLORS: Record<string, { bg: string; text: string }> = {
-  Premier: { bg: "rgba(124,58,237,0.1)", text: "#7C3AED" },
-  Govt:    { bg: "rgba(0,122,255,0.1)", text: "#007AFF" },
-  Private: { bg: "rgba(0,194,168,0.1)", text: "#00A893" },
-  Corporate: { bg: "rgba(255,149,0,0.1)", text: "#CC7A00" },
+  Premier:   { bg: "rgba(124,58,237,0.1)",  text: "#7C3AED" },
+  Govt:      { bg: "rgba(0,122,255,0.1)",   text: "#007AFF" },
+  Private:   { bg: "rgba(0,194,168,0.1)",   text: "#00A893" },
+  Corporate: { bg: "rgba(255,149,0,0.1)",   text: "#CC7A00" },
+};
+
+const HOSPITAL_TYPE_COLORS: Record<string, { bg: string; text: string }> = {
+  "Government Hospital": { bg: "rgba(0,122,255,0.1)",  text: "#007AFF" },
+  "Corporate Hospital":  { bg: "rgba(255,149,0,0.1)",  text: "#CC7A00" },
 };
 
 const PAGE_SIZE = 24;
@@ -98,7 +103,13 @@ export default function InstitutionHub() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
-  const [activeTab, setActiveTab] = useState<"colleges" | "hospitals">("colleges");
+  const [activeTab, setActiveTab] = useState<"colleges" | "hospitals">(() => {
+    if (typeof window !== "undefined") {
+      const t = new URLSearchParams(window.location.search).get("type");
+      return t === "hospital" ? "hospitals" : "colleges";
+    }
+    return "colleges";
+  });
   const [search, setSearch] = useState("");
   const [selectedState, setSelectedState] = useState<string>("All States");
   const [selectedTier, setSelectedTier] = useState<string>("All");
@@ -125,9 +136,10 @@ export default function InstitutionHub() {
     return majorHospitals.filter(h => {
       const matchSearch = !q || h.name.toLowerCase().includes(q) || h.city.toLowerCase().includes(q);
       const matchState = selectedState === "All States" || h.state === selectedState;
-      return matchSearch && matchState;
+      const matchTier = selectedTier === "All" || h.tier === selectedTier;
+      return matchSearch && matchState && matchTier;
     });
-  }, [search, selectedState]);
+  }, [search, selectedState, selectedTier]);
 
   const activeList = activeTab === "colleges" ? filteredColleges : filteredHospitals;
   const totalCount = activeList.length;
@@ -271,20 +283,21 @@ export default function InstitutionHub() {
               )}
             </div>
 
-            {/* Tier filter — only for colleges */}
-            {activeTab === "colleges" && (
-              <div className="flex gap-2">
-                {["All", "Premier", "Govt", "Private"].map(tier => (
-                  <button key={tier} onClick={() => { setSelectedTier(tier); setPage(1); }}
-                    className="px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all"
-                    style={selectedTier === tier
-                      ? { background: "#1C1C1E", color: "#FFFFFF" }
-                      : { background: "#FFFFFF", color: "#636366", border: "1px solid rgba(60,60,67,0.12)" }}>
-                    {tier}
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Tier filter */}
+            <div className="flex gap-2">
+              {(activeTab === "colleges"
+                ? ["All", "Premier", "Govt", "Private"]
+                : ["All", "Premier", "Govt", "Corporate"]
+              ).map(tier => (
+                <button key={tier} onClick={() => { setSelectedTier(tier); setPage(1); }}
+                  className="px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all"
+                  style={selectedTier === tier
+                    ? { background: "#1C1C1E", color: "#FFFFFF" }
+                    : { background: "#FFFFFF", color: "#636366", border: "1px solid rgba(60,60,67,0.12)" }}>
+                  {tier}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Results count */}
@@ -314,25 +327,41 @@ export default function InstitutionHub() {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
               {visibleItems.map((inst, i) => {
+                const isHospital = activeTab === "hospitals";
                 const tier = (inst as any).tier as string;
                 const tc = TIER_COLORS[tier] ?? TIER_COLORS.Private;
+                const hospType = (inst as any).type as string | undefined;
+                const htc = hospType ? (HOSPITAL_TYPE_COLORS[hospType] ?? HOSPITAL_TYPE_COLORS["Corporate Hospital"]) : tc;
                 return (
                   <motion.div key={`${inst.name}-${inst.city}-${i}`}
                     initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i % 24} variants={fadeUp}
                     className="flex items-center gap-3 p-3.5 rounded-2xl"
                     style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.08)" }}>
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                      style={{ background: activeTab === "colleges" ? "rgba(0,122,255,0.08)" : "rgba(255,59,48,0.08)" }}>
-                      {activeTab === "colleges"
-                        ? <GraduationCap className="w-5 h-5" style={{ color: "#007AFF" }} />
-                        : <HeartPulse className="w-5 h-5" style={{ color: "#FF3B30" }} />}
+                      style={{ background: isHospital ? "rgba(255,59,48,0.08)" : "rgba(0,122,255,0.08)" }}>
+                      {isHospital
+                        ? <HeartPulse className="w-5 h-5" style={{ color: "#FF3B30" }} />
+                        : <GraduationCap className="w-5 h-5" style={{ color: "#007AFF" }} />}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="font-semibold text-xs leading-snug line-clamp-2" style={{ color: "#1C1C1E" }}>{inst.name}</div>
                       <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                         <span className="text-[10px]" style={{ color: "#AEAEB2" }}>{inst.city}</span>
-                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold"
-                          style={{ background: tc.bg, color: tc.text }}>{tier}</span>
+                        {isHospital && hospType ? (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold"
+                            style={{ background: htc.bg, color: htc.text }}>
+                            {hospType === "Government Hospital" ? "Govt" : "Corporate"}
+                          </span>
+                        ) : (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold"
+                            style={{ background: tc.bg, color: tc.text }}>{tier}</span>
+                        )}
+                        {isHospital && tier !== "Corporate" && tier !== "Govt" && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold"
+                            style={{ background: TIER_COLORS[tier]?.bg ?? "rgba(124,58,237,0.1)", color: TIER_COLORS[tier]?.text ?? "#7C3AED" }}>
+                            {tier}
+                          </span>
+                        )}
                       </div>
                       {(inst as any).state && (
                         <div className="text-[9px] mt-0.5" style={{ color: "#C7C7CC" }}>{(inst as any).state}</div>

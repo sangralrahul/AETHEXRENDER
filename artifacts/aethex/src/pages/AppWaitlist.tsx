@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Smartphone, Apple, CheckCircle, Share2, Gift, Star, Bell, Brain, BookOpen, ShoppingBag } from "lucide-react";
+import { Smartphone, CheckCircle, Share2, Gift, Star, Bell, Brain, BookOpen, ShoppingBag } from "lucide-react";
 
 const FEATURES = [
   { icon: Brain, title: "Cadus AI on the go", desc: "Ask clinical questions, get SOAP notes, and drug info — anytime, anywhere.", color: "#8B5CF6" },
@@ -32,6 +32,16 @@ export default function AppWaitlist() {
     <div className="min-h-screen" style={{ background: "#0A0E1A" }}>
       {/* Hero */}
       <div className="relative overflow-hidden pt-20 pb-24">
+        {/* Background photo — mobile/smartphone lifestyle */}
+        <div className="absolute inset-0"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1600&q=80')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }} />
+        {/* Dark overlay */}
+        <div className="absolute inset-0"
+          style={{ background: "linear-gradient(160deg, rgba(10,14,26,0.88) 0%, rgba(10,20,40,0.82) 50%, rgba(10,14,26,0.90) 100%)" }} />
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgba(0,122,255,0.15) 0%, transparent 70%)" }} />
           <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full blur-3xl translate-x-1/2" style={{ background: "rgba(0,194,168,0.08)" }} />
@@ -78,17 +88,24 @@ export default function AppWaitlist() {
             </div>
           )}
 
-          {/* Store badges placeholder */}
-          <div className="flex gap-3 justify-center mt-8">
-            {["App Store", "Google Play"].map((s, i) => (
-              <div key={i} className="flex items-center gap-2 px-5 py-3 rounded-2xl" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
-                {i === 0 ? <Apple className="w-5 h-5 text-white" /> : <Smartphone className="w-5 h-5 text-white" />}
-                <div className="text-left">
-                  <div className="text-[10px]" style={{ color: "rgba(255,255,255,0.5)" }}>Coming to</div>
-                  <div className="text-sm font-bold text-white">{s}</div>
-                </div>
-              </div>
-            ))}
+          {/* Official Store Badges */}
+          <div className="flex flex-wrap gap-4 justify-center mt-8">
+            {/* Apple App Store */}
+            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+                alt="Download on the App Store"
+                style={{ height: 52 }}
+              />
+            </a>
+            {/* Google Play */}
+            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                alt="Get it on Google Play"
+                style={{ height: 52 }}
+              />
+            </a>
           </div>
         </div>
       </div>

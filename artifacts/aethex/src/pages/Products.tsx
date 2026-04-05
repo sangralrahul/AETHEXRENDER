@@ -25,6 +25,39 @@ const categoryIconMap: Record<string, LucideIcon> = {
   Trophy, Zap,
 };
 
+const categoryGradients: Record<string, [string, string]> = {
+  medicines:               ["#1565C0", "#0D47A1"],
+  "surgical-instruments":  ["#37474F", "#263238"],
+  diagnostics:             ["#00695C", "#004D40"],
+  stethoscopes:            ["#283593", "#1A237E"],
+  "lab-research":          ["#2E7D32", "#1B5E20"],
+  "scrubs-clothing":       ["#0277BD", "#01579B"],
+  books:                   ["#E65100", "#BF360C"],
+  "ppe-safety":            ["#424242", "#212121"],
+  "cardiac-care":          ["#B71C1C", "#7F0000"],
+  "first-aid":             ["#C62828", "#B71C1C"],
+  orthopaedic:             ["#4E342E", "#3E2723"],
+  ophthalmology:           ["#006064", "#004D40"],
+  paediatric:              ["#AD1457", "#880E4F"],
+  neurology:               ["#4527A0", "#311B92"],
+  pulmonology:             ["#0277BD", "#01579B"],
+  nephrology:              ["#1565C0", "#0D47A1"],
+  gastroenterology:        ["#E65100", "#BF360C"],
+  dermatology:             ["#6A1B9A", "#4A148C"],
+  ent:                     ["#4527A0", "#311B92"],
+  gynaecology:             ["#880E4F", "#560027"],
+  endocrinology:           ["#F57F17", "#E65100"],
+  emergency:               ["#B71C1C", "#7F0000"],
+  radiology:               ["#212121", "#000000"],
+  oncology:                ["#004D40", "#00251A"],
+  anaesthesia:             ["#37474F", "#263238"],
+  physiotherapy:           ["#1B5E20", "#003300"],
+  "sports-medicine":       ["#33691E", "#1B5E20"],
+  psychiatry:              ["#311B92", "#1A237E"],
+  urology:                 ["#E65100", "#BF360C"],
+  nutrition:               ["#00695C", "#004D40"],
+};
+
 const PRICE_RANGES = [
   { id: "u500",      label: "Under ₹500",        test: (p: number) => p < 500 },
   { id: "500-2000",  label: "₹500 – ₹2,000",     test: (p: number) => p >= 500 && p < 2000 },
@@ -324,36 +357,90 @@ export default function Products() {
   }, [productsData, priceRange, selectedBrands, minRating, inStockOnly, sortBy]);
 
   const hasActiveFilters = !!(categoryFilter || priceRange.length || selectedBrands.length || minRating !== null || inStockOnly);
-  const activeCategoryName = categories?.find(c => c.slug === categoryFilter)?.name;
+  const activeCategory = categories?.find(c => c.slug === categoryFilter) ?? null;
+  const activeCategoryName = activeCategory?.name;
+  const activeCategoryIcon = activeCategory ? (categoryIconMap[activeCategory.iconName] ?? Activity) : null;
+  const activeCategoryGradient = categoryFilter ? (categoryGradients[categoryFilter] ?? ["#007AFF", "#005EC4"]) : null;
   const currentSortLabel = SORT_OPTIONS.find(s => s.value === sortBy)?.label ?? "Relevance";
 
   return (
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
 
       {/* ── Page header ── */}
-      <div className="bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex-1">
-            <h1 className="font-display font-extrabold text-2xl md:text-3xl text-[#1C1C1E] tracking-tight">
-              {searchFilter ? `Results for "${searchFilter}"` : activeCategoryName ?? "Medical Store"}
-            </h1>
-            <p className="text-sm text-[#8E8E93] mt-0.5">
-              {loadingProducts ? "Loading…" : `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} found`}
-            </p>
+      {activeCategoryGradient && activeCategoryIcon ? (
+        /* ── Category gradient banner ── */
+        <div
+          className="relative overflow-hidden"
+          style={{ background: `linear-gradient(135deg, ${activeCategoryGradient[0]} 0%, ${activeCategoryGradient[1]} 100%)` }}
+        >
+          {/* Decorative blobs */}
+          <div className="absolute -top-10 -right-10 w-52 h-52 rounded-full opacity-10" style={{ background: "white" }} />
+          <div className="absolute -bottom-14 -left-8 w-64 h-64 rounded-full opacity-10" style={{ background: "white" }} />
+
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 flex flex-col sm:flex-row sm:items-center gap-5">
+            <div className="flex items-center gap-5 flex-1 min-w-0">
+              {/* Icon circle */}
+              <div className="shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)" }}>
+                {(() => { const Icon = activeCategoryIcon; return <Icon className="w-8 h-8 text-white" />; })()}
+              </div>
+              <div className="min-w-0">
+                <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Category</p>
+                <h1 className="font-display font-extrabold text-2xl md:text-4xl text-white tracking-tight leading-tight truncate">
+                  {activeCategoryName}
+                </h1>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="text-white/80 text-sm font-semibold">
+                    {loadingProducts ? "Loading…" : `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} found`}
+                  </span>
+                  <button
+                    onClick={() => setCategory("")}
+                    className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full transition-all hover:bg-white/20"
+                    style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)" }}
+                  >
+                    <X className="w-3 h-3" /> Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+            {/* Search bar — dark on gradient */}
+            <form onSubmit={handleSearchSubmit} className="relative w-full sm:w-72 shrink-0">
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
+              <input
+                type="text"
+                value={localSearch}
+                onChange={e => setLocalSearch(e.target.value)}
+                placeholder="Search products…"
+                className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl focus:outline-none transition-all text-white placeholder-white/40"
+                style={{ background: "rgba(255,255,255,0.13)", border: "1px solid rgba(255,255,255,0.22)" }}
+              />
+            </form>
           </div>
-          {/* Search bar */}
-          <form onSubmit={handleSearchSubmit} className="relative w-full sm:w-72">
-            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              value={localSearch}
-              onChange={e => setLocalSearch(e.target.value)}
-              placeholder="Search products…"
-              className="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#007AFF] focus:ring-2 focus:ring-[#007AFF]/20 transition-all"
-            />
-          </form>
         </div>
-      </div>
+      ) : (
+        /* ── Default white header ── */
+        <div className="bg-white border-b border-slate-200 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex-1">
+              <h1 className="font-display font-extrabold text-2xl md:text-3xl text-[#1C1C1E] tracking-tight">
+                {searchFilter ? `Results for "${searchFilter}"` : "Medical Store"}
+              </h1>
+              <p className="text-sm text-[#8E8E93] mt-0.5">
+                {loadingProducts ? "Loading…" : `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} found`}
+              </p>
+            </div>
+            <form onSubmit={handleSearchSubmit} className="relative w-full sm:w-72">
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                value={localSearch}
+                onChange={e => setLocalSearch(e.target.value)}
+                placeholder="Search products…"
+                className="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#007AFF] focus:ring-2 focus:ring-[#007AFF]/20 transition-all"
+              />
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex gap-6">

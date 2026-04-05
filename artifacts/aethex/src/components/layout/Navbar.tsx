@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database, BadgeCheck, Calculator, Briefcase, MessageSquare, Smartphone } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database, BadgeCheck, Calculator, Briefcase, MessageSquare, Smartphone, Bell, HeadphonesIcon, Megaphone, Download, Gift, ClipboardList, MoreHorizontal } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useUserAuth } from "@/hooks/use-user-auth";
@@ -15,66 +15,24 @@ export function BrandSwitcherBar() {
   const isEnterprise = location === "/enterprise";
 
   const tabs = [
-    {
-      href: "/",
-      label: "Aethex",
-      icon: null,
-      useLogoImg: true,
-      active: !isCareers && !isApp && !isEnterprise,
-    },
-    {
-      href: "/jobs",
-      label: "Careers",
-      icon: Briefcase,
-      useLogoImg: false,
-      active: isCareers,
-    },
-    {
-      href: "/app",
-      label: "Mobile App",
-      icon: Smartphone,
-      useLogoImg: false,
-      active: isApp,
-    },
-    {
-      href: "/enterprise",
-      label: "For Institutions",
-      icon: Building2,
-      useLogoImg: false,
-      active: isEnterprise,
-    },
+    { href: "/", label: "Aethex", icon: null, useLogoImg: true, active: !isCareers && !isApp && !isEnterprise },
+    { href: "/jobs", label: "Careers", icon: Briefcase, useLogoImg: false, active: isCareers },
+    { href: "/app", label: "Mobile App", icon: Smartphone, useLogoImg: false, active: isApp },
+    { href: "/enterprise", label: "For Institutions", icon: Building2, useLogoImg: false, active: isEnterprise },
   ];
 
   return (
-    <div
-      data-brand-switcher
-      className="no-print w-full"
-      style={{ background: "linear-gradient(90deg,#0055CC 0%,#007AFF 60%,#0088FF 100%)" }}
-    >
+    <div data-brand-switcher className="no-print w-full" style={{ background: "linear-gradient(90deg,#0055CC 0%,#007AFF 60%,#0088FF 100%)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-9">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
-            <Link
-              key={tab.href}
-              href={tab.href}
+            <Link key={tab.href} href={tab.href}
               className="flex items-center gap-1.5 px-3.5 h-full text-xs font-semibold relative transition-all select-none"
-              style={{
-                color: tab.active ? "#FFFFFF" : "rgba(255,255,255,0.65)",
-                borderBottom: tab.active ? "2px solid #FFFFFF" : "2px solid transparent",
-                marginBottom: -1,
-              }}
-            >
+              style={{ color: tab.active ? "#FFFFFF" : "rgba(255,255,255,0.65)", borderBottom: tab.active ? "2px solid #FFFFFF" : "2px solid transparent", marginBottom: -1 }}>
               {tab.useLogoImg ? (
-                <img
-                  src={`${import.meta.env.BASE_URL}aethex-logo.jpg`}
-                  alt="Aethex"
-                  className="w-4 h-4 rounded object-contain"
-                  style={{ filter: "brightness(1.1)" }}
-                />
-              ) : Icon ? (
-                <Icon className="w-3.5 h-3.5" />
-              ) : null}
+                <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="Aethex" className="w-4 h-4 rounded object-contain" style={{ filter: "brightness(1.1)" }} />
+              ) : Icon ? <Icon className="w-3.5 h-3.5" /> : null}
               {tab.label}
             </Link>
           );
@@ -131,121 +89,52 @@ const communityMenu = [
   { href: "/jobs", icon: Briefcase, label: "Medical Jobs Board", desc: "20 hospital & clinic listings", color: "#10B981" },
 ];
 
-const institutionsMenu = [
-  { href: "/institutions?type=medical-college", icon: University, label: "Medical Colleges", desc: "MBBS, MD, MS admissions", color: "#007AFF" },
-  { href: "/institutions?type=hospital", icon: Building2, label: "Hospitals", desc: "Top hospitals & networks", color: "#EF4444" },
-  { href: "/institutions?type=pg-entrance", icon: GraduationCap, label: "PG Entrance", desc: "NEET PG, NEXT coaching", color: "#F59E0B" },
-  { href: "/institutions?type=research", icon: Microscope, label: "Research Institutes", desc: "ICMR, AIIMS, CMC & more", color: "#8B5CF6" },
-  { href: "/institutions?type=nursing", icon: HeartPulse, label: "Nursing Colleges", desc: "BSc, MSc Nursing programs", color: "#10B981" },
-  { href: "/institutions?type=pharmacy", icon: Pill, label: "Pharmacy Colleges", desc: "B.Pharm, Pharm.D programs", color: "#06B6D4" },
-];
-
-function NavDropdown({ label, href, menu, open, onToggle, onClose, dropdownRef }: {
-  label: string;
-  href: string;
-  menu: typeof institutionsMenu;
+function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
   open: boolean;
   onToggle: () => void;
   onClose: () => void;
   dropdownRef: React.RefObject<HTMLDivElement>;
-}) {
-  const [location] = useLocation();
-  const active = location.startsWith(href);
-
-  return (
-    <div ref={dropdownRef} className="relative hidden lg:block">
-      <button
-        onClick={onToggle}
-        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
-        style={{
-          color: active ? "#007AFF" : "#636366",
-          background: active ? "rgba(0,122,255,0.08)" : open ? "rgba(60,60,67,0.06)" : "transparent",
-        }}
-        onMouseEnter={e => { if (!active && !open) (e.currentTarget as HTMLButtonElement).style.background = "rgba(60,60,67,0.06)"; }}
-        onMouseLeave={e => { if (!active && !open) (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
-      >
-        {label}
-      </button>
-
-      {open && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[440px] rounded-2xl z-50 overflow-hidden"
-          style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 16px 48px rgba(0,0,0,0.14)" }}>
-          <div className="px-4 pt-3 pb-2 border-b" style={{ borderColor: "rgba(60,60,67,0.08)" }}>
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#AEAEB2" }}>{label}</p>
-          </div>
-          <div className="p-3 grid grid-cols-2 gap-1">
-            {menu.map((item) => (
-              <Link key={item.href} href={item.href} onClick={onClose}
-                className="flex items-center gap-3 p-3 rounded-xl transition-all hover:-translate-y-0.5"
-                style={{ background: "transparent" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `${item.color}08`; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
-                <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ background: `${item.color}14`, border: `1px solid ${item.color}25` }}>
-                  <item.icon className="w-4 h-4" style={{ color: item.color }} />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold truncate" style={{ color: "#1C1C1E" }}>{item.label}</p>
-                  <p className="text-[10px] truncate" style={{ color: "#AEAEB2" }}>{item.desc}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-          <div className="px-4 py-2.5 border-t" style={{ borderColor: "rgba(60,60,67,0.08)", background: "rgba(60,60,67,0.02)" }}>
-            <Link href={href} onClick={onClose} className="text-xs font-semibold" style={{ color: "#007AFF" }}>
-              View all {label} →
-            </Link>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
-  open: boolean;
-  onToggle: () => void;
-  onClose: () => void;
-  dropdownRef: React.RefObject<HTMLDivElement>;
+  dark?: boolean;
 }) {
   const [location] = useLocation();
   const active = location === "/tools" || location.startsWith("/tools/") || location === "/calculator";
-  const [dropdownTop, setDropdownTop] = useState(100);
+  const [dropdownTop, setDropdownTop] = useState(148);
 
   const handleToggle = () => {
     if (!open) {
       const brandBar = document.querySelector("[data-brand-switcher]") as HTMLElement | null;
       const announcement = document.querySelector("[data-navbar-announcement]") as HTMLElement | null;
       const header = document.querySelector("header") as HTMLElement | null;
+      const catBar = document.querySelector("[data-category-bar]") as HTMLElement | null;
       const bH = brandBar ? brandBar.getBoundingClientRect().height : 0;
       const aH = announcement ? announcement.getBoundingClientRect().height : 0;
-      const hH = header ? header.getBoundingClientRect().height : 64;
-      setDropdownTop(Math.round(bH + aH + hH));
+      const hH = header ? header.getBoundingClientRect().height : 56;
+      const cH = catBar ? catBar.getBoundingClientRect().height : 48;
+      setDropdownTop(Math.round(bH + aH + hH + cH));
     }
     onToggle();
   };
 
+  const textColor = dark ? "rgba(255,255,255,0.8)" : "#636366";
+  const activeColor = dark ? "#60A5FA" : "#007AFF";
+  const activeBg = dark ? "rgba(96,165,250,0.12)" : "rgba(0,122,255,0.08)";
+  const hoverBg = dark ? "rgba(255,255,255,0.06)" : "rgba(60,60,67,0.06)";
+
   return (
-    <div ref={dropdownRef} className="relative hidden lg:block">
+    <div ref={dropdownRef} className="relative">
       <button
         onClick={handleToggle}
-        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
-        style={{
-          color: active ? "#007AFF" : "#636366",
-          background: active ? "rgba(0,122,255,0.08)" : open ? "rgba(60,60,67,0.06)" : "transparent",
-        }}
-        onMouseEnter={e => { if (!active && !open) (e.currentTarget as HTMLButtonElement).style.background = "rgba(60,60,67,0.06)"; }}
-        onMouseLeave={e => { if (!active && !open) (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+        className="flex flex-col items-center justify-center px-4 h-12 shrink-0 text-xs relative transition-all"
+        style={{ color: active ? activeColor : textColor, borderBottom: active ? `2px solid ${activeColor}` : "2px solid transparent" }}
       >
-        Tools <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+        <Stethoscope className="w-4 h-4 mb-0.5" />
+        Tools
       </button>
 
       {open && (
         <div className="fixed z-50 rounded-b-2xl overflow-hidden"
           style={{ top: dropdownTop, right: 24, width: 740, background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", borderTop: "2px solid #007AFF", boxShadow: "0 16px 48px rgba(0,0,0,0.14)" }}>
           <div className="flex divide-x" style={{ divideColor: "rgba(60,60,67,0.08)" }}>
-
-            {/* Left: Clinical Tools + Community */}
             <div className="flex-shrink-0 w-72 p-3 flex flex-col gap-0.5">
               <div className="flex items-center justify-between px-2 py-1.5">
                 <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#AEAEB2" }}>Clinical Tools</p>
@@ -267,7 +156,6 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
                   </div>
                 </Link>
               ))}
-
               <div className="mt-2 pt-2" style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }}>
                 <p className="text-[10px] font-bold uppercase tracking-wider px-2 py-1.5" style={{ color: "#AEAEB2" }}>Community & Careers</p>
                 {communityMenu.map(item => (
@@ -288,8 +176,6 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
                 ))}
               </div>
             </div>
-
-            {/* Right: All 21 Calculators */}
             <div className="flex-1 p-3">
               <div className="flex items-center justify-between px-2 py-1.5 mb-1">
                 <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#AEAEB2" }}>Medical Calculators</p>
@@ -301,11 +187,7 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
                   return (
                     <Link key={calc.id} href={`/calculator?id=${calc.id}`} onClick={onClose}
                       className="flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all text-xs"
-                      style={{
-                        color: isActive ? "#007AFF" : "#1C1C1E",
-                        background: isActive ? "rgba(0,122,255,0.08)" : "transparent",
-                        fontWeight: isActive ? 600 : 400,
-                      }}
+                      style={{ color: isActive ? "#007AFF" : "#1C1C1E", background: isActive ? "rgba(0,122,255,0.08)" : "transparent", fontWeight: isActive ? 600 : 400 }}
                       onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,122,255,0.05)"; }}
                       onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
                       <Calculator className="w-3 h-3 shrink-0" style={{ color: "#007AFF", opacity: 0.7 }} />
@@ -322,6 +204,46 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
   );
 }
 
+const categories = [
+  { href: "/", icon: Star, label: "For You", exact: true },
+  { href: "/shop", icon: Store, label: "Shop" },
+  { href: "/books", icon: BookOpen, label: "Books" },
+  { href: "/study-hub", icon: GraduationCap, label: "Study Hub" },
+  { href: "/cme-hub", icon: Crown, label: "CME Hub" },
+  { href: "/neet-pg", icon: FileText, label: "NEET-PG" },
+  { href: "/drug-reference", icon: Pill, label: "Drug Ref" },
+  { href: "/calculator", icon: Calculator, label: "Calculators" },
+  { href: "/cases", icon: Activity, label: "Cases" },
+  { href: "/ai-assistant", icon: Brain, label: "Cadus AI" },
+  { href: "/community", icon: MessageSquare, label: "Community" },
+  { href: "/jobs", icon: Briefcase, label: "Jobs" },
+  { href: "/institutions", icon: Building2, label: "Institutions" },
+  { href: "/blog", icon: Newspaper, label: "Blog" },
+  { href: "/news", icon: Megaphone, label: "News" },
+  { href: "/pricing", icon: Crown, label: "Pricing" },
+];
+
+const loginMenuItems = [
+  { href: "/account", icon: User, label: "My Profile" },
+  { href: "/pricing", icon: Crown, label: "Cadus AI Pro" },
+  { href: "/orders", icon: Package, label: "My Orders" },
+  { href: "/cme-hub", icon: GraduationCap, label: "My CME Certificates" },
+  { href: "/verification", icon: BadgeCheck, label: "Doctor Verification Badge" },
+  { href: "/my-reviews", icon: Star, label: "My Reviews" },
+  { href: "/orders/track", icon: MapPin, label: "Track Order" },
+  { href: "/settings", icon: Bell, label: "Notification Preferences" },
+  { href: "/contact", icon: HeadphonesIcon, label: "24x7 Customer Care" },
+  { href: "/enterprise", icon: Megaphone, label: "Advertise on Aethex" },
+  { href: "/app", icon: Download, label: "Download App" },
+];
+
+const moreMenuItems = [
+  { href: "/seller/register", icon: Store, label: "List Your Practice" },
+  { href: "/settings", icon: Bell, label: "Notification Settings" },
+  { href: "/contact", icon: HeadphonesIcon, label: "24x7 Customer Care" },
+  { href: "/enterprise", icon: Megaphone, label: "Advertise on Aethex" },
+];
+
 export function Navbar() {
   const [location, setLocation] = useLocation();
   const sessionId = useSession();
@@ -329,20 +251,20 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [accountOpen, setAccountOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [toolsOpen, setToolsOpen] = useState(false);
-  const [institutionsOpen, setInstitutionsOpen] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
   const toolsRef = useRef<HTMLDivElement>(null);
-  const institutionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (accountRef.current && !accountRef.current.contains(e.target as Node)) setAccountOpen(false);
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
       if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) setToolsOpen(false);
-      if (institutionsRef.current && !institutionsRef.current.contains(e.target as Node)) setInstitutionsOpen(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -369,305 +291,249 @@ export function Navbar() {
   const openLogin = () => { setAccountOpen(false); setMobileOpen(false); setLocation("/login"); };
   const openSignup = () => { setAccountOpen(false); setMobileOpen(false); setLocation("/signup"); };
 
-  const simpleLinks = [
-    { href: "/shop", label: "Shop" },
-    { href: "/books", label: "Books" },
-    { href: "/study-hub", label: "Study Hub" },
-    { href: "/cme-hub", label: "CME Hub" },
-    { href: "/neet-pg", label: "NEET-PG" },
-  ];
+  const cartCount = cart?.itemCount ?? 0;
 
   return (
     <>
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
+
+      {/* ── MAIN NAV BAR — dark ── */}
       <header
-        className={cn("no-print transition-all duration-300 border-b", isScrolled ? "backdrop-blur-xl shadow-sm py-3" : "py-4")}
-        style={{
-          background: "rgba(255,255,255,0.94)",
-          backdropFilter: "blur(20px) saturate(180%)",
-          WebkitBackdropFilter: "blur(20px) saturate(180%)",
-          borderBottom: "1px solid #e8e8ed",
-          height: 64,
-          display: "flex",
-          alignItems: "center",
-        }}
+        className="no-print"
+        style={{ background: "#1C1C1E", height: 56, display: "flex", alignItems: "center" }}
       >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4 md:gap-6">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group shrink-0">
-              <img
-                src={`${import.meta.env.BASE_URL}aethex-logo.jpg`}
-                alt="aethex logo"
-                className="w-8 h-8 object-contain rounded-lg"
-              />
-              <span className="font-display font-bold text-lg tracking-tight leading-none hidden sm:inline" style={{ color: "#1C1C1E" }}>
-                aethex
-              </span>
-              {isPro && (
-                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.3)", color: "#00A893" }}>
-                  <Crown className="w-3 h-3" />PRO
-                </span>
-              )}
+          <div className="flex items-center gap-3">
+
+            {/* Logo — visible only on small screens; brand bar covers large */}
+            <Link href="/" className="flex items-center gap-2 shrink-0 lg:hidden">
+              <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="aethex" className="w-7 h-7 rounded-lg object-contain" />
+              <span className="font-bold text-base tracking-tight text-white hidden sm:inline">aethex</span>
+            </Link>
+
+            {/* Logo on desktop too */}
+            <Link href="/" className="items-center gap-2 shrink-0 hidden lg:flex">
+              <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="aethex" className="w-7 h-7 rounded-lg object-contain" />
+              <span className="font-bold text-base tracking-tight text-white">aethex</span>
             </Link>
 
             {/* Search Bar */}
-            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xs relative group">
-              <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
-                <Search className="h-3.5 w-3.5 transition-colors" style={{ color: "#AEAEB2" }} />
+            <form onSubmit={handleSearch} className="flex-1 relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4" style={{ color: "#636366" }} />
               </div>
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-8 pr-3 py-2 rounded-xl leading-5 text-xs transition-all focus:outline-none"
-                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.15)", color: "#1C1C1E", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
-                placeholder="Search products..."
+                onChange={e => setSearchQuery(e.target.value)}
+                className="block w-full pl-9 pr-3 py-2 text-sm focus:outline-none rounded-sm"
+                style={{ background: "#FFFFFF", color: "#1C1C1E", border: "none" }}
+                placeholder="Search for medical products, drugs, books and more..."
               />
             </form>
 
-            {/* Right Navigation */}
+            {/* ── RIGHT ACTIONS ── */}
             <div className="flex items-center gap-1 shrink-0">
-              {/* Try Cadus AI — primary CTA */}
-              <Link
-                href="/ai-assistant"
-                className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-[10px] font-semibold text-sm transition-all hover:opacity-90"
-                style={{ background: "#007AFF", color: "#FFFFFF" }}
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Try Cadus AI</span>
-              </Link>
 
-              {/* Simple nav links: Shop only at md+; rest at xl+ */}
-              {simpleLinks.map((item) => {
-                const active = location === item.href || location.startsWith(item.href + "/");
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-                      item.href === "/shop" ? "hidden md:block" : "hidden xl:block"
-                    )}
-                    style={{
-                      color: active ? "#007AFF" : "#636366",
-                      background: active ? "rgba(0,122,255,0.08)" : "transparent",
-                    }}
-                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
-                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
-
-              {/* Drug Reference */}
-              {(() => {
-                const active = location === "/drug-reference";
-                return (
-                  <Link href="/drug-reference"
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden xl:block"
-                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
-                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
-                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
-                    Drug Reference
-                  </Link>
-                );
-              })()}
-
-              {/* Pricing */}
-              {(() => {
-                const active = location === "/pricing";
-                return (
-                  <Link href="/pricing"
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden xl:block"
-                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
-                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
-                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
-                    Pricing
-                  </Link>
-                );
-              })()}
-
-              {/* Tools Mega Menu */}
-              <ToolsMegaMenu
-                open={toolsOpen}
-                onToggle={() => setToolsOpen(o => !o)}
-                onClose={() => setToolsOpen(false)}
-                dropdownRef={toolsRef}
-              />
-
-              {/* Colleges & Hospitals */}
-              {(() => {
-                const active = location === "/institutions" || location.startsWith("/institutions/");
-                return (
-                  <Link href="/institutions"
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden xl:block"
-                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
-                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
-                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
-                    Colleges & Hospitals
-                  </Link>
-                );
-              })()}
-
-              {/* Login / Sign Up — ghost button (only when not logged in) */}
-              {!isLoggedIn && (
+              {/* Login dropdown */}
+              <div ref={accountRef} className="relative">
                 <button
-                  onClick={openLogin}
-                  className="hidden xl:flex items-center gap-1.5 px-4 py-2 rounded-[10px] font-semibold text-sm transition-all hover:bg-[#007AFF] hover:text-white"
-                  style={{ border: "1px solid rgba(0,122,255,0.5)", color: "#007AFF", background: "transparent" }}
+                  onClick={() => setAccountOpen(o => !o)}
+                  className="flex items-center gap-1.5 px-4 py-1.5 rounded text-sm font-semibold text-white hover:bg-white/10 transition-all"
                 >
-                  <User className="w-3.5 h-3.5" />
-                  Login / Sign Up
-                </button>
-              )}
-
-              {/* Account Dropdown */}
-              <div ref={accountRef} className="relative hidden md:block">
-                <button onClick={() => setAccountOpen(o => !o)}
-                  className="flex items-center gap-1.5 p-2 rounded-xl transition-all hover:bg-black/5"
-                  style={{ color: "#636366" }}>
-                  {isLoggedIn ? (
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: "rgba(0,122,255,0.12)", border: "1px solid rgba(0,122,255,0.25)", color: "#007AFF" }}>
-                      {user?.name?.[0]?.toUpperCase() || "U"}
-                    </div>
-                  ) : (
-                    <User className="w-5 h-5" />
-                  )}
+                  <User className="w-4 h-4" />
+                  <span className="hidden sm:inline">
+                    {isLoggedIn ? (user?.name?.split(" ")[0] || "Account") : "Login"}
+                  </span>
                   <ChevronDown className={`w-3 h-3 transition-transform ${accountOpen ? "rotate-180" : ""}`} />
                 </button>
 
                 {accountOpen && (
-                  <div className="absolute right-0 mt-2 w-56 rounded-2xl shadow-xl py-2 z-50" style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
-                    {isLoggedIn ? (
-                      <>
-                        <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
-                          <div className="flex items-center gap-1.5">
-                            <p className="text-sm font-semibold truncate" style={{ color: "#1C1C1E" }}>{user?.name}</p>
-                            {user?.verified && (
-                              <BadgeCheck className="w-3.5 h-3.5 shrink-0 text-[#007AFF]" strokeWidth={2.5} title="Verified Medical Professional" />
-                            )}
-                          </div>
-                          <p className="text-xs truncate" style={{ color: "#AEAEB2" }}>{user?.email}</p>
-                          <div className="flex items-center gap-1.5 flex-wrap mt-1">
-                            {isPro && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00A893" }}>
-                                <Crown className="w-3 h-3" />PRO
-                              </span>
-                            )}
-                            {user?.verified && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,122,255,0.1)", border: "1px solid rgba(0,122,255,0.25)", color: "#007AFF" }}>
-                                <BadgeCheck className="w-3 h-3" />Verified
-                              </span>
-                            )}
-                          </div>
+                  <div
+                    className="absolute right-0 mt-1 w-64 z-[70] rounded shadow-2xl overflow-hidden"
+                    style={{ background: "#212121", border: "1px solid rgba(255,255,255,0.1)" }}
+                  >
+                    {/* Header */}
+                    {!isLoggedIn ? (
+                      <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                        <span className="text-sm" style={{ color: "rgba(255,255,255,0.65)" }}>New customer?</span>
+                        <button onClick={openSignup} className="text-sm font-bold" style={{ color: "#007AFF" }}>Sign Up</button>
+                      </div>
+                    ) : (
+                      <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
+                          {user?.verified && <BadgeCheck className="w-3.5 h-3.5 shrink-0" style={{ color: "#007AFF" }} />}
                         </div>
-                        {[
-                          { href: "/account", icon: Settings, label: "My Account" },
-                          { href: "/settings", icon: Brain, label: "Cadus AI Settings" },
-                          { href: "/orders", icon: Package, label: "My Orders" },
-                          { href: "/my-reviews", icon: Star, label: "My Reviews" },
-                          { href: "/orders/track", icon: MapPin, label: "Track Order" },
-                        ].map(({ href, icon: Icon, label }) => (
-                          <Link key={href} href={href} onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors hover:bg-gray-50"
-                            style={{ color: "#636366" }}>
-                            <Icon className="w-4 h-4" /> {label}
-                          </Link>
-                        ))}
-                        <div style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }} className="my-1" />
-                        <div className="flex items-center gap-2 px-4 py-1.5">
-                          <Link href="/seller/dashboard" onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-1.5 text-xs transition-colors hover:text-gray-600"
-                            style={{ color: "#AEAEB2" }}>
-                            <Store className="w-3 h-3" /> Seller
-                          </Link>
-                          <span style={{ color: "#AEAEB2" }}>·</span>
-                          <Link href="/admin" onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-1.5 text-xs transition-colors hover:text-gray-600"
-                            style={{ color: "#AEAEB2" }}>
-                            <ShieldCheck className="w-3 h-3" /> Admin
-                          </Link>
-                        </div>
-                        <div style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }} className="my-1" />
-                        <button onClick={() => { logout(); setAccountOpen(false); }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                        <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.45)" }}>{user?.email}</p>
+                        {isPro && (
+                          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,194,168,0.15)", color: "#00C2A8" }}>
+                            <Crown className="w-3 h-3" />PRO
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Menu items */}
+                    {loginMenuItems.map(({ href, icon: Icon, label }) => (
+                      <Link
+                        key={href} href={href}
+                        onClick={() => setAccountOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
+                        style={{ color: "rgba(255,255,255,0.82)" }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.05)"; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}
+                      >
+                        <Icon className="w-4 h-4 shrink-0" style={{ color: "rgba(255,255,255,0.45)" }} />
+                        {label}
+                      </Link>
+                    ))}
+
+                    {/* Footer */}
+                    <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+                      {isLoggedIn ? (
+                        <button
+                          onClick={() => { logout(); setAccountOpen(false); }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
+                          style={{ color: "#FF453A" }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,69,58,0.08)"; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+                        >
                           <LogOut className="w-4 h-4" /> Sign Out
                         </button>
-                      </>
-                    ) : (
-                      <>
-                        <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
-                          <p className="text-sm" style={{ color: "#636366" }}>Sign in to access your account, orders, and Cadus AI.</p>
-                        </div>
-                        <button onClick={openLogin}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors"
-                          style={{ color: "#636366" }}>
+                      ) : (
+                        <button
+                          onClick={openLogin}
+                          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors"
+                          style={{ color: "#007AFF" }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(0,122,255,0.08)"; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+                        >
                           <User className="w-4 h-4" /> Sign In
                         </button>
-                        <button onClick={openSignup}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium hover:bg-blue-50 transition-colors"
-                          style={{ color: "#007AFF" }}>
-                          <Sparkles className="w-4 h-4" /> Create Account
-                        </button>
-                        <div style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }} className="my-1" />
-                        <div className="flex items-center gap-2 px-4 py-1.5">
-                          <Link href="/seller/register" onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-1.5 text-xs hover:text-gray-600 transition-colors"
-                            style={{ color: "#AEAEB2" }}>
-                            <Store className="w-3 h-3" /> Sell
-                          </Link>
-                          <span style={{ color: "#AEAEB2" }}>·</span>
-                          <Link href="/admin" onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-1.5 text-xs hover:text-gray-600 transition-colors"
-                            style={{ color: "#AEAEB2" }}>
-                            <ShieldCheck className="w-3 h-3" /> Admin
-                          </Link>
-                        </div>
-                      </>
-                    )}
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
 
-              <NotificationBell />
+              {/* More dropdown */}
+              <div ref={moreRef} className="relative hidden sm:block">
+                <button
+                  onClick={() => setMoreOpen(o => !o)}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded text-sm font-semibold text-white hover:bg-white/10 transition-all"
+                >
+                  More <ChevronDown className={`w-3 h-3 transition-transform ${moreOpen ? "rotate-180" : ""}`} />
+                </button>
 
-              <Link href="/cart" className="relative p-2 rounded-xl transition-all hover:bg-black/5" style={{ color: "#636366" }}>
-                <ShoppingCart className="w-5 h-5" />
-                {cart && cart.itemCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold leading-none text-white rounded-full" style={{ background: "#007AFF" }}>
-                    {cart.itemCount}
+                {moreOpen && (
+                  <div
+                    className="absolute right-0 mt-1 w-56 z-[70] rounded shadow-2xl overflow-hidden"
+                    style={{ background: "#212121", border: "1px solid rgba(255,255,255,0.1)" }}
+                  >
+                    <p className="px-4 py-2.5 text-sm font-bold text-white" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>More</p>
+                    {moreMenuItems.map(({ href, icon: Icon, label }) => (
+                      <Link
+                        key={href} href={href}
+                        onClick={() => setMoreOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm transition-colors"
+                        style={{ color: "rgba(255,255,255,0.82)" }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.05)"; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}
+                      >
+                        <Icon className="w-4 h-4 shrink-0" style={{ color: "rgba(255,255,255,0.45)" }} />
+                        {label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Notification */}
+              <div className="hidden sm:block">
+                <NotificationBell />
+              </div>
+
+              {/* Cart */}
+              <Link
+                href="/cart"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-semibold text-white hover:bg-white/10 transition-all relative"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                <span className="hidden sm:inline">Cart</span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 text-[10px] font-bold leading-none text-white rounded-full flex items-center justify-center" style={{ background: "#007AFF" }}>
+                    {cartCount}
                   </span>
                 )}
               </Link>
 
-              {/* Mobile menu button */}
-              <button onClick={() => setMobileOpen(o => !o)} className="xl:hidden p-2 rounded-xl transition-all hover:bg-black/5" style={{ color: "#636366" }}>
+              {/* Mobile hamburger */}
+              <button
+                onClick={() => setMobileOpen(o => !o)}
+                className="sm:hidden p-2 rounded text-white hover:bg-white/10 transition-all"
+              >
                 {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
-
         </div>
       </header>
 
-      {/* Mobile Menu — fixed overlay below the announcement bar + header */}
+      {/* ── CATEGORY SCROLL BAR ── */}
+      <div data-category-bar className="no-print overflow-x-auto" style={{ background: "#232323", borderBottom: "1px solid rgba(255,255,255,0.07)", scrollbarWidth: "none" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-stretch" style={{ height: 52 }}>
+          {categories.map((cat) => {
+            const active = cat.exact
+              ? location === cat.href
+              : location === cat.href || location.startsWith(cat.href + "/");
+            const Icon = cat.icon;
+            return (
+              <Link
+                key={cat.href}
+                href={cat.href}
+                className="flex flex-col items-center justify-center px-4 shrink-0 text-xs font-medium relative transition-all"
+                style={{
+                  color: active ? "#60A5FA" : "rgba(255,255,255,0.65)",
+                  borderBottom: active ? "2px solid #60A5FA" : "2px solid transparent",
+                  minWidth: 60,
+                }}
+                onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.9)"; }}
+                onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.65)"; }}
+              >
+                <Icon className="w-[18px] h-[18px] mb-0.5" />
+                <span className="whitespace-nowrap">{cat.label}</span>
+              </Link>
+            );
+          })}
+
+          {/* Tools mega menu trigger in category bar */}
+          <ToolsMegaMenu
+            open={toolsOpen}
+            onToggle={() => setToolsOpen(o => !o)}
+            onClose={() => setToolsOpen(false)}
+            dropdownRef={toolsRef}
+            dark
+          />
+        </div>
+      </div>
+
+      {/* ── MOBILE MENU ── */}
       {mobileOpen && (
         <div
-          className="xl:hidden fixed inset-x-0 bottom-0 z-50 overflow-y-auto"
-          style={{ top: 104, background: "rgba(255,255,255,0.98)", backdropFilter: "blur(20px)", borderTop: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}
+          className="sm:hidden fixed inset-x-0 bottom-0 z-50 overflow-y-auto"
+          style={{ top: 176, background: "#1C1C1E", borderTop: "1px solid rgba(255,255,255,0.08)" }}
         >
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
             <form onSubmit={e => { handleSearch(e); setMobileOpen(false); }} className="relative mb-3">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#AEAEB2" }} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#636366" }} />
               <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl text-sm focus:outline-none"
-                style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.15)", color: "#1C1C1E" }}
+                className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm focus:outline-none"
+                style={{ background: "#2C2C2E", border: "1px solid rgba(255,255,255,0.1)", color: "#FFFFFF" }}
                 placeholder="Search products..." />
             </form>
 
-            <p className="text-[10px] font-bold uppercase tracking-wider px-3 pt-1 pb-0.5" style={{ color: "#AEAEB2" }}>Navigation</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider px-3 pt-1 pb-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>Navigation</p>
             {[
               { href: "/shop", label: "Shop All Products" },
               { href: "/books", label: "Medical Books" },
@@ -677,7 +543,8 @@ export function Navbar() {
               { href: "/neet-pg", label: "NEET-PG" },
               { href: "/drug-reference", label: "Drug Reference" },
               { href: "/drug-interaction-checker", label: "Drug Interactions" },
-              { href: "/case-of-the-day", label: "Case of the Day" },
+              { href: "/calculator", label: "Medical Calculators" },
+              { href: "/cases", label: "Clinical Case Library" },
               { href: "/pricing", label: "Pricing" },
               { href: "/institutions", label: "Colleges & Hospitals" },
               { href: "/orders/track", label: "Track Order" },
@@ -686,44 +553,32 @@ export function Navbar() {
               return (
                 <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
                   className="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all"
-                  style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}>
+                  style={{ color: active ? "#60A5FA" : "rgba(255,255,255,0.75)", background: active ? "rgba(96,165,250,0.1)" : "transparent" }}>
                   {item.label}
                 </Link>
               );
             })}
 
-            <p className="text-[10px] font-bold uppercase tracking-wider px-3 pt-3 pb-0.5" style={{ color: "#AEAEB2" }}>New Features</p>
-            {[
-              { href: "/cases", label: "Clinical Case Library", emoji: "🩺", desc: "10 cases with diagnosis reveal" },
-              { href: "/community", label: "Doctor Community", emoji: "💬", desc: "Peer forum for doctors" },
-              { href: "/jobs", label: "Medical Jobs Board", emoji: "💼", desc: "20 hospital listings" },
-            ].map(item => {
-              const active = location === item.href;
-              return (
-                <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all"
-                  style={{ background: active ? "rgba(0,122,255,0.08)" : "rgba(0,122,255,0.03)", border: "1px solid rgba(0,122,255,0.08)" }}>
-                  <span className="text-xl leading-none">{item.emoji}</span>
-                  <div>
-                    <p className="text-sm font-semibold" style={{ color: active ? "#007AFF" : "#1C1C1E" }}>{item.label}</p>
-                    <p className="text-xs" style={{ color: "#AEAEB2" }}>{item.desc}</p>
-                  </div>
-                </Link>
-              );
-            })}
-
-            <div className="pt-3 mt-2" style={{ borderTop: "1px solid rgba(60,60,67,0.1)" }}>
+            <div className="pt-3 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
               {isLoggedIn ? (
                 <button onClick={() => { logout(); setMobileOpen(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                  className="w-full flex items-center gap-2 px-3 py-2.5 text-sm rounded-xl transition-colors"
+                  style={{ color: "#FF453A" }}>
                   <LogOut className="w-4 h-4" /> Sign Out ({user?.name})
                 </button>
               ) : (
-                <button onClick={() => { openLogin(); setMobileOpen(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-2.5 text-sm rounded-xl transition-colors hover:bg-black/5"
-                  style={{ color: "#636366" }}>
-                  <User className="w-4 h-4" /> Sign In / Sign Up
-                </button>
+                <>
+                  <button onClick={() => { openLogin(); setMobileOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm rounded-xl transition-colors"
+                    style={{ color: "rgba(255,255,255,0.75)" }}>
+                    <User className="w-4 h-4" /> Sign In
+                  </button>
+                  <button onClick={() => { openSignup(); setMobileOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-semibold rounded-xl transition-colors"
+                    style={{ color: "#007AFF" }}>
+                    <Sparkles className="w-4 h-4" /> Create Account
+                  </button>
+                </>
               )}
             </div>
           </div>

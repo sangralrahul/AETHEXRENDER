@@ -141,7 +141,7 @@ function Router() {
               <AnnouncementBar />
               <Navbar />
             </div>
-            <main className="flex-1 pt-[140px]">
+            <main className="flex-1 pt-[180px]">
               <Switch>
                 <Route path="/" component={Home} />
 

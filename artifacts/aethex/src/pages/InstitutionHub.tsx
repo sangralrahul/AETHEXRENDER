@@ -238,7 +238,7 @@ export default function InstitutionHub({ mode }: InstitutionHubProps = {}) {
             ].map((stat, i) => (
               <motion.div key={stat.label} initial="hidden" animate="visible" variants={fadeUp} custom={i + 1}
                 className="text-center py-5 px-4 rounded-2xl"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)", backdropFilter: "blur(12px)" }}>
                 <div className="text-2xl font-black text-white mb-1">{stat.value}</div>
                 <div className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>{stat.label}</div>
               </motion.div>

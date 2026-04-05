@@ -157,7 +157,10 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
 
             {/* Left: Clinical Tools + Community */}
             <div className="flex-shrink-0 w-72 p-3 flex flex-col gap-0.5">
-              <p className="text-[10px] font-bold uppercase tracking-wider px-2 py-1.5" style={{ color: "#AEAEB2" }}>Clinical Tools</p>
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#AEAEB2" }}>Clinical Tools</p>
+                <Link href="/tools" onClick={onClose} className="text-[10px] font-semibold" style={{ color: "#007AFF" }}>View all →</Link>
+              </div>
               {clinicalToolsMenu.map(item => (
                 <Link key={item.href} href={item.href} onClick={onClose}
                   className="flex items-center gap-2.5 px-2 py-2 rounded-xl transition-all"

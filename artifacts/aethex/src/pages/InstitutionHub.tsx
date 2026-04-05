@@ -170,17 +170,17 @@ export default function InstitutionHub({ mode }: InstitutionHubProps = {}) {
         <div className="absolute inset-0"
           style={{
             backgroundImage: mode === "colleges"
-              ? "url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600&q=80')"
+              ? "url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1600&q=80')"
               : mode === "hospitals"
               ? "url('https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=1600&q=80')"
               : "url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1600&q=80')",
             backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundPosition: "center top",
           }} />
-        {/* Overlay — teal-blue tint for colleges, dark navy for hospitals */}
+        {/* Overlay — lighter for colleges so building shows, dark navy for hospitals */}
         <div className="absolute inset-0" style={{
           background: mode === "colleges"
-            ? "linear-gradient(135deg, rgba(0,40,80,0.92) 0%, rgba(0,80,120,0.85) 50%, rgba(0,60,100,0.92) 100%)"
+            ? "linear-gradient(160deg, rgba(0,30,70,0.72) 0%, rgba(0,60,110,0.65) 50%, rgba(0,40,90,0.78) 100%)"
             : "linear-gradient(135deg, rgba(8,18,36,0.93) 0%, rgba(10,26,50,0.88) 50%, rgba(8,18,36,0.93) 100%)"
         }} />
         {/* Glow orbs */}

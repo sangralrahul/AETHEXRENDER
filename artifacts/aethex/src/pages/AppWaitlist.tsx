@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Smartphone, CheckCircle, Share2, Gift, Star, Bell, Brain, BookOpen, ShoppingBag } from "lucide-react";
 
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 const FEATURES = [
   { icon: Brain, title: "Cadus AI on the go", desc: "Ask clinical questions, get SOAP notes, and drug info — anytime, anywhere.", color: "#8B5CF6" },
   { icon: BookOpen, title: "Offline Study Mode", desc: "Download MCQ packs and study notes for use without internet connection.", color: "#007AFF" },
@@ -88,60 +90,13 @@ export default function AppWaitlist() {
             </div>
           )}
 
-          {/* Official Store Badges */}
-          <div className="flex flex-wrap gap-4 justify-center mt-8">
-            {/* Apple App Store Badge */}
-            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95 inline-flex">
-              <div style={{ background: "#000", border: "1px solid rgba(255,255,255,0.22)", borderRadius: 10, display: "flex", alignItems: "center", gap: 10, padding: "9px 18px 9px 14px", height: 54 }}>
-                {/* App Store icon — blue rounded square with white "A" */}
-                <svg width="30" height="30" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <linearGradient id="as_icon_bg" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
-                      <stop offset="0" stopColor="#5AC8FA"/>
-                      <stop offset="1" stopColor="#007AFF"/>
-                    </linearGradient>
-                  </defs>
-                  <rect width="100" height="100" rx="22" fill="url(#as_icon_bg)"/>
-                  <polygon fill="white" points="50,16 84,76 65,76 50,50 35,76 16,76"/>
-                  <rect fill="white" x="30" y="59" width="40" height="10" rx="5"/>
-                </svg>
-                <div style={{ textAlign: "left" }}>
-                  <div style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, lineHeight: "1.3" }}>Download on the</div>
-                  <div style={{ color: "#fff", fontSize: 20, fontWeight: 600, fontFamily: "system-ui,-apple-system,sans-serif", lineHeight: "1.2", letterSpacing: "-0.3px" }}>App Store</div>
-                </div>
-              </div>
+          {/* Official Store Badges — real assets from Apple & Google */}
+          <div className="flex flex-wrap gap-4 justify-center mt-8 items-center">
+            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95">
+              <img src={`${BASE}/app-store-badge.svg`} alt="Download on the App Store" style={{ height: 52 }} />
             </a>
-
-            {/* Google Play Badge */}
-            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95 inline-flex">
-              <div style={{ background: "#000", border: "1px solid rgba(255,255,255,0.22)", borderRadius: 10, display: "flex", alignItems: "center", gap: 10, padding: "9px 18px 9px 14px", height: 54 }}>
-                <svg width="24" height="27" viewBox="0 0 24 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1.22.51C.77.75.5 1.22.5 1.82v23.36c0 .6.27 1.07.72 1.31l.12.07L14.41 14v-.3L1.34.44 1.22.51z" fill="url(#gp_a)"/>
-                  <path d="M18.27 17.83 14.41 14v-.3l3.86-3.83.09.05 4.57 2.6c1.3.74 1.3 1.95 0 2.69l-4.57 2.6-.09.02z" fill="url(#gp_b)"/>
-                  <path d="M18.36 17.81 14.41 13.85 1.22 27.04c.43.46 1.13.51 1.92.06l15.22-9.29" fill="url(#gp_c)"/>
-                  <path d="M18.36 9.89 3.14.6C2.35.15 1.65.2 1.22.66l13.19 13.19 3.95-3.96z" fill="url(#gp_d)"/>
-                  <defs>
-                    <linearGradient id="gp_a" x1="13.47" y1="1.57" x2="-5.53" y2="13.5" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#00A0FF"/><stop offset=".007" stopColor="#00A1FF"/><stop offset=".26" stopColor="#00BEFF"/>
-                      <stop offset=".512" stopColor="#00D2FF"/><stop offset=".76" stopColor="#00DFFF"/><stop offset="1" stopColor="#00E3FF"/>
-                    </linearGradient>
-                    <linearGradient id="gp_b" x1="23.89" y1="13.85" x2=".22" y2="13.85" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#FFE000"/><stop offset=".409" stopColor="#FFBD00"/><stop offset=".775" stopColor="#FFA500"/><stop offset="1" stopColor="#FF9C00"/>
-                    </linearGradient>
-                    <linearGradient id="gp_c" x1="15.99" y1="15.87" x2="-6.05" y2="42.25" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#FF3A44"/><stop offset="1" stopColor="#C31162"/>
-                    </linearGradient>
-                    <linearGradient id="gp_d" x1="-2.07" y1="-8.48" x2="8.68" y2="5.15" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#32A071"/><stop offset=".069" stopColor="#2DA771"/><stop offset=".476" stopColor="#15CF74"/>
-                      <stop offset=".801" stopColor="#06E775"/><stop offset="1" stopColor="#00F076"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div style={{ textAlign: "left" }}>
-                  <div style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, lineHeight: "1.3", letterSpacing: "0.4px" }}>GET IT ON</div>
-                  <div style={{ color: "#fff", fontSize: 20, fontWeight: 600, fontFamily: "system-ui,-apple-system,sans-serif", lineHeight: "1.2", letterSpacing: "-0.3px" }}>Google Play</div>
-                </div>
-              </div>
+            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95">
+              <img src={`${BASE}/google-play-badge.png`} alt="Get it on Google Play" style={{ height: 52 }} />
             </a>
           </div>
         </div>

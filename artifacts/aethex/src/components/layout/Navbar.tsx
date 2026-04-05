@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database, BadgeCheck } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database, BadgeCheck, Calculator, Briefcase, MessageSquare } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useUserAuth } from "@/hooks/use-user-auth";
@@ -23,6 +23,10 @@ const toolsMenu = [
   { href: "/tools/differential-diagnosis", icon: Brain, label: "Differential Diagnosis", desc: "AI symptom analysis", color: "#8B5CF6" },
   { href: "/tools/lab-interpreter", icon: Microscope, label: "Lab Interpreter", desc: "Interpret investigation results", color: "#EF4444" },
   { href: "/tools/procedure-guide", icon: Syringe, label: "Procedure Guide", desc: "Step-by-step clinical procedures", color: "#06B6D4" },
+  { href: "/calculator", icon: Calculator, label: "Medical Calculators", desc: "21 clinical calculators — SOFA, CURB-65, GCS…", color: "#007AFF" },
+  { href: "/cases", icon: Stethoscope, label: "Clinical Case Library", desc: "10 anonymised cases with diagnosis reveal", color: "#EF4444" },
+  { href: "/community", icon: MessageSquare, label: "Doctor Community", desc: "Peer forum — cases, NEET-PG, career, drugs", color: "#8B5CF6" },
+  { href: "/jobs", icon: Briefcase, label: "Medical Jobs Board", desc: "20 hospital & clinic listings across India", color: "#10B981" },
 ];
 
 const institutionsMenu = [
@@ -449,6 +453,10 @@ export function Navbar() {
                 { href: "/drug-reference", label: "Drug Reference" },
                 { href: "/drug-interaction-checker", label: "Drug Interactions" },
                 { href: "/case-of-the-day", label: "Case of the Day" },
+                { href: "/calculator", label: "🧮 Medical Calculators" },
+                { href: "/cases", label: "🩺 Clinical Case Library" },
+                { href: "/community", label: "💬 Doctor Community" },
+                { href: "/jobs", label: "💼 Medical Jobs Board" },
                 { href: "/pricing", label: "Pricing" },
                 { href: "/tools", label: "Clinical Tools" },
                 { href: "/institutions", label: "Colleges & Hospitals" },

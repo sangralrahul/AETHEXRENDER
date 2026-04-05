@@ -202,6 +202,8 @@ function Router() {
 
                 {/* Institution Hub */}
                 <Route path="/institutions" component={InstitutionHub} />
+                <Route path="/colleges" component={() => <InstitutionHub mode="colleges" />} />
+                <Route path="/hospitals" component={() => <InstitutionHub mode="hospitals" />} />
 
                 {/* Reviews */}
                 <Route path="/my-reviews" component={MyReviews} />

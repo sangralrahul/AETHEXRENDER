@@ -92,7 +92,11 @@ const HOSPITAL_TYPE_COLORS: Record<string, { bg: string; text: string }> = {
 
 const PAGE_SIZE = 24;
 
-export default function InstitutionHub() {
+interface InstitutionHubProps {
+  mode?: "colleges" | "hospitals";
+}
+
+export default function InstitutionHub({ mode }: InstitutionHubProps = {}) {
   const [formData, setFormData] = useState({
     institutionName: "",
     type: "medical_college",
@@ -103,13 +107,8 @@ export default function InstitutionHub() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
-  const urlTypeParam = typeof window !== "undefined"
-    ? new URLSearchParams(window.location.search).get("type")
-    : null;
-  const lockedTab: "colleges" | "hospitals" | null =
-    urlTypeParam === "hospital" ? "hospitals"
-    : urlTypeParam === "medical-college" ? "colleges"
-    : null;
+
+  const lockedTab: "colleges" | "hospitals" | null = mode ?? null;
 
   const [activeTab, setActiveTab] = useState<"colleges" | "hospitals">(
     lockedTab ?? "colleges"
@@ -181,13 +180,25 @@ export default function InstitutionHub() {
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6"
               style={{ background: "rgba(0,122,255,0.15)", border: "1px solid rgba(0,122,255,0.25)", color: "#60A5FA" }}>
-              <Building2 className="w-3.5 h-3.5" /> Institutional Partnerships
+              {mode === "colleges"
+                ? <><GraduationCap className="w-3.5 h-3.5" /> Medical College Partnerships</>
+                : mode === "hospitals"
+                ? <><HeartPulse className="w-3.5 h-3.5" /> Hospital Partnerships</>
+                : <><Building2 className="w-3.5 h-3.5" /> Institutional Partnerships</>}
             </div>
             <h1 className="text-4xl sm:text-5xl font-black text-white mb-5 leading-tight" style={{ letterSpacing: "-1px" }}>
-              Medical Colleges &<br />Hospitals — Covered
+              {mode === "colleges"
+                ? <>Medical Colleges<br />— Covered</>
+                : mode === "hospitals"
+                ? <>Major Hospitals<br />— Covered</>
+                : <>Medical Colleges &<br />Hospitals — Covered</>}
             </h1>
             <p className="text-lg mb-8 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
-              Special bulk pricing, GST invoicing, priority delivery, and dedicated account management for every NMC-recognized institution across India.
+              {mode === "colleges"
+                ? "Special bulk pricing, GST invoicing, priority delivery, and dedicated account management for every NMC-recognized medical college across India."
+                : mode === "hospitals"
+                ? "Bulk procurement portal, SLA-backed delivery, GST billing, and a dedicated account manager for every hospital and clinic chain across India."
+                : "Special bulk pricing, GST invoicing, priority delivery, and dedicated account management for every NMC-recognized institution across India."}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a href="#inquiry"
@@ -198,7 +209,7 @@ export default function InstitutionHub() {
               <a href="#institutions"
                 className="px-7 py-3.5 rounded-full font-bold text-sm border transition-all hover:bg-white/5"
                 style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.85)" }}>
-                Browse Institutions
+                {mode === "colleges" ? "Browse Colleges" : mode === "hospitals" ? "Browse Hospitals" : "Browse Institutions"}
               </a>
             </div>
           </motion.div>

@@ -12,16 +12,16 @@ export function BrandSwitcherBar() {
   const [location] = useLocation();
   const isCareers = location === "/jobs" || location.startsWith("/jobs");
   const isApp = location === "/app";
-  const isColleges = location.startsWith("/institutions") && (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("type") === "medical-college" : false);
-  const isHospitals = location.startsWith("/institutions") && (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("type") === "hospital" : false);
+  const isColleges = location === "/colleges" || location.startsWith("/colleges/");
+  const isHospitals = location === "/hospitals" || location.startsWith("/hospitals/");
   const isMain = !isCareers && !isApp && !isColleges && !isHospitals;
 
   const tabs = [
     { href: "/", label: "Aethex", icon: null, useLogoImg: true, active: isMain },
     { href: "/jobs", label: "Careers", icon: Briefcase, useLogoImg: false, active: isCareers },
     { href: "/app", label: "Mobile App", icon: Smartphone, useLogoImg: false, active: isApp },
-    { href: "/institutions?type=medical-college", label: "Colleges", icon: GraduationCap, useLogoImg: false, active: isColleges },
-    { href: "/institutions?type=hospital", label: "Hospitals", icon: Building2, useLogoImg: false, active: isHospitals },
+    { href: "/colleges", label: "Colleges", icon: GraduationCap, useLogoImg: false, active: isColleges },
+    { href: "/hospitals", label: "Hospitals", icon: Building2, useLogoImg: false, active: isHospitals },
   ];
 
   return (
@@ -226,8 +226,8 @@ const categories = [
 ];
 
 const institutionsMenu = [
-  { href: "/institutions?type=medical-college", icon: University, label: "Medical Colleges", desc: "MBBS, MD, MS admissions", color: "#007AFF" },
-  { href: "/institutions?type=hospital", icon: Building2, label: "Hospitals", desc: "Top hospitals & networks", color: "#EF4444" },
+  { href: "/colleges", icon: University, label: "Medical Colleges", desc: "MBBS, MD, MS admissions", color: "#007AFF" },
+  { href: "/hospitals", icon: Building2, label: "Hospitals", desc: "Top hospitals & networks", color: "#EF4444" },
   { href: "/institutions?type=pg-entrance", icon: GraduationCap, label: "PG Entrance", desc: "NEET PG, NEXT coaching", color: "#F59E0B" },
   { href: "/institutions?type=research", icon: Microscope, label: "Research Institutes", desc: "ICMR, AIIMS, CMC & more", color: "#8B5CF6" },
   { href: "/institutions?type=nursing", icon: HeartPulse, label: "Nursing Colleges", desc: "BSc, MSc Nursing programs", color: "#10B981" },
@@ -241,7 +241,7 @@ function InstitutionsDropdown({ open, onToggle, onClose, dropdownRef }: {
   dropdownRef: React.RefObject<HTMLDivElement>;
 }) {
   const [location] = useLocation();
-  const active = location === "/institutions" || location.startsWith("/institutions");
+  const active = location === "/institutions" || location.startsWith("/institutions") || location === "/colleges" || location === "/hospitals";
   const [dropdownTop, setDropdownTop] = useState(148);
 
   const handleToggle = () => {

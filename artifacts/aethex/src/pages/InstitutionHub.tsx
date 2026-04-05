@@ -229,10 +229,10 @@ export default function InstitutionHub({ mode }: InstitutionHubProps = {}) {
           </motion.div>
 
           {/* Stats row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16">
+          <div className={`grid gap-4 mt-16 ${mode ? "grid-cols-3" : "grid-cols-2 sm:grid-cols-4"}`}>
             {[
-              { value: "757+", label: "NMC Colleges" },
-              { value: "50+", label: "Major Hospitals" },
+              ...(mode !== "hospitals" ? [{ value: "757+", label: "NMC Colleges" }] : []),
+              ...(mode !== "colleges" ? [{ value: "50+", label: "Major Hospitals" }] : []),
               { value: "34", label: "States & UTs" },
               { value: "35%", label: "Bulk Discount" },
             ].map((stat, i) => (

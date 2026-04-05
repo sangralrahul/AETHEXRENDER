@@ -10,7 +10,7 @@ import { AuthModal } from "@/components/AuthModal";
 
 export function AnnouncementBar() {
   return (
-    <div className="no-print w-full text-center py-2.5 px-4 text-xs font-medium" style={{ background: "#1c1c1e", color: "rgba(255,255,255,0.8)" }}>
+    <div data-navbar-announcement className="no-print w-full text-center py-2.5 px-4 text-xs font-medium" style={{ background: "#1c1c1e", color: "rgba(255,255,255,0.8)" }}>
       India's Medical Platform for Doctors &amp; Students · Trusted by Physicians across India
     </div>
   );
@@ -134,11 +134,23 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
 }) {
   const [location] = useLocation();
   const active = location === "/tools" || location.startsWith("/tools/") || location === "/calculator";
+  const [dropdownTop, setDropdownTop] = useState(100);
+
+  const handleToggle = () => {
+    if (!open) {
+      const announcement = document.querySelector("[data-navbar-announcement]") as HTMLElement | null;
+      const header = document.querySelector("header") as HTMLElement | null;
+      const aH = announcement ? announcement.getBoundingClientRect().height : 0;
+      const hH = header ? header.getBoundingClientRect().height : 64;
+      setDropdownTop(Math.round(aH + hH));
+    }
+    onToggle();
+  };
 
   return (
     <div ref={dropdownRef} className="relative hidden lg:block">
       <button
-        onClick={onToggle}
+        onClick={handleToggle}
         className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
         style={{
           color: active ? "#007AFF" : "#636366",
@@ -152,7 +164,7 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
 
       {open && (
         <div className="fixed z-50 rounded-b-2xl overflow-hidden"
-          style={{ top: 100, right: 24, width: 740, background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", borderTop: "2px solid #007AFF", boxShadow: "0 16px 48px rgba(0,0,0,0.14)" }}>
+          style={{ top: dropdownTop, right: 24, width: 740, background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", borderTop: "2px solid #007AFF", boxShadow: "0 16px 48px rgba(0,0,0,0.14)" }}>
           <div className="flex divide-x" style={{ divideColor: "rgba(60,60,67,0.08)" }}>
 
             {/* Left: Clinical Tools + Community */}

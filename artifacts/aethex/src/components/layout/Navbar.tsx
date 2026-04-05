@@ -12,13 +12,16 @@ export function BrandSwitcherBar() {
   const [location] = useLocation();
   const isCareers = location === "/jobs" || location.startsWith("/jobs");
   const isApp = location === "/app";
-  const isEnterprise = location === "/enterprise";
+  const isColleges = location.startsWith("/institutions") && (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("type") === "medical-college" : false);
+  const isHospitals = location.startsWith("/institutions") && (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("type") === "hospital" : false);
+  const isMain = !isCareers && !isApp && !isColleges && !isHospitals;
 
   const tabs = [
-    { href: "/", label: "Aethex", icon: null, useLogoImg: true, active: !isCareers && !isApp && !isEnterprise },
+    { href: "/", label: "Aethex", icon: null, useLogoImg: true, active: isMain },
     { href: "/jobs", label: "Careers", icon: Briefcase, useLogoImg: false, active: isCareers },
     { href: "/app", label: "Mobile App", icon: Smartphone, useLogoImg: false, active: isApp },
-    { href: "/enterprise", label: "For Institutions", icon: Building2, useLogoImg: false, active: isEnterprise },
+    { href: "/institutions?type=medical-college", label: "Colleges", icon: GraduationCap, useLogoImg: false, active: isColleges },
+    { href: "/institutions?type=hospital", label: "Hospitals", icon: Building2, useLogoImg: false, active: isHospitals },
   ];
 
   return (

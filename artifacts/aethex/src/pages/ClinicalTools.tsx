@@ -4,8 +4,32 @@ import {
   Pill, Calculator, Weight, BookOpen, Brain, Stethoscope,
   ClipboardList, FlaskConical, Activity, Scan, FileText,
   GraduationCap, Heart, Search, X,
-  Zap, Lock, ArrowUpRight, Sparkles,
+  Zap, Lock, ArrowUpRight, Sparkles, ChevronRight,
 } from "lucide-react";
+
+const CALC_SUITE = [
+  { id: "bmi", name: "Body Mass Index (BMI)", short: "General" },
+  { id: "egfr-ckd-epi", name: "eGFR (CKD-EPI 2021)", short: "Nephrology" },
+  { id: "curb65", name: "CURB-65 Pneumonia", short: "Pulmonology" },
+  { id: "sofa", name: "SOFA Score (ICU)", short: "Critical Care" },
+  { id: "cha2ds2-vasc", name: "CHA₂DS₂-VASc Score", short: "Cardiology" },
+  { id: "child-pugh", name: "Child-Pugh Score", short: "Gastroenterology" },
+  { id: "wells-dvt", name: "Wells Score for DVT", short: "Haematology" },
+  { id: "gcs", name: "Glasgow Coma Scale", short: "Neurology" },
+  { id: "apgar", name: "APGAR Score", short: "Paediatrics" },
+  { id: "qtc", name: "Corrected QT Interval (QTc)", short: "Cardiology" },
+  { id: "anion-gap", name: "Anion Gap", short: "Biochemistry" },
+  { id: "grace", name: "GRACE Score (ACS)", short: "Cardiology" },
+  { id: "heart-score", name: "HEART Score (Chest Pain)", short: "Cardiology" },
+  { id: "centor", name: "Centor Score (Sore Throat)", short: "General" },
+  { id: "parkland", name: "Parkland Formula (Burns)", short: "Surgery" },
+  { id: "nihss", name: "NIH Stroke Scale (NIHSS)", short: "Neurology" },
+  { id: "bsa", name: "Body Surface Area (BSA)", short: "General" },
+  { id: "iv-fluid", name: "IV Fluid (Holliday-Segar)", short: "Paediatrics" },
+  { id: "osmolality", name: "Serum Osmolality", short: "Biochemistry" },
+  { id: "psi-port", name: "PSI / PORT Score", short: "Pulmonology" },
+  { id: "wells-pe", name: "Wells Score for PE", short: "Haematology" },
+];
 
 /* ── Tool data ────────────────────────────────────────────────────── */
 interface Tool {
@@ -273,7 +297,7 @@ export default function ClinicalTools() {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
             style={{ background: "rgba(0,122,255,0.15)", border: "1px solid rgba(0,122,255,0.25)", color: "#60A5FA" }}>
             <Zap className="w-3.5 h-3.5" />
-            <span className="text-[12px] font-semibold">13 clinical tools available</span>
+            <span className="text-[12px] font-semibold">13 clinical tools · 21 medical calculators</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight" style={{ letterSpacing: "-1px" }}>
@@ -379,6 +403,56 @@ export default function ClinicalTools() {
             {filtered.map(tool => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
+          </div>
+        )}
+
+        {/* Medical Calculator Suite — shown when Calculators or All is selected */}
+        {(activeCategory === "all" || activeCategory === "calculator") && (
+          <div className="mt-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,122,255,0.1)" }}>
+                  <Calculator className="w-5 h-5" style={{ color: "#007AFF" }} />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold" style={{ color: "#1C1C1E" }}>Medical Calculator Suite</h2>
+                  <p className="text-xs" style={{ color: "#AEAEB2" }}>21 validated clinical calculators — CURB-65, SOFA, GRACE, Wells & more</p>
+                </div>
+              </div>
+              <Link href="/calculator" className="flex items-center gap-1 text-xs font-semibold" style={{ color: "#007AFF" }}>
+                Open all <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+            <div className="rounded-2xl overflow-hidden" style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+              {/* Split 21 items into 3 columns of 7 */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                {[0, 1, 2].map(col => (
+                  <div key={col} className="flex flex-col" style={{ borderRight: col < 2 ? "1px solid rgba(60,60,67,0.07)" : "none" }}>
+                    {CALC_SUITE.slice(col * 7, col * 7 + 7).map((calc, row) => (
+                      <Link key={calc.id} href={`/calculator?id=${calc.id}`}
+                        className="flex items-center justify-between px-4 py-3 transition-all group"
+                        style={{
+                          borderBottom: row < 6 ? "1px solid rgba(60,60,67,0.07)" : "none",
+                          background: "transparent",
+                        }}
+                        onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,122,255,0.04)"}
+                        onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.background = "transparent"}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#007AFF" }} />
+                          <span className="text-sm font-medium truncate" style={{ color: "#1C1C1E" }}>{calc.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0 ml-2">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full hidden sm:inline-block"
+                            style={{ background: "rgba(0,122,255,0.08)", color: "#007AFF" }}>{calc.short}</span>
+                          <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#007AFF" }} />
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 

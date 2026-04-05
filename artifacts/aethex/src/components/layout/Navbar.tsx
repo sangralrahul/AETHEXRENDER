@@ -433,62 +433,88 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Menu */}
-          {mobileOpen && (
-            <div className="xl:hidden mt-3 pt-3 pb-4 space-y-1" style={{ borderTop: "1px solid rgba(60,60,67,0.1)" }}>
-              <form onSubmit={handleSearch} className="relative mb-3">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#AEAEB2" }} />
-                <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl text-sm focus:outline-none"
-                  style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.15)", color: "#1C1C1E" }}
-                  placeholder="Search products..." />
-              </form>
-              {[
-                { href: "/shop", label: "Shop All Products" },
-                { href: "/books", label: "Medical Books" },
-                { href: "/ai-assistant", label: "Try Cadus AI" },
-                { href: "/study-hub", label: "Study Hub" },
-                { href: "/cme-hub", label: "CME Hub" },
-                { href: "/neet-pg", label: "NEET-PG" },
-                { href: "/drug-reference", label: "Drug Reference" },
-                { href: "/drug-interaction-checker", label: "Drug Interactions" },
-                { href: "/case-of-the-day", label: "Case of the Day" },
-                { href: "/calculator", label: "🧮 Medical Calculators" },
-                { href: "/cases", label: "🩺 Clinical Case Library" },
-                { href: "/community", label: "💬 Doctor Community" },
-                { href: "/jobs", label: "💼 Medical Jobs Board" },
-                { href: "/pricing", label: "Pricing" },
-                { href: "/tools", label: "Clinical Tools" },
-                { href: "/institutions", label: "Colleges & Hospitals" },
-                { href: "/orders/track", label: "Track Order" },
-              ].map(item => {
-                const active = location === item.href || location.startsWith(item.href + "/");
-                return (
-                  <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
-                    className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all"
-                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}>
-                    {item.label}
-                  </Link>
-                );
-              })}
-              <div className="pt-2 mt-2" style={{ borderTop: "1px solid rgba(60,60,67,0.1)" }}>
-                {isLoggedIn ? (
-                  <button onClick={() => { logout(); setMobileOpen(false); }}
-                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                    <LogOut className="w-4 h-4" /> Sign Out ({user?.name})
-                  </button>
-                ) : (
-                  <button onClick={() => { openLogin(); setMobileOpen(false); }}
-                    className="w-full flex items-center gap-2 px-3 py-2.5 text-sm rounded-lg transition-colors hover:bg-black/5"
-                    style={{ color: "#636366" }}>
-                    <User className="w-4 h-4" /> Sign In / Sign Up
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </header>
+
+      {/* Mobile Menu — fixed overlay below the announcement bar + header */}
+      {mobileOpen && (
+        <div
+          className="xl:hidden fixed inset-x-0 bottom-0 z-50 overflow-y-auto"
+          style={{ top: 104, background: "rgba(255,255,255,0.98)", backdropFilter: "blur(20px)", borderTop: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}
+        >
+          <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
+            <form onSubmit={e => { handleSearch(e); setMobileOpen(false); }} className="relative mb-3">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#AEAEB2" }} />
+              <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl text-sm focus:outline-none"
+                style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.15)", color: "#1C1C1E" }}
+                placeholder="Search products..." />
+            </form>
+
+            <p className="text-[10px] font-bold uppercase tracking-wider px-3 pt-1 pb-0.5" style={{ color: "#AEAEB2" }}>Navigation</p>
+            {[
+              { href: "/shop", label: "Shop All Products" },
+              { href: "/books", label: "Medical Books" },
+              { href: "/ai-assistant", label: "Try Cadus AI" },
+              { href: "/study-hub", label: "Study Hub" },
+              { href: "/cme-hub", label: "CME Hub" },
+              { href: "/neet-pg", label: "NEET-PG" },
+              { href: "/drug-reference", label: "Drug Reference" },
+              { href: "/drug-interaction-checker", label: "Drug Interactions" },
+              { href: "/case-of-the-day", label: "Case of the Day" },
+              { href: "/pricing", label: "Pricing" },
+              { href: "/tools", label: "Clinical Tools" },
+              { href: "/institutions", label: "Colleges & Hospitals" },
+              { href: "/orders/track", label: "Track Order" },
+            ].map(item => {
+              const active = location === item.href || location.startsWith(item.href + "/");
+              return (
+                <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
+                  className="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all"
+                  style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}>
+                  {item.label}
+                </Link>
+              );
+            })}
+
+            <p className="text-[10px] font-bold uppercase tracking-wider px-3 pt-3 pb-0.5" style={{ color: "#AEAEB2" }}>New Features</p>
+            {[
+              { href: "/calculator", label: "Medical Calculators", emoji: "🧮", desc: "21 clinical calculators" },
+              { href: "/cases", label: "Clinical Case Library", emoji: "🩺", desc: "10 cases with diagnosis reveal" },
+              { href: "/community", label: "Doctor Community", emoji: "💬", desc: "Peer forum for doctors" },
+              { href: "/jobs", label: "Medical Jobs Board", emoji: "💼", desc: "20 hospital listings" },
+            ].map(item => {
+              const active = location === item.href;
+              return (
+                <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all"
+                  style={{ background: active ? "rgba(0,122,255,0.08)" : "rgba(0,122,255,0.03)", border: "1px solid rgba(0,122,255,0.08)" }}>
+                  <span className="text-xl leading-none">{item.emoji}</span>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: active ? "#007AFF" : "#1C1C1E" }}>{item.label}</p>
+                    <p className="text-xs" style={{ color: "#AEAEB2" }}>{item.desc}</p>
+                  </div>
+                </Link>
+              );
+            })}
+
+            <div className="pt-3 mt-2" style={{ borderTop: "1px solid rgba(60,60,67,0.1)" }}>
+              {isLoggedIn ? (
+                <button onClick={() => { logout(); setMobileOpen(false); }}
+                  className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                  <LogOut className="w-4 h-4" /> Sign Out ({user?.name})
+                </button>
+              ) : (
+                <button onClick={() => { openLogin(); setMobileOpen(false); }}
+                  className="w-full flex items-center gap-2 px-3 py-2.5 text-sm rounded-xl transition-colors hover:bg-black/5"
+                  style={{ color: "#636366" }}>
+                  <User className="w-4 h-4" /> Sign In / Sign Up
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

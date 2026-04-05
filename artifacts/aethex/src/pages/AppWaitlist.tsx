@@ -90,11 +90,18 @@ export default function AppWaitlist() {
             </div>
           )}
 
-          {/* Official Store Badges — real assets from Apple & Google */}
+          {/* Official Store Badges */}
           <div className="flex flex-wrap gap-4 justify-center mt-8 items-center">
-            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95">
-              <img src={`${BASE}/app-store-badge.svg`} alt="Download on the App Store" style={{ height: 52 }} />
+            {/* App Store — object tag renders SVG inline styles correctly */}
+            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95" style={{ display: "inline-block", height: 52 }}>
+              <object
+                data={`${BASE}/app-store-badge.svg`}
+                type="image/svg+xml"
+                style={{ height: 52, width: "auto", display: "block", pointerEvents: "none" }}
+                aria-label="Download on the App Store"
+              />
             </a>
+            {/* Google Play — PNG works fine as img */}
             <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95">
               <img src={`${BASE}/google-play-badge.png`} alt="Get it on Google Play" style={{ height: 52 }} />
             </a>

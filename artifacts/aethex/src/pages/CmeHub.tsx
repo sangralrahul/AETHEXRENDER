@@ -470,12 +470,12 @@ export default function CmeHub() {
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden py-16 lg:py-20">
-        {/* Background photo — medical conference / lecture hall */}
+        {/* Background photo — doctor continuing medical education */}
         <div className="absolute inset-0"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1600&q=80')",
+            backgroundImage: "url('https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1600&q=80')",
             backgroundSize: "cover",
-            backgroundPosition: "center top",
+            backgroundPosition: "center",
           }} />
         {/* Dark overlay */}
         <div className="absolute inset-0"

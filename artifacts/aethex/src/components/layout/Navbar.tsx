@@ -217,11 +217,111 @@ const categories = [
   { href: "/ai-assistant", icon: Brain, label: "Cadus AI" },
   { href: "/community", icon: MessageSquare, label: "Community" },
   { href: "/jobs", icon: Briefcase, label: "Jobs" },
-  { href: "/institutions", icon: Building2, label: "Institutions" },
   { href: "/blog", icon: Newspaper, label: "Blog" },
   { href: "/news", icon: Megaphone, label: "News" },
   { href: "/pricing", icon: Crown, label: "Pricing" },
 ];
+
+const institutionsMenu = [
+  { href: "/institutions?type=medical-college", icon: University, label: "Medical Colleges", desc: "MBBS, MD, MS admissions", color: "#007AFF" },
+  { href: "/institutions?type=hospital", icon: Building2, label: "Hospitals", desc: "Top hospitals & networks", color: "#EF4444" },
+  { href: "/institutions?type=pg-entrance", icon: GraduationCap, label: "PG Entrance", desc: "NEET PG, NEXT coaching", color: "#F59E0B" },
+  { href: "/institutions?type=research", icon: Microscope, label: "Research Institutes", desc: "ICMR, AIIMS, CMC & more", color: "#8B5CF6" },
+  { href: "/institutions?type=nursing", icon: HeartPulse, label: "Nursing Colleges", desc: "BSc, MSc Nursing programs", color: "#10B981" },
+  { href: "/institutions?type=pharmacy", icon: Pill, label: "Pharmacy Colleges", desc: "B.Pharm, Pharm.D programs", color: "#06B6D4" },
+];
+
+function InstitutionsDropdown({ open, onToggle, onClose, dropdownRef }: {
+  open: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+  dropdownRef: React.RefObject<HTMLDivElement>;
+}) {
+  const [location] = useLocation();
+  const active = location === "/institutions" || location.startsWith("/institutions");
+  const [dropdownTop, setDropdownTop] = useState(148);
+
+  const handleToggle = () => {
+    if (!open) {
+      const brandBar = document.querySelector("[data-brand-switcher]") as HTMLElement | null;
+      const announcement = document.querySelector("[data-navbar-announcement]") as HTMLElement | null;
+      const header = document.querySelector("header") as HTMLElement | null;
+      const catBar = document.querySelector("[data-category-bar]") as HTMLElement | null;
+      const bH = brandBar ? brandBar.getBoundingClientRect().height : 0;
+      const aH = announcement ? announcement.getBoundingClientRect().height : 0;
+      const hH = header ? header.getBoundingClientRect().height : 56;
+      const cH = catBar ? catBar.getBoundingClientRect().height : 52;
+      setDropdownTop(Math.round(bH + aH + hH + cH));
+    }
+    onToggle();
+  };
+
+  return (
+    <div ref={dropdownRef} className="relative shrink-0">
+      <button
+        onClick={handleToggle}
+        className="flex flex-col items-center justify-center px-4 h-full text-xs font-medium relative transition-all whitespace-nowrap"
+        style={{
+          color: active || open ? "#60A5FA" : "rgba(255,255,255,0.65)",
+          borderBottom: active || open ? "2px solid #60A5FA" : "2px solid transparent",
+          minWidth: 72,
+          height: 52,
+        }}
+      >
+        <Building2 className="w-[18px] h-[18px] mb-0.5" />
+        <span className="flex items-center gap-0.5">
+          Colleges &amp; Hospitals <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
+        </span>
+      </button>
+
+      {open && (
+        <div
+          className="fixed z-50 rounded-b-2xl overflow-hidden"
+          style={{
+            top: dropdownTop,
+            right: 24,
+            width: 480,
+            background: "#FFFFFF",
+            border: "1px solid rgba(60,60,67,0.1)",
+            borderTop: "2px solid #007AFF",
+            boxShadow: "0 16px 48px rgba(0,0,0,0.14)",
+          }}
+        >
+          <div className="px-4 pt-3 pb-2" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
+            <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "#AEAEB2" }}>Colleges &amp; Hospitals</p>
+          </div>
+          <div className="p-3 grid grid-cols-2 gap-1">
+            {institutionsMenu.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                className="flex items-center gap-3 p-3 rounded-xl transition-all hover:-translate-y-0.5"
+                style={{ background: "transparent" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `${item.color}08`; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}
+              >
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                  style={{ background: `${item.color}14`, border: `1px solid ${item.color}25` }}>
+                  <item.icon className="w-4 h-4" style={{ color: item.color }} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold truncate" style={{ color: "#1C1C1E" }}>{item.label}</p>
+                  <p className="text-[10px] truncate" style={{ color: "#AEAEB2" }}>{item.desc}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="px-4 py-2.5" style={{ borderTop: "1px solid rgba(60,60,67,0.08)", background: "rgba(60,60,67,0.02)" }}>
+            <Link href="/institutions" onClick={onClose} className="text-xs font-semibold" style={{ color: "#007AFF" }}>
+              View all Colleges &amp; Hospitals →
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const loginMenuItems = [
   { href: "/account", icon: User, label: "My Profile" },
@@ -256,15 +356,18 @@ export function Navbar() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [institutionsOpen, setInstitutionsOpen] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const toolsRef = useRef<HTMLDivElement>(null);
+  const institutionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (accountRef.current && !accountRef.current.contains(e.target as Node)) setAccountOpen(false);
       if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
       if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) setToolsOpen(false);
+      if (institutionsRef.current && !institutionsRef.current.contains(e.target as Node)) setInstitutionsOpen(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -514,6 +617,14 @@ export function Navbar() {
             onClose={() => setToolsOpen(false)}
             dropdownRef={toolsRef}
             dark
+          />
+
+          {/* Colleges & Hospitals dropdown — last in category bar */}
+          <InstitutionsDropdown
+            open={institutionsOpen}
+            onToggle={() => setInstitutionsOpen(o => !o)}
+            onClose={() => setInstitutionsOpen(false)}
+            dropdownRef={institutionsRef}
           />
         </div>
       </div>

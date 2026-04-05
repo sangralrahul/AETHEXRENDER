@@ -51,7 +51,7 @@ function NavDropdown({ label, href, menu, open, onToggle, onClose, dropdownRef }
   const active = location.startsWith(href);
 
   return (
-    <div ref={dropdownRef} className="relative hidden xl:block">
+    <div ref={dropdownRef} className="relative hidden lg:block">
       <button
         onClick={onToggle}
         className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"

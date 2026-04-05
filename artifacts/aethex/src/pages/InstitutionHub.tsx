@@ -166,15 +166,29 @@ export default function InstitutionHub({ mode }: InstitutionHubProps = {}) {
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden pt-20 pb-24">
-        {/* Background photo */}
+        {/* Background photo — different per mode */}
         <div className="absolute inset-0"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
-        {/* Dark gradient overlay */}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(8,18,36,0.93) 0%, rgba(10,26,50,0.88) 50%, rgba(8,18,36,0.93) 100%)" }} />
+          style={{
+            backgroundImage: mode === "colleges"
+              ? "url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600&q=80')"
+              : mode === "hospitals"
+              ? "url('https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=1600&q=80')"
+              : "url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1600&q=80')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }} />
+        {/* Overlay — teal-blue tint for colleges, dark navy for hospitals */}
+        <div className="absolute inset-0" style={{
+          background: mode === "colleges"
+            ? "linear-gradient(135deg, rgba(0,40,80,0.92) 0%, rgba(0,80,120,0.85) 50%, rgba(0,60,100,0.92) 100%)"
+            : "linear-gradient(135deg, rgba(8,18,36,0.93) 0%, rgba(10,26,50,0.88) 50%, rgba(8,18,36,0.93) 100%)"
+        }} />
         {/* Glow orbs */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" style={{ background: "rgba(0,122,255,0.12)" }} />
-          <div className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full blur-3xl translate-y-1/2" style={{ background: "rgba(0,194,168,0.1)" }} />
+          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"
+            style={{ background: mode === "colleges" ? "rgba(0,194,168,0.15)" : "rgba(0,122,255,0.12)" }} />
+          <div className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full blur-3xl translate-y-1/2"
+            style={{ background: mode === "colleges" ? "rgba(0,122,255,0.12)" : "rgba(0,194,168,0.1)" }} />
         </div>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center max-w-3xl mx-auto">
@@ -186,12 +200,12 @@ export default function InstitutionHub({ mode }: InstitutionHubProps = {}) {
                 ? <><HeartPulse className="w-3.5 h-3.5" /> Hospital Partnerships</>
                 : <><Building2 className="w-3.5 h-3.5" /> Institutional Partnerships</>}
             </div>
-            <h1 className="text-4xl sm:text-5xl font-black text-white mb-5 leading-tight" style={{ letterSpacing: "-1px" }}>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white mb-5 leading-none" style={{ letterSpacing: "-2px" }}>
               {mode === "colleges"
-                ? <>Medical Colleges<br />— Covered</>
+                ? "Medical Colleges"
                 : mode === "hospitals"
-                ? <>Major Hospitals<br />— Covered</>
-                : <>Medical Colleges &<br />Hospitals — Covered</>}
+                ? "Major Hospitals"
+                : <>Medical Colleges &<br />Hospitals</>}
             </h1>
             <p className="text-lg mb-8 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
               {mode === "colleges"

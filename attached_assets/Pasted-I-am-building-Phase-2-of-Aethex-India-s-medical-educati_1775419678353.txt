@@ -1,0 +1,199 @@
+I am building Phase 2 of Aethex — India's medical 
+education platform for doctors and students. 
+The existing website already has: CME Hub, Drug 
+Reference, NEET-PG, Calculators, Clinical Cases, 
+Cadus AI, Community, Jobs, Institutions, Blog, 
+News, Mobile App, Faculty Dashboard, Certificates.
+
+DO NOT rebuild any of the above. Build ONLY 
+these new features as a Next.js 14 + Tailwind 
+CSS + shadcn/ui app. Dark navy #0B0F1A background, 
+teal #00C2B2 accent, white text. Mobile first.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔴 SECTION 1 — AI FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. AI DIAGNOSIS ASSISTANT
+- Symptom input: multi-select + free text box
+- Returns top 5 differential diagnoses ranked 
+  by probability with explanation for each
+- Case Practice Mode: student sees symptoms, 
+  must type their diagnosis BEFORE AI reveals
+- Score system: correct = +10 points
+- Powered by Claude API claude-sonnet-4-20250514
+- Red disclaimer banner: "Educational use only, 
+  not for clinical decision making"
+
+2. AI ANSWER EVALUATOR (NEET-PG)
+- Text area for student to write long answer
+- AI scores out of 10 on: accuracy, 
+  completeness, clinical relevance
+- Shows missed points + ideal answer structure
+- Previous attempts history with score graph
+- India NEET-PG exam format specific
+
+3. PERSONALIZED LEARNING PATH
+- Onboarding: specialty, exam target, weak topics
+- AI generates 7-day study plan with daily tasks
+- Progress ring per subject (0-100%)
+- Smart nudge alerts: "You haven't studied 
+  Cardiology in 5 days"
+- Streak counter with flame icon
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🟡 SECTION 2 — LEARNING FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4. SMART FLASHCARDS
+- Auto-generate cards from any medical topic
+- SM-2 spaced repetition algorithm
+- Flip animation on cards
+- Due Today widget on dashboard
+- Deck sharing between users
+- Progress bar per deck
+
+5. VIDEO CASE DISCUSSIONS
+- Vertical short video feed (like Reels)
+- 60-120 second clinical case videos
+- Like, save, comment, share
+- Filter by specialty tag
+- Doctor upload portal with review system
+- View count and engagement stats
+
+6. LIVE CME WEBINAR MODULE
+- Schedule webinars with date/time/topic
+- Countdown timer on upcoming webinars
+- Live Q&A chat during session
+- Auto-generate NMC certificate on completion
+- Recording archive with chapter timestamps
+- Attendance tracking per user
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🟢 SECTION 3 — COMMUNITY FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+7. MENTORSHIP MATCHING
+- Student profile: year, college, specialty goal
+- Mentor profile: specialty, experience, slots
+- Smart match by specialty + goals
+- In-app chat between mentor and mentee
+- Session booking with calendar slots
+- Rating system after each session
+
+8. COLLEGE LEADERBOARDS
+- Points for: CME, flashcards, quizzes, cases
+- Scope toggle: My College / State / All India
+- Weekly rank badge on profile
+- Top 3 get crown icons gold/silver/bronze
+- Weekly email digest with rank update
+- Streak badges: 7 day, 30 day, 100 day
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔵 SECTION 4 — INSTITUTION FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9. ADVANCED INSTITUTION ANALYTICS
+- Per student activity heatmap calendar
+- Module engagement chart (which CME most viewed)
+- Dropout alert: flag students inactive 7+ days
+- Red/yellow/green status per student
+- Export reports as CSV and PDF
+- Compare college performance vs national average
+
+10. CUSTOM QUIZ BUILDER
+- Faculty creates MCQ or short answer quizzes
+- Set: time limit, pass mark, randomize questions
+- Students get auto graded instant results
+- Analytics: average score, most missed question,
+  time spent per question per student
+- Question bank: save and reuse questions
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🟣 SECTION 5 — TECH FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+11. OFFLINE PWA MODE
+- Convert app to Progressive Web App
+- Download: Drug Ref, Flashcards, CME content
+- Offline indicator banner when no internet
+- Auto sync when connection restored
+- Install prompt on mobile and desktop
+
+12. VOICE SEARCH
+- Microphone button on global search bar
+- Search drugs, cases, CME by speaking
+- Web Speech API integration
+- Fallback to text on unsupported browsers
+- Visual waveform animation while listening
+
+13. WHATSAPP BOT
+- Daily MCQ sent to WhatsApp at user set time
+- Drug lookup: text drug name get instant info
+- CME deadline reminders via WhatsApp
+- Twilio WhatsApp Business API + webhook
+- User sets preferences in profile settings
+
+14. DARK/LIGHT MODE TOGGLE
+- System preference auto detect
+- Manual toggle in navbar
+- Smooth transition animation
+- All components themed for both modes
+- Preference saved in localStorage
+
+15. MULTI LANGUAGE SUPPORT
+- English, Hindi, Tamil, Telugu, Kannada
+- Language selector in navbar
+- i18n with next-intl package
+- Medical terms translated accurately
+- Auto detect from browser language
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚙️ TECH STACK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Framework: Next.js 14 App Router
+- Styling: Tailwind CSS + shadcn/ui
+- Database: PostgreSQL via Prisma ORM
+- Auth: NextAuth.js (Google + Email OTP)
+- AI: Claude API claude-sonnet-4-20250514
+- Video: Mux for streaming
+- Realtime: Socket.io for chat and webinars
+- PWA: next-pwa package
+- Voice: Web Speech API
+- WhatsApp: Twilio API
+- Email: Resend
+- Storage: AWS S3 for videos and files
+- Hosting: Vercel
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎨 DESIGN RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Background: #0B0F1A dark navy
+- Accent: #00C2B2 teal
+- Text: #FFFFFF white
+- Cards: #161B2E slightly lighter navy
+- Danger: #FF4444 red
+- Success: #00C851 green
+- Font: Inter or Plus Jakarta Sans
+- Border radius: 12px on all cards
+- Sidebar navigation matching Aethex style
+- Mobile first responsive design
+- Smooth page transitions
+- Loading skeletons on all data fetches
+- Toast notifications for all actions
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️ STRICT RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- DO NOT rebuild existing Aethex features
+- All AI outputs must have medical disclaimers
+- NEET-PG evaluator must be India exam specific
+- Offline mode must work without any internet
+- Leaderboard must have college/state/national
+- All forms must have proper validation
+- All pages must load under 3 seconds
+- Must work on low-end Android phones
+- Must work on slow 4G connections in India

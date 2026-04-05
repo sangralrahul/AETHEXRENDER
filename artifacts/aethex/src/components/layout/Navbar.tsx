@@ -166,16 +166,16 @@ export function Navbar() {
           alignItems: "center",
         }}
       >
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="flex items-center justify-between gap-4 md:gap-6">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+            <Link href="/" className="flex items-center gap-2 group shrink-0">
               <img
                 src={`${import.meta.env.BASE_URL}aethex-logo.jpg`}
                 alt="aethex logo"
-                className="w-9 h-9 object-contain rounded-lg"
+                className="w-8 h-8 object-contain rounded-lg"
               />
-              <span className="font-display font-bold text-xl tracking-tight leading-none" style={{ color: "#1C1C1E" }}>
+              <span className="font-display font-bold text-lg tracking-tight leading-none hidden sm:inline" style={{ color: "#1C1C1E" }}>
                 aethex
               </span>
               {isPro && (

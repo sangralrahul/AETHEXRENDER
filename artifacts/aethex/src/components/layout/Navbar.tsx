@@ -166,7 +166,7 @@ export function Navbar() {
           alignItems: "center",
         }}
       >
-        <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-4 md:gap-6">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group shrink-0">

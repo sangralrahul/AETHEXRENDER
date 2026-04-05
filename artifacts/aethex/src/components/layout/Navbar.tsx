@@ -51,7 +51,7 @@ function NavDropdown({ label, href, menu, open, onToggle, onClose, dropdownRef }
   const active = location.startsWith(href);
 
   return (
-    <div ref={dropdownRef} className="relative hidden lg:block">
+    <div ref={dropdownRef} className="relative hidden xl:block">
       <button
         onClick={onToggle}
         className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
@@ -267,19 +267,16 @@ export function Navbar() {
                 );
               })()}
 
-              {/* Tools */}
-              {(() => {
-                const active = location === "/tools" || location.startsWith("/tools/");
-                return (
-                  <Link href="/tools"
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden xl:block"
-                    style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
-                    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
-                    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
-                    Tools
-                  </Link>
-                );
-              })()}
+              {/* Tools Dropdown */}
+              <NavDropdown
+                label="Tools"
+                href="/tools"
+                menu={toolsMenu}
+                open={toolsOpen}
+                onToggle={() => setToolsOpen(o => !o)}
+                onClose={() => setToolsOpen(false)}
+                dropdownRef={toolsRef}
+              />
 
               {/* Colleges & Hospitals */}
               {(() => {
@@ -463,7 +460,6 @@ export function Navbar() {
               { href: "/drug-interaction-checker", label: "Drug Interactions" },
               { href: "/case-of-the-day", label: "Case of the Day" },
               { href: "/pricing", label: "Pricing" },
-              { href: "/tools", label: "Clinical Tools" },
               { href: "/institutions", label: "Colleges & Hospitals" },
               { href: "/orders/track", label: "Track Order" },
             ].map(item => {
@@ -479,7 +475,6 @@ export function Navbar() {
 
             <p className="text-[10px] font-bold uppercase tracking-wider px-3 pt-3 pb-0.5" style={{ color: "#AEAEB2" }}>New Features</p>
             {[
-              { href: "/calculator", label: "Medical Calculators", emoji: "🧮", desc: "21 clinical calculators" },
               { href: "/cases", label: "Clinical Case Library", emoji: "🩺", desc: "10 cases with diagnosis reveal" },
               { href: "/community", label: "Doctor Community", emoji: "💬", desc: "Peer forum for doctors" },
               { href: "/jobs", label: "Medical Jobs Board", emoji: "💼", desc: "20 hospital listings" },

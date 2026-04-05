@@ -277,6 +277,38 @@ const BLOG_CAT_COLORS: Record<string, string> = {
   "Product Guides": "#34C759", "Doctor Life": "#FF9500", "Research & Studies": "#00C2A8",
 };
 
+function DrugInteractionBanner() {
+  return (
+    <section className="py-8" style={{ background: "#F2F2F7", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link href="/drug-interaction-checker"
+          className="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl transition-all"
+          style={{ background: "#FFFFFF", border: "1px solid rgba(245,158,11,0.2)", boxShadow: "0 2px 16px rgba(0,0,0,0.05)" }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.4)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(245,158,11,0.12)"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.2)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 16px rgba(0,0,0,0.05)"; }}>
+          <div className="flex items-center gap-4">
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+              style={{ background: "linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)" }}>
+              <Pill className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="font-bold text-base" style={{ color: "#1C1C1E" }}>Drug Interaction Checker</p>
+              <p className="text-sm" style={{ color: "#636366" }}>
+                Instantly check interactions for up to 5 drugs — with severity ratings and clinical management guidance.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm shrink-0 transition-all group-hover:opacity-90"
+            style={{ background: "linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)", color: "#FFFFFF" }}>
+            Check Interactions
+            <ChevronRight className="w-4 h-4" />
+          </div>
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 function CaseOfTheDaySection() {
   const todaysCase = getTodaysCase();
   const today = new Date();
@@ -1107,6 +1139,9 @@ export default function Home() {
 
       {/* ── Case of the Day ── */}
       <CaseOfTheDaySection />
+
+      {/* ── Drug Interaction Checker CTA ── */}
+      <DrugInteractionBanner />
 
       {/* ── Blog & News ── */}
       <BlogNewsSection />

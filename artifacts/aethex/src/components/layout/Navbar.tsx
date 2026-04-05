@@ -18,7 +18,7 @@ export function AnnouncementBar() {
 
 const toolsMenu = [
   { href: "/tools/prescription", icon: FileText, label: "Prescription Writer", desc: "AI-powered Rx generator", color: "#007AFF" },
-  { href: "/tools/drug-interactions", icon: Pill, label: "Drug Interactions", desc: "Check drug safety instantly", color: "#F59E0B" },
+  { href: "/drug-interaction-checker", icon: Pill, label: "Drug Interactions", desc: "Check drug safety instantly", color: "#F59E0B" },
   { href: "/tools/dosage-calculator", icon: FlaskConical, label: "Dosage Calculator", desc: "Weight-based dose calculator", color: "#10B981" },
   { href: "/tools/differential-diagnosis", icon: Brain, label: "Differential Diagnosis", desc: "AI symptom analysis", color: "#8B5CF6" },
   { href: "/tools/lab-interpreter", icon: Microscope, label: "Lab Interpreter", desc: "Interpret investigation results", color: "#EF4444" },
@@ -447,6 +447,8 @@ export function Navbar() {
                 { href: "/cme-hub", label: "CME Hub" },
                 { href: "/neet-pg", label: "NEET-PG" },
                 { href: "/drug-reference", label: "Drug Reference" },
+                { href: "/drug-interaction-checker", label: "Drug Interactions" },
+                { href: "/case-of-the-day", label: "Case of the Day" },
                 { href: "/pricing", label: "Pricing" },
                 { href: "/tools", label: "Clinical Tools" },
                 { href: "/institutions", label: "Colleges & Hospitals" },

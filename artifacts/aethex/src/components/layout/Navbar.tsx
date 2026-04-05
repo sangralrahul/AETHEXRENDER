@@ -16,17 +16,43 @@ export function AnnouncementBar() {
   );
 }
 
-const toolsMenu = [
+const clinicalToolsMenu = [
   { href: "/tools/prescription", icon: FileText, label: "Prescription Writer", desc: "AI-powered Rx generator", color: "#007AFF" },
   { href: "/drug-interaction-checker", icon: Pill, label: "Drug Interactions", desc: "Check drug safety instantly", color: "#F59E0B" },
   { href: "/tools/dosage-calculator", icon: FlaskConical, label: "Dosage Calculator", desc: "Weight-based dose calculator", color: "#10B981" },
   { href: "/tools/differential-diagnosis", icon: Brain, label: "Differential Diagnosis", desc: "AI symptom analysis", color: "#8B5CF6" },
   { href: "/tools/lab-interpreter", icon: Microscope, label: "Lab Interpreter", desc: "Interpret investigation results", color: "#EF4444" },
   { href: "/tools/procedure-guide", icon: Syringe, label: "Procedure Guide", desc: "Step-by-step clinical procedures", color: "#06B6D4" },
-  { href: "/calculator", icon: Calculator, label: "Medical Calculators", desc: "21 clinical calculators — SOFA, CURB-65, GCS…", color: "#007AFF" },
-  { href: "/cases", icon: Stethoscope, label: "Clinical Case Library", desc: "10 anonymised cases with diagnosis reveal", color: "#EF4444" },
-  { href: "/community", icon: MessageSquare, label: "Doctor Community", desc: "Peer forum — cases, NEET-PG, career, drugs", color: "#8B5CF6" },
-  { href: "/jobs", icon: Briefcase, label: "Medical Jobs Board", desc: "20 hospital & clinic listings across India", color: "#10B981" },
+];
+
+const calculatorsMenu = [
+  { id: "bmi", name: "Body Mass Index (BMI)" },
+  { id: "egfr-ckd-epi", name: "eGFR (CKD-EPI 2021)" },
+  { id: "curb65", name: "CURB-65 Pneumonia" },
+  { id: "sofa", name: "SOFA Score (ICU)" },
+  { id: "cha2ds2-vasc", name: "CHA₂DS₂-VASc Score" },
+  { id: "child-pugh", name: "Child-Pugh Score" },
+  { id: "wells-dvt", name: "Wells Score for DVT" },
+  { id: "gcs", name: "Glasgow Coma Scale" },
+  { id: "apgar", name: "APGAR Score" },
+  { id: "qtc", name: "Corrected QT (QTc)" },
+  { id: "anion-gap", name: "Anion Gap" },
+  { id: "grace", name: "GRACE Score (ACS)" },
+  { id: "heart-score", name: "HEART Score" },
+  { id: "centor", name: "Centor Score" },
+  { id: "parkland", name: "Parkland Formula (Burns)" },
+  { id: "nihss", name: "NIH Stroke Scale" },
+  { id: "bsa", name: "Body Surface Area (BSA)" },
+  { id: "iv-fluid", name: "IV Fluid (Holliday-Segar)" },
+  { id: "osmolality", name: "Serum Osmolality" },
+  { id: "psi-port", name: "PSI / PORT Score" },
+  { id: "wells-pe", name: "Wells Score for PE" },
+];
+
+const communityMenu = [
+  { href: "/cases", icon: Stethoscope, label: "Clinical Case Library", desc: "10 cases with diagnosis reveal", color: "#EF4444" },
+  { href: "/community", icon: MessageSquare, label: "Doctor Community", desc: "Peer forum — cases, NEET-PG, drugs", color: "#8B5CF6" },
+  { href: "/jobs", icon: Briefcase, label: "Medical Jobs Board", desc: "20 hospital & clinic listings", color: "#10B981" },
 ];
 
 const institutionsMenu = [
@@ -41,7 +67,7 @@ const institutionsMenu = [
 function NavDropdown({ label, href, menu, open, onToggle, onClose, dropdownRef }: {
   label: string;
   href: string;
-  menu: typeof toolsMenu;
+  menu: typeof institutionsMenu;
   open: boolean;
   onToggle: () => void;
   onClose: () => void;
@@ -93,6 +119,109 @@ function NavDropdown({ label, href, menu, open, onToggle, onClose, dropdownRef }
             <Link href={href} onClick={onClose} className="text-xs font-semibold" style={{ color: "#007AFF" }}>
               View all {label} →
             </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
+  open: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+  dropdownRef: React.RefObject<HTMLDivElement>;
+}) {
+  const [location] = useLocation();
+  const active = location === "/tools" || location.startsWith("/tools/") || location === "/calculator";
+
+  return (
+    <div ref={dropdownRef} className="relative hidden lg:block">
+      <button
+        onClick={onToggle}
+        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+        style={{
+          color: active ? "#007AFF" : "#636366",
+          background: active ? "rgba(0,122,255,0.08)" : open ? "rgba(60,60,67,0.06)" : "transparent",
+        }}
+        onMouseEnter={e => { if (!active && !open) (e.currentTarget as HTMLButtonElement).style.background = "rgba(60,60,67,0.06)"; }}
+        onMouseLeave={e => { if (!active && !open) (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+      >
+        Tools <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 rounded-2xl z-50 overflow-hidden"
+          style={{ width: 740, background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 16px 48px rgba(0,0,0,0.14)" }}>
+          <div className="flex divide-x" style={{ divideColor: "rgba(60,60,67,0.08)" }}>
+
+            {/* Left: Clinical Tools + Community */}
+            <div className="flex-shrink-0 w-72 p-3 flex flex-col gap-0.5">
+              <p className="text-[10px] font-bold uppercase tracking-wider px-2 py-1.5" style={{ color: "#AEAEB2" }}>Clinical Tools</p>
+              {clinicalToolsMenu.map(item => (
+                <Link key={item.href} href={item.href} onClick={onClose}
+                  className="flex items-center gap-2.5 px-2 py-2 rounded-xl transition-all"
+                  style={{ background: "transparent" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `${item.color}0d`; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: `${item.color}14`, border: `1px solid ${item.color}25` }}>
+                    <item.icon className="w-3.5 h-3.5" style={{ color: item.color }} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold leading-tight" style={{ color: "#1C1C1E" }}>{item.label}</p>
+                    <p className="text-[10px] leading-tight mt-0.5 truncate" style={{ color: "#AEAEB2" }}>{item.desc}</p>
+                  </div>
+                </Link>
+              ))}
+
+              <div className="mt-2 pt-2" style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }}>
+                <p className="text-[10px] font-bold uppercase tracking-wider px-2 py-1.5" style={{ color: "#AEAEB2" }}>Community & Careers</p>
+                {communityMenu.map(item => (
+                  <Link key={item.href} href={item.href} onClick={onClose}
+                    className="flex items-center gap-2.5 px-2 py-2 rounded-xl transition-all"
+                    style={{ background: "transparent" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `${item.color}0d`; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                      style={{ background: `${item.color}14`, border: `1px solid ${item.color}25` }}>
+                      <item.icon className="w-3.5 h-3.5" style={{ color: item.color }} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold leading-tight" style={{ color: "#1C1C1E" }}>{item.label}</p>
+                      <p className="text-[10px] leading-tight mt-0.5 truncate" style={{ color: "#AEAEB2" }}>{item.desc}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: All 21 Calculators */}
+            <div className="flex-1 p-3">
+              <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#AEAEB2" }}>Medical Calculators</p>
+                <Link href="/calculator" onClick={onClose} className="text-[10px] font-semibold" style={{ color: "#007AFF" }}>View all →</Link>
+              </div>
+              <div className="grid grid-cols-2 gap-0.5">
+                {calculatorsMenu.map((calc) => {
+                  const isActive = location === `/calculator` && new URLSearchParams(window.location.search).get("id") === calc.id;
+                  return (
+                    <Link key={calc.id} href={`/calculator?id=${calc.id}`} onClick={onClose}
+                      className="flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all text-xs"
+                      style={{
+                        color: isActive ? "#007AFF" : "#1C1C1E",
+                        background: isActive ? "rgba(0,122,255,0.08)" : "transparent",
+                        fontWeight: isActive ? 600 : 400,
+                      }}
+                      onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,122,255,0.05)"; }}
+                      onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
+                      <Calculator className="w-3 h-3 shrink-0" style={{ color: "#007AFF", opacity: 0.7 }} />
+                      {calc.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -267,11 +396,8 @@ export function Navbar() {
                 );
               })()}
 
-              {/* Tools Dropdown */}
-              <NavDropdown
-                label="Tools"
-                href="/tools"
-                menu={toolsMenu}
+              {/* Tools Mega Menu */}
+              <ToolsMegaMenu
                 open={toolsOpen}
                 onToggle={() => setToolsOpen(o => !o)}
                 onClose={() => setToolsOpen(false)}

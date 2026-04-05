@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Search, Calculator, Heart, Brain, Activity, Stethoscope, Flame, Wind, Baby, Zap, Droplets, Scale, ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
 
 interface CalcField {
@@ -603,10 +603,17 @@ const severityColors: Record<string, { bg: string; border: string; text: string;
   info: { bg: "#EFF6FF", border: "#93C5FD", text: "#1D4ED8", badge: "#3B82F6" },
 };
 
-function CalcCard({ calc }: { calc: Calculator }) {
+function CalcCard({ calc, initialOpen }: { calc: Calculator; initialOpen?: boolean }) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [result, setResult] = useState<ReturnType<Calculator["calculate"]> | null>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(initialOpen ?? false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (initialOpen && cardRef.current) {
+      setTimeout(() => cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+    }
+  }, [initialOpen]);
 
   const allFilled = calc.fields.every(f => values[f.id] !== undefined && values[f.id] !== "");
 
@@ -621,7 +628,7 @@ function CalcCard({ calc }: { calc: Calculator }) {
   const Icon = calc.icon;
 
   return (
-    <div className="rounded-2xl overflow-hidden transition-all duration-200" style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+    <div ref={cardRef} className="rounded-2xl overflow-hidden transition-all duration-200" style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)", boxShadow: initialOpen ? "0 0 0 2px #007AFF40, 0 4px 16px rgba(0,0,0,0.1)" : "0 2px 12px rgba(0,0,0,0.06)" }}>
       <button className="w-full flex items-center gap-3 p-4 text-left hover:bg-black/[0.02] transition-colors" onClick={() => setOpen(o => !o)}>
         <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${calc.color}14`, border: `1px solid ${calc.color}25` }}>
           <Icon className="w-5 h-5" style={{ color: calc.color }} />
@@ -703,11 +710,19 @@ export default function CalculatorPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
 
-  const filtered = useMemo(() =>
-    calculators.filter(c =>
+  const activeId = useMemo(() => new URLSearchParams(window.location.search).get("id") ?? "", []);
+
+  const filtered = useMemo(() => {
+    const base = calculators.filter(c =>
       (category === "All" || c.category === category) &&
       (c.name.toLowerCase().includes(search.toLowerCase()) || c.shortName.toLowerCase().includes(search.toLowerCase()) || c.category.toLowerCase().includes(search.toLowerCase()))
-    ), [search, category]);
+    );
+    if (activeId && !search && category === "All") {
+      const idx = base.findIndex(c => c.id === activeId);
+      if (idx > 0) return [base[idx], ...base.slice(0, idx), ...base.slice(idx + 1)];
+    }
+    return base;
+  }, [search, category, activeId]);
 
   return (
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
@@ -770,7 +785,7 @@ export default function CalculatorPage() {
               <p className="text-sm font-semibold" style={{ color: "#636366" }}>No calculators found for "{search}"</p>
             </div>
           ) : (
-            filtered.map(c => <CalcCard key={c.id} calc={c} />)
+            filtered.map(c => <CalcCard key={c.id} calc={c} initialOpen={!!activeId && c.id === activeId} />)
           )}
         </div>
       </div>

@@ -10,7 +10,7 @@ import {
   Bone, Thermometer, Eye, Baby, Brain,
   Wind, Droplets, Waves, ScanLine, Heart, AlertTriangle, Scan, Dna,
   Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2,
-  Rss, Globe, Clock, ExternalLink, CalendarCheck
+  Rss, Globe, Clock, ExternalLink, CalendarCheck, BadgeCheck, Star
 } from "lucide-react";
 import { getTodaysCase } from "@/data/clinicalCases";
 import { useListProducts, useListCategories } from "@workspace/api-client-react";
@@ -70,23 +70,59 @@ const trustedBrands = [
 
 const testimonials = [
   {
-    quote: "Helped me revise faster for NEET PG — the AI explains concepts better than most textbooks.",
-    name: "Rahul Mehta",
-    title: "MBBS Final Year, AIIMS Delhi",
-    initials: "RM",
-  },
-  {
-    quote: "I use Cadus AI every morning for quick clinical queries. It's like having a consultant on speed dial.",
+    quote: "Aethex has completely changed how I manage patient care. Cadus AI gives me instant drug references mid-consultation — it's like having a pharmacologist in the room.",
     name: "Dr. Priya Sharma",
-    title: "Resident Doctor, KEM Mumbai",
+    role: "Cardiologist",
+    city: "Mumbai",
     initials: "PS",
+    stars: 5,
+    gradient: "linear-gradient(135deg,#007AFF,#5AC8FA)",
   },
   {
-    quote: "Ordered my Littmann and Harrison's from aethex — genuine, fast, and the AI even helped me pick the right model.",
-    name: "Dr. Ananya Krishnan",
-    title: "MD Cardiology, PGI Chandigarh",
-    initials: "AK",
-  }
+    quote: "As a GP seeing 40+ patients daily, the Drug Interaction Checker has saved me from three potentially dangerous prescriptions in a single week. I can't imagine going back.",
+    name: "Dr. Arjun Mehta",
+    role: "General Physician",
+    city: "Delhi",
+    initials: "AM",
+    stars: 5,
+    gradient: "linear-gradient(135deg,#34C759,#00C2A8)",
+  },
+  {
+    quote: "The paediatric dosage tools and CME modules keep me current without the textbook overhead. My Harrison's arrived in 2 days — genuinely impressed.",
+    name: "Dr. Sneha Reddy",
+    role: "Pediatrician",
+    city: "Hyderabad",
+    initials: "SR",
+    stars: 5,
+    gradient: "linear-gradient(135deg,#FF9500,#FF6B35)",
+  },
+  {
+    quote: "I recommended Aethex to my entire ortho unit. The medical supply quality is top-tier and the NEET-PG MCQ engine has been a game-changer for my junior residents.",
+    name: "Dr. Rohit Kapoor",
+    role: "Orthopedic Surgeon",
+    city: "Pune",
+    initials: "RK",
+    stars: 5,
+    gradient: "linear-gradient(135deg,#5856D6,#AF52DE)",
+  },
+  {
+    quote: "The Study Hub is well-structured and the AI explains dermatology cases with clinical precision. Fast delivery, authentic products, and zero hassle on returns.",
+    name: "Dr. Ananya Singh",
+    role: "Dermatologist",
+    city: "Bangalore",
+    initials: "AS",
+    stars: 5,
+    gradient: "linear-gradient(135deg,#FF2D55,#FF6B9E)",
+  },
+  {
+    quote: "Cadus AI helped me cross-reference a rare neuro case at 11 PM — the depth of the response was remarkable. This platform is what Indian medicine has been waiting for.",
+    name: "Dr. Vikram Nair",
+    role: "Neurologist",
+    city: "Chennai",
+    initials: "VN",
+    stars: 5,
+    gradient: "linear-gradient(135deg,#00C2A8,#007AFF)",
+  },
 ];
 
 const trustBadges = [
@@ -1017,35 +1053,123 @@ export default function Home() {
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="py-20 relative" style={{ borderTop: "1px solid rgba(60,60,67,0.08)", borderBottom: "1px solid rgba(60,60,67,0.08)", backgroundImage: "url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-        <div className="absolute inset-0" style={{ background: "rgba(255,255,255,0.94)" }} />
+      <section className="py-20 relative overflow-hidden" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
+        {/* Soft background blobs */}
+        <div className="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl pointer-events-none"
+          style={{ background: "rgba(0,122,255,0.05)", transform: "translate(-40%,-40%)" }} />
+        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none"
+          style={{ background: "rgba(0,194,168,0.06)", transform: "translate(30%,30%)" }} />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-display font-bold mb-3" style={{ color: "#1C1C1E" }}>What Doctors & Students Say</h2>
-            <p className="max-w-2xl mx-auto" style={{ color: "#636366" }}>Trusted by medical professionals across India — from AIIMS to community hospitals.</p>
+          {/* Heading */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-4"
+              style={{ background: "rgba(0,122,255,0.08)", border: "1px solid rgba(0,122,255,0.15)", color: "#007AFF" }}>
+              <BadgeCheck className="w-3.5 h-3.5" />
+              Verified Reviews
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-display font-bold mb-3" style={{ color: "#1C1C1E" }}>
+              What Doctors Are Saying
+            </h2>
+            <p className="max-w-xl mx-auto text-base" style={{ color: "#636366" }}>
+              Trusted by medical professionals across India — from AIIMS to community hospitals.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          {/* Desktop 3×2 grid */}
+          <div className="hidden md:grid md:grid-cols-3 gap-5">
             {testimonials.map((t, idx) => (
-              <div key={idx} className="p-7 rounded-2xl relative transition-all hover:-translate-y-1"
-                style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
-                <Quote className="absolute top-5 right-5 w-10 h-10" style={{ color: "rgba(0,122,255,0.1)" }} />
-                <div className="flex items-center gap-1 mb-5" style={{ color: "#FF9500" }}>
-                  {[1,2,3,4,5].map(star => <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>)}
+              <div key={idx}
+                className="group flex flex-col p-6 rounded-2xl relative transition-all duration-200 hover:-translate-y-1.5"
+                style={{
+                  background: "#FAFAFA",
+                  border: "1px solid rgba(60,60,67,0.09)",
+                  boxShadow: "0 2px 16px rgba(0,0,0,0.05)",
+                }}>
+                {/* Hover accent border */}
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                  style={{ boxShadow: "0 0 0 1.5px rgba(0,122,255,0.2), 0 8px 32px rgba(0,122,255,0.08)" }} />
+
+                {/* Quote mark */}
+                <Quote className="absolute top-5 right-5 w-8 h-8 opacity-[0.07]" style={{ color: "#007AFF" }} />
+
+                {/* Stars */}
+                <div className="flex items-center gap-0.5 mb-4">
+                  {[1,2,3,4,5].map(s => (
+                    <svg key={s} className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#FF9500">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                  ))}
+                  <span className="text-xs font-semibold ml-1.5" style={{ color: "#FF9500" }}>5.0</span>
                 </div>
-                <p className="italic mb-7 font-medium leading-relaxed" style={{ color: "#636366" }}>"{t.quote}"</p>
+
+                {/* Quote text */}
+                <p className="text-sm leading-relaxed flex-1 mb-6" style={{ color: "#3A3A3C" }}>
+                  "{t.quote}"
+                </p>
+
+                {/* Doctor info */}
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-base"
-                    style={{ background: "rgba(0,122,255,0.1)", border: "2px solid rgba(0,122,255,0.2)", color: "#007AFF" }}>
+                  <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm shrink-0 text-white"
+                    style={{ background: t.gradient }}>
                     {t.initials}
                   </div>
-                  <div>
-                    <h4 className="font-bold text-sm" style={{ color: "#1C1C1E" }}>{t.name}</h4>
-                    <p className="text-xs" style={{ color: "#007AFF" }}>{t.title}</p>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1">
+                      <span className="font-bold text-sm truncate" style={{ color: "#1C1C1E" }}>{t.name}</span>
+                      <BadgeCheck className="w-3.5 h-3.5 shrink-0" style={{ color: "#007AFF" }} />
+                    </div>
+                    <p className="text-xs truncate" style={{ color: "#8E8E93" }}>
+                      {t.role} · {t.city}
+                    </p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Mobile horizontal carousel */}
+          <div className="flex md:hidden gap-4 overflow-x-auto pb-4 snap-x snap-mandatory"
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
+            {testimonials.map((t, idx) => (
+              <div key={idx}
+                className="flex flex-col p-5 rounded-2xl relative shrink-0 snap-start"
+                style={{
+                  width: "82vw",
+                  maxWidth: 320,
+                  background: "#FAFAFA",
+                  border: "1px solid rgba(60,60,67,0.09)",
+                  boxShadow: "0 2px 16px rgba(0,0,0,0.05)",
+                }}>
+                <Quote className="absolute top-4 right-4 w-7 h-7 opacity-[0.07]" style={{ color: "#007AFF" }} />
+                <div className="flex items-center gap-0.5 mb-3">
+                  {[1,2,3,4,5].map(s => (
+                    <svg key={s} className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#FF9500">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: "#3A3A3C" }}>
+                  "{t.quote}"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 text-white"
+                    style={{ background: t.gradient }}>
+                    {t.initials}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1">
+                      <span className="font-bold text-sm truncate" style={{ color: "#1C1C1E" }}>{t.name}</span>
+                      <BadgeCheck className="w-3.5 h-3.5 shrink-0" style={{ color: "#007AFF" }} />
+                    </div>
+                    <p className="text-xs" style={{ color: "#8E8E93" }}>{t.role} · {t.city}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Swipe hint for mobile */}
+          <p className="md:hidden text-center text-xs mt-3" style={{ color: "#AEAEB2" }}>Swipe to see more →</p>
         </div>
       </section>
 

@@ -31,10 +31,3 @@ channel = "stable-25_05"
 [userenv]
 
 [userenv.shared]
-ZOHO_USER = "email@aethex.in"
-ZOHO_HOST = "smtp.zoho.in"
-ZOHO_PORT = "465"
-ZOHO_FROM_NAME = "AETHEX Medical"
-ADMIN_EMAIL = "email@aethex.in"
-SITE_URL = "https://aethex.in"
-FROM_EMAIL = "email@aethex.in"

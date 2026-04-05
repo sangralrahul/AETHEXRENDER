@@ -13,6 +13,7 @@ import contactRouter from "./contact";
 import adminRouter from "./admin";
 import medKnowledgeRouter from "./medknowledge";
 import bookCoverRouter from "./book-cover";
+import verifyRouter from "./verify";
 
 const router: IRouter = Router();
 
@@ -30,5 +31,6 @@ router.use(reviewsRouter);
 router.use(sellerRouter);
 router.use(blogRouter);
 router.use(medKnowledgeRouter);
+router.use(verifyRouter);
 
 export default router;

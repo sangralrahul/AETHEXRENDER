@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database, BadgeCheck } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useUserAuth } from "@/hooks/use-user-auth";
@@ -323,13 +323,25 @@ export function Navbar() {
                     {isLoggedIn ? (
                       <>
                         <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
-                          <p className="text-sm font-semibold truncate" style={{ color: "#1C1C1E" }}>{user?.name}</p>
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-sm font-semibold truncate" style={{ color: "#1C1C1E" }}>{user?.name}</p>
+                            {user?.verified && (
+                              <BadgeCheck className="w-3.5 h-3.5 shrink-0 text-[#007AFF]" strokeWidth={2.5} title="Verified Medical Professional" />
+                            )}
+                          </div>
                           <p className="text-xs truncate" style={{ color: "#AEAEB2" }}>{user?.email}</p>
-                          {isPro && (
-                            <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00A893" }}>
-                              <Crown className="w-3 h-3" />PRO
-                            </span>
-                          )}
+                          <div className="flex items-center gap-1.5 flex-wrap mt-1">
+                            {isPro && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00A893" }}>
+                                <Crown className="w-3 h-3" />PRO
+                              </span>
+                            )}
+                            {user?.verified && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,122,255,0.1)", border: "1px solid rgba(0,122,255,0.25)", color: "#007AFF" }}>
+                                <BadgeCheck className="w-3 h-3" />Verified
+                              </span>
+                            )}
+                          </div>
                         </div>
                         {[
                           { href: "/account", icon: Settings, label: "My Account" },

@@ -15,6 +15,8 @@ export interface UserProfile {
   wishlist: number[];
   cadusDailyCount: number;
   cadusLastDate: string;
+  verified?: boolean;
+  verificationStatus?: "none" | "pending" | "approved" | "rejected";
 }
 
 export interface Address {

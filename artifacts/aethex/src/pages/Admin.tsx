@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ShieldCheck, LayoutDashboard, Package, Users, ShoppingBag, FileText, BarChart3, Settings, Lock, Eye, EyeOff, ChevronRight, TrendingUp, IndianRupee, Star, CheckCircle2, XCircle, Clock, AlertTriangle } from "lucide-react";
+import { ShieldCheck, LayoutDashboard, Package, Users, ShoppingBag, FileText, BarChart3, Settings, Lock, Eye, EyeOff, ChevronRight, TrendingUp, IndianRupee, Star, CheckCircle2, XCircle, Clock, AlertTriangle, BadgeCheck } from "lucide-react";
 import { useListProducts, useListCategories } from "@workspace/api-client-react";
 
-type AdminTab = "dashboard" | "products" | "orders" | "users" | "sellers" | "blog" | "analytics" | "settings";
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+type AdminTab = "dashboard" | "products" | "orders" | "users" | "sellers" | "blog" | "analytics" | "verifications" | "settings";
 
 const TABS: { id: AdminTab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -13,8 +15,22 @@ const TABS: { id: AdminTab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "sellers", label: "Sellers", icon: ShieldCheck },
   { id: "blog", label: "Blog", icon: FileText },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "verifications", label: "Verifications", icon: BadgeCheck },
   { id: "settings", label: "Settings", icon: Settings },
 ];
+
+interface VerificationRequest {
+  id: number;
+  email: string;
+  name: string | null;
+  registrationNumber: string;
+  councilName: string;
+  documentName: string | null;
+  documentData: string | null;
+  status: string;
+  rejectionReason: string | null;
+  createdAt: string;
+}
 
 const DEMO_STATS = {
   totalRevenue: 18,  // lakhs
@@ -95,6 +111,10 @@ export default function Admin() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState<AdminTab>("dashboard");
+  const [verifications, setVerifications] = useState<VerificationRequest[]>([]);
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [verifyActionMsg, setVerifyActionMsg] = useState<{ id: number; type: "success" | "error"; text: string } | null>(null);
+  const [rejectReason, setRejectReason] = useState<{ id: number; reason: string } | null>(null);
 
   const { data: productsData } = useListProducts({ limit: 50 });
   const products = productsData?.products || [];
@@ -113,6 +133,7 @@ export default function Admin() {
       const data = await resp.json();
       if (resp.ok && data.ok) {
         sessionStorage.setItem("aethex_admin_auth", "true");
+        sessionStorage.setItem("aethex_admin_pw", password);
         setAuthed(true);
         setError("");
       } else {
@@ -127,8 +148,64 @@ export default function Admin() {
 
   const handleLogout = () => {
     sessionStorage.removeItem("aethex_admin_auth");
+    sessionStorage.removeItem("aethex_admin_pw");
     setAuthed(false);
     setPassword("");
+  };
+
+  const adminPw = () => sessionStorage.getItem("aethex_admin_pw") ?? "";
+
+  useEffect(() => {
+    if (tab !== "verifications" || !authed) return;
+    setVerifyLoading(true);
+    fetch(`${API_BASE}/api/admin/verifications`, {
+      headers: { "x-admin-password": adminPw() },
+    })
+      .then(r => r.json())
+      .then(data => setVerifications(data.verifications ?? []))
+      .catch(() => {})
+      .finally(() => setVerifyLoading(false));
+  }, [tab, authed]);
+
+  const handleApprove = async (id: number) => {
+    setVerifyActionMsg(null);
+    try {
+      const resp = await fetch(`${API_BASE}/api/admin/verifications/${id}/approve`, {
+        method: "POST",
+        headers: { "x-admin-password": adminPw(), "Content-Type": "application/json" },
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        setVerifications(prev => prev.map(v => v.id === id ? { ...v, status: "approved" } : v));
+        setVerifyActionMsg({ id, type: "success", text: "Approved — user is now verified." });
+      } else {
+        setVerifyActionMsg({ id, type: "error", text: data.error ?? "Approval failed." });
+      }
+    } catch {
+      setVerifyActionMsg({ id, type: "error", text: "Network error." });
+    }
+  };
+
+  const handleReject = async (id: number) => {
+    const reason = rejectReason?.id === id ? rejectReason.reason : "";
+    setVerifyActionMsg(null);
+    try {
+      const resp = await fetch(`${API_BASE}/api/admin/verifications/${id}/reject`, {
+        method: "POST",
+        headers: { "x-admin-password": adminPw(), "Content-Type": "application/json" },
+        body: JSON.stringify({ reason }),
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        setVerifications(prev => prev.map(v => v.id === id ? { ...v, status: "rejected", rejectionReason: reason || null } : v));
+        setVerifyActionMsg({ id, type: "success", text: "Request rejected." });
+        setRejectReason(null);
+      } else {
+        setVerifyActionMsg({ id, type: "error", text: data.error ?? "Rejection failed." });
+      }
+    } catch {
+      setVerifyActionMsg({ id, type: "error", text: "Network error." });
+    }
   };
 
   if (!authed) {
@@ -188,6 +265,11 @@ export default function Admin() {
                 {t.id === "sellers" && DEMO_SELLERS.filter(s => s.status === "pending").length > 0 && (
                   <span className="ml-auto w-5 h-5 flex items-center justify-center bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full">
                     {DEMO_SELLERS.filter(s => s.status === "pending").length}
+                  </span>
+                )}
+                {t.id === "verifications" && verifications.filter(v => v.status === "pending").length > 0 && (
+                  <span className="ml-auto w-5 h-5 flex items-center justify-center bg-[#007AFF]/20 text-[#007AFF] text-xs font-bold rounded-full">
+                    {verifications.filter(v => v.status === "pending").length}
                   </span>
                 )}
               </button>
@@ -513,6 +595,135 @@ export default function Admin() {
                   ))}
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Verifications Tab */}
+          {tab === "verifications" && (
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-2xl font-display font-bold text-[#1c1c1e]">Doctor Verifications</h1>
+                <p className="text-[#6c6c70] text-sm mt-1">Review and approve doctor credential verification requests.</p>
+              </div>
+
+              {verifyLoading ? (
+                <div className="flex items-center gap-3 justify-center py-16 text-[#8e8e93]">
+                  <div className="w-5 h-5 border-2 border-[#007AFF]/30 border-t-[#007AFF] rounded-full animate-spin" />
+                  <span className="text-sm">Loading verification requests…</span>
+                </div>
+              ) : verifications.length === 0 ? (
+                <div className="flex flex-col items-center gap-3 py-16 text-center bg-white border border-black/[0.08] rounded-2xl">
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-[#007AFF]/10">
+                    <BadgeCheck className="w-7 h-7 text-[#007AFF]" />
+                  </div>
+                  <p className="font-semibold text-[#1c1c1e]">No verification requests</p>
+                  <p className="text-sm text-[#6c6c70]">Requests will appear here when doctors apply for verification.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {verifications.map(v => (
+                    <div key={v.id} className="bg-white border border-black/[0.08] rounded-2xl p-5">
+                      <div className="flex items-start justify-between gap-4 mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-[#007AFF]"
+                            style={{ background: "rgba(0,122,255,0.1)" }}>
+                            {(v.name ?? v.email)[0]?.toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-[#1c1c1e]">{v.name ?? "—"}</p>
+                            <p className="text-xs text-[#6c6c70]">{v.email}</p>
+                          </div>
+                        </div>
+                        <StatusBadge status={v.status} />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+                        <div className="p-3 rounded-xl bg-black/[0.03]">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#8e8e93] mb-1">Registration No.</p>
+                          <p className="font-semibold text-[#1c1c1e]">{v.registrationNumber}</p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-black/[0.03]">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#8e8e93] mb-1">Council</p>
+                          <p className="font-semibold text-[#1c1c1e] text-xs leading-tight">{v.councilName}</p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-black/[0.03]">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#8e8e93] mb-1">Submitted</p>
+                          <p className="font-semibold text-[#1c1c1e]">{new Date(v.createdAt).toLocaleDateString("en-IN")}</p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-black/[0.03]">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#8e8e93] mb-1">Document</p>
+                          <p className="font-semibold text-[#1c1c1e] text-xs">{v.documentName ?? "Not uploaded"}</p>
+                        </div>
+                      </div>
+
+                      {v.documentData && v.documentName && (
+                        <div className="mb-4">
+                          {v.documentName.toLowerCase().endsWith(".pdf") ? (
+                            <a href={v.documentData} download={v.documentName}
+                              className="inline-flex items-center gap-2 px-3 py-2 bg-[#007AFF]/10 text-[#007AFF] text-xs font-semibold rounded-xl hover:bg-[#007AFF]/15 transition-colors">
+                              <FileText className="w-3.5 h-3.5" />
+                              Download PDF Document
+                            </a>
+                          ) : (
+                            <div className="rounded-xl overflow-hidden border border-black/[0.08] max-h-40">
+                              <img src={v.documentData} alt="Document" className="w-full object-contain max-h-40" />
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {verifyActionMsg?.id === v.id && (
+                        <div className={`flex items-center gap-2 p-3 rounded-xl text-sm mb-3 ${verifyActionMsg.type === "success" ? "bg-[#00C2A8]/10 text-[#00C2A8]" : "bg-red-400/10 text-red-400"}`}>
+                          {verifyActionMsg.type === "success" ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <XCircle className="w-4 h-4 shrink-0" />}
+                          {verifyActionMsg.text}
+                        </div>
+                      )}
+
+                      {v.status === "pending" && (
+                        <div className="space-y-3">
+                          {rejectReason?.id === v.id ? (
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={rejectReason.reason}
+                                onChange={e => setRejectReason({ id: v.id, reason: e.target.value })}
+                                placeholder="Rejection reason (optional)…"
+                                className="flex-1 px-3 py-2 text-sm bg-black/5 border border-black/10 rounded-xl focus:outline-none focus:border-red-400/50"
+                              />
+                              <button onClick={() => handleReject(v.id)}
+                                className="px-4 py-2 bg-red-500/10 text-red-400 text-sm font-bold rounded-xl hover:bg-red-500/20 transition-colors">
+                                Confirm
+                              </button>
+                              <button onClick={() => setRejectReason(null)}
+                                className="px-3 py-2 text-sm text-[#8e8e93] hover:text-[#1c1c1e] rounded-xl hover:bg-black/5 transition-colors">
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex gap-3">
+                              <button onClick={() => handleApprove(v.id)}
+                                className="flex-1 flex items-center justify-center gap-2 py-2.5 font-bold text-sm rounded-xl transition-all"
+                                style={{ background: "#007AFF", color: "#fff" }}>
+                                <BadgeCheck className="w-4 h-4" />
+                                Approve
+                              </button>
+                              <button onClick={() => setRejectReason({ id: v.id, reason: "" })}
+                                className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-500/10 text-red-400 font-bold text-sm rounded-xl hover:bg-red-500/20 transition-all">
+                                <XCircle className="w-4 h-4" />
+                                Reject
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {v.rejectionReason && (
+                        <p className="mt-2 text-xs text-[#6c6c70]">Rejection reason: <span className="text-red-400">{v.rejectionReason}</span></p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

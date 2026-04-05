@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "wouter";
-import { User, MapPin, Heart, Crown, Settings, LogOut, Plus, Trash2, CheckCircle2, Star, Bell, ShieldCheck, ChevronRight, Edit3, Package, Camera } from "lucide-react";
+import { User, MapPin, Heart, Crown, Settings, LogOut, Plus, Trash2, CheckCircle2, Star, Bell, ShieldCheck, ChevronRight, Edit3, Package, Camera, BadgeCheck, Upload, X, FileText, Clock, XCircle } from "lucide-react";
 import { useUserAuth, type Address } from "@/hooks/use-user-auth";
 import { formatINR } from "@/lib/utils";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
+
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const INDIA_STATES = [
   "Andhra Pradesh","Assam","Bihar","Delhi","Goa","Gujarat","Haryana","Karnataka","Kerala",
@@ -10,7 +13,7 @@ const INDIA_STATES = [
   "Uttar Pradesh","Uttarakhand","West Bengal","Jammu & Kashmir",
 ];
 
-type Tab = "profile" | "addresses" | "wishlist" | "subscription" | "notifications";
+type Tab = "profile" | "addresses" | "wishlist" | "subscription" | "notifications" | "verification";
 
 const TABS: { id: Tab; label: string; icon: typeof User }[] = [
   { id: "profile", label: "Profile", icon: User },
@@ -18,6 +21,23 @@ const TABS: { id: Tab; label: string; icon: typeof User }[] = [
   { id: "wishlist", label: "Wishlist", icon: Heart },
   { id: "subscription", label: "Subscription", icon: Crown },
   { id: "notifications", label: "Notifications", icon: Bell },
+  { id: "verification", label: "Verification", icon: BadgeCheck },
+];
+
+const COUNCILS = [
+  "National Medical Commission (NMC)",
+  "Andhra Pradesh Medical Council","Assam Medical Council","Bihar Medical Council",
+  "Delhi Medical Council","Goa Medical Council","Gujarat Medical Council",
+  "Haryana Medical Council","Himachal Pradesh Medical Council",
+  "Jammu & Kashmir Medical Council","Jharkhand Medical Council",
+  "Karnataka Medical Council","Kerala Medical Council",
+  "Madhya Pradesh Medical Council","Maharashtra Medical Council",
+  "Manipur Medical Council","Meghalaya Medical Council","Mizoram Medical Council",
+  "Nagaland Medical Council","Odisha Medical Council","Punjab Medical Council",
+  "Rajasthan Medical Council","Sikkim Medical Council","Tamil Nadu Medical Council",
+  "Telangana State Medical Council","Tripura Medical Council",
+  "Uttar Pradesh Medical Council","Uttarakhand Medical Council",
+  "West Bengal Medical Council",
 ];
 
 function AddressCard({ addr, onDelete, onSetDefault }: { addr: Address; onDelete: (id: string) => void; onSetDefault: (id: string) => void }) {
@@ -105,7 +125,7 @@ function AddAddressForm({ onSave }: { onSave: (addr: Omit<Address, "id">) => voi
 }
 
 export default function Account() {
-  const { user, isLoggedIn, logout, updateProfile, activatePro, activateProAnnual } = useUserAuth();
+  const { user, isLoggedIn, logout, updateProfile, getJwt, activatePro, activateProAnnual } = useUserAuth();
   const [tab, setTab] = useState<Tab>("profile");
   const [editName, setEditName] = useState(false);
   const [nameInput, setNameInput] = useState(user?.name || "");
@@ -117,6 +137,16 @@ export default function Account() {
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const avatarMenuRef = useRef<HTMLDivElement>(null);
+
+  const [verifyReg, setVerifyReg] = useState("");
+  const [verifyCouncil, setVerifyCouncil] = useState(COUNCILS[0]);
+  const [verifyDocFile, setVerifyDocFile] = useState<File | null>(null);
+  const [verifyDocData, setVerifyDocData] = useState<string>("");
+  const [verifySubmitting, setVerifySubmitting] = useState(false);
+  const [verifyMsg, setVerifyMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [verifyStatus, setVerifyStatus] = useState<{ verified: boolean; verification: { status: string; registrationNumber: string; councilName: string; rejectionReason?: string } | null } | null>(null);
+  const [verifyStatusLoading, setVerifyStatusLoading] = useState(false);
+  const verifyDocRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!showAvatarMenu) return;
@@ -141,6 +171,78 @@ export default function Account() {
     };
     reader.readAsDataURL(file);
     e.target.value = "";
+  };
+
+  useEffect(() => {
+    if (tab !== "verification" || !isLoggedIn) return;
+    setVerifyStatusLoading(true);
+    const jwt = getJwt();
+    fetch(`${API_BASE}/api/verify/status`, {
+      headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
+    })
+      .then(r => r.json())
+      .then(data => {
+        setVerifyStatus(data);
+        if (data.verified) updateProfile({ verified: true, verificationStatus: "approved" });
+        else if (data.verification?.status === "pending") updateProfile({ verificationStatus: "pending" });
+        else if (data.verification?.status === "rejected") updateProfile({ verificationStatus: "rejected" });
+      })
+      .catch(() => {})
+      .finally(() => setVerifyStatusLoading(false));
+  }, [tab, isLoggedIn]);
+
+  const handleDocFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setVerifyMsg({ type: "error", text: "File size must be under 5 MB." });
+      return;
+    }
+    setVerifyDocFile(file);
+    const reader = new FileReader();
+    reader.onload = () => setVerifyDocData(reader.result as string);
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
+  const handleVerifySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setVerifyMsg(null);
+    setVerifySubmitting(true);
+    const jwt = getJwt();
+    try {
+      const resp = await fetch(`${API_BASE}/api/verify/request`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
+        },
+        body: JSON.stringify({
+          registrationNumber: verifyReg,
+          councilName: verifyCouncil,
+          documentData: verifyDocData || undefined,
+          documentName: verifyDocFile?.name || undefined,
+        }),
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        setVerifyMsg({ type: "success", text: data.message ?? "Verification request submitted successfully." });
+        updateProfile({ verificationStatus: "pending" });
+        setVerifyStatus(prev => ({
+          verified: prev?.verified ?? false,
+          verification: { status: "pending", registrationNumber: verifyReg.toUpperCase(), councilName: verifyCouncil },
+        }));
+        setVerifyReg("");
+        setVerifyDocFile(null);
+        setVerifyDocData("");
+      } else {
+        setVerifyMsg({ type: "error", text: data.error ?? "Failed to submit request." });
+      }
+    } catch {
+      setVerifyMsg({ type: "error", text: "Could not reach server. Please try again." });
+    } finally {
+      setVerifySubmitting(false);
+    }
   };
 
   if (!isLoggedIn || !user) {
@@ -248,13 +350,23 @@ export default function Account() {
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="font-bold text-[#1c1c1e] truncate">{user.name}</p>
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-bold text-[#1c1c1e] truncate">{user.name}</p>
+                    {user.verified && <VerifiedBadge size="sm" />}
+                  </div>
                   <p className="text-xs text-[#6c6c70] truncate">{user.email}</p>
-                  {user.isPro && (
-                    <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-[#00C2A8]/15 border border-[#00C2A8]/30 rounded-full text-[#00C2A8] text-xs font-bold">
-                      <Crown className="w-3 h-3" />PRO
-                    </span>
-                  )}
+                  <div className="flex items-center gap-1.5 flex-wrap mt-1">
+                    {user.isPro && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#00C2A8]/15 border border-[#00C2A8]/30 rounded-full text-[#00C2A8] text-xs font-bold">
+                        <Crown className="w-3 h-3" />PRO
+                      </span>
+                    )}
+                    {user.verified && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#007AFF]/10 border border-[#007AFF]/25 rounded-full text-[#007AFF] text-xs font-bold">
+                        <BadgeCheck className="w-3 h-3" />Verified
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <nav className="space-y-1">
@@ -512,6 +624,152 @@ export default function Account() {
                     </div>
                   </>
                 )}
+              </div>
+            )}
+
+            {/* Verification Tab */}
+            {tab === "verification" && (
+              <div className="space-y-5">
+                <div className="bg-white border border-black/[0.08] rounded-2xl p-6">
+                  <h2 className="text-lg font-display font-bold text-[#1c1c1e] flex items-center gap-2 mb-1">
+                    <BadgeCheck className="w-5 h-5 text-[#007AFF]" />
+                    Doctor Verification
+                  </h2>
+                  <p className="text-sm text-[#6c6c70] mb-6">
+                    Verify your medical credentials to get a blue verified badge on your profile, visible to other Aethex users.
+                  </p>
+
+                  {verifyStatusLoading ? (
+                    <div className="flex items-center gap-3 py-8 justify-center text-[#8e8e93]">
+                      <div className="w-5 h-5 border-2 border-[#007AFF]/30 border-t-[#007AFF] rounded-full animate-spin" />
+                      <span className="text-sm">Checking verification status…</span>
+                    </div>
+                  ) : verifyStatus?.verified ? (
+                    <div className="flex flex-col items-center gap-4 py-8 text-center">
+                      <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "rgba(0,122,255,0.1)" }}>
+                        <BadgeCheck className="w-9 h-9 text-[#007AFF]" strokeWidth={2} />
+                      </div>
+                      <div>
+                        <p className="text-lg font-bold text-[#1c1c1e]">Verified Medical Professional</p>
+                        <p className="text-sm text-[#6c6c70] mt-1">Your credentials have been verified by Aethex.</p>
+                      </div>
+                      <VerifiedBadge size="lg" showLabel />
+                      {verifyStatus.verification && (
+                        <div className="text-left w-full mt-4 p-4 rounded-xl border border-[#007AFF]/20 bg-[#007AFF]/5 space-y-2">
+                          <p className="text-xs text-[#6c6c70]">Registration No: <span className="text-[#1c1c1e] font-semibold">{verifyStatus.verification.registrationNumber}</span></p>
+                          <p className="text-xs text-[#6c6c70]">Council: <span className="text-[#1c1c1e] font-semibold">{verifyStatus.verification.councilName}</span></p>
+                        </div>
+                      )}
+                    </div>
+                  ) : verifyStatus?.verification?.status === "pending" ? (
+                    <div className="flex flex-col items-center gap-4 py-8 text-center">
+                      <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: "rgba(251,191,36,0.1)" }}>
+                        <Clock className="w-7 h-7 text-amber-400" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-[#1c1c1e]">Verification Pending</p>
+                        <p className="text-sm text-[#6c6c70] mt-1">Your request is under review. We'll notify you within 2–3 business days.</p>
+                      </div>
+                      <div className="text-left w-full p-4 rounded-xl border border-amber-400/20 bg-amber-400/5 space-y-2">
+                        <p className="text-xs text-[#6c6c70]">Registration No: <span className="text-[#1c1c1e] font-semibold">{verifyStatus.verification.registrationNumber}</span></p>
+                        <p className="text-xs text-[#6c6c70]">Council: <span className="text-[#1c1c1e] font-semibold">{verifyStatus.verification.councilName}</span></p>
+                      </div>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleVerifySubmit} className="space-y-5">
+                      {verifyStatus?.verification?.status === "rejected" && (
+                        <div className="flex items-start gap-3 p-4 rounded-xl border border-red-400/25 bg-red-400/5">
+                          <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-semibold text-red-400">Previous request rejected</p>
+                            {verifyStatus.verification.rejectionReason && (
+                              <p className="text-xs text-[#6c6c70] mt-0.5">{verifyStatus.verification.rejectionReason}</p>
+                            )}
+                            <p className="text-xs text-[#6c6c70] mt-1">You can resubmit with correct details.</p>
+                          </div>
+                        </div>
+                      )}
+
+                      <div>
+                        <label className="block text-sm font-semibold text-[#1c1c1e] mb-1.5">
+                          Medical Registration Number (MCI/NMC) *
+                        </label>
+                        <input
+                          type="text"
+                          value={verifyReg}
+                          onChange={e => setVerifyReg(e.target.value)}
+                          required
+                          placeholder="e.g. MH-12345 or NMC-2019-12345"
+                          className="w-full px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#007AFF]/50 text-sm"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-[#1c1c1e] mb-1.5">
+                          Issuing Medical Council *
+                        </label>
+                        <select
+                          value={verifyCouncil}
+                          onChange={e => setVerifyCouncil(e.target.value)}
+                          className="w-full px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] text-sm focus:outline-none focus:border-[#007AFF]/50"
+                        >
+                          {COUNCILS.map(c => (
+                            <option key={c} value={c} className="bg-white">{c}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-[#1c1c1e] mb-1.5">
+                          Proof Document <span className="font-normal text-[#6c6c70]">(optional — image or PDF, max 5 MB)</span>
+                        </label>
+                        <input ref={verifyDocRef} type="file" accept="image/*,.pdf" className="hidden" onChange={handleDocFile} />
+                        {verifyDocFile ? (
+                          <div className="flex items-center gap-3 p-3 bg-[#007AFF]/5 border border-[#007AFF]/20 rounded-xl">
+                            <FileText className="w-4 h-4 text-[#007AFF] shrink-0" />
+                            <span className="flex-1 text-sm text-[#1c1c1e] truncate">{verifyDocFile.name}</span>
+                            <button type="button" onClick={() => { setVerifyDocFile(null); setVerifyDocData(""); }}
+                              className="p-1 hover:bg-red-500/10 rounded-lg text-[#8e8e93] hover:text-red-400 transition-colors">
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <button type="button" onClick={() => verifyDocRef.current?.click()}
+                            className="w-full flex items-center justify-center gap-2 py-8 border-2 border-dashed border-black/15 rounded-xl text-[#6c6c70] hover:border-[#007AFF]/40 hover:text-[#007AFF] transition-all text-sm">
+                            <Upload className="w-4 h-4" />
+                            Upload registration certificate or ID card
+                          </button>
+                        )}
+                      </div>
+
+                      {verifyMsg && (
+                        <div className={`flex items-start gap-2.5 p-4 rounded-xl border text-sm ${verifyMsg.type === "success" ? "border-[#00C2A8]/25 bg-[#00C2A8]/5 text-[#00C2A8]" : "border-red-400/25 bg-red-400/5 text-red-400"}`}>
+                          {verifyMsg.type === "success" ? <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" /> : <XCircle className="w-4 h-4 shrink-0 mt-0.5" />}
+                          {verifyMsg.text}
+                        </div>
+                      )}
+
+                      <button type="submit" disabled={verifySubmitting || !verifyReg.trim()}
+                        className="w-full py-3 font-bold rounded-xl text-sm transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                        style={{ background: "#007AFF", color: "#fff" }}>
+                        {verifySubmitting ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            Submitting…
+                          </>
+                        ) : (
+                          <>
+                            <BadgeCheck className="w-4 h-4" />
+                            Submit Verification Request
+                          </>
+                        )}
+                      </button>
+                      <p className="text-xs text-center text-[#aeaeb2]">
+                        Your data is reviewed only by Aethex admin and is kept confidential.
+                      </p>
+                    </form>
+                  )}
+                </div>
               </div>
             )}
 

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database, BadgeCheck, Calculator, Briefcase, MessageSquare } from "lucide-react";
+import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database, BadgeCheck, Calculator, Briefcase, MessageSquare, Smartphone } from "lucide-react";
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useUserAuth } from "@/hooks/use-user-auth";
@@ -7,6 +7,82 @@ import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { NotificationBell } from "@/components/NotificationBell";
 import { AuthModal } from "@/components/AuthModal";
+
+export function BrandSwitcherBar() {
+  const [location] = useLocation();
+  const isCareers = location === "/jobs" || location.startsWith("/jobs");
+  const isApp = location === "/app";
+  const isEnterprise = location === "/enterprise";
+
+  const tabs = [
+    {
+      href: "/",
+      label: "Aethex",
+      icon: null,
+      useLogoImg: true,
+      active: !isCareers && !isApp && !isEnterprise,
+    },
+    {
+      href: "/jobs",
+      label: "Careers",
+      icon: Briefcase,
+      useLogoImg: false,
+      active: isCareers,
+    },
+    {
+      href: "/app",
+      label: "Mobile App",
+      icon: Smartphone,
+      useLogoImg: false,
+      active: isApp,
+    },
+    {
+      href: "/enterprise",
+      label: "For Institutions",
+      icon: Building2,
+      useLogoImg: false,
+      active: isEnterprise,
+    },
+  ];
+
+  return (
+    <div
+      data-brand-switcher
+      className="no-print w-full"
+      style={{ background: "linear-gradient(90deg,#0055CC 0%,#007AFF 60%,#0088FF 100%)" }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-9">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className="flex items-center gap-1.5 px-3.5 h-full text-xs font-semibold relative transition-all select-none"
+              style={{
+                color: tab.active ? "#FFFFFF" : "rgba(255,255,255,0.65)",
+                borderBottom: tab.active ? "2px solid #FFFFFF" : "2px solid transparent",
+                marginBottom: -1,
+              }}
+            >
+              {tab.useLogoImg ? (
+                <img
+                  src={`${import.meta.env.BASE_URL}aethex-logo.jpg`}
+                  alt="Aethex"
+                  className="w-4 h-4 rounded object-contain"
+                  style={{ filter: "brightness(1.1)" }}
+                />
+              ) : Icon ? (
+                <Icon className="w-3.5 h-3.5" />
+              ) : null}
+              {tab.label}
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export function AnnouncementBar() {
   return (
@@ -138,11 +214,13 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
 
   const handleToggle = () => {
     if (!open) {
+      const brandBar = document.querySelector("[data-brand-switcher]") as HTMLElement | null;
       const announcement = document.querySelector("[data-navbar-announcement]") as HTMLElement | null;
       const header = document.querySelector("header") as HTMLElement | null;
+      const bH = brandBar ? brandBar.getBoundingClientRect().height : 0;
       const aH = announcement ? announcement.getBoundingClientRect().height : 0;
       const hH = header ? header.getBoundingClientRect().height : 64;
-      setDropdownTop(Math.round(aH + hH));
+      setDropdownTop(Math.round(bH + aH + hH));
     }
     onToggle();
   };

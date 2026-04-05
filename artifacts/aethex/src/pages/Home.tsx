@@ -10,8 +10,9 @@ import {
   Bone, Thermometer, Eye, Baby, Brain,
   Wind, Droplets, Waves, ScanLine, Heart, AlertTriangle, Scan, Dna,
   Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2,
-  Rss, Globe, Clock, ExternalLink
+  Rss, Globe, Clock, ExternalLink, CalendarCheck
 } from "lucide-react";
+import { getTodaysCase } from "@/data/clinicalCases";
 import { useListProducts, useListCategories } from "@workspace/api-client-react";
 import { ProductCard } from "@/components/ProductCard";
 import { useSession } from "@/hooks/use-session";
@@ -275,6 +276,94 @@ const BLOG_CAT_COLORS: Record<string, string> = {
   "Clinical Tips": "#007AFF", "NEET-PG Prep": "#5856D6", "Medical News": "#FF3B30",
   "Product Guides": "#34C759", "Doctor Life": "#FF9500", "Research & Studies": "#00C2A8",
 };
+
+function CaseOfTheDaySection() {
+  const todaysCase = getTodaysCase();
+  const today = new Date();
+
+  return (
+    <section className="py-16 relative" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row items-center gap-10">
+          {/* Left: Text */}
+          <div className="flex-1">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-5"
+              style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.2)", color: "#00C2A8" }}>
+              <CalendarCheck className="w-3.5 h-3.5" />
+              Case of the Day
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4" style={{ color: "#1C1C1E" }}>
+              Sharpen Your Clinical Thinking.{" "}
+              <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>Every Day.</span>
+            </h2>
+            <p className="text-base leading-relaxed mb-6" style={{ color: "#636366" }}>
+              A new real-world clinical case every day — complete with patient history, investigations, and MCQ diagnosis challenge. Discuss your reasoning with Cadus AI.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/case-of-the-day"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all"
+                style={{ background: "#007AFF", color: "#FFFFFF", boxShadow: "0 4px 16px rgba(0,122,255,0.25)" }}>
+                Solve Today's Case
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Right: Case Preview Card */}
+          <div className="flex-1 w-full max-w-md">
+            <div className="rounded-2xl overflow-hidden"
+              style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 4px 24px rgba(0,0,0,0.07)" }}>
+              <div className="px-5 pt-5 pb-4 flex items-start justify-between gap-3"
+                style={{ background: "linear-gradient(135deg, rgba(0,122,255,0.06) 0%, rgba(0,194,168,0.06) 100%)", borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 rounded-lg flex items-center justify-center"
+                      style={{ background: "rgba(0,194,168,0.15)" }}>
+                      <CalendarCheck className="w-3 h-3" style={{ color: "#00C2A8" }} />
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-wide" style={{ color: "#00C2A8" }}>
+                      {today.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-base" style={{ color: "#1C1C1E" }}>{todaysCase.title}</h3>
+                  <p className="text-xs mt-1" style={{ color: "#636366" }}>{todaysCase.specialty}</p>
+                </div>
+              </div>
+
+              <div className="px-5 py-4" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
+                <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: "#8E8E93" }}>Chief Complaint</p>
+                <p className="text-sm leading-snug" style={{ color: "#3A3A3C" }}>
+                  "{todaysCase.patient_info.chief_complaint.length > 90
+                    ? todaysCase.patient_info.chief_complaint.slice(0, 90) + "…"
+                    : todaysCase.patient_info.chief_complaint}"
+                </p>
+              </div>
+
+              <div className="px-5 py-4 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold" style={{ color: "#636366" }}>
+                    {todaysCase.patient_info.age}-yr {todaysCase.patient_info.gender}
+                    {todaysCase.patient_info.occupation ? ` · ${todaysCase.patient_info.occupation}` : ""}
+                  </span>
+                  <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                    style={{ background: "rgba(0,122,255,0.1)", color: "#007AFF" }}>
+                    {todaysCase.options.length} options
+                  </span>
+                </div>
+                <Link href="/case-of-the-day"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-bold text-sm transition-all"
+                  style={{ background: "linear-gradient(135deg, #007AFF 0%, #00C2A8 100%)", color: "#FFFFFF" }}>
+                  <Stethoscope className="w-3.5 h-3.5" />
+                  Solve Now
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function BlogNewsSection() {
   const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -1015,6 +1104,9 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      {/* ── Case of the Day ── */}
+      <CaseOfTheDaySection />
 
       {/* ── Blog & News ── */}
       <BlogNewsSection />

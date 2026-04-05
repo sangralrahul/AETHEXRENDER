@@ -452,6 +452,19 @@ export default function AiAssistant() {
   const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const contextParam = params.get("context");
+    if (contextParam) {
+      try {
+        const decoded = decodeURIComponent(contextParam);
+        setInput(decoded);
+      } catch {
+        /* ignore malformed URI */
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (new URLSearchParams(window.location.search).get("demo") === "slides") {
       setActivePresentationData({
         title: "Human Heart — Demo Presentation",

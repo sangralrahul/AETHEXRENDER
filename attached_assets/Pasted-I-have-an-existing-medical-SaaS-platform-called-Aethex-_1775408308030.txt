@@ -1,0 +1,173 @@
+I have an existing medical SaaS platform called Aethex (aethex.in) by 
+Clavix Technologies Pvt. Ltd. built in React + Tailwind + FastAPI.
+
+It already has: Landing page, Auth, Cadus AI chat, Drug reference, 
+MCQ engine, Pricing page.
+
+I need you to ADD these NEW features/pages to my existing codebase:
+
+═══════════════════════════════════════
+NEW PAGES TO BUILD
+═══════════════════════════════════════
+
+1. /marketplace — Medical Marketplace
+   - Doctors can list medical equipment, books, instruments for sale
+   - Students can buy/rent NEET-PG study material
+   - Product cards: image, title, price (₹), seller name, condition, location
+   - Filter by: category, price range, city, new/used
+   - "Post a listing" button (form: title, description, price, photos, category)
+   - No payment needed — show WhatsApp/email contact button on each listing
+   - Think OLX but only for medical professionals
+
+2. /jobs — Medical Jobs Board
+   - Hospital/clinic job listings for doctors, nurses, interns
+   - Filters: specialty, city, experience level, job type (full-time/part-time/locum)
+   - Job card: role, hospital name, location, salary range, posted date
+   - "Apply via WhatsApp" or "Apply via Email" CTA
+   - Post a job form for hospitals (name, role, requirements, contact)
+   - Mock data: 20 listings across Delhi, Mumbai, Bangalore, Chennai, Hyderabad
+
+3. /community — Doctor Community Forum
+   - Reddit-style threaded posts
+   - Categories: Clinical Cases, NEET-PG Prep, Career Advice, 
+     Research & Publications, Hospital Reviews, Drug Updates
+   - Post: title, body, category, upvote/downvote, comment count
+   - "Ask Cadus AI" button on any post — opens chat with post context
+   - Trending posts sidebar
+   - User flair: specialty + tier badge
+   - Mock 15 posts across categories
+
+4. /cases — Clinical Case Library
+   - Browse real-style anonymized clinical cases
+   - Each case: Chief complaint, History, Examination findings, 
+     Investigations (with images), Diagnosis reveal (hidden behind click), 
+     Management, Learning points
+   - Difficulty: Intern / Resident / Consultant
+   - Specialty filter
+   - "Discuss with Cadus AI" button — sends full case to chat
+   - Submit your own case (form)
+   - Mock 10 cases minimum
+
+5. /notes — Smart Clinical Notes
+   - Doctor-facing feature
+   - Create patient encounter notes (SOAP format: 
+     Subjective, Objective, Assessment, Plan)
+   - AI auto-complete: type chief complaint → Cadus AI suggests 
+     likely assessment and plan
+   - Save notes locally (localStorage)
+   - Export note as PDF
+   - Templates: OPD Note, Discharge Summary, Referral Letter, 
+     Prescription Pad
+
+6. /research — Research & Guidelines Hub
+   - Latest Indian medical guidelines (ICMR, MOHFW, NMC)
+   - Recent journal summaries (AI-summarized abstracts)
+   - Drug approval updates (CDSCO alerts)
+   - Filter by specialty
+   - "Summarize with Cadus AI" button on each paper/guideline
+   - Weekly digest email signup (UI only, no backend needed)
+
+7. /calculator — Medical Calculator Suite
+   - 20+ clinical calculators in one page:
+     * BMI & BSA
+     * eGFR (CKD-EPI, MDRD)
+     * CURB-65 (pneumonia severity)
+     * SOFA Score (ICU)
+     * CHA2DS2-VASc (AF stroke risk)
+     * Child-Pugh Score (liver disease)
+     * Wells Score (DVT/PE)
+     * Glasgow Coma Scale
+     * APGAR Score
+     * Corrected QT interval
+     * IV fluid calculator
+     * Drug dose calculator (weight-based)
+     * Anion gap
+     * Osmolality
+     * PSI/PORT Score
+     * GRACE Score (ACS)
+     * HEART Score
+     * Centor Score (sore throat)
+     * NIHSS (stroke)
+     * Parkland Formula (burns)
+   - Each calculator: clean card, inputs, instant result, 
+     interpretation (normal/abnormal/severity), color coded
+   - No API needed — pure frontend logic
+   - Search calculators by name
+
+8. /onboarding — New User Onboarding Flow
+   - 4-step wizard after first login:
+     Step 1: Role (Doctor/Student/Intern) + Specialty
+     Step 2: Goals (Pass NEET-PG / Clinical reference / Find jobs / All)
+     Step 3: Feature tour highlights (3 key features shown)
+     Step 4: Tier recommendation based on answers + upgrade CTA
+   - Skip option available
+   - Only shows once (track in localStorage)
+
+9. /notifications — Notification Center
+   - Bell icon in navbar with unread count badge
+   - Notification types: New MCQ pack available, CME credit earned, 
+     Community reply, Drug alert (CDSCO recall), Job match
+   - Mark all read button
+   - Mock 8-10 notifications
+
+10. /refer — Referral Program Page
+    - "Invite a doctor, get 1 month free"
+    - Unique referral link generator (mock)
+    - Track: invited count, converted count, months earned
+    - Share via WhatsApp, Email, Copy link buttons
+    - Leaderboard: top referrers this month (mock data)
+
+═══════════════════════════════════════
+NEW COMPONENTS TO ADD ACROSS APP
+═══════════════════════════════════════
+
+- Global search bar (Cmd+K): search drugs, MCQs, cases, calculators, 
+  community posts all at once
+- "Ask Cadus AI" floating button on every page 
+  (bottom right, opens chat drawer)
+- Dark/Light mode toggle in navbar
+- Streak tracker on dashboard: "You've used Aethex X days in a row 🔥"
+- Progress bar on dashboard: "Your NEET-PG readiness: 67%"
+- Quick drug search widget in navbar (type drug name → instant result)
+- Confetti animation when user earns CME credit or completes mock test
+
+═══════════════════════════════════════
+MONETIZATION ADDITIONS
+═══════════════════════════════════════
+
+- Razorpay subscription checkout (actually working, not placeholder):
+  * Monthly and annual plans
+  * Webhook to update user tier in localStorage/backend
+  * Success page after payment
+- "Pro badge" visible on community posts for paid users
+- Feature gates: blur + lock overlay on Magnus features with 
+  upgrade modal (not just CTA banner)
+- 7-day free trial for Cadus Medius (no card required)
+
+═══════════════════════════════════════
+UI IMPROVEMENTS
+═══════════════════════════════════════
+
+- Redesign sidebar: add section headers, collapse on mobile, 
+  active state with teal glow
+- Add page transition animations (fade + slight slide up)
+- Add empty state illustrations on all list pages
+- Improve mobile navbar: bottom tab bar with 5 key icons
+- Add loading skeletons everywhere data is fetched
+- Toast notification system (success/error/info) — bottom right
+- Keyboard shortcuts overlay (press ? to show)
+
+═══════════════════════════════════════
+TECH NOTES
+═══════════════════════════════════════
+- Stack: React + Tailwind + FastAPI (already set up)
+- Claude API model: claude-sonnet-4-20250514
+- Google Analytics: G-3LZGZDJBN9 (add gtag events on key actions)
+- Deployment: Vercel (frontend) — keep all new routes in React Router
+- All new pages must match existing dark navy + teal glassmorphism theme
+- All Indian context: ₹ pricing, Indian cities, ICMR/NMC/CDSCO references
+- Disclaimer on all AI outputs: 
+  "Cadus AI assists, not replaces, clinical decision-making."
+
+Keep all existing pages intact. Only ADD new features. 
+Match the existing design system exactly.

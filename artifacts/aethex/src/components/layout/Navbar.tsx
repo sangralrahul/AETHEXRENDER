@@ -151,8 +151,8 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
       </button>
 
       {open && (
-        <div className="fixed z-50 rounded-b-2xl overflow-hidden"
-          style={{ top: 94, left: "50%", transform: "translateX(-50%)", width: 740, background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", borderTop: "2px solid #007AFF", boxShadow: "0 16px 48px rgba(0,0,0,0.14)" }}>
+        <div className="absolute top-full right-0 z-50 rounded-b-2xl overflow-hidden"
+          style={{ marginTop: 1, width: 740, background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", borderTop: "2px solid #007AFF", boxShadow: "0 16px 48px rgba(0,0,0,0.14)" }}>
           <div className="flex divide-x" style={{ divideColor: "rgba(60,60,67,0.08)" }}>
 
             {/* Left: Clinical Tools + Community */}

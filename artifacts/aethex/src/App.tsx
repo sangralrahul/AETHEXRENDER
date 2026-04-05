@@ -57,6 +57,7 @@ import CaseOfTheDay from "@/pages/CaseOfTheDay";
 import DrugInteractionCheckerPage from "@/pages/DrugInteractionCheckerPage";
 import NeetPg from "@/pages/NeetPg";
 import MedicalBooks from "@/pages/MedicalBooks";
+import CadusQuickConsult from "@/components/cadus/CadusQuickConsult";
 import MedicalKnowledgeHub from "@/pages/StudyHub/MedicalKnowledgeHub/index";
 import SubjectPage from "@/pages/StudyHub/MedicalKnowledgeHub/SubjectPage";
 import TopicPage from "@/pages/StudyHub/MedicalKnowledgeHub/TopicPage";
@@ -226,6 +227,7 @@ function App() {
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <Router />
+          <CadusQuickConsult />
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

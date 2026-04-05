@@ -713,15 +713,14 @@ export default function CalculatorPage() {
   const activeId = useMemo(() => new URLSearchParams(window.location.search).get("id") ?? "", []);
 
   const filtered = useMemo(() => {
-    const base = calculators.filter(c =>
+    if (activeId && !search && category === "All") {
+      const match = calculators.find(c => c.id === activeId);
+      return match ? [match] : calculators;
+    }
+    return calculators.filter(c =>
       (category === "All" || c.category === category) &&
       (c.name.toLowerCase().includes(search.toLowerCase()) || c.shortName.toLowerCase().includes(search.toLowerCase()) || c.category.toLowerCase().includes(search.toLowerCase()))
     );
-    if (activeId && !search && category === "All") {
-      const idx = base.findIndex(c => c.id === activeId);
-      if (idx > 0) return [base[idx], ...base.slice(0, idx), ...base.slice(idx + 1)];
-    }
-    return base;
   }, [search, category, activeId]);
 
   return (
@@ -774,9 +773,18 @@ export default function CalculatorPage() {
           </div>
         </div>
 
-        <p className="text-sm mb-4" style={{ color: "#636366" }}>
-          Showing <strong style={{ color: "#1C1C1E" }}>{filtered.length}</strong> of {calculators.length} calculators
-        </p>
+        {activeId && !search && category === "All" ? (
+          <div className="flex items-center justify-between mb-4 px-4 py-2.5 rounded-xl" style={{ background: "rgba(0,122,255,0.06)", border: "1px solid rgba(0,122,255,0.12)" }}>
+            <p className="text-sm font-medium" style={{ color: "#007AFF" }}>Viewing a specific calculator</p>
+            <a href="/calculator" className="text-xs font-semibold px-3 py-1 rounded-lg transition-all hover:bg-[#007AFF] hover:text-white" style={{ border: "1px solid rgba(0,122,255,0.4)", color: "#007AFF" }}>
+              ← View all 21 calculators
+            </a>
+          </div>
+        ) : (
+          <p className="text-sm mb-4" style={{ color: "#636366" }}>
+            Showing <strong style={{ color: "#1C1C1E" }}>{filtered.length}</strong> of {calculators.length} calculators
+          </p>
+        )}
 
         <div className="space-y-3">
           {filtered.length === 0 ? (

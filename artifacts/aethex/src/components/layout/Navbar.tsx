@@ -151,7 +151,7 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
       </button>
 
       {open && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 rounded-2xl z-50 overflow-hidden"
+        <div className="absolute top-full right-0 mt-2 rounded-2xl z-50 overflow-hidden"
           style={{ width: 740, background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 16px 48px rgba(0,0,0,0.14)" }}>
           <div className="flex divide-x" style={{ divideColor: "rgba(60,60,67,0.08)" }}>
 

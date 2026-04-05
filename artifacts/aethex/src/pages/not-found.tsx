@@ -166,7 +166,7 @@ export default function NotFound() {
 
       {/* Footer note */}
       <p className="relative z-10 mt-8 text-xs" style={{ color: "#AEAEB2" }}>
-        © {new Date().getFullYear()} Aethex Medical Platform · India's #1 Medical Store
+        © 2026 Clavix Technologies Private Limited
       </p>
     </div>
   );

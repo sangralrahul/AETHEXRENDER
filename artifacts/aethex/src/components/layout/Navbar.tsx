@@ -212,7 +212,7 @@ export function Navbar() {
                 <span>Try Cadus AI</span>
               </Link>
 
-              {/* Simple nav links: Shop, Study Hub */}
+              {/* Simple nav links: Shop only at md+; rest at xl+ */}
               {simpleLinks.map((item) => {
                 const active = location === item.href || location.startsWith(item.href + "/");
                 return (
@@ -221,7 +221,7 @@ export function Navbar() {
                     href={item.href}
                     className={cn(
                       "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-                      item.href === "/shop" ? "hidden md:block" : "hidden lg:block"
+                      item.href === "/shop" ? "hidden md:block" : "hidden xl:block"
                     )}
                     style={{
                       color: active ? "#007AFF" : "#636366",
@@ -240,7 +240,7 @@ export function Navbar() {
                 const active = location === "/drug-reference";
                 return (
                   <Link href="/drug-reference"
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden lg:block"
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden xl:block"
                     style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
                     onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
                     onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
@@ -254,7 +254,7 @@ export function Navbar() {
                 const active = location === "/pricing";
                 return (
                   <Link href="/pricing"
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden lg:block"
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden xl:block"
                     style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
                     onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
                     onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
@@ -268,7 +268,7 @@ export function Navbar() {
                 const active = location === "/tools" || location.startsWith("/tools/");
                 return (
                   <Link href="/tools"
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden lg:block"
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden xl:block"
                     style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
                     onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
                     onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
@@ -282,7 +282,7 @@ export function Navbar() {
                 const active = location === "/institutions" || location.startsWith("/institutions/");
                 return (
                   <Link href="/institutions"
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden lg:block"
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hidden xl:block"
                     style={{ color: active ? "#007AFF" : "#636366", background: active ? "rgba(0,122,255,0.08)" : "transparent" }}
                     onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(60,60,67,0.06)"; }}
                     onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
@@ -295,7 +295,7 @@ export function Navbar() {
               {!isLoggedIn && (
                 <button
                   onClick={openLogin}
-                  className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-[10px] font-semibold text-sm transition-all hover:bg-[#007AFF] hover:text-white"
+                  className="hidden xl:flex items-center gap-1.5 px-4 py-2 rounded-[10px] font-semibold text-sm transition-all hover:bg-[#007AFF] hover:text-white"
                   style={{ border: "1px solid rgba(0,122,255,0.5)", color: "#007AFF", background: "transparent" }}
                 >
                   <User className="w-3.5 h-3.5" />
@@ -423,7 +423,7 @@ export function Navbar() {
               </Link>
 
               {/* Mobile menu button */}
-              <button onClick={() => setMobileOpen(o => !o)} className="md:hidden p-2 rounded-xl transition-all hover:bg-black/5" style={{ color: "#636366" }}>
+              <button onClick={() => setMobileOpen(o => !o)} className="xl:hidden p-2 rounded-xl transition-all hover:bg-black/5" style={{ color: "#636366" }}>
                 {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
@@ -431,7 +431,7 @@ export function Navbar() {
 
           {/* Mobile Menu */}
           {mobileOpen && (
-            <div className="md:hidden mt-3 pt-3 pb-4 space-y-1" style={{ borderTop: "1px solid rgba(60,60,67,0.1)" }}>
+            <div className="xl:hidden mt-3 pt-3 pb-4 space-y-1" style={{ borderTop: "1px solid rgba(60,60,67,0.1)" }}>
               <form onSubmit={handleSearch} className="relative mb-3">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#AEAEB2" }} />
                 <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}

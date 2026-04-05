@@ -76,6 +76,19 @@ import Jobs from "@/pages/Jobs";
 import Community from "@/pages/Community";
 import ClinicalCases from "@/pages/ClinicalCases";
 
+import StudyPlanner from "@/pages/StudyPlanner";
+import MockTest from "@/pages/MockTest";
+import LiveClasses from "@/pages/LiveClasses";
+import HospitalDirectory from "@/pages/HospitalDirectory";
+import DrugAlerts from "@/pages/DrugAlerts";
+import PatientEducation from "@/pages/PatientEducation";
+import TelemedicineDirectory from "@/pages/TelemedicineDirectory";
+import CmeCertificate from "@/pages/CmeCertificate";
+import AiScribe from "@/pages/AiScribe";
+import Analytics from "@/pages/Analytics";
+import AppWaitlist from "@/pages/AppWaitlist";
+import Enterprise from "@/pages/Enterprise";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: true, staleTime: 1000 * 30 },
@@ -219,6 +232,20 @@ function Router() {
                 <Route path="/jobs" component={Jobs} />
                 <Route path="/community" component={Community} />
                 <Route path="/cases" component={ClinicalCases} />
+
+                {/* Phase 3 pages */}
+                <Route path="/study-planner" component={StudyPlanner} />
+                <Route path="/mock-test" component={MockTest} />
+                <Route path="/live-classes" component={LiveClasses} />
+                <Route path="/hospital-directory" component={HospitalDirectory} />
+                <Route path="/drug-alerts" component={DrugAlerts} />
+                <Route path="/patient-education" component={PatientEducation} />
+                <Route path="/telemedicine-directory" component={TelemedicineDirectory} />
+                <Route path="/cme-certificate" component={CmeCertificate} />
+                <Route path="/ai-scribe" component={AiScribe} />
+                <Route path="/analytics" component={Analytics} />
+                <Route path="/app" component={AppWaitlist} />
+                <Route path="/enterprise" component={Enterprise} />
 
                 <Route component={NotFound} />
               </Switch>

@@ -1,0 +1,177 @@
+Aethex (aethex.in) already has: Landing page, Auth, Cadus AI chat, 
+Drug reference, MCQ engine, Pricing, Marketplace, Jobs board, 
+Community forum, Clinical cases, Smart notes, Research hub, 
+Medical calculators, Onboarding flow, Notifications, Referral program,
+Global search, Razorpay subscriptions.
+
+ADD THESE NEXT-PHASE FEATURES:
+
+═══════════════════════════════════════
+PHASE 3 — GROWTH & RETENTION ENGINE
+═══════════════════════════════════════
+
+1. /study-planner — AI NEET-PG Study Planner
+   - Input: Exam date + weak subjects + daily hours available
+   - Cadus AI generates: day-by-day study schedule
+   - Daily checklist: topics to cover, MCQs to attempt, revision slots
+   - Progress ring: % of syllabus covered
+   - Reschedule button: "I missed today" → AI readjusts plan
+   - Sync with MCQ engine: completing MCQs auto-marks topics done
+   - Countdown timer to exam date
+
+2. /mock-test — Full Mock Test Engine
+   - 300-question NEET-PG pattern mock test (3 hours timer)
+   - Real exam UI: question palette, mark for review, jump to question
+   - Auto-submit when time ends
+   - Detailed scorecard: subject-wise breakdown, time per question, 
+     percentile rank vs other Aethex users
+   - AI performance analysis: "Your weakest area is Pharmacology — 
+     here's a 3-day revision plan"
+   - Leaderboard: this week's top scorers
+
+3. /live-classes — Live & Recorded Classes
+   - Upcoming live sessions: date, time, faculty, topic, specialty
+   - Join via embedded video (YouTube Live or Zoom link)
+   - Recorded past sessions with timestamps
+   - CME credits awarded for attending live sessions
+   - Faculty profiles: name, qualification, hospital, rating
+   - "Remind me" button → browser notification
+   - Mock 5 upcoming + 10 recorded sessions
+
+4. /hospital-directory — Indian Hospital Directory
+   - Search hospitals by city, specialty, type (govt/private/teaching)
+   - Hospital card: name, address, beds, specialties, contact, 
+     empanelment (CGHS/ECHS/Ayushman)
+   - "Find jobs at this hospital" link → filtered jobs page
+   - "Refer patient here" button → generates referral letter template
+   - Rating + review by doctors (community feature)
+   - 50 mock hospitals across 10 Indian cities
+
+5. /drug-alerts — CDSCO Drug Safety Alerts Feed
+   - Real-time feed of drug recalls, safety alerts, new approvals
+   - Source: CDSCO (mock data for MVP)
+   - Filter by: alert type, drug category, date
+   - Subscribe to alerts by drug category (email/push)
+   - "Ask Cadus AI about this alert" button
+   - Red badge on navbar when new alert posted
+
+6. /patient-education — Patient Education Content
+   - Doctors can share patient-friendly condition explainers
+   - Available in: English, Hindi, Tamil, Telugu, Bengali
+   - Topics: Diabetes management, Hypertension, Asthma, 
+     Post-surgery care, Medication adherence
+   - Print-friendly format for OPD handouts
+   - Generate custom patient instructions via Cadus AI:
+     "Generate post-op instructions for knee replacement in Hindi"
+   - QR code on each page doctors can share with patients
+
+7. /telemedicine-directory — Telemedicine Integration Hub
+   - List of telemedicine platforms active in India: 
+     eSanjeevani, Practo, Apollo 247, Tata 1mg, etc.
+   - Compare: fees, specialties, wait time, language support
+   - "Register as a doctor" links for each platform
+   - Regulatory guide: MCI telemedicine guidelines summary
+   - Cadus AI button: "Help me set up my telemedicine practice"
+
+8. /cme-certificate — CME Certificate Generator
+   - Auto-generate PDF certificate when user completes CME modules
+   - Certificate includes: doctor name, NMC reg number, 
+     module name, credits, date, Aethex/Clavix logo + seal
+   - Download as PDF
+   - Shareable link for LinkedIn
+   - CME credit log exportable as PDF for NMC submission
+
+9. /ai-scribe — AI Clinical Scribe (Magnus only)
+   - Doctor speaks → AI transcribes + structures into SOAP note
+   - Web Speech API for voice input
+   - Auto-detects: symptoms, vitals, diagnosis, plan from speech
+   - Editable before saving
+   - Export as: PDF, Word, plain text
+   - Indian medical terminology trained prompt:
+     "Transcribe and structure this Indian doctor's clinical dictation 
+      into SOAP format using standard medical terminology"
+
+10. /analytics — Doctor Performance Dashboard
+    - Personal analytics for the doctor/student:
+      * MCQ accuracy trend (last 30 days graph)
+      * Subject-wise performance radar chart
+      * Study streak calendar (GitHub contribution style)
+      * Time spent on platform this week
+      * CME credits this year vs target
+      * Cadus AI queries by topic (what you ask most)
+    - Weekly email digest of performance (UI only)
+    - "Share my progress" card generator for LinkedIn/WhatsApp
+
+═══════════════════════════════════════
+PLATFORM-WIDE UPGRADES
+═══════════════════════════════════════
+
+- PWA (Progressive Web App): 
+  Add manifest.json + service worker so Aethex installs 
+  like an app on mobile (Add to Home Screen prompt)
+  
+- Push Notifications:
+  Browser push for: new drug alerts, live class starting, 
+  streak reminder, MCQ challenge from a friend
+
+- Aethex Points System (Gamification):
+  * Earn points: daily login (+5), MCQ correct (+2), 
+    CME completed (+50), case submitted (+30), referral (+100)
+  * Redeem points: subscription discount, premium content unlock
+  * Points balance visible on dashboard + profile
+
+- Doctor Verification Badge:
+  * Upload NMC registration certificate
+  * Gets blue verified tick on profile + community posts
+  * Unlocks: case submission, job posting, prescription pad
+
+- Aethex Mobile App Waitlist Page (/app):
+  * "Aethex App — Coming Soon"
+  * iOS + Android waitlist signup
+  * Feature preview mockups
+  * Referral incentive: "Join waitlist + refer 3 doctors = 
+    3 months Magnus free at launch"
+
+- Multi-language Support (Phase 1):
+  * Hindi toggle for: UI labels, drug names, patient education content
+  * i18n setup in React (react-i18next)
+  * Start with Hindi only, scaffold for Tamil/Telugu later
+
+═══════════════════════════════════════
+MONETIZATION ADDITIONS
+═══════════════════════════════════════
+
+- Sponsored drug listings in /drugs 
+  (pharma companies pay to feature their brand — label clearly as "Sponsored")
+  
+- Hospital banner ads on /jobs and /hospital-directory
+  (clearly labeled, not intrusive)
+
+- Premium MCQ packs for purchase (one-time ₹199-499):
+  * "Previous Year NEET-PG 2023 Paper"
+  * "Surgery High-Yield 500 MCQs"
+  * Sold separately from subscription
+
+- Institutional Plan /enterprise:
+  * For medical colleges buying bulk seats
+  * Custom pricing form
+  * Feature: faculty dashboard, student progress tracking, 
+    college-branded certificates
+
+═══════════════════════════════════════
+TECH NOTES
+═══════════════════════════════════════
+- Stack: React + Tailwind + FastAPI (existing)
+- Claude API: claude-sonnet-4-20250514
+- Voice (AI Scribe): Web Speech API (browser-native, no cost)
+- Charts: Recharts or Chart.js for analytics
+- PDF certificates: jsPDF or ReportLab
+- PWA: Vite PWA plugin
+- Google Analytics: G-3LZGZDJBN9
+- Deployment: Vercel frontend, Railway backend
+- Theme: Dark navy #0A0E1A + teal #00D4C8 glassmorphism
+- Disclaimer on all AI outputs: 
+  "Cadus AI assists, not replaces, clinical decision-making."
+
+Do NOT touch existing pages. Only add new features.
+Match existing design system exactly.

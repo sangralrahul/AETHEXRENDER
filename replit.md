@@ -233,6 +233,25 @@ Generated Zod schemas from the OpenAPI spec (e.g. `HealthCheckResponse`). Used b
 
 Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHealthCheck`, `healthCheck`).
 
+### Phase 3 Pages (April 2026)
+
+12 new pages added to the Aethex platform:
+
+| Route | Page | Description |
+|---|---|---|
+| `/study-planner` | StudyPlanner | AI NEET-PG study planner — exam date input, Cadus AI schedule generation, daily checklist, progress ring |
+| `/mock-test` | MockTest | Full 300Q NEET-PG mock test engine — question palette, flag for review, timer, scorecard, leaderboard |
+| `/live-classes` | LiveClasses | Upcoming live sessions + 10 recorded masterclasses — CME credits, faculty profiles, remind-me |
+| `/hospital-directory` | HospitalDirectory | 12 Indian hospitals — search by city/type, CGHS/ECHS/Ayushman empanelment, job links, refer patient |
+| `/drug-alerts` | DrugAlerts | CDSCO drug recalls, safety alerts & new approvals feed — category subscriptions, Cadus AI button |
+| `/patient-education` | PatientEducation | Patient education content in 5 languages — print-friendly, QR code, Cadus AI custom instructions |
+| `/telemedicine-directory` | TelemedicineDirectory | 5 Indian telemedicine platforms compared — fees, specialties, MCI guideline summary |
+| `/cme-certificate` | CmeCertificate | CME certificate generator — PDF preview, NMC log export, LinkedIn share |
+| `/ai-scribe` | AiScribe | AI clinical scribe — Web Speech API dictation → SOAP note, editable, export PDF/Word |
+| `/analytics` | Analytics | Doctor performance dashboard — MCQ accuracy trend, subject radar, streak calendar, Cadus AI topics |
+| `/app` | AppWaitlist | Mobile app waitlist — iOS/Android, referral code, 3 months Magnus offer |
+| `/enterprise` | Enterprise | Institutional plan — bulk seats, faculty dashboard, custom pricing form |
+
 ### `scripts` (`@workspace/scripts`)
 
 Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.

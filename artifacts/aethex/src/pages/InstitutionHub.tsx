@@ -103,13 +103,17 @@ export default function InstitutionHub() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
-  const [activeTab, setActiveTab] = useState<"colleges" | "hospitals">(() => {
-    if (typeof window !== "undefined") {
-      const t = new URLSearchParams(window.location.search).get("type");
-      return t === "hospital" ? "hospitals" : "colleges";
-    }
-    return "colleges";
-  });
+  const urlTypeParam = typeof window !== "undefined"
+    ? new URLSearchParams(window.location.search).get("type")
+    : null;
+  const lockedTab: "colleges" | "hospitals" | null =
+    urlTypeParam === "hospital" ? "hospitals"
+    : urlTypeParam === "medical-college" ? "colleges"
+    : null;
+
+  const [activeTab, setActiveTab] = useState<"colleges" | "hospitals">(
+    lockedTab ?? "colleges"
+  );
   const [search, setSearch] = useState("");
   const [selectedState, setSelectedState] = useState<string>("All States");
   const [selectedTier, setSelectedTier] = useState<string>("All");
@@ -224,25 +228,33 @@ export default function InstitutionHub() {
           <div className="text-center mb-10">
             <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#AEAEB2" }}>NMC Recognized</p>
             <h2 className="text-3xl font-black mb-3" style={{ color: "#1C1C1E", letterSpacing: "-0.5px" }}>
-              All Institutions across India
+              {lockedTab === "colleges" ? "Medical Colleges across India"
+                : lockedTab === "hospitals" ? "Major Hospitals across India"
+                : "All Institutions across India"}
             </h2>
             <p className="text-base" style={{ color: "#636366" }}>
-              Browse {medicalColleges.length} NMC-recognized medical colleges and {majorHospitals.length} major hospitals
+              {lockedTab === "colleges"
+                ? `Browse ${medicalColleges.length} NMC-recognized medical colleges`
+                : lockedTab === "hospitals"
+                ? `Browse ${majorHospitals.length} major hospitals across India`
+                : `Browse ${medicalColleges.length} NMC-recognized medical colleges and ${majorHospitals.length} major hospitals`}
             </p>
           </div>
 
-          {/* Tab switcher */}
-          <div className="flex gap-2 justify-center mb-6">
-            {(["colleges", "hospitals"] as const).map((tab) => (
-              <button key={tab} onClick={() => handleTabChange(tab)}
-                className="px-5 py-2 rounded-full text-sm font-semibold transition-all capitalize"
-                style={activeTab === tab
-                  ? { background: "#1C1C1E", color: "#FFFFFF" }
-                  : { background: "#FFFFFF", color: "#636366", border: "1px solid rgba(60,60,67,0.12)" }}>
-                {tab === "colleges" ? `Medical Colleges (${medicalColleges.length})` : `Hospitals (${majorHospitals.length})`}
-              </button>
-            ))}
-          </div>
+          {/* Tab switcher — hide the other tab when locked via URL param */}
+          {!lockedTab && (
+            <div className="flex gap-2 justify-center mb-6">
+              {(["colleges", "hospitals"] as const).map((tab) => (
+                <button key={tab} onClick={() => handleTabChange(tab)}
+                  className="px-5 py-2 rounded-full text-sm font-semibold transition-all capitalize"
+                  style={activeTab === tab
+                    ? { background: "#1C1C1E", color: "#FFFFFF" }
+                    : { background: "#FFFFFF", color: "#636366", border: "1px solid rgba(60,60,67,0.12)" }}>
+                  {tab === "colleges" ? `Medical Colleges (${medicalColleges.length})` : `Hospitals (${majorHospitals.length})`}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Filters */}
           <div className="flex flex-wrap gap-3 mb-6">

@@ -90,21 +90,49 @@ export default function AppWaitlist() {
 
           {/* Official Store Badges */}
           <div className="flex flex-wrap gap-4 justify-center mt-8">
-            {/* Apple App Store */}
-            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
-                alt="Download on the App Store"
-                style={{ height: 52 }}
-              />
+            {/* Apple App Store Badge */}
+            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95 inline-flex">
+              <div style={{ background: "#000", border: "1px solid rgba(255,255,255,0.22)", borderRadius: 10, display: "flex", alignItems: "center", gap: 10, padding: "9px 18px 9px 14px", height: 54 }}>
+                <svg width="22" height="27" viewBox="0 0 170 209" fill="white" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M150.37 130.25c-.49 1.09-1.02 2.16-1.58 3.21-2.09 3.97-4.63 8.09-7.61 12.39-4.93 7.01-8.96 11.87-12.07 14.57-4.81 4.42-9.97 6.68-15.49 6.8-3.97 0-8.74-1.13-14.31-3.42-5.58-2.28-10.71-3.41-15.4-3.41-4.91 0-10.19 1.13-15.83 3.41-5.64 2.29-10.19 3.49-13.67 3.62-5.29.23-10.58-2.1-15.87-6.98-3.37-2.93-7.57-7.95-12.58-15.05-5.39-7.58-9.82-16.38-13.28-26.43C23.86 108.42 22 97.9 22 87.7c0-11.67 2.52-21.73 7.56-30.14 3.96-6.76 9.23-12.1 15.82-16.01 6.59-3.91 13.71-5.91 21.38-6.04 4.2 0 9.69 1.3 16.5 3.85 6.8 2.56 11.17 3.86 13.09 3.86 1.43 0 6.28-1.52 14.5-4.54 7.77-2.82 14.33-3.99 19.69-3.52 14.56 1.17 25.49 6.9 32.74 17.22-13.02 7.89-19.46 18.94-19.32 33.12.12 11.04 4.12 20.22 11.97 27.52 3.56 3.38 7.53 5.99 11.92 7.84-.96 2.76-1.97 5.42-3.04 7.97zm-26.24-91.8c0 8.65-3.16 16.73-9.45 24.22-7.6 8.89-16.8 14.01-26.76 13.21a26.7 26.7 0 0 1-.2-3.28c0-8.3 3.61-17.19 10.03-24.45 3.2-3.67 7.27-6.72 12.2-9.17 4.92-2.41 9.57-3.75 13.94-4 .14 1.16.24 2.32.24 3.47z"/>
+                </svg>
+                <div style={{ textAlign: "left" }}>
+                  <div style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, lineHeight: "1.3" }}>Download on the</div>
+                  <div style={{ color: "#fff", fontSize: 20, fontWeight: 600, fontFamily: "system-ui,-apple-system,sans-serif", lineHeight: "1.2", letterSpacing: "-0.3px" }}>App Store</div>
+                </div>
+              </div>
             </a>
-            {/* Google Play */}
-            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
-                alt="Get it on Google Play"
-                style={{ height: 52 }}
-              />
+
+            {/* Google Play Badge */}
+            <a href="#" onClick={e => e.preventDefault()} className="transition-transform hover:scale-105 active:scale-95 inline-flex">
+              <div style={{ background: "#000", border: "1px solid rgba(255,255,255,0.22)", borderRadius: 10, display: "flex", alignItems: "center", gap: 10, padding: "9px 18px 9px 14px", height: 54 }}>
+                <svg width="24" height="27" viewBox="0 0 24 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.22.51C.77.75.5 1.22.5 1.82v23.36c0 .6.27 1.07.72 1.31l.12.07L14.41 14v-.3L1.34.44 1.22.51z" fill="url(#gp_a)"/>
+                  <path d="M18.27 17.83 14.41 14v-.3l3.86-3.83.09.05 4.57 2.6c1.3.74 1.3 1.95 0 2.69l-4.57 2.6-.09.02z" fill="url(#gp_b)"/>
+                  <path d="M18.36 17.81 14.41 13.85 1.22 27.04c.43.46 1.13.51 1.92.06l15.22-9.29" fill="url(#gp_c)"/>
+                  <path d="M18.36 9.89 3.14.6C2.35.15 1.65.2 1.22.66l13.19 13.19 3.95-3.96z" fill="url(#gp_d)"/>
+                  <defs>
+                    <linearGradient id="gp_a" x1="13.47" y1="1.57" x2="-5.53" y2="13.5" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#00A0FF"/><stop offset=".007" stopColor="#00A1FF"/><stop offset=".26" stopColor="#00BEFF"/>
+                      <stop offset=".512" stopColor="#00D2FF"/><stop offset=".76" stopColor="#00DFFF"/><stop offset="1" stopColor="#00E3FF"/>
+                    </linearGradient>
+                    <linearGradient id="gp_b" x1="23.89" y1="13.85" x2=".22" y2="13.85" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#FFE000"/><stop offset=".409" stopColor="#FFBD00"/><stop offset=".775" stopColor="#FFA500"/><stop offset="1" stopColor="#FF9C00"/>
+                    </linearGradient>
+                    <linearGradient id="gp_c" x1="15.99" y1="15.87" x2="-6.05" y2="42.25" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#FF3A44"/><stop offset="1" stopColor="#C31162"/>
+                    </linearGradient>
+                    <linearGradient id="gp_d" x1="-2.07" y1="-8.48" x2="8.68" y2="5.15" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#32A071"/><stop offset=".069" stopColor="#2DA771"/><stop offset=".476" stopColor="#15CF74"/>
+                      <stop offset=".801" stopColor="#06E775"/><stop offset="1" stopColor="#00F076"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div style={{ textAlign: "left" }}>
+                  <div style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, lineHeight: "1.3", letterSpacing: "0.4px" }}>GET IT ON</div>
+                  <div style={{ color: "#fff", fontSize: 20, fontWeight: 600, fontFamily: "system-ui,-apple-system,sans-serif", lineHeight: "1.2", letterSpacing: "-0.3px" }}>Google Play</div>
+                </div>
+              </div>
             </a>
           </div>
         </div>

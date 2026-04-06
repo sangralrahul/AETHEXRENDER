@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import DOMPurify from "dompurify";
 import {
   ArrowRight, Activity, BrainCircuit, Sparkles, Shirt, FlaskConical, BookOpen,
   Stethoscope, Scissors, HeartPulse, Shield, Quote, GraduationCap, FileText,
@@ -220,30 +219,40 @@ function AIChatPreview() {
                       if (!trimmed) return null;
                       const isBullet = /^[-•*]\s/.test(trimmed);
                       const isNumbered = /^\d+\.\s/.test(trimmed);
-                      const escHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                      const boldified = DOMPurify.sanitize(trimmed.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`), { ALLOWED_TAGS: ["strong"], ALLOWED_ATTR: [] });
+                      const boldParts = (s: string) => {
+                        const p: React.ReactNode[] = [];
+                        const r = /\*\*(.+?)\*\*/g;
+                        let last = 0;
+                        let m;
+                        let k = 0;
+                        while ((m = r.exec(s)) !== null) {
+                          if (m.index > last) p.push(s.slice(last, m.index));
+                          p.push(<strong key={k++}>{m[1]}</strong>);
+                          last = m.index + m[0].length;
+                        }
+                        if (last < s.length) p.push(s.slice(last));
+                        return p.length ? p : [s];
+                      };
                       if (isBullet) {
                         const content = trimmed.replace(/^[-•*]\s/, "");
-                        const bld = DOMPurify.sanitize(content.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`), { ALLOWED_TAGS: ["strong"], ALLOWED_ATTR: [] });
                         return (
                           <div key={li} className="flex items-start gap-1.5">
                             <span className="mt-1 shrink-0 w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#007AFF" }} />
-                            <span dangerouslySetInnerHTML={{ __html: bld }} />
+                            <span>{boldParts(content)}</span>
                           </div>
                         );
                       }
                       if (isNumbered) {
                         const [num, ...rest] = trimmed.split(/\.\s+/);
-                        const bld = DOMPurify.sanitize(rest.join(". ").replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`), { ALLOWED_TAGS: ["strong"], ALLOWED_ATTR: [] });
                         return (
                           <div key={li} className="flex items-start gap-1.5">
                             <span className="shrink-0 font-bold text-xs mt-0.5" style={{ color: "#007AFF", minWidth: "16px" }}>{num}.</span>
-                            <span dangerouslySetInnerHTML={{ __html: bld }} />
+                            <span>{boldParts(rest.join(". "))}</span>
                           </div>
                         );
                       }
                       return (
-                        <div key={li} className="leading-snug" dangerouslySetInnerHTML={{ __html: boldified }} />
+                        <div key={li} className="leading-snug">{boldParts(trimmed)}</div>
                       );
                     })}
                   </div>

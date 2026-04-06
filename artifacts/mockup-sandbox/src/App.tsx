@@ -41,7 +41,8 @@ function PreviewRenderer({
         return;
       }
       const key = `./components/mockups/${componentPath}.tsx`;
-      const loader = modules[key];
+      const safeModules = new Map(Object.entries(modules));
+      const loader = safeModules.get(key);
       if (!loader) {
         setError(`No component found at ${componentPath}.tsx`);
         return;

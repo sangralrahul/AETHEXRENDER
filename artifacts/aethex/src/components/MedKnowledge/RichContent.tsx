@@ -1,50 +1,68 @@
-import DOMPurify from "dompurify";
+import { type ReactNode } from "react";
 
 interface RichContentProps {
   content: string;
   lineByLine?: boolean;
 }
 
-function escHtml(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
+function parseInlineMarkers(text: string): ReactNode[] {
+  const parts: ReactNode[] = [];
+  const regex = /(\*\*(.+?)\*\*|(?<!\*)\*([^*\n]+?)\*(?!\*)|~~(.+?)~~)/g;
+  let lastIndex = 0;
+  let match;
+  let key = 0;
 
-function parseInlineMarkers(text: string): string {
-  let result = escHtml(text);
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    if (match[2]) {
+      parts.push(
+        <strong key={key++} style={{ color: "#F85149", fontWeight: 700 }}>
+          {match[2]}
+        </strong>
+      );
+    } else if (match[3]) {
+      parts.push(
+        <span key={key++} style={{ color: "#58A6FF", fontWeight: 500 }}>
+          {match[3]}
+        </span>
+      );
+    } else if (match[4]) {
+      parts.push(
+        <span key={key++} style={{ color: "#3FB950" }}>
+          {match[4]}
+        </span>
+      );
+    }
+    lastIndex = match.index + match[0].length;
+  }
 
-  result = result.replace(/\*\*(.+?)\*\*/g, (_, w) => `<strong style="color:#F85149;font-weight:700">${w}</strong>`);
-  result = result.replace(/(?<!\*)\*([^*\n]+?)\*(?!\*)/g, (_, w) => `<span style="color:#58A6FF;font-weight:500">${w}</span>`);
-  result = result.replace(/~~(.+?)~~/g, (_, w) => `<span style="color:#3FB950">${w}</span>`);
-  return DOMPurify.sanitize(result, { ALLOWED_TAGS: ["strong", "span"], ALLOWED_ATTR: ["style"] });
-}
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
 
-function isHeading(line: string): boolean {
-  const stripped = line.replace(/\*\*/g, "").trim();
-  return (
-    (line.startsWith("**") && line.endsWith("**") && !line.slice(2, -2).includes("**")) ||
-    /^\d+\.\s+\*\*/.test(line) ||
-    /^#{1,3}\s/.test(line)
-  );
+  return parts.length > 0 ? parts : [text];
 }
 
 function renderLine(line: string, i: number) {
   const trimmed = line.trim();
   if (!trimmed) return null;
 
-  const parsed = parseInlineMarkers(trimmed);
-
   if (/^#{1,3}\s/.test(trimmed)) {
     const text = trimmed.replace(/^#{1,3}\s/, "");
     return (
-      <div key={i} className="mt-4 mb-1 text-sm font-bold uppercase tracking-wider" style={{ color: "#00C2A8" }}
-        dangerouslySetInnerHTML={{ __html: parseInlineMarkers(text) }} />
+      <div key={i} className="mt-4 mb-1 text-sm font-bold uppercase tracking-wider" style={{ color: "#00C2A8" }}>
+        {parseInlineMarkers(text)}
+      </div>
     );
   }
 
   if (/^\*\*[^*]+\*\*[:：]?\s*$/.test(trimmed)) {
     return (
-      <div key={i} className="mt-3 mb-0.5 text-sm font-bold" style={{ color: "#00C2A8" }}
-        dangerouslySetInnerHTML={{ __html: parseInlineMarkers(trimmed.replace(/\*\*/g, "")) }} />
+      <div key={i} className="mt-3 mb-0.5 text-sm font-bold" style={{ color: "#00C2A8" }}>
+        {parseInlineMarkers(trimmed.replace(/\*\*/g, ""))}
+      </div>
     );
   }
 
@@ -54,8 +72,9 @@ function renderLine(line: string, i: number) {
         <span className="shrink-0 text-xs font-bold mt-0.5" style={{ color: "#00C2A8" }}>
           {trimmed.match(/^(\d+)\./)?.[1]}.
         </span>
-        <span className="text-sm leading-relaxed" style={{ color: "#E6EDF3" }}
-          dangerouslySetInnerHTML={{ __html: parseInlineMarkers(trimmed.replace(/^\d+\.\s+/, "")) }} />
+        <span className="text-sm leading-relaxed" style={{ color: "#E6EDF3" }}>
+          {parseInlineMarkers(trimmed.replace(/^\d+\.\s+/, ""))}
+        </span>
       </div>
     );
   }
@@ -64,22 +83,25 @@ function renderLine(line: string, i: number) {
     return (
       <div key={i} className="flex gap-2 py-0.5 pl-1">
         <span className="shrink-0 text-xs mt-1" style={{ color: "#00C2A8" }}>▸</span>
-        <span className="text-sm leading-relaxed" style={{ color: "#E6EDF3" }}
-          dangerouslySetInnerHTML={{ __html: parseInlineMarkers(trimmed.replace(/^[-•–]\s+/, "")) }} />
+        <span className="text-sm leading-relaxed" style={{ color: "#E6EDF3" }}>
+          {parseInlineMarkers(trimmed.replace(/^[-•–]\s+/, ""))}
+        </span>
       </div>
     );
   }
 
   if (trimmed.startsWith("Mnemonic:") || trimmed.startsWith("Mnemonic —")) {
     return (
-      <div key={i} className="mt-2 px-4 py-2 rounded-lg text-sm" style={{ background: "rgba(227,179,65,0.08)", border: "1px solid rgba(227,179,65,0.2)", color: "#E3B341" }}
-        dangerouslySetInnerHTML={{ __html: parseInlineMarkers(trimmed) }} />
+      <div key={i} className="mt-2 px-4 py-2 rounded-lg text-sm" style={{ background: "rgba(227,179,65,0.08)", border: "1px solid rgba(227,179,65,0.2)", color: "#E3B341" }}>
+        {parseInlineMarkers(trimmed)}
+      </div>
     );
   }
 
   return (
-    <p key={i} className="text-sm leading-relaxed py-0.5" style={{ color: "#C9D1D9" }}
-      dangerouslySetInnerHTML={{ __html: parsed }} />
+    <p key={i} className="text-sm leading-relaxed py-0.5" style={{ color: "#C9D1D9" }}>
+      {parseInlineMarkers(trimmed)}
+    </p>
   );
 }
 
@@ -91,8 +113,14 @@ export function RichContent({ content, lineByLine = true }: RichContentProps) {
       {lineByLine ? (
         lines.map((line, i) => renderLine(line, i)).filter(Boolean)
       ) : (
-        <div className="text-sm leading-relaxed" style={{ color: "#C9D1D9" }}
-          dangerouslySetInnerHTML={{ __html: parseInlineMarkers(content).replace(/\n/g, "<br/>") }} />
+        <div className="text-sm leading-relaxed" style={{ color: "#C9D1D9" }}>
+          {content.split("\n").map((line, i) => (
+            <span key={i}>
+              {i > 0 && <br />}
+              {parseInlineMarkers(line)}
+            </span>
+          ))}
+        </div>
       )}
       <div className="flex flex-wrap gap-3 mt-3 pt-3" style={{ borderTop: "1px solid #21262D" }}>
         <span className="flex items-center gap-1.5 text-xs" style={{ color: "#8B949E" }}>

@@ -68,7 +68,7 @@ async function aiGenerate(opts: AiCallOpts): Promise<string> {
     } catch (err: any) {
       lastErr = err;
       if (isRateLimited(err)) continue;
-      console.error(`Groq ${model} error:`, err?.message || err);
+      console.error("Groq %s error: %s", model, err?.message || err);
       break;
     }
   }
@@ -101,7 +101,7 @@ async function aiChat(opts: AiCallOpts & { history?: Array<{ role: string; conte
     } catch (err: any) {
       lastErr = err;
       if (isRateLimited(err)) continue;
-      console.error(`Groq chat ${model} error:`, err?.message || err);
+      console.error("Groq chat %s error: %s", model, err?.message || err);
       break;
     }
   }

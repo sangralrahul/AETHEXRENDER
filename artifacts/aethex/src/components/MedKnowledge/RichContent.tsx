@@ -1,17 +1,21 @@
+import DOMPurify from "dompurify";
+
 interface RichContentProps {
   content: string;
   lineByLine?: boolean;
 }
 
+function escHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 function parseInlineMarkers(text: string): string {
-  let result = text;
-  const placeholder1 = "\x00BOLD\x00";
-  const pairs: [RegExp, string][] = [];
+  let result = escHtml(text);
 
   result = result.replace(/\*\*(.+?)\*\*/g, (_, w) => `<strong style="color:#F85149;font-weight:700">${w}</strong>`);
   result = result.replace(/(?<!\*)\*([^*\n]+?)\*(?!\*)/g, (_, w) => `<span style="color:#58A6FF;font-weight:500">${w}</span>`);
   result = result.replace(/~~(.+?)~~/g, (_, w) => `<span style="color:#3FB950">${w}</span>`);
-  return result;
+  return DOMPurify.sanitize(result, { ALLOWED_TAGS: ["strong", "span"], ALLOWED_ATTR: ["style"] });
 }
 
 function isHeading(line: string): boolean {

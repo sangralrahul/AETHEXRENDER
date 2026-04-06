@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import DOMPurify from "dompurify";
 import {
   ArrowRight, Activity, BrainCircuit, Sparkles, Shirt, FlaskConical, BookOpen,
   Stethoscope, Scissors, HeartPulse, Shield, Quote, GraduationCap, FileText,
@@ -220,10 +221,10 @@ function AIChatPreview() {
                       const isBullet = /^[-•*]\s/.test(trimmed);
                       const isNumbered = /^\d+\.\s/.test(trimmed);
                       const escHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                      const boldified = trimmed.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`);
+                      const boldified = DOMPurify.sanitize(trimmed.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`), { ALLOWED_TAGS: ["strong"], ALLOWED_ATTR: [] });
                       if (isBullet) {
                         const content = trimmed.replace(/^[-•*]\s/, "");
-                        const bld = content.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`);
+                        const bld = DOMPurify.sanitize(content.replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`), { ALLOWED_TAGS: ["strong"], ALLOWED_ATTR: [] });
                         return (
                           <div key={li} className="flex items-start gap-1.5">
                             <span className="mt-1 shrink-0 w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#007AFF" }} />
@@ -233,7 +234,7 @@ function AIChatPreview() {
                       }
                       if (isNumbered) {
                         const [num, ...rest] = trimmed.split(/\.\s+/);
-                        const bld = rest.join(". ").replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`);
+                        const bld = DOMPurify.sanitize(rest.join(". ").replace(/\*\*(.+?)\*\*/g, (_: string, t: string) => `<strong>${escHtml(t)}</strong>`), { ALLOWED_TAGS: ["strong"], ALLOWED_ATTR: [] });
                         return (
                           <div key={li} className="flex items-start gap-1.5">
                             <span className="shrink-0 font-bold text-xs mt-0.5" style={{ color: "#007AFF", minWidth: "16px" }}>{num}.</span>

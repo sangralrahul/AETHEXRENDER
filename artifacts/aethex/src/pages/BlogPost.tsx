@@ -49,7 +49,9 @@ function injectIds(html: string) {
     const text = content.replace(/<[^>]+>/g, "");
     const safeLevel = level === "2" || level === "3" ? level : "2";
     const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-    return `<h${safeLevel} id="${id}">${content}</h${safeLevel}>`;
+    const safeId = id.replace(/[^a-z0-9-]/g, "");
+    const safeContent = DOMPurify.sanitize(content);
+    return `<h${safeLevel} id="${safeId}">${safeContent}</h${safeLevel}>`;
   });
 }
 

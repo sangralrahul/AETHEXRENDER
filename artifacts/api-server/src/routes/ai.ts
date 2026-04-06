@@ -756,12 +756,11 @@ router.post("/ai/generate-slides", aiHeavyLimiter, async (req, res) => {
   try {
     const rawPrompt = req.body.prompt;
     if (!rawPrompt) { res.status(400).json({ error: "prompt is required" }); return; }
-    const prompt = String(rawPrompt).trim().slice(0, 500);
+    const prompt = String(rawPrompt).replace(/[^\w\s.,;:!?'"()\-\/+%#@&]/g, "").trim().slice(0, 500);
     if (!prompt) { res.status(400).json({ error: "prompt is required" }); return; }
     const { slideCount } = req.body;
 
     const count = Math.max(5, Math.min(20, parseInt(String(slideCount ?? 12)) || 12));
-    // For 12 slides, use the full structured template; otherwise adapt
     const useFullTemplate = count >= 10;
 
     const slideTypesInstructions = useFullTemplate
@@ -955,7 +954,7 @@ router.post("/ai/generate-presentation", aiHeavyLimiter, async (req, res) => {
   try {
     const rawPrompt = req.body.prompt;
     if (!rawPrompt) { res.status(400).json({ error: "prompt is required" }); return; }
-    const prompt = String(rawPrompt).trim().slice(0, 500);
+    const prompt = String(rawPrompt).replace(/[^\w\s.,;:!?'"()\-\/+%#@&]/g, "").trim().slice(0, 500);
     if (!prompt) { res.status(400).json({ error: "prompt is required" }); return; }
     const { slideCount } = req.body;
 

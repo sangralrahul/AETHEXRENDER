@@ -130,6 +130,7 @@ function Router() {
     <Switch>
       {/* Full-screen pages (no Navbar/Footer) */}
       <Route path="/ai-assistant" component={AiAssistant} />
+      <Route path="/cadus-standalone" component={AiAssistant} />
       <Route path="/settings" component={SettingsPage} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />

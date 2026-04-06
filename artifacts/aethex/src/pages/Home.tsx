@@ -715,8 +715,17 @@ export default function Home() {
 
       {/* ── Hero Section ── */}
       <section className="relative overflow-hidden"
-        style={{ minHeight: "calc(100vh - 104px)", display: "flex", alignItems: "center", backgroundImage: "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-        <div className="absolute inset-0" style={{ background: "rgba(244,244,246,0.91)" }} />
+        style={{ minHeight: "calc(100vh - 104px)", display: "flex", alignItems: "center" }}>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 0 }}
+          src={`${import.meta.env.BASE_URL}hero-video.mp4`}
+        />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(10,10,20,0.72) 0%, rgba(0,15,40,0.65) 50%, rgba(10,10,20,0.72) 100%)", zIndex: 1 }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-16 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left: Copy */}
@@ -726,36 +735,36 @@ export default function Home() {
               transition={{ duration: 0.6 }}
             >
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-6"
-                style={{ background: "#e8f3ff", color: "#007AFF" }}>
+                style={{ background: "rgba(0,122,255,0.2)", color: "#5AC8FA", border: "1px solid rgba(90,200,250,0.2)", backdropFilter: "blur(8px)" }}>
                 <Activity className="w-3.5 h-3.5" />
                 Built for Indian Doctors &amp; Medical Students
               </div>
 
               <h1 className="font-display font-bold leading-[1.05] tracking-tight mb-5"
-                style={{ color: "#1c1c1e", fontSize: "clamp(2.4rem, 5vw, 3rem)", letterSpacing: "-0.03em" }}>
+                style={{ color: "#FFFFFF", fontSize: "clamp(2.4rem, 5vw, 3rem)", letterSpacing: "-0.03em" }}>
                 Medicine Made{" "}
-                <span style={{ color: "#007AFF" }}>Effortless.</span>
+                <span style={{ color: "#5AC8FA" }}>Effortless.</span>
               </h1>
 
-              <p className="mb-8 max-w-[480px] leading-relaxed" style={{ fontSize: 17, color: "#8e8e93" }}>
+              <p className="mb-8 max-w-[480px] leading-relaxed" style={{ fontSize: 17, color: "rgba(255,255,255,0.7)" }}>
                 Drug references, AI clinical assistant, NEET-PG prep — one platform, zero switching.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/shop"
                   className="inline-flex items-center justify-center text-base font-semibold text-center transition-all hover:opacity-90 active:scale-[0.97]"
-                  style={{ background: "#007AFF", color: "#FFFFFF", borderRadius: 12, padding: "14px 28px", fontSize: 16, fontWeight: 600, boxShadow: "0 4px 20px rgba(0,122,255,0.25)" }}>
+                  style={{ background: "#007AFF", color: "#FFFFFF", borderRadius: 12, padding: "14px 28px", fontSize: 16, fontWeight: 600, boxShadow: "0 4px 20px rgba(0,122,255,0.35)" }}>
                   Shop Essentials →
                 </Link>
                 <Link href="/ai-assistant"
-                  className="inline-flex items-center justify-center text-base font-semibold text-center transition-all hover:border-[#007AFF] hover:text-[#007AFF] active:scale-[0.97]"
-                  style={{ background: "#FFFFFF", color: "#1c1c1e", borderRadius: 12, padding: "14px 28px", fontSize: 16, fontWeight: 600, border: "1px solid #e8e8ed" }}>
+                  className="inline-flex items-center justify-center text-base font-semibold text-center transition-all hover:bg-white/20 active:scale-[0.97]"
+                  style={{ background: "rgba(255,255,255,0.12)", color: "#FFFFFF", borderRadius: 12, padding: "14px 28px", fontSize: 16, fontWeight: 600, border: "1px solid rgba(255,255,255,0.25)", backdropFilter: "blur(8px)" }}>
                   <Sparkles className="mr-2 w-4 h-4" />
                   Try AI Chat
                 </Link>
               </div>
 
-              <p className="mt-5 text-sm" style={{ color: "#aeaeb2" }}>
+              <p className="mt-5 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
                 Free to start · No credit card required · 20 queries/day on free plan
               </p>
             </motion.div>
@@ -794,15 +803,15 @@ export default function Home() {
                 },
               ].map((card) => (
                 <Link key={card.href} href={card.href}
-                  className="flex items-start gap-4 p-5 rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-md group"
-                  style={{ background: "#FFFFFF", border: "1px solid #e8e8ed" }}>
+                  className="flex items-start gap-4 p-5 rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-lg group"
+                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(12px)" }}>
                   <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105"
-                    style={{ background: card.bg }}>
+                    style={{ background: card.accent + "25" }}>
                     <card.icon className="w-5 h-5" style={{ color: card.accent }} />
                   </div>
                   <div>
-                    <p className="font-bold text-sm mb-0.5" style={{ color: "#1c1c1e" }}>{card.title}</p>
-                    <p className="text-xs leading-relaxed" style={{ color: "#8e8e93" }}>{card.desc}</p>
+                    <p className="font-bold text-sm mb-0.5" style={{ color: "#FFFFFF" }}>{card.title}</p>
+                    <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{card.desc}</p>
                   </div>
                 </Link>
               ))}

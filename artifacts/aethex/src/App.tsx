@@ -99,6 +99,8 @@ import Mentorship from "@/pages/Mentorship";
 import Leaderboard from "@/pages/Leaderboard";
 import InstitutionAnalytics from "@/pages/InstitutionAnalytics";
 import QuizBuilder from "@/pages/QuizBuilder";
+import ProgressTracker from "@/pages/ProgressTracker";
+import ConsultHistory from "@/pages/ConsultHistory";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -271,6 +273,10 @@ function Router() {
                 <Route path="/leaderboard" component={Leaderboard} />
                 <Route path="/institution-analytics" component={InstitutionAnalytics} />
                 <Route path="/quiz-builder" component={QuizBuilder} />
+
+                {/* Monetization & Growth */}
+                <Route path="/progress-tracker" component={ProgressTracker} />
+                <Route path="/my-consults" component={ConsultHistory} />
 
                 <Route component={NotFound} />
               </Switch>

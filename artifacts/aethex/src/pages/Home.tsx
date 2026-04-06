@@ -19,6 +19,7 @@ import { useSession } from "@/hooks/use-session";
 import { useAddToCart } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { DailyMCQWidget } from "@/components/DailyMCQWidget";
 
 const categoryIconMap: Record<string, React.ElementType> = {
   Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield, HeartPulse,
@@ -1048,6 +1049,27 @@ export default function Home() {
           )}
           <div className="mt-10 text-center sm:hidden">
             <Link href="/shop" className="text-sm font-semibold" style={{ color: "#007AFF" }}>View all products →</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Daily MCQ Widget ── */}
+      <section className="py-16 relative overflow-hidden" style={{ background: "linear-gradient(135deg,#0a1223 0%,#0a3060 100%)" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-3"
+              style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.3)", color: "#00C2A8" }}>
+              🧠 Free Daily Practice
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-display font-bold text-white mb-2">
+              Today's Question of the Day
+            </h2>
+            <p className="text-blue-200/70 text-sm max-w-md mx-auto">
+              Sharpen your clinical reasoning with a fresh MCQ every day. Free for everyone.
+            </p>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <DailyMCQWidget />
           </div>
         </div>
       </section>

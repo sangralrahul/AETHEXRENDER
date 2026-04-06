@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "wouter";
-import { User, MapPin, Heart, Crown, Settings, LogOut, Plus, Trash2, CheckCircle2, Star, Bell, ShieldCheck, ChevronRight, Edit3, Package, Camera, BadgeCheck, Upload, X, FileText, Clock, XCircle } from "lucide-react";
+import { Link, useSearch } from "wouter";
+import { User, MapPin, Heart, Crown, Settings, LogOut, Plus, Trash2, CheckCircle2, Star, Bell, ShieldCheck, ChevronRight, Edit3, Package, Camera, BadgeCheck, Upload, X, FileText, Clock, XCircle, Users, Brain } from "lucide-react";
 import { useUserAuth, type Address } from "@/hooks/use-user-auth";
 import { formatINR } from "@/lib/utils";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { ReferralProgram } from "@/components/ReferralProgram";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -13,13 +14,15 @@ const INDIA_STATES = [
   "Uttar Pradesh","Uttarakhand","West Bengal","Jammu & Kashmir",
 ];
 
-type Tab = "profile" | "addresses" | "wishlist" | "subscription" | "notifications" | "verification";
+type Tab = "profile" | "addresses" | "wishlist" | "subscription" | "notifications" | "verification" | "referrals" | "consults";
 
 const TABS: { id: Tab; label: string; icon: typeof User }[] = [
   { id: "profile", label: "Profile", icon: User },
   { id: "addresses", label: "Addresses", icon: MapPin },
   { id: "wishlist", label: "Wishlist", icon: Heart },
   { id: "subscription", label: "Subscription", icon: Crown },
+  { id: "referrals", label: "Referrals", icon: Users },
+  { id: "consults", label: "My Consults", icon: Brain },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "verification", label: "Verification", icon: BadgeCheck },
 ];
@@ -126,7 +129,10 @@ function AddAddressForm({ onSave }: { onSave: (addr: Omit<Address, "id">) => voi
 
 export default function Account() {
   const { user, isLoggedIn, logout, updateProfile, getJwt, activatePro, activateProAnnual } = useUserAuth();
-  const [tab, setTab] = useState<Tab>("profile");
+  const search = useSearch();
+  const params = new URLSearchParams(search);
+  const initialTab = (params.get("tab") as Tab) ?? "profile";
+  const [tab, setTab] = useState<Tab>(initialTab);
   const [editName, setEditName] = useState(false);
   const [nameInput, setNameInput] = useState(user?.name || "");
   const [phoneInput, setPhoneInput] = useState(user?.phone || "");
@@ -769,6 +775,42 @@ export default function Account() {
                       </p>
                     </form>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Referrals Tab */}
+            {tab === "referrals" && (
+              <div className="space-y-5">
+                <div className="bg-white border border-black/[0.08] rounded-2xl p-6">
+                  <h2 className="text-lg font-display font-bold text-[#1c1c1e] flex items-center gap-2 mb-1">
+                    <Users className="w-5 h-5 text-[#00C2A8]" />
+                    Refer a Friend
+                  </h2>
+                  <p className="text-sm text-[#6c6c70] mb-6">
+                    Share your unique referral link. When a friend signs up and joins, you both get 1 month of Cadus Magnus free.
+                  </p>
+                  <ReferralProgram />
+                </div>
+              </div>
+            )}
+
+            {/* My Consults Tab */}
+            {tab === "consults" && (
+              <div className="space-y-5">
+                <div className="bg-white border border-black/[0.08] rounded-2xl p-6">
+                  <h2 className="text-lg font-display font-bold text-[#1c1c1e] flex items-center gap-2 mb-2">
+                    <Brain className="w-5 h-5 text-[#00C2A8]" />
+                    My Consult History
+                  </h2>
+                  <p className="text-sm text-[#6c6c70] mb-4">
+                    All your saved Cadus AI conversations, searchable and accessible from here.
+                  </p>
+                  <Link href="/my-consults">
+                    <button className="w-full py-3 rounded-xl font-semibold text-sm text-white transition-all hover:opacity-90" style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>
+                      Open Full Consult History
+                    </button>
+                  </Link>
                 </div>
               </div>
             )}

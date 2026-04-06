@@ -747,6 +747,15 @@ export default function AiAssistant() {
       {
         onSuccess: (data) => {
           updateSession(sessionId, [...newMsgs, { role: ChatMessageRole.assistant, content: data.message }]);
+          const jwt = user ? localStorage.getItem("aethex_jwt") : null;
+          if (jwt && user && data.message) {
+            const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+            fetch(`${apiBase}/api/monetization/consults`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
+              body: JSON.stringify({ query: userMsg.slice(0, 2000), response: data.message.slice(0, 8000), model: activeModel }),
+            }).catch(() => {});
+          }
         },
       }
     );

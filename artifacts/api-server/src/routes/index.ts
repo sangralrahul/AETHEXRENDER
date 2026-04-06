@@ -14,6 +14,7 @@ import adminRouter from "./admin";
 import medKnowledgeRouter from "./medknowledge";
 import bookCoverRouter from "./book-cover";
 import verifyRouter from "./verify";
+import monetizationRouter from "./monetization";
 
 const router: IRouter = Router();
 
@@ -32,5 +33,6 @@ router.use(sellerRouter);
 router.use(blogRouter);
 router.use(medKnowledgeRouter);
 router.use(verifyRouter);
+router.use(monetizationRouter);
 
 export default router;

@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, Pill, X, AlertTriangle, CheckCircle, Info, Plus } from "lucide-react";
+import { ArrowLeft, Pill, X, AlertTriangle, CheckCircle, Info, Plus, Crown, Download } from "lucide-react";
+import { useUserAuth } from "@/hooks/use-user-auth";
+import { UpgradeModal } from "@/components/UpgradeModal";
+import { PayPerReport } from "@/components/PayPerReport";
 
 interface Interaction {
   drug1: string;
@@ -43,10 +46,13 @@ const severityConfig = {
 };
 
 export default function DrugInteractionChecker() {
+  const { isPro, user } = useUserAuth();
   const [drugs, setDrugs] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const [checked, setChecked] = useState(false);
   const [interactions, setInteractions] = useState<Interaction[]>([]);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   const addDrug = (name: string) => {
     const trimmed = name.trim();
@@ -88,7 +94,7 @@ export default function DrugInteractionChecker() {
 
   return (
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
-      <div className="relative overflow-hidden" >
+      <div className="relative overflow-hidden">
         <div className="absolute inset-0" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
         <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, rgba(10,22,40,0.93) 0%, rgba(13,33,68,0.9) 50%, rgba(10,48,96,0.93) 100%)" }} />
         <div className="max-w-3xl mx-auto px-4 pt-16 pb-10 relative z-10">
@@ -106,10 +112,8 @@ export default function DrugInteractionChecker() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-        {/* Drug Input */}
         <div className="rounded-2xl p-6 bg-white" style={{ border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
           <h2 className="font-semibold mb-4" style={{ color: "#1C1C1E" }}>Enter Medications</h2>
-
           <div className="flex gap-2 mb-3">
             <input
               type="text"
@@ -120,14 +124,10 @@ export default function DrugInteractionChecker() {
               className="flex-1 px-4 py-3 rounded-xl text-sm outline-none"
               style={{ border: "1.5px solid rgba(60,60,67,0.2)", color: "#1C1C1E" }}
             />
-            <button onClick={() => addDrug(input)}
-              className="px-4 py-3 rounded-xl text-white transition-all hover:opacity-90"
-              style={{ background: "#007AFF" }}>
+            <button onClick={() => addDrug(input)} className="px-4 py-3 rounded-xl text-white transition-all hover:opacity-90" style={{ background: "#007AFF" }}>
               <Plus className="w-5 h-5" />
             </button>
           </div>
-
-          {/* Quick add */}
           <div className="mb-4">
             <p className="text-xs font-medium mb-2" style={{ color: "#AEAEB2" }}>Common medications</p>
             <div className="flex flex-wrap gap-1.5">
@@ -145,8 +145,6 @@ export default function DrugInteractionChecker() {
               ))}
             </div>
           </div>
-
-          {/* Drug Tags */}
           {drugs.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-5">
               {drugs.map((d, i) => (
@@ -160,7 +158,6 @@ export default function DrugInteractionChecker() {
               ))}
             </div>
           )}
-
           <button onClick={check} disabled={drugs.length < 2}
             className="w-full py-3 rounded-xl font-semibold text-sm text-white transition-all hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
             style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>
@@ -168,17 +165,26 @@ export default function DrugInteractionChecker() {
           </button>
         </div>
 
-        {/* Results */}
         {checked && (
           <div className="space-y-4">
-            {/* Summary */}
             <div className="rounded-2xl p-5 bg-white" style={{ border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-3">
                 <h2 className="font-semibold" style={{ color: "#1C1C1E" }}>Interaction Summary</h2>
-                <span className="text-sm font-medium px-3 py-1 rounded-full"
-                  style={{ background: interactions.length === 0 ? "#F0FDF4" : "#FEF2F2", color: interactions.length === 0 ? "#10B981" : "#EF4444" }}>
-                  {interactions.length === 0 ? "No interactions found" : `${interactions.length} interaction${interactions.length > 1 ? "s" : ""} found`}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium px-3 py-1 rounded-full"
+                    style={{ background: interactions.length === 0 ? "#F0FDF4" : "#FEF2F2", color: interactions.length === 0 ? "#10B981" : "#EF4444" }}>
+                    {interactions.length === 0 ? "No interactions found" : `${interactions.length} interaction${interactions.length > 1 ? "s" : ""} found`}
+                  </span>
+                  {interactions.length > 0 && (
+                    <button
+                      onClick={() => setShowReport(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white transition-all hover:opacity-90"
+                      style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}
+                    >
+                      <Download className="w-3 h-3" /> PDF Report ₹29
+                    </button>
+                  )}
+                </div>
               </div>
               {interactions.length > 0 && (
                 <div className="flex gap-4 mt-3">
@@ -215,8 +221,28 @@ export default function DrugInteractionChecker() {
                       </div>
                     </div>
                     <div className="space-y-2 text-sm" style={{ color: "#636366" }}>
-                      <div><span className="font-medium" style={{ color: "#1C1C1E" }}>Mechanism: </span>{ix.mechanism}</div>
-                      <div><span className="font-medium" style={{ color: "#1C1C1E" }}>Management: </span>{ix.management}</div>
+                      {isPro ? (
+                        <>
+                          <div><span className="font-medium" style={{ color: "#1C1C1E" }}>Mechanism: </span>{ix.mechanism}</div>
+                          <div><span className="font-medium" style={{ color: "#1C1C1E" }}>Management: </span>{ix.management}</div>
+                        </>
+                      ) : (
+                        <div
+                          className="relative cursor-pointer"
+                          onClick={() => setShowUpgrade(true)}
+                        >
+                          <div className="blur-sm select-none space-y-1">
+                            <div><span className="font-medium" style={{ color: "#1C1C1E" }}>Mechanism: </span>{ix.mechanism}</div>
+                            <div><span className="font-medium" style={{ color: "#1C1C1E" }}>Management: </span>{ix.management}</div>
+                          </div>
+                          <div className="absolute inset-0 flex items-center justify-center rounded-lg" style={{ background: "rgba(242,242,247,0.7)" }}>
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
+                              style={{ background: "rgba(245,158,11,0.12)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.25)" }}>
+                              <Crown className="w-3 h-3" /> Cadus Magnus Only
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -229,6 +255,19 @@ export default function DrugInteractionChecker() {
           </div>
         )}
       </div>
+
+      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} featureName="drug interaction details" />}
+      {showReport && (
+        <PayPerReport
+          payload={{
+            reportType: "drug-interaction",
+            reportData: { drugs, interactions },
+            description: `Drug interaction report for ${drugs.join(", ")}`,
+          }}
+          price={29}
+          onClose={() => setShowReport(false)}
+        />
+      )}
     </div>
   );
 }

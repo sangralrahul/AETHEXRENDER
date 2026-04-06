@@ -3,51 +3,45 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const SPLASH_KEY = "aethex_splash_seen";
 
-function GlowOrb({ delay, x, y, size, color }: { delay: number; x: string; y: string; size: number; color: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.3 }}
-      animate={{ opacity: [0, 0.6, 0.3, 0.6, 0], scale: [0.3, 1, 0.8, 1.1, 0.5] }}
-      transition={{ delay, duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      style={{
-        position: "absolute",
-        left: x,
-        top: y,
-        width: size,
-        height: size,
-        borderRadius: "50%",
-        background: `radial-gradient(circle, ${color} 0%, transparent 70%)`,
-        filter: "blur(40px)",
-        pointerEvents: "none",
-      }}
-    />
-  );
-}
+const LETTERS = ["A", "E", "T", "H", "E", "X"];
 
-function PulseRing({ delay }: { delay: number }) {
+const SCATTER_POSITIONS = [
+  { x: -320, y: -180, rotate: -45, scale: 0.3 },
+  { x: 280, y: -220, rotate: 30, scale: 0.2 },
+  { x: -200, y: 200, rotate: -60, scale: 0.4 },
+  { x: 350, y: 150, rotate: 45, scale: 0.25 },
+  { x: -380, y: 50, rotate: -20, scale: 0.35 },
+  { x: 400, y: -80, rotate: 55, scale: 0.3 },
+];
+
+function FloatingParticle({ delay, duration }: { delay: number; duration: number }) {
+  const startX = Math.random() * 100;
+  const startY = 100 + Math.random() * 20;
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.2 }}
-      animate={{ opacity: [0, 0.12, 0], scale: [0.2, 1.8, 2.5] }}
-      transition={{ delay, duration: 3, repeat: Infinity, ease: "easeOut" }}
+      initial={{ opacity: 0, x: `${startX}vw`, y: `${startY}vh` }}
+      animate={{
+        opacity: [0, 0.4, 0.2, 0],
+        x: `${startX + (Math.random() - 0.5) * 20}vw`,
+        y: `${startY - 100 - Math.random() * 30}vh`,
+      }}
+      transition={{ delay, duration, repeat: Infinity, ease: "linear" }}
       style={{
         position: "absolute",
-        left: "50%",
-        top: "50%",
-        width: 300,
-        height: 300,
-        marginLeft: -150,
-        marginTop: -150,
+        width: 2,
+        height: 2,
         borderRadius: "50%",
-        border: "1px solid rgba(0,122,255,0.25)",
+        background: "#5AC8FA",
+        boxShadow: "0 0 6px rgba(90,200,250,0.5)",
         pointerEvents: "none",
+        zIndex: 2,
       }}
     />
   );
 }
 
 export function SplashScreen({ onComplete }: { onComplete: () => void }) {
-  const [phase, setPhase] = useState<"loading" | "ready" | "fading">("loading");
+  const [phase, setPhase] = useState<"scattered" | "assembling" | "assembled" | "glowing" | "fading">("scattered");
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoReady, setVideoReady] = useState(false);
   const completedRef = useRef(false);
@@ -68,22 +62,25 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   }, [onComplete]);
 
   useEffect(() => {
+    addTimer(() => setPhase("assembling"), 800);
+    addTimer(() => setPhase("assembled"), 2200);
+    addTimer(() => setPhase("glowing"), 2800);
+
     let progress = 0;
     const interval = window.setInterval(() => {
-      progress += Math.random() * 15 + 5;
+      progress += Math.random() * 12 + 4;
       if (progress >= 100) {
         progress = 100;
         clearInterval(interval);
         setLoadProgress(100);
-        addTimer(() => setPhase("ready"), 300);
         addTimer(() => {
           setPhase("fading");
-          addTimer(triggerComplete, 900);
-        }, 2800);
+          addTimer(triggerComplete, 1000);
+        }, 3500);
         return;
       }
       setLoadProgress(Math.min(progress, 95));
-    }, 400);
+    }, 350);
 
     timersRef.current.push(interval as unknown as number);
 
@@ -100,13 +97,15 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
     addTimer(triggerComplete, 700);
   };
 
+  const isAssembled = phase === "assembled" || phase === "glowing" || phase === "fading";
+
   return (
     <AnimatePresence>
       <motion.div
         key="splash"
         initial={{ opacity: 1 }}
         animate={{ opacity: phase === "fading" ? 0 : 1 }}
-        transition={{ duration: 0.9, ease: [0.4, 0, 0.2, 1] }}
+        transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
         className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden cursor-pointer select-none"
         onClick={handleSkip}
         style={{ background: "#000" }}
@@ -120,8 +119,8 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           onCanPlay={() => setVideoReady(true)}
           className="absolute inset-0 w-full h-full object-cover"
           style={{
-            opacity: videoReady ? 0.7 : 0,
-            transition: "opacity 1.2s ease",
+            opacity: videoReady ? 0.55 : 0,
+            transition: "opacity 1.5s ease",
           }}
           src={`${import.meta.env.BASE_URL}hero-video.mp4`}
         />
@@ -129,152 +128,169 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
         <div
           className="absolute inset-0"
           style={{
-            background: "radial-gradient(ellipse 90% 70% at 50% 50%, rgba(0,20,60,0.35) 0%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.85) 100%)",
+            background: "radial-gradient(ellipse 100% 80% at 50% 50%, rgba(0,15,50,0.4) 0%, rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.92) 100%)",
             zIndex: 1,
           }}
         />
 
-        <GlowOrb delay={0} x="10%" y="15%" size={250} color="rgba(0,122,255,0.12)" />
-        <GlowOrb delay={1.5} x="78%" y="60%" size={200} color="rgba(90,200,250,0.1)" />
-        <GlowOrb delay={0.8} x="55%" y="10%" size={150} color="rgba(0,122,255,0.08)" />
+        {Array.from({ length: 15 }).map((_, i) => (
+          <FloatingParticle key={i} delay={i * 0.4} duration={6 + Math.random() * 4} />
+        ))}
 
-        <PulseRing delay={0} />
-        <PulseRing delay={1} />
-        <PulseRing delay={2} />
-
-        <div className="relative flex flex-col items-center text-center px-6" style={{ zIndex: 10 }}>
+        {isAssembled && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.85, y: 30 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <h1 style={{
-              fontFamily: "'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif",
-              fontWeight: 700,
-              fontSize: "clamp(3.5rem, 12vw, 8rem)",
-              letterSpacing: "-0.04em",
-              lineHeight: 0.95,
-              color: "#FFFFFF",
-              textShadow: "0 0 120px rgba(0,122,255,0.25), 0 0 60px rgba(0,122,255,0.1)",
-            }}>
-              <span style={{
-                background: "linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.85) 40%, #007AFF 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}>
-                AETHEX
-              </span>
-            </h1>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ delay: 0.8, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: [0, 0.15, 0.08], scale: [0.5, 1.5, 2] }}
+            transition={{ duration: 2, ease: "easeOut" }}
             style={{
-              width: 80,
-              height: 1.5,
-              background: "linear-gradient(90deg, transparent, rgba(0,122,255,0.6), transparent)",
-              marginTop: 24,
-              borderRadius: 2,
+              position: "absolute",
+              width: 400,
+              height: 400,
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(0,122,255,0.2) 0%, transparent 70%)",
+              filter: "blur(60px)",
+              zIndex: 2,
+              pointerEvents: "none",
             }}
           />
+        )}
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: phase === "ready" ? 1 : 0.6 }}
-            transition={{ delay: 1, duration: 0.5 }}
-            className="mt-12"
-            style={{ width: 160 }}
-          >
-            <div style={{
-              height: 1.5,
-              background: "rgba(255,255,255,0.06)",
-              borderRadius: 4,
-              overflow: "hidden",
-            }}>
+        <div className="relative flex flex-col items-center" style={{ zIndex: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "auto" }}>
+            {LETTERS.map((letter, i) => {
+              const scatter = SCATTER_POSITIONS[i];
+              return (
+                <motion.span
+                  key={i}
+                  initial={{
+                    opacity: 0,
+                    x: scatter.x,
+                    y: scatter.y,
+                    rotate: scatter.rotate,
+                    scale: scatter.scale,
+                    filter: "blur(8px)",
+                  }}
+                  animate={
+                    phase === "scattered"
+                      ? {
+                          opacity: [0, 0.4, 0.2],
+                          x: scatter.x,
+                          y: scatter.y,
+                          rotate: scatter.rotate,
+                          scale: scatter.scale,
+                          filter: "blur(8px)",
+                        }
+                      : {
+                          opacity: 1,
+                          x: 0,
+                          y: 0,
+                          rotate: 0,
+                          scale: 1,
+                          filter: "blur(0px)",
+                        }
+                  }
+                  transition={{
+                    delay: phase === "scattered" ? i * 0.08 : i * 0.06,
+                    duration: phase === "scattered" ? 0.5 : 1.0,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  style={{
+                    display: "inline-block",
+                    fontFamily: "'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif",
+                    fontWeight: 700,
+                    fontSize: "clamp(4rem, 14vw, 9rem)",
+                    letterSpacing: "-0.02em",
+                    lineHeight: 1,
+                    color: "#FFFFFF",
+                    textShadow: isAssembled
+                      ? "0 0 80px rgba(0,122,255,0.4), 0 0 40px rgba(0,122,255,0.2)"
+                      : "none",
+                    background: isAssembled
+                      ? "linear-gradient(180deg, #FFFFFF 20%, #B0D4FF 60%, #007AFF 100%)"
+                      : "#FFFFFF",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    transition: "text-shadow 0.8s ease",
+                  }}
+                >
+                  {letter}
+                </motion.span>
+              );
+            })}
+          </div>
+
+          {isAssembled && (
+            <>
               <motion.div
+                initial={{ opacity: 0, scaleX: 0 }}
+                animate={{ opacity: 1, scaleX: 1 }}
+                transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 style={{
-                  height: "100%",
-                  background: "linear-gradient(90deg, #007AFF, #5AC8FA)",
-                  borderRadius: 4,
-                  boxShadow: "0 0 15px rgba(0,122,255,0.4)",
+                  width: 60,
+                  height: 1,
+                  background: "linear-gradient(90deg, transparent, rgba(0,122,255,0.5), transparent)",
+                  marginTop: 20,
+                  borderRadius: 2,
                 }}
-                initial={{ width: "0%" }}
-                animate={{ width: `${loadProgress}%` }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
               />
-            </div>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2, duration: 0.4 }}
-              style={{
-                fontFamily: "'SF Pro Text', 'Inter', -apple-system, system-ui, sans-serif",
-                color: "rgba(255,255,255,0.2)",
-                fontSize: 10,
-                marginTop: 10,
-                fontWeight: 500,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-              }}
-            >
-              {phase === "ready" ? "Ready" : `${Math.round(loadProgress)}%`}
-            </motion.p>
-          </motion.div>
 
-          {phase === "ready" && (
-            <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleSkip();
-              }}
-              className="mt-8"
-              style={{
-                background: "none",
-                border: "1px solid rgba(255,255,255,0.12)",
-                borderRadius: 100,
-                padding: "9px 28px",
-                color: "rgba(255,255,255,0.6)",
-                fontSize: 12,
-                fontWeight: 500,
-                fontFamily: "'SF Pro Text', 'Inter', -apple-system, system-ui, sans-serif",
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                backdropFilter: "blur(8px)",
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.borderColor = "rgba(0,122,255,0.5)";
-                (e.target as HTMLElement).style.color = "#FFFFFF";
-                (e.target as HTMLElement).style.boxShadow = "0 0 25px rgba(0,122,255,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.borderColor = "rgba(255,255,255,0.12)";
-                (e.target as HTMLElement).style.color = "rgba(255,255,255,0.6)";
-                (e.target as HTMLElement).style.boxShadow = "none";
-              }}
-            >
-              Enter
-            </motion.button>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="mt-10"
+                style={{ width: 140 }}
+              >
+                <div style={{
+                  height: 1.5,
+                  background: "rgba(255,255,255,0.05)",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                }}>
+                  <motion.div
+                    style={{
+                      height: "100%",
+                      background: "linear-gradient(90deg, #007AFF, #5AC8FA)",
+                      borderRadius: 4,
+                      boxShadow: "0 0 12px rgba(0,122,255,0.4)",
+                    }}
+                    animate={{ width: `${loadProgress}%` }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                  />
+                </div>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6, duration: 0.3 }}
+                  style={{
+                    fontFamily: "'SF Pro Text', 'Inter', -apple-system, system-ui, sans-serif",
+                    color: "rgba(255,255,255,0.18)",
+                    fontSize: 10,
+                    marginTop: 8,
+                    fontWeight: 500,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    textAlign: "center",
+                  }}
+                >
+                  {loadProgress >= 100 ? "Ready" : `${Math.round(loadProgress)}%`}
+                </motion.p>
+              </motion.div>
+            </>
           )}
         </div>
 
         <motion.p
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 0.5 }}
+          animate={{ opacity: isAssembled ? 1 : 0 }}
+          transition={{ delay: 1, duration: 0.5 }}
           className="absolute bottom-5 left-0 right-0 text-center"
           style={{
-            color: "rgba(255,255,255,0.1)",
+            color: "rgba(255,255,255,0.08)",
             fontSize: 10,
             fontFamily: "'SF Pro Text', 'Inter', -apple-system, system-ui, sans-serif",
-            letterSpacing: "0.12em",
+            letterSpacing: "0.15em",
             textTransform: "uppercase",
             zIndex: 10,
           }}

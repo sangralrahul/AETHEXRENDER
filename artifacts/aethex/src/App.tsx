@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
 import NotFound from "@/pages/not-found";
+import { SplashScreen, useSplashScreen } from "@/components/SplashScreen";
 
 import { Navbar, AnnouncementBar, BrandSwitcherBar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -291,9 +292,12 @@ function Router() {
 }
 
 function App() {
+  const { showSplash, handleComplete } = useSplashScreen();
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        {showSplash && <SplashScreen onComplete={handleComplete} />}
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <Router />
           <CadusQuickConsult />

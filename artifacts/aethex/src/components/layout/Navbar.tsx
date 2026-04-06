@@ -245,21 +245,21 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
 }
 
 const categories = [
-  { href: "/", icon: Star, label: "For You", exact: true },
-  { href: "/shop", icon: Store, label: "Shop" },
-  { href: "/books", icon: BookOpen, label: "Books" },
-  { href: "/study-hub", icon: GraduationCap, label: "Study Hub" },
-  { href: "/cme-hub", icon: Crown, label: "CME Hub" },
-  { href: "/neet-pg", icon: FileText, label: "NEET-PG" },
-  { href: "/drug-reference", icon: Pill, label: "Drug Ref" },
-  { href: "/calculator", icon: Calculator, label: "Calculators" },
-  { href: "/cases", icon: Activity, label: "Cases" },
-  { href: "/ai-assistant", icon: Brain, label: "Cadus AI" },
-  { href: "/community", icon: MessageSquare, label: "Community" },
-  { href: "/jobs", icon: Briefcase, label: "Jobs" },
-  { href: "/blog", icon: Newspaper, label: "Blog" },
-  { href: "/news", icon: Megaphone, label: "News" },
-  { href: "/pricing", icon: Crown, label: "Pricing" },
+  { href: "/", icon: Star, label: "For You", exact: true, authOnly: false },
+  { href: "/shop", icon: Store, label: "Shop", authOnly: false },
+  { href: "/books", icon: BookOpen, label: "Books", authOnly: false },
+  { href: "/study-hub", icon: GraduationCap, label: "Study Hub", authOnly: false },
+  { href: "/cme-hub", icon: Crown, label: "CME Hub", authOnly: false },
+  { href: "/neet-pg", icon: FileText, label: "NEET-PG", authOnly: false },
+  { href: "/drug-reference", icon: Pill, label: "Drug Ref", authOnly: false },
+  { href: "/ai-assistant", icon: Brain, label: "Cadus AI", authOnly: false },
+  { href: "/pricing", icon: Crown, label: "Pricing", authOnly: false },
+  { href: "/calculator", icon: Calculator, label: "Calculators", authOnly: true },
+  { href: "/cases", icon: Activity, label: "Cases", authOnly: true },
+  { href: "/community", icon: MessageSquare, label: "Community", authOnly: true },
+  { href: "/jobs", icon: Briefcase, label: "Jobs", authOnly: true },
+  { href: "/blog", icon: Newspaper, label: "Blog", authOnly: true },
+  { href: "/news", icon: Megaphone, label: "News", authOnly: true },
 ];
 
 const institutionsMenu = [
@@ -459,14 +459,14 @@ export function Navbar() {
 
             {/* Logo — visible only on small screens; brand bar covers large */}
             <Link href="/" className="flex items-center gap-2 shrink-0 lg:hidden">
-              <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="aethex" className="w-7 h-7 rounded-lg object-contain" />
-              <span className="font-bold text-base tracking-tight text-white hidden sm:inline">aethex</span>
+              <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="Aethex" className="w-7 h-7 rounded-lg object-contain" />
+              <span className="font-bold text-base tracking-tight text-white hidden sm:inline">Aethex</span>
             </Link>
 
             {/* Logo on desktop too */}
             <Link href="/" className="items-center gap-2 shrink-0 hidden lg:flex">
-              <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="aethex" className="w-7 h-7 rounded-lg object-contain" />
-              <span className="font-bold text-base tracking-tight text-white">aethex</span>
+              <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="Aethex" className="w-7 h-7 rounded-lg object-contain" />
+              <span className="font-bold text-base tracking-tight text-white">Aethex</span>
             </Link>
 
             {/* Search Bar */}
@@ -605,8 +605,8 @@ export function Navbar() {
                 )}
               </div>
 
-              {/* More dropdown */}
-              <div ref={moreRef} className="relative hidden sm:block">
+              {/* More dropdown — logged-in only */}
+              {isLoggedIn && <div ref={moreRef} className="relative hidden sm:block">
                 <button
                   onClick={() => setMoreOpen(o => !o)}
                   className="flex items-center gap-1 px-3 py-1.5 rounded text-sm font-semibold text-white hover:bg-white/10 transition-all"
@@ -635,7 +635,7 @@ export function Navbar() {
                     ))}
                   </div>
                 )}
-              </div>
+              </div>}
 
               {/* Notification */}
               <div className="hidden sm:block">
@@ -671,7 +671,7 @@ export function Navbar() {
       {/* ── CATEGORY SCROLL BAR ── */}
       <div data-category-bar className="no-print overflow-x-auto" style={{ background: "#232323", borderBottom: "1px solid rgba(255,255,255,0.07)", scrollbarWidth: "none" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-stretch" style={{ height: 52 }}>
-          {categories.map((cat) => {
+          {categories.filter(cat => !cat.authOnly || isLoggedIn).map((cat) => {
             const active = cat.exact
               ? location === cat.href
               : location === cat.href || location.startsWith(cat.href + "/");
@@ -695,22 +695,26 @@ export function Navbar() {
             );
           })}
 
-          {/* Tools mega menu trigger in category bar */}
-          <ToolsMegaMenu
-            open={toolsOpen}
-            onToggle={() => setToolsOpen(o => !o)}
-            onClose={() => setToolsOpen(false)}
-            dropdownRef={toolsRef}
-            dark
-          />
+          {/* Tools mega menu — logged-in only */}
+          {isLoggedIn && (
+            <ToolsMegaMenu
+              open={toolsOpen}
+              onToggle={() => setToolsOpen(o => !o)}
+              onClose={() => setToolsOpen(false)}
+              dropdownRef={toolsRef}
+              dark
+            />
+          )}
 
-          {/* Colleges & Hospitals dropdown — last in category bar */}
-          <InstitutionsDropdown
-            open={institutionsOpen}
-            onToggle={() => setInstitutionsOpen(o => !o)}
-            onClose={() => setInstitutionsOpen(false)}
-            dropdownRef={institutionsRef}
-          />
+          {/* Colleges & Hospitals dropdown — logged-in only */}
+          {isLoggedIn && (
+            <InstitutionsDropdown
+              open={institutionsOpen}
+              onToggle={() => setInstitutionsOpen(o => !o)}
+              onClose={() => setInstitutionsOpen(false)}
+              dropdownRef={institutionsRef}
+            />
+          )}
         </div>
       </div>
 

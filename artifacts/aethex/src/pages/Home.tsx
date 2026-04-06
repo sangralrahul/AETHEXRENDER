@@ -728,7 +728,7 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-6"
                 style={{ background: "#e8f3ff", color: "#007AFF" }}>
                 <Activity className="w-3.5 h-3.5" />
-                India's #1 Medical Platform
+                Built for Indian Doctors &amp; Medical Students
               </div>
 
               <h1 className="font-display font-bold leading-[1.05] tracking-tight mb-5"
@@ -738,7 +738,7 @@ export default function Home() {
               </h1>
 
               <p className="mb-8 max-w-[480px] leading-relaxed" style={{ fontSize: 17, color: "#8e8e93" }}>
-                Everything a doctor needs — supplies, AI research tools, and study resources — in one beautifully simple platform.
+                Drug references, AI clinical assistant, NEET-PG prep — one platform, zero switching.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3">
@@ -760,58 +760,57 @@ export default function Home() {
               </p>
             </motion.div>
 
-            {/* Right: Stat Tiles 2x2 */}
+            {/* Right: Why Aethex? 3-card feature highlight */}
             <motion.div
               initial={{ opacity: 0, x: 24 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, delay: 0.15 }}
-              className="hidden lg:grid grid-cols-2 gap-4"
+              className="hidden lg:flex flex-col gap-4"
             >
               {[
-                { value: "50,000+", label: "Doctors & Students", icon: Users },
-                { value: "1,000+", label: "Medical Products", icon: ShieldCheck },
-                { value: "28+", label: "States Delivered", icon: Truck },
-                { value: "98%", label: "Satisfaction Rate", icon: CheckCircle2 },
-              ].map((stat, i) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={i} className="flex flex-col items-center justify-center text-center p-6 rounded-2xl transition-all hover:-translate-y-1"
-                    style={{ background: "#FFFFFF", border: "1px solid #e8e8ed", borderRadius: 16, padding: 20 }}>
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: "#e8f3ff" }}>
-                      <Icon className="w-5 h-5" style={{ color: "#007AFF" }} />
-                    </div>
-                    <div className="font-display font-bold mb-1" style={{ fontSize: 24, color: "#1c1c1e" }}>{stat.value}</div>
-                    <div style={{ fontSize: 13, color: "#8e8e93" }}>{stat.label}</div>
+                {
+                  icon: BrainCircuit,
+                  title: "Cadus AI",
+                  desc: "Ask any clinical question, get instant AI-powered answers trusted by doctors.",
+                  accent: "#007AFF",
+                  bg: "rgba(0,122,255,0.08)",
+                  href: "/ai-assistant",
+                },
+                {
+                  icon: Pill,
+                  title: "Drug Reference",
+                  desc: "India's most comprehensive drug database — doses, interactions, and more.",
+                  accent: "#F59E0B",
+                  bg: "rgba(245,158,11,0.08)",
+                  href: "/drug-reference",
+                },
+                {
+                  icon: GraduationCap,
+                  title: "NEET-PG Prep",
+                  desc: "MCQs, study hub, and performance tracking built for PG aspirants.",
+                  accent: "#00C2A8",
+                  bg: "rgba(0,194,168,0.08)",
+                  href: "/neet-pg",
+                },
+              ].map((card) => (
+                <Link key={card.href} href={card.href}
+                  className="flex items-start gap-4 p-5 rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-md group"
+                  style={{ background: "#FFFFFF", border: "1px solid #e8e8ed" }}>
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105"
+                    style={{ background: card.bg }}>
+                    <card.icon className="w-5 h-5" style={{ color: card.accent }} />
                   </div>
-                );
-              })}
+                  <div>
+                    <p className="font-bold text-sm mb-0.5" style={{ color: "#1c1c1e" }}>{card.title}</p>
+                    <p className="text-xs leading-relaxed" style={{ color: "#8e8e93" }}>{card.desc}</p>
+                  </div>
+                </Link>
+              ))}
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ── Stats Bar ── */}
-      <section className="py-8" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.1)", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { value: "50,000+", label: "Medical Students & Doctors Across India" },
-              { value: "1,000+", label: "Medical Products" },
-              { value: "28+", label: "States Delivered" },
-              { value: "98%", label: "Customer Satisfaction" },
-            ].map((stat, i) => (
-              <div key={i} className="flex flex-col items-center justify-center text-center px-4 py-2"
-                style={i > 0 ? { borderLeft: "1px solid rgba(60,60,67,0.1)" } : {}}>
-                <div className="text-2xl sm:text-3xl font-display font-bold mb-1" style={{ color: "#007AFF" }}>{stat.value}</div>
-                <div className="text-xs sm:text-sm font-medium leading-snug" style={{ color: "#636366" }}>{stat.label}</div>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-sm mt-4 font-medium" style={{ color: "#AEAEB2" }}>
-            Trusted by learners from top medical colleges
-          </p>
-        </div>
-      </section>
 
       {/* ── Platform Breakdown ── */}
       <section className="py-20 relative" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>

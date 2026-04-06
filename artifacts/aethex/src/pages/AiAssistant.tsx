@@ -205,7 +205,11 @@ const modelGreetings: Record<ModelId, string> = {
 };
 
 const quickSuggestions: Record<ModelId, string[]> = {
-  pulse45: ["Normal SpO2 range?", "ACLS for cardiac arrest?", "Best ICU pulse oximeter?"],
+  pulse45: [
+    "What is the dosage of Amoxicillin for adults?",
+    "Explain Type 2 Diabetes management guidelines",
+    "Give me a NEET-PG question on cardiology",
+  ],
   flux36: ["Warfarin drug interactions?", "Normal LFT values?", "CAP antibiotic choice?"],
   nova46: ["Rare autoimmune mimicking SLE?", "Complex multimorbidity regimen?", "Latest ACC guidelines?"],
 };
@@ -754,6 +758,34 @@ export default function AiAssistant() {
               method: "POST",
               headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
               body: JSON.stringify({ query: userMsg.slice(0, 2000), response: data.message.slice(0, 8000), model: activeModel }),
+            }).catch(() => {});
+          }
+        },
+      }
+    );
+  };
+
+  const sendDirect = (text: string) => {
+    if (!text.trim() || chatMutation.isPending || isProLocked) return;
+    setInput("");
+    setAttachments([]);
+    const currentMsgs = activeSession.messages;
+    const sessionId = activeSession.id;
+    const userEntry: ExtendedMessage = { role: ChatMessageRole.user, content: text };
+    const newMsgs: ExtendedMessage[] = [...currentMsgs, userEntry];
+    updateSession(sessionId, newMsgs);
+    chatMutation.mutate(
+      { data: { message: text, conversationHistory: currentMsgs, agent: activeModel, language: settings.language, mode: "normal", specialty } as any },
+      {
+        onSuccess: (data) => {
+          updateSession(sessionId, [...newMsgs, { role: ChatMessageRole.assistant, content: data.message }]);
+          const jwt = user ? localStorage.getItem("aethex_jwt") : null;
+          if (jwt && user && data.message) {
+            const apiBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+            fetch(`${apiBase}/api/monetization/consults`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
+              body: JSON.stringify({ query: text.slice(0, 2000), response: data.message.slice(0, 8000), model: activeModel }),
             }).catch(() => {});
           }
         },
@@ -1681,7 +1713,7 @@ export default function AiAssistant() {
                 <div className="flex flex-wrap gap-2 justify-center mb-8">
                   {quickSuggestions[activeModel].map((q) => (
                     <div key={q} className="flex items-center group relative">
-                      <button type="button" onClick={() => setInput(q)}
+                      <button type="button" onClick={() => sendDirect(q)}
                         className="text-sm px-4 py-2 rounded-full transition-all hover:bg-white/8 pr-8"
                         style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.55)" }}>
                         {q}

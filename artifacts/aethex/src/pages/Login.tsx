@@ -253,8 +253,8 @@ export default function Login() {
                               onBlur={e => { e.target.style.borderColor = "rgba(60,60,67,0.2)"; e.target.style.boxShadow = "none"; }} />
                           </div>
                           {error && <div style={errorStyle}>{error}</div>}
-                          <button type="submit" disabled={loading || otpCode.length !== 6} style={primaryBtnStyle}>
-                            {loading ? "Verifying…" : "Verify & Sign In"}
+                          <button type="submit" disabled={loading || otpCode.length !== 6} style={{ ...primaryBtnStyle, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            {loading ? <><BtnSpinner />Verifying…</> : "Verify & Sign In"}
                           </button>
                           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
                             <button type="button" onClick={() => { setEmailMode("otp-email"); setOtpCode(""); setError(""); }}
@@ -288,7 +288,7 @@ export default function Login() {
                               onBlur={e => { e.target.style.borderColor = "rgba(60,60,67,0.2)"; e.target.style.boxShadow = "none"; }} />
                           </div>
                           {error && <div style={errorStyle}>{error}</div>}
-                          <button type="submit" disabled={loading} style={primaryBtnStyle}>{loading ? "Sending…" : "Send OTP"}</button>
+                          <button type="submit" disabled={loading} style={{ ...primaryBtnStyle, display: "flex", alignItems: "center", justifyContent: "center" }}>{loading ? <><BtnSpinner />Sending…</> : "Send OTP"}</button>
                           <button type="button" onClick={() => { setEmailMode("password"); setError(""); }}
                             style={{ background: "none", border: "none", color: "#636366", cursor: "pointer", fontSize: 13, textAlign: "center" as const }}>
                             ← Back to password login
@@ -321,7 +321,7 @@ export default function Login() {
                           </div>
                         </div>
                         {error && <div style={errorStyle}>{error}</div>}
-                        <button type="submit" disabled={loading} style={primaryBtnStyle}>{loading ? "Signing in…" : "Sign In to aethex"}</button>
+                        <button type="submit" disabled={loading} style={{ ...primaryBtnStyle, display: "flex", alignItems: "center", justifyContent: "center" }}>{loading ? <><BtnSpinner />Signing in…</> : "Sign In to aethex"}</button>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                           <div style={{ flex: 1, height: 1, background: "rgba(60,60,67,0.12)" }} />
                           <span style={{ fontSize: 11, color: "#AEAEB2" }}>or</span>
@@ -355,8 +355,8 @@ export default function Login() {
                               onBlur={e => { e.target.style.borderColor = "rgba(60,60,67,0.2)"; e.target.style.boxShadow = "none"; }} />
                           </div>
                           {error && <div style={errorStyle}>{error}</div>}
-                          <button type="submit" disabled={loading || phoneOtp.length !== 6} style={primaryBtnStyle}>
-                            {loading ? "Verifying…" : "Verify & Sign In"}
+                          <button type="submit" disabled={loading || phoneOtp.length !== 6} style={{ ...primaryBtnStyle, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            {loading ? <><BtnSpinner />Verifying…</> : "Verify & Sign In"}
                           </button>
                           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
                             <button type="button" onClick={() => { setPhoneMode("phone-enter"); setPhoneOtp(""); setError(""); }}
@@ -386,8 +386,8 @@ export default function Login() {
                           </div>
                         </div>
                         {error && <div style={errorStyle}>{error}</div>}
-                        <button type="submit" disabled={loading || phone.length !== 10} style={primaryBtnStyle}>
-                          {loading ? "Sending OTP…" : "Send OTP via SMS"}
+                        <button type="submit" disabled={loading || phone.length !== 10} style={{ ...primaryBtnStyle, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          {loading ? <><BtnSpinner />Sending OTP…</> : "Send OTP via SMS"}
                         </button>
                         <p style={{ fontSize: 11, color: "#AEAEB2", textAlign: "center", margin: 0, lineHeight: 1.6 }}>
                           An SMS will be sent to your Indian mobile number via Twilio.
@@ -416,6 +416,10 @@ export default function Login() {
       `}</style>
     </div>
   );
+}
+
+function BtnSpinner() {
+  return <span style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.35)", borderTopColor: "#fff", display: "inline-block", animation: "spin 0.65s linear infinite", verticalAlign: "middle", marginRight: 7 }} />;
 }
 
 const headingStyle: React.CSSProperties = { fontSize: 22, fontWeight: 700, color: "#1C1C1E", margin: "0 0 5px", letterSpacing: "-0.02em" };

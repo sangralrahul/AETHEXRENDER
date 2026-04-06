@@ -12,7 +12,6 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "G-3LZGZDJBN9");
     </script>
     <meta
@@ -29,38 +28,35 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1"
     />
-    <title>AETHEX — Medicine Made Effortless</title>
+    <title>Aethex — India's Medical Platform for Doctors &amp; Students</title>
     <meta
       name="description"
-      content="AETHEX — Medicine Made Effortless. India's medical marketplace for doctors and healthcare professionals."
+      content="Drug references, AI clinical assistant, NEET-PG prep — one platform for Indian doctors and medical students."
     />
     <meta
       name="keywords"
-      content="medical store india, stethoscope india, medical equipment, doctor supplies, NEET-PG, medical scrubs, surgical instruments, Cadus AI"
+      content="medical platform india, cadus ai, drug reference india, NEET-PG prep, doctor tools, medical store, stethoscope india, medical equipment, medical scrubs, surgical instruments"
     />
     <meta name="author" content="Aethex Medical" />
     <link rel="canonical" href="https://aethex.in/" />
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="AETHEX — Medicine Made Effortless" />
+    <meta property="og:title" content="Aethex — India's Medical Platform for Doctors &amp; Students" />
     <meta
       property="og:description"
-      content="AETHEX — Medicine Made Effortless. India's medical marketplace for doctors and healthcare professionals."
+      content="Drug references, AI clinical assistant, NEET-PG prep — one platform for Indian doctors and medical students."
     />
     <meta property="og:image" content="https://aethex.in/aethex-og.jpg" />
     <meta property="og:url" content="https://aethex.in/" />
     <meta property="og:site_name" content="Aethex" />
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AETHEX - India's Medical Store" />
+    <meta name="twitter:title" content="Aethex — India's Medical Platform for Doctors &amp; Students" />
     <meta
       name="twitter:description"
-      content="Stethoscopes, scrubs, books, surgical instruments & Cadus AI. Trusted by 50k+ Indian doctors."
+      content="Drug references, AI clinical assistant, NEET-PG prep — one platform for Indian doctors and medical students."
     />
     <meta name="twitter:image" content="https://aethex.in/aethex-og.jpg" />
-    <!-- Google Analytics placeholder -->
-    <!-- Replace GA_MEASUREMENT_ID with your actual ID when ready -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script> -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico?v=3" />
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png?v=3" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=3" />
@@ -76,8 +72,63 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;600;700;800;900&family=Exo+2:wght@300;400;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      #app-skeleton {
+        position: fixed; inset: 0; z-index: 9999;
+        background: #1c1c1e;
+        display: flex; flex-direction: column;
+        animation: skelFade 0s 1.8s forwards;
+      }
+      @keyframes skelFade { to { opacity: 0; pointer-events: none; visibility: hidden; } }
+      .skel-bar {
+        border-radius: 6px;
+        background: linear-gradient(90deg, #2c2c2e 25%, #3a3a3c 50%, #2c2c2e 75%);
+        background-size: 200% 100%;
+        animation: skelShimmer 1.4s infinite;
+      }
+      @keyframes skelShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .skel-nav { height: 36px; background: #0055CC; display: flex; align-items: center; padding: 0 24px; gap: 16px; }
+      .skel-header { height: 56px; background: #1c1c1e; display: flex; align-items: center; padding: 0 24px; gap: 12px; }
+      .skel-catbar { height: 52px; background: #232323; border-bottom: 1px solid rgba(255,255,255,0.07); }
+      .skel-hero { flex: 1; display: flex; align-items: center; padding: 48px 24px; gap: 48px; }
+      .skel-left { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+      .skel-right { width: 380px; display: flex; flex-direction: column; gap: 12px; }
+    </style>
   </head>
   <body>
+    <div id="app-skeleton" aria-hidden="true">
+      <div class="skel-nav">
+        <div class="skel-bar" style="width:64px;height:18px;opacity:.5"></div>
+        <div class="skel-bar" style="width:56px;height:18px;opacity:.35"></div>
+        <div class="skel-bar" style="width:72px;height:18px;opacity:.35"></div>
+      </div>
+      <div class="skel-header">
+        <div class="skel-bar" style="width:32px;height:32px;border-radius:8px"></div>
+        <div class="skel-bar" style="width:90px;height:18px"></div>
+        <div class="skel-bar" style="flex:1;height:36px;border-radius:4px;opacity:.4"></div>
+        <div class="skel-bar" style="width:64px;height:30px;border-radius:6px;opacity:.3"></div>
+        <div class="skel-bar" style="width:48px;height:30px;border-radius:6px;opacity:.3"></div>
+      </div>
+      <div class="skel-catbar"></div>
+      <div class="skel-hero">
+        <div class="skel-left">
+          <div class="skel-bar" style="width:220px;height:24px;border-radius:12px"></div>
+          <div class="skel-bar" style="width:340px;height:44px"></div>
+          <div class="skel-bar" style="width:300px;height:44px"></div>
+          <div class="skel-bar" style="width:280px;height:17px;opacity:.5"></div>
+          <div style="display:flex;gap:12px;margin-top:8px">
+            <div class="skel-bar" style="width:160px;height:48px;border-radius:12px"></div>
+            <div class="skel-bar" style="width:140px;height:48px;border-radius:12px;opacity:.5"></div>
+          </div>
+        </div>
+        <div class="skel-right" style="display:none">
+          <div class="skel-bar" style="height:80px;border-radius:16px"></div>
+          <div class="skel-bar" style="height:80px;border-radius:16px"></div>
+          <div class="skel-bar" style="height:80px;border-radius:16px"></div>
+        </div>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

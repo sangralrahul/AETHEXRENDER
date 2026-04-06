@@ -1,0 +1,62 @@
+Fix and improve the Aethex platform. Do NOT break any existing features. Apply all changes below:
+
+--- FIX 1: REMOVE FAKE STATS (if still present) ---
+Delete the 4 stat boxes (50,000+ Doctors, 1,000+ Products, 28+ States, 98% Satisfaction).
+Replace with "Why Aethex?" 3-card section:
+- Cadus AI — Ask any clinical question, get instant AI-powered answers
+- Drug Reference — India's most comprehensive drug database
+- NEET-PG Prep — MCQs, study hub, and performance tracking
+Use existing glassmorphism card style.
+
+--- FIX 2: MOBILE RESPONSIVENESS ---
+- Make navbar fully responsive on mobile (hamburger menu for small screens)
+- All cards, hero section, buttons must be properly sized on mobile screens
+- Test and fix any layout overflow or broken UI on screens under 768px width
+- Floating "Ask Cadus" button must not overlap important content on mobile
+
+--- FIX 3: LOADING SKELETON ---
+- Add a skeleton loading screen so users don't see a blank white page while the app loads
+- Show animated placeholder cards/bars while content is fetching
+- Use the existing dark theme colors for the skeleton
+
+--- FIX 4: EMPTY STATE PAGES ---
+For pages that have no content yet (Drug Ref, CME Hub, Study Hub, Cases):
+- Show a clean "Coming Soon" empty state with an icon and message
+- Add an email input so users can get notified when it launches
+- Do NOT show empty/broken pages
+
+--- FIX 5: CADUS AI ONBOARDING ---
+- When user opens Cadus AI for the first time, show 3 suggested prompt chips:
+  * "What is the dosage of Amoxicillin for adults?"
+  * "Explain Type 2 Diabetes management guidelines"
+  * "Give me a NEET-PG question on cardiology"
+- Clicking a chip auto-fills and sends that message
+- Hide the chips after the first message is sent
+
+--- FIX 6: LOGIN/SIGNUP FLOW ---
+- Audit the full login and signup flow for any errors or broken states
+- Make sure error messages are clear and user-friendly
+- Add a loading spinner on the login/signup button while processing
+- After successful signup redirect user to dashboard or homepage with a welcome message
+
+--- FIX 7: FREE DAILY MCQ ON HOMEPAGE ---
+- Add a "Question of the Day" section on the homepage
+- Show 1 NEET-PG MCQ with 4 options
+- Guest users: show options but blur the answer with "Sign up to reveal" CTA
+- Logged-in users: can tap to reveal answer + explanation
+- Rotate the question daily
+
+--- FIX 8: WHATSAPP SHARE BUTTON ---
+- Add a WhatsApp share button on every MCQ and Drug Reference page
+- Share text format: "Check this on Aethex 👨‍⚕️ [page title] — aethex.in"
+- Use WhatsApp web share URL: https://wa.me/?text=...
+
+--- FIX 9: SEO META TAGS ---
+Add proper SEO meta tags to index.html:
+- title: "Aethex — India's Medical Platform for Doctors & Students"
+- meta description: "Drug references, AI clinical assistant, NEET-PG prep — one platform for Indian doctors and medical students."
+- og:title, og:description, og:image (use the Aethex logo)
+- twitter:card, twitter:title, twitter:description
+- canonical URL: https://aethex.in
+
+Do NOT change the overall design, color scheme, or any working features. Keep everything consistent with the existing glassmorphism dark theme.

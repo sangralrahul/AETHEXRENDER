@@ -72,6 +72,11 @@
     "vaul": "^1.1.2",
     "vite": "catalog:",
     "wouter": "^3.3.5",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "mermaid": "^11.4.1",
+    "jspdf": "^2.5.2",
+    "marked": "^15.0.0",
+    "react-markdown": "^9.0.3",
+    "remark-gfm": "^4.0.0"
   }
 }

@@ -24,58 +24,11 @@ function GlowOrb({ delay, x, y, size, color }: { delay: number; x: string; y: st
   );
 }
 
-function DNAHelix() {
-  return (
-    <motion.svg
-      viewBox="0 0 120 400"
-      className="absolute right-[8%] top-1/2 -translate-y-1/2 opacity-[0.06]"
-      style={{ height: "60vh", width: "auto" }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 0.06 }}
-      transition={{ delay: 0.5, duration: 2 }}
-    >
-      {Array.from({ length: 20 }).map((_, i) => {
-        const y = i * 20;
-        const x1 = 30 + Math.sin(i * 0.6) * 25;
-        const x2 = 90 - Math.sin(i * 0.6) * 25;
-        return (
-          <g key={i}>
-            <motion.circle
-              cx={x1} cy={y} r={3}
-              fill="#007AFF"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ delay: i * 0.1, duration: 2, repeat: Infinity }}
-            />
-            <motion.circle
-              cx={x2} cy={y} r={3}
-              fill="#5AC8FA"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ delay: i * 0.1 + 0.5, duration: 2, repeat: Infinity }}
-            />
-            {i % 3 === 0 && (
-              <motion.line
-                x1={x1} y1={y} x2={x2} y2={y}
-                stroke="rgba(0,122,255,0.2)"
-                strokeWidth={1}
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ delay: i * 0.08, duration: 1.5 }}
-              />
-            )}
-          </g>
-        );
-      })}
-    </motion.svg>
-  );
-}
-
 function PulseRing({ delay }: { delay: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.2 }}
-      animate={{ opacity: [0, 0.15, 0], scale: [0.2, 1.8, 2.5] }}
+      animate={{ opacity: [0, 0.12, 0], scale: [0.2, 1.8, 2.5] }}
       transition={{ delay, duration: 3, repeat: Infinity, ease: "easeOut" }}
       style={{
         position: "absolute",
@@ -86,7 +39,7 @@ function PulseRing({ delay }: { delay: number }) {
         marginLeft: -150,
         marginTop: -150,
         borderRadius: "50%",
-        border: "1px solid rgba(0,122,255,0.3)",
+        border: "1px solid rgba(0,122,255,0.25)",
         pointerEvents: "none",
       }}
     />
@@ -156,7 +109,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
         transition={{ duration: 0.9, ease: [0.4, 0, 0.2, 1] }}
         className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden cursor-pointer select-none"
         onClick={handleSkip}
-        style={{ background: "#030308" }}
+        style={{ background: "#000" }}
       >
         <video
           ref={videoRef}
@@ -166,69 +119,46 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           playsInline
           onCanPlay={() => setVideoReady(true)}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: videoReady ? 0.35 : 0, transition: "opacity 1.5s ease", filter: "saturate(1.2) brightness(0.6)" }}
+          style={{
+            opacity: videoReady ? 0.7 : 0,
+            transition: "opacity 1.2s ease",
+          }}
           src={`${import.meta.env.BASE_URL}hero-video.mp4`}
         />
 
         <div
           className="absolute inset-0"
           style={{
-            background: "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(0,40,120,0.25) 0%, transparent 60%), linear-gradient(180deg, rgba(3,3,8,0.4) 0%, rgba(3,3,8,0.8) 100%)",
+            background: "radial-gradient(ellipse 90% 70% at 50% 50%, rgba(0,20,60,0.35) 0%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.85) 100%)",
             zIndex: 1,
           }}
         />
 
-        <GlowOrb delay={0} x="15%" y="20%" size={200} color="rgba(0,122,255,0.15)" />
-        <GlowOrb delay={1.5} x="75%" y="65%" size={160} color="rgba(90,200,250,0.12)" />
-        <GlowOrb delay={0.8} x="60%" y="15%" size={120} color="rgba(0,122,255,0.1)" />
+        <GlowOrb delay={0} x="10%" y="15%" size={250} color="rgba(0,122,255,0.12)" />
+        <GlowOrb delay={1.5} x="78%" y="60%" size={200} color="rgba(90,200,250,0.1)" />
+        <GlowOrb delay={0.8} x="55%" y="10%" size={150} color="rgba(0,122,255,0.08)" />
 
         <PulseRing delay={0} />
         <PulseRing delay={1} />
         <PulseRing delay={2} />
 
-        <DNAHelix />
-
         <div className="relative flex flex-col items-center text-center px-6" style={{ zIndex: 10 }}>
           <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-3"
-          >
-            <div style={{
-              width: 72,
-              height: 72,
-              borderRadius: 20,
-              background: "linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 0 60px rgba(0,122,255,0.4), 0 0 120px rgba(0,122,255,0.15)",
-              margin: "0 auto",
-            }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-              </svg>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, scale: 0.85, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           >
             <h1 style={{
-              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(2.5rem, 7vw, 4.5rem)",
-              letterSpacing: "-0.05em",
-              lineHeight: 1,
+              fontFamily: "'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(3.5rem, 12vw, 8rem)",
+              letterSpacing: "-0.04em",
+              lineHeight: 0.95,
               color: "#FFFFFF",
-              textShadow: "0 0 80px rgba(0,122,255,0.3)",
-              marginTop: 20,
+              textShadow: "0 0 120px rgba(0,122,255,0.25), 0 0 60px rgba(0,122,255,0.1)",
             }}>
               <span style={{
-                background: "linear-gradient(135deg, #FFFFFF 30%, #007AFF 70%, #5AC8FA 100%)",
+                background: "linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.85) 40%, #007AFF 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -239,55 +169,37 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: 60 }}
-            transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ delay: 0.8, duration: 1, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              height: 2,
-              background: "linear-gradient(90deg, transparent, #007AFF, transparent)",
-              marginTop: 16,
-              marginBottom: 16,
+              width: 80,
+              height: 1.5,
+              background: "linear-gradient(90deg, transparent, rgba(0,122,255,0.6), transparent)",
+              marginTop: 24,
               borderRadius: 2,
             }}
           />
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
-              color: "rgba(255,255,255,0.5)",
-              fontSize: "clamp(0.8rem, 2vw, 0.95rem)",
-              fontWeight: 400,
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              maxWidth: 400,
-            }}
-          >
-            Medicine Made Effortless
-          </motion.p>
-
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: phase === "ready" ? 1 : 0.7 }}
-            transition={{ delay: 1.2, duration: 0.5 }}
-            className="mt-10"
-            style={{ width: 200 }}
+            animate={{ opacity: phase === "ready" ? 1 : 0.6 }}
+            transition={{ delay: 1, duration: 0.5 }}
+            className="mt-12"
+            style={{ width: 160 }}
           >
             <div style={{
-              height: 2,
-              background: "rgba(255,255,255,0.08)",
+              height: 1.5,
+              background: "rgba(255,255,255,0.06)",
               borderRadius: 4,
               overflow: "hidden",
-              position: "relative",
             }}>
               <motion.div
                 style={{
                   height: "100%",
                   background: "linear-gradient(90deg, #007AFF, #5AC8FA)",
                   borderRadius: 4,
-                  boxShadow: "0 0 20px rgba(0,122,255,0.5)",
+                  boxShadow: "0 0 15px rgba(0,122,255,0.4)",
                 }}
                 initial={{ width: "0%" }}
                 animate={{ width: `${loadProgress}%` }}
@@ -297,56 +209,58 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.4, duration: 0.4 }}
+              transition={{ delay: 1.2, duration: 0.4 }}
               style={{
-                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
-                color: "rgba(255,255,255,0.25)",
-                fontSize: 11,
+                fontFamily: "'SF Pro Text', 'Inter', -apple-system, system-ui, sans-serif",
+                color: "rgba(255,255,255,0.2)",
+                fontSize: 10,
                 marginTop: 10,
                 fontWeight: 500,
-                letterSpacing: "0.05em",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
               }}
             >
-              {phase === "ready" ? "Ready" : `Loading ${Math.round(loadProgress)}%`}
+              {phase === "ready" ? "Ready" : `${Math.round(loadProgress)}%`}
             </motion.p>
           </motion.div>
 
           {phase === "ready" && (
             <motion.button
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
               onClick={(e) => {
                 e.stopPropagation();
                 handleSkip();
               }}
-              className="mt-8 group"
+              className="mt-8"
               style={{
                 background: "none",
-                border: "1px solid rgba(255,255,255,0.15)",
+                border: "1px solid rgba(255,255,255,0.12)",
                 borderRadius: 100,
-                padding: "10px 32px",
-                color: "rgba(255,255,255,0.7)",
-                fontSize: 13,
+                padding: "9px 28px",
+                color: "rgba(255,255,255,0.6)",
+                fontSize: 12,
                 fontWeight: 500,
-                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
-                letterSpacing: "0.08em",
+                fontFamily: "'SF Pro Text', 'Inter', -apple-system, system-ui, sans-serif",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
                 cursor: "pointer",
                 transition: "all 0.3s ease",
                 backdropFilter: "blur(8px)",
               }}
               onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.borderColor = "rgba(0,122,255,0.6)";
+                (e.target as HTMLElement).style.borderColor = "rgba(0,122,255,0.5)";
                 (e.target as HTMLElement).style.color = "#FFFFFF";
-                (e.target as HTMLElement).style.boxShadow = "0 0 30px rgba(0,122,255,0.2)";
+                (e.target as HTMLElement).style.boxShadow = "0 0 25px rgba(0,122,255,0.15)";
               }}
               onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
-                (e.target as HTMLElement).style.color = "rgba(255,255,255,0.7)";
+                (e.target as HTMLElement).style.borderColor = "rgba(255,255,255,0.12)";
+                (e.target as HTMLElement).style.color = "rgba(255,255,255,0.6)";
                 (e.target as HTMLElement).style.boxShadow = "none";
               }}
             >
-              Enter →
+              Enter
             </motion.button>
           )}
         </div>
@@ -355,16 +269,17 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 0.5 }}
-          className="absolute bottom-6 left-0 right-0 text-center"
+          className="absolute bottom-5 left-0 right-0 text-center"
           style={{
-            color: "rgba(255,255,255,0.15)",
-            fontSize: 11,
-            fontFamily: "'Inter', -apple-system, system-ui, sans-serif",
-            letterSpacing: "0.08em",
+            color: "rgba(255,255,255,0.1)",
+            fontSize: 10,
+            fontFamily: "'SF Pro Text', 'Inter', -apple-system, system-ui, sans-serif",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
             zIndex: 10,
           }}
         >
-          TAP TO SKIP
+          Tap to skip
         </motion.p>
       </motion.div>
     </AnimatePresence>

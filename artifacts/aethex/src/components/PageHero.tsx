@@ -1,4 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
+import { Link } from "wouter";
+import { Home, ChevronLeft } from "lucide-react";
 
 interface PageHeroProps {
   tag?: string;
@@ -110,8 +112,38 @@ export function PageHero({ tag, title, subtitle, icon, right }: PageHeroProps) {
       {/* very subtle horizontal rule at bottom */}
       <div className="absolute bottom-0 inset-x-0 h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
 
+      {/* minimal top bar — AETHEX home link */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 flex items-center gap-3">
+        <Link
+          href="/"
+          className="flex items-center gap-2 group"
+          style={{ textDecoration: "none" }}
+        >
+          <div
+            className="flex items-center justify-center w-7 h-7 rounded-lg transition-all group-hover:bg-white/10"
+            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+          >
+            <ChevronLeft className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.5)" }} />
+          </div>
+          <span
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 400,
+              fontSize: "1.05rem",
+              letterSpacing: "0.06em",
+              color: "rgba(255,255,255,0.55)",
+              transition: "color 0.2s",
+            }}
+            className="group-hover:text-white/80"
+          >
+            AETHEX
+          </span>
+        </Link>
+        <Home className="w-3 h-3" style={{ color: "rgba(255,255,255,0.18)" }} />
+      </div>
+
       {/* content */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 flex flex-col sm:flex-row sm:items-center gap-6">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 flex flex-col sm:flex-row sm:items-center gap-6">
         <div className="flex items-center gap-5 flex-1 min-w-0">
           {icon && (
             <div

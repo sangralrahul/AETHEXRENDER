@@ -54,7 +54,6 @@ export function BrandSwitcherBar() {
   const isMain = !isCareers && !isApp && !isColleges && !isHospitals;
 
   const tabs = [
-    { href: "/", label: "Aethex", icon: null, useLogoImg: true, active: isMain },
     { href: "/jobs", label: "Careers", icon: Briefcase, useLogoImg: false, active: isCareers },
     { href: "/app", label: "Mobile App", icon: Smartphone, useLogoImg: false, active: isApp },
     { href: "/colleges", label: "Colleges", icon: GraduationCap, useLogoImg: false, active: isColleges },
@@ -451,6 +450,55 @@ export function Navbar() {
     <>
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
 
+      {/* ── CATEGORY SCROLL BAR — moved above main nav ── */}
+      <div data-category-bar className="no-print overflow-x-auto" style={{ background: "rgba(4,4,8,0.98)", borderBottom: "1px solid rgba(255,255,255,0.06)", scrollbarWidth: "none" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-stretch" style={{ height: 44 }}>
+          {categories.filter(cat => !cat.authOnly || isLoggedIn).map((cat) => {
+            const active = cat.exact
+              ? location === cat.href
+              : location === cat.href || location.startsWith(cat.href + "/");
+            const Icon = cat.icon;
+            return (
+              <Link
+                key={cat.href}
+                href={cat.href}
+                className="flex items-center gap-1.5 px-3.5 shrink-0 text-xs font-medium relative transition-all whitespace-nowrap"
+                style={{
+                  color: active ? "#00C2A8" : "rgba(255,255,255,0.45)",
+                  borderBottom: active ? "2px solid #00C2A8" : "2px solid transparent",
+                  letterSpacing: "0.04em",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}
+                onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.8)"; }}
+                onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.45)"; }}
+              >
+                <Icon className="w-3.5 h-3.5 shrink-0" />
+                <span>{cat.label}</span>
+              </Link>
+            );
+          })}
+
+          {isLoggedIn && (
+            <ToolsMegaMenu
+              open={toolsOpen}
+              onToggle={() => setToolsOpen(o => !o)}
+              onClose={() => setToolsOpen(false)}
+              dropdownRef={toolsRef}
+              dark
+            />
+          )}
+
+          {isLoggedIn && (
+            <InstitutionsDropdown
+              open={institutionsOpen}
+              onToggle={() => setInstitutionsOpen(o => !o)}
+              onClose={() => setInstitutionsOpen(false)}
+              dropdownRef={institutionsRef}
+            />
+          )}
+        </div>
+      </div>
+
       {/* ── MAIN NAV BAR — luxury glassmorphic ── */}
       <header
         className="no-print transition-all duration-500"
@@ -678,62 +726,11 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* ── CATEGORY SCROLL BAR ── */}
-      <div data-category-bar className="no-print overflow-x-auto" style={{ background: "rgba(8,8,16,0.95)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.05)", scrollbarWidth: "none" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-stretch" style={{ height: 44 }}>
-          {categories.filter(cat => !cat.authOnly || isLoggedIn).map((cat) => {
-            const active = cat.exact
-              ? location === cat.href
-              : location === cat.href || location.startsWith(cat.href + "/");
-            const Icon = cat.icon;
-            return (
-              <Link
-                key={cat.href}
-                href={cat.href}
-                className="flex items-center gap-1.5 px-3.5 shrink-0 text-xs font-medium relative transition-all whitespace-nowrap"
-                style={{
-                  color: active ? "#00C2A8" : "rgba(255,255,255,0.45)",
-                  borderBottom: active ? "2px solid #00C2A8" : "2px solid transparent",
-                  letterSpacing: "0.04em",
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                }}
-                onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.8)"; }}
-                onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.45)"; }}
-              >
-                <Icon className="w-3.5 h-3.5 shrink-0" />
-                <span>{cat.label}</span>
-              </Link>
-            );
-          })}
-
-          {/* Tools mega menu — logged-in only */}
-          {isLoggedIn && (
-            <ToolsMegaMenu
-              open={toolsOpen}
-              onToggle={() => setToolsOpen(o => !o)}
-              onClose={() => setToolsOpen(false)}
-              dropdownRef={toolsRef}
-              dark
-            />
-          )}
-
-          {/* Colleges & Hospitals dropdown — logged-in only */}
-          {isLoggedIn && (
-            <InstitutionsDropdown
-              open={institutionsOpen}
-              onToggle={() => setInstitutionsOpen(o => !o)}
-              onClose={() => setInstitutionsOpen(false)}
-              dropdownRef={institutionsRef}
-            />
-          )}
-        </div>
-      </div>
-
       {/* ── MOBILE MENU ── */}
       {mobileOpen && (
         <div
           className="sm:hidden fixed inset-x-0 bottom-0 z-50 overflow-y-auto"
-          style={{ top: 176, background: "#1C1C1E", borderTop: "1px solid rgba(255,255,255,0.08)" }}
+          style={{ top: 140, background: "#1C1C1E", borderTop: "1px solid rgba(255,255,255,0.08)" }}
         >
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
             <form onSubmit={e => { handleSearch(e); setMobileOpen(false); }} className="relative mb-3">

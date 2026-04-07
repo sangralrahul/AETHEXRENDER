@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import NotFound from "@/pages/not-found";
 import { SplashScreen, useSplashScreen } from "@/components/SplashScreen";
 
-import { Navbar, AnnouncementBar, BrandSwitcherBar } from "@/components/layout/Navbar";
+import { Navbar, BrandSwitcherBar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
 import Home from "@/pages/Home";
@@ -153,10 +153,9 @@ function Router() {
           <div className="flex flex-col min-h-screen">
             <div className="fixed top-0 left-0 right-0 z-[60]" style={{ background: "#06060C" }}>
               <BrandSwitcherBar />
-              <AnnouncementBar />
               <Navbar />
             </div>
-            <main className="flex-1 pt-[180px]">
+            <main className="flex-1 pt-[140px]">
               <Switch>
                 <Route path="/" component={Home} />
 

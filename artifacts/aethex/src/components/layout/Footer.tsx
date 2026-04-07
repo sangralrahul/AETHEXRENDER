@@ -71,7 +71,7 @@ export function Footer() {
         {/* Nav links grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
           <div>
-            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>Shop</p>
+            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", color: "rgba(255,255,255,0.3)", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>Shop</p>
             <ul className="space-y-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
               {[
                 { href: "/shop?category=stethoscopes", label: "Stethoscopes" },
@@ -86,7 +86,7 @@ export function Footer() {
           </div>
 
           <div>
-            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>Study Hub</p>
+            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", color: "rgba(255,255,255,0.3)", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>Study Hub</p>
             <ul className="space-y-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
               <li><Link href="/study-hub" className="hover:text-white transition-colors">NEET PG Prep</Link></li>
               <li><Link href="/study-hub" className="hover:text-white transition-colors">USMLE Resources</Link></li>
@@ -98,7 +98,7 @@ export function Footer() {
           </div>
 
           <div>
-            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>Company</p>
+            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", color: "rgba(255,255,255,0.3)", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>Company</p>
             <ul className="space-y-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
               <li><a href="https://clavix.in" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">About Us</a></li>
               <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
@@ -109,7 +109,7 @@ export function Footer() {
           </div>
 
           <div>
-            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>Support</p>
+            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", color: "rgba(255,255,255,0.3)", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>Support</p>
             <ul className="space-y-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
               <li><Link href="/orders/track" className="hover:text-white transition-colors">Track Order</Link></li>
               <li><a href="mailto:email@aethex.in" className="hover:text-white transition-colors">email@aethex.in</a></li>

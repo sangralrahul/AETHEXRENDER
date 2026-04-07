@@ -148,18 +148,29 @@ function Router() {
       <Route path="/seller/analytics">{() => sellerSession ? <SellerAnalytics {...sellerProps} /> : <SellerLogin onLogin={handleSellerLogin} />}</Route>
       <Route path="/seller/settings">{() => sellerSession ? <SellerSettings {...sellerProps} /> : <SellerLogin onLogin={handleSellerLogin} />}</Route>
 
-      {/* Pages with Navbar + Footer */}
-      <Route>
+      {/* HOME — with full Navbar */}
+      <Route path="/">
         {() => (
-          <div className="flex flex-col min-h-screen" style={{ background: "#F2F2F7" }}>
+          <div className="flex flex-col min-h-screen" style={{ background: "#06060C" }}>
             <AmbientBackground />
             <div className="fixed top-0 left-0 right-0 z-[60]" style={{ background: "rgba(4,4,8,0.95)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               <BrandSwitcherBar />
               <Navbar />
             </div>
-            <main className="flex-1 pt-[140px] relative z-[1]" style={{ background: "#F2F2F7" }}>
+            <main className="flex-1 pt-[140px] relative z-[1]">
+              <Home />
+            </main>
+            <Footer />
+          </div>
+        )}
+      </Route>
+
+      {/* All inner pages — NO Navbar, NO fixed header */}
+      <Route>
+        {() => (
+          <div className="flex flex-col min-h-screen" style={{ background: "#F2F2F7" }}>
+            <main className="flex-1 relative z-[1]" style={{ background: "#F2F2F7" }}>
               <Switch>
-                <Route path="/" component={Home} />
 
                 {/* Books Library */}
                 <Route path="/books" component={MedicalBooks} />

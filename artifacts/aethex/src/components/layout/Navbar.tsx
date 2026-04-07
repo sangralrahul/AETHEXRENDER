@@ -84,8 +84,10 @@ export function BrandSwitcherBar() {
 
 export function AnnouncementBar() {
   return (
-    <div data-navbar-announcement className="no-print w-full text-center py-2.5 px-4 text-xs font-medium" style={{ background: "#1c1c1e", color: "rgba(255,255,255,0.8)" }}>
-      India's Medical Platform for Doctors &amp; Students · Trusted by Physicians across India
+    <div data-navbar-announcement className="no-print w-full text-center py-2 px-4" style={{ background: "rgba(0,194,168,0.06)", borderBottom: "1px solid rgba(0,194,168,0.1)" }}>
+      <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, letterSpacing: "0.14em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", fontWeight: 500 }}>
+        India's Medical Platform &nbsp;·&nbsp; Trusted by Doctors Nationwide
+      </span>
     </div>
   );
 }
@@ -449,46 +451,54 @@ export function Navbar() {
     <>
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
 
-      {/* ── MAIN NAV BAR — dark ── */}
+      {/* ── MAIN NAV BAR — luxury glassmorphic ── */}
       <header
-        className="no-print"
-        style={{ background: "#1C1C1E", height: 56, display: "flex", alignItems: "center" }}
+        className="no-print transition-all duration-500"
+        style={{
+          background: isScrolled ? "rgba(6,6,12,0.92)" : "rgba(6,6,12,0.60)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          height: 60,
+          display: "flex",
+          alignItems: "center",
+          borderBottom: isScrolled ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(255,255,255,0.03)",
+          boxShadow: isScrolled ? "0 4px 32px rgba(0,0,0,0.5)" : "none",
+        }}
       >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
 
-            {/* Logo — visible only on small screens; brand bar covers large */}
-            <Link href="/" className="flex items-center gap-2 shrink-0 lg:hidden">
-              <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="Aethex" className="w-7 h-7 rounded-lg object-contain" />
-              <span className="font-bold text-base tracking-tight text-white hidden sm:inline">Aethex</span>
+            {/* Logo — wordmark style */}
+            <Link href="/" className="flex items-center gap-2.5 shrink-0 lg:hidden">
+              <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="Aethex" className="w-7 h-7 rounded object-contain" style={{ filter: "brightness(1.15) contrast(1.05)" }} />
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, fontSize: 20, letterSpacing: "0.08em", color: "#EEEEF8" }}>AETHEX</span>
             </Link>
 
-            {/* Logo on desktop too */}
-            <Link href="/" className="items-center gap-2 shrink-0 hidden lg:flex">
-              <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="Aethex" className="w-7 h-7 rounded-lg object-contain" />
-              <span className="font-bold text-base tracking-tight text-white">Aethex</span>
+            {/* Logo on desktop */}
+            <Link href="/" className="items-center gap-2.5 shrink-0 hidden lg:flex">
+              <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="Aethex" className="w-7 h-7 rounded object-contain" style={{ filter: "brightness(1.15) contrast(1.05)" }} />
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, fontSize: 20, letterSpacing: "0.08em", color: "#EEEEF8" }}>AETHEX</span>
             </Link>
 
-            {/* Search Bar */}
+            {/* Search Bar — refined */}
             <form onSubmit={handleSearch} className="flex-1 relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4" style={{ color: "#636366" }} />
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <Search className="h-3.5 w-3.5" style={{ color: "rgba(255,255,255,0.3)" }} />
               </div>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="block w-full pl-9 pr-9 py-2 text-sm focus:outline-none rounded-sm"
-                style={{ background: "rgba(255,255,255,0.06)", color: "#EEEEF8", border: "1px solid rgba(255,255,255,0.1)" }}
-                placeholder="Search for medical products, drugs, books and more..."
+                className="block w-full pl-10 pr-9 py-2 text-sm focus:outline-none"
+                style={{ background: "rgba(255,255,255,0.05)", color: "#EEEEF8", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                placeholder="Search drugs, products, books…"
               />
-              {/* Voice search mic button */}
               <button type="button" onClick={voiceListening ? stopVoice : startVoice}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center transition-all"
                 title={voiceListening ? "Stop listening" : "Search by voice"}>
                 {voiceListening
-                  ? <Mic className="h-4 w-4 animate-pulse" style={{ color: "#ef4444" }} />
-                  : <Mic className="h-4 w-4" style={{ color: "#636366" }} />}
+                  ? <Mic className="h-3.5 w-3.5 animate-pulse" style={{ color: "#ef4444" }} />
+                  : <Mic className="h-3.5 w-3.5" style={{ color: "rgba(255,255,255,0.3)" }} />}
               </button>
             </form>
 
@@ -669,8 +679,8 @@ export function Navbar() {
       </header>
 
       {/* ── CATEGORY SCROLL BAR ── */}
-      <div data-category-bar className="no-print overflow-x-auto" style={{ background: "#232323", borderBottom: "1px solid rgba(255,255,255,0.07)", scrollbarWidth: "none" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-stretch" style={{ height: 52 }}>
+      <div data-category-bar className="no-print overflow-x-auto" style={{ background: "rgba(8,8,16,0.95)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.05)", scrollbarWidth: "none" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-stretch" style={{ height: 44 }}>
           {categories.filter(cat => !cat.authOnly || isLoggedIn).map((cat) => {
             const active = cat.exact
               ? location === cat.href
@@ -680,17 +690,18 @@ export function Navbar() {
               <Link
                 key={cat.href}
                 href={cat.href}
-                className="flex flex-col items-center justify-center px-4 shrink-0 text-xs font-medium relative transition-all"
+                className="flex items-center gap-1.5 px-3.5 shrink-0 text-xs font-medium relative transition-all whitespace-nowrap"
                 style={{
-                  color: active ? "#60A5FA" : "rgba(255,255,255,0.65)",
-                  borderBottom: active ? "2px solid #60A5FA" : "2px solid transparent",
-                  minWidth: 60,
+                  color: active ? "#00C2A8" : "rgba(255,255,255,0.45)",
+                  borderBottom: active ? "2px solid #00C2A8" : "2px solid transparent",
+                  letterSpacing: "0.04em",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
                 }}
-                onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.9)"; }}
-                onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.65)"; }}
+                onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.8)"; }}
+                onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.45)"; }}
               >
-                <Icon className="w-[18px] h-[18px] mb-0.5" />
-                <span className="whitespace-nowrap">{cat.label}</span>
+                <Icon className="w-3.5 h-3.5 shrink-0" />
+                <span>{cat.label}</span>
               </Link>
             );
           })}

@@ -182,34 +182,34 @@ function AIChatPreview() {
 
   return (
     <div className="relative w-full max-w-md mx-auto lg:mx-0">
-      <div className="rounded-2xl overflow-hidden shadow-xl flex flex-col"
-        style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)", height: 420 }}>
+      <div className="rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+        style={{ background: "#0E0E1A", border: "1px solid rgba(255,255,255,0.09)", height: 420 }}>
 
         {/* Header */}
-        <div className="px-4 py-3 flex items-center justify-between shrink-0" style={{ background: "#F9F9FB", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
+        <div className="px-4 py-3 flex items-center justify-between shrink-0" style={{ background: "#13131F", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>
               <Bot className="w-4 h-4 text-white" />
             </div>
             <div>
-              <p className="text-sm font-semibold leading-none" style={{ color: "#1C1C1E" }}>Cadus AI</p>
-              <p className="text-xs mt-0.5" style={{ color: "#00A893" }}>● Online · Clinical Mode</p>
+              <p className="text-sm font-semibold leading-none" style={{ color: "#EEEEF8" }}>Cadus AI</p>
+              <p className="text-xs mt-0.5" style={{ color: "#00C2A8" }}>● Online · Clinical Mode</p>
             </div>
           </div>
           <Link href="/ai-assistant" className="text-xs font-semibold px-2.5 py-1 rounded-lg transition-all hover:opacity-80"
-            style={{ background: "rgba(0,122,255,0.1)", color: "#007AFF" }}>
+            style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>
             Full experience →
           </Link>
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 text-sm" style={{ background: "#F9F9FB" }}>
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 text-sm" style={{ background: "#0E0E1A" }}>
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               <div className="max-w-[85%] px-3.5 py-2.5 rounded-2xl"
                 style={msg.role === "user"
-                  ? { background: "#007AFF", color: "#FFFFFF", borderBottomRightRadius: "6px" }
-                  : { background: "#FFFFFF", color: "#1C1C1E", borderBottomLeftRadius: "6px", border: "1px solid rgba(60,60,67,0.1)" }}>
+                  ? { background: "linear-gradient(135deg,#007AFF,#0060CC)", color: "#FFFFFF", borderBottomRightRadius: "6px" }
+                  : { background: "#1A1A2E", color: "rgba(255,255,255,0.85)", borderBottomLeftRadius: "6px", border: "1px solid rgba(255,255,255,0.08)" }}>
                 {msg.role === "user" ? (
                   <span className="text-sm leading-relaxed">{msg.text}</span>
                 ) : (
@@ -264,10 +264,10 @@ function AIChatPreview() {
           {/* Typing indicator */}
           {loading && (
             <div className="flex justify-start">
-              <div className="px-4 py-3 rounded-2xl" style={{ background: "#FFFFFF", borderBottomLeftRadius: "6px", border: "1px solid rgba(60,60,67,0.1)" }}>
+              <div className="px-4 py-3 rounded-2xl" style={{ background: "#1A1A2E", borderBottomLeftRadius: "6px", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <div className="flex gap-1.5 items-center h-3">
                   {[0, 1, 2].map(i => (
-                    <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#007AFF", animation: `bounce 1.2s ${i * 0.2}s infinite` }} />
+                    <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#00C2A8", animation: `bounce 1.2s ${i * 0.2}s infinite` }} />
                   ))}
                 </div>
               </div>
@@ -279,8 +279,8 @@ function AIChatPreview() {
             <div className="flex flex-col gap-2 pt-1">
               {SUGGESTIONS.map(s => (
                 <button key={s} onClick={() => send(s)}
-                  className="text-left text-xs px-3 py-2 rounded-xl transition-all hover:shadow-sm"
-                  style={{ background: "#FFFFFF", border: "1px solid rgba(0,122,255,0.2)", color: "#007AFF" }}>
+                  className="text-left text-xs px-3 py-2 rounded-xl transition-all"
+                  style={{ background: "rgba(0,194,168,0.06)", border: "1px solid rgba(0,194,168,0.2)", color: "#00C2A8" }}>
                   {s}
                 </button>
               ))}
@@ -290,7 +290,7 @@ function AIChatPreview() {
         </div>
 
         {/* Input */}
-        <div className="px-3 pb-3 pt-2 shrink-0" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
+        <div className="px-3 pb-3 pt-2 shrink-0" style={{ background: "#13131F", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <form onSubmit={e => { e.preventDefault(); send(input); }} className="flex items-center gap-2">
             <input
               ref={inputRef}
@@ -299,7 +299,7 @@ function AIChatPreview() {
               placeholder="Ask a clinical question…"
               disabled={loading}
               className="flex-1 text-sm px-3 py-2.5 rounded-xl outline-none disabled:opacity-50"
-              style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.12)", color: "#1C1C1E" }}
+              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#EEEEF8" }}
             />
             <button type="submit" disabled={loading || !input.trim()}
               className="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:opacity-90 disabled:opacity-40 shrink-0"
@@ -326,21 +326,21 @@ const BLOG_CAT_COLORS: Record<string, string> = {
 
 function DrugInteractionBanner() {
   return (
-    <section className="py-8" style={{ background: "#F2F2F7", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
+    <section className="py-8" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link href="/drug-interaction-checker"
           className="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl transition-all"
-          style={{ background: "#FFFFFF", border: "1px solid rgba(245,158,11,0.2)", boxShadow: "0 2px 16px rgba(0,0,0,0.05)" }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.4)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(245,158,11,0.12)"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.2)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 16px rgba(0,0,0,0.05)"; }}>
+          style={{ background: "#0E0E1A", border: "1px solid rgba(245,158,11,0.2)", boxShadow: "0 2px 20px rgba(0,0,0,0.4)" }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.4)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(245,158,11,0.15)"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.2)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 20px rgba(0,0,0,0.4)"; }}>
           <div className="flex items-center gap-4">
             <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
               style={{ background: "linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)" }}>
               <Pill className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="font-bold text-base" style={{ color: "#1C1C1E" }}>Drug Interaction Checker</p>
-              <p className="text-sm" style={{ color: "#636366" }}>
+              <p className="font-bold text-base" style={{ color: "#EEEEF8" }}>Drug Interaction Checker</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
                 Instantly check interactions for up to 5 drugs — with severity ratings and clinical management guidance.
               </p>
             </div>
@@ -361,7 +361,7 @@ function CaseOfTheDaySection() {
   const today = new Date();
 
   return (
-    <section className="py-16 relative" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
+    <section className="py-16 relative" style={{ background: "#0A0A14", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-center gap-10">
           {/* Left: Text */}
@@ -371,17 +371,17 @@ function CaseOfTheDaySection() {
               <CalendarCheck className="w-3.5 h-3.5" />
               Case of the Day
             </div>
-            <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4" style={{ color: "#1C1C1E" }}>
+            <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4" style={{ color: "#EEEEF8" }}>
               Sharpen Your Clinical Thinking.{" "}
               <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>Every Day.</span>
             </h2>
-            <p className="text-base leading-relaxed mb-6" style={{ color: "#636366" }}>
+            <p className="text-base leading-relaxed mb-6" style={{ color: "rgba(255,255,255,0.45)" }}>
               A new real-world clinical case every day — complete with patient history, investigations, and MCQ diagnosis challenge. Discuss your reasoning with Cadus AI.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/case-of-the-day"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all"
-                style={{ background: "#007AFF", color: "#FFFFFF", boxShadow: "0 4px 16px rgba(0,122,255,0.25)" }}>
+                style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF", boxShadow: "0 4px 20px rgba(0,122,255,0.3)" }}>
                 Solve Today's Case
                 <ChevronRight className="w-4 h-4" />
               </Link>
@@ -391,9 +391,9 @@ function CaseOfTheDaySection() {
           {/* Right: Case Preview Card */}
           <div className="flex-1 w-full max-w-md">
             <div className="rounded-2xl overflow-hidden"
-              style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 4px 24px rgba(0,0,0,0.07)" }}>
+              style={{ background: "#0E0E1A", border: "1px solid rgba(255,255,255,0.07)", boxShadow: "0 4px 32px rgba(0,0,0,0.5)" }}>
               <div className="px-5 pt-5 pb-4 flex items-start justify-between gap-3"
-                style={{ background: "linear-gradient(135deg, rgba(0,122,255,0.06) 0%, rgba(0,194,168,0.06) 100%)", borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
+                style={{ background: "linear-gradient(135deg, rgba(0,122,255,0.08) 0%, rgba(0,194,168,0.08) 100%)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-6 h-6 rounded-lg flex items-center justify-center"
@@ -404,14 +404,14 @@ function CaseOfTheDaySection() {
                       {today.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                     </span>
                   </div>
-                  <h3 className="font-display font-bold text-base" style={{ color: "#1C1C1E" }}>{todaysCase.title}</h3>
-                  <p className="text-xs mt-1" style={{ color: "#636366" }}>{todaysCase.specialty}</p>
+                  <h3 className="font-display font-bold text-base" style={{ color: "#EEEEF8" }}>{todaysCase.title}</h3>
+                  <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>{todaysCase.specialty}</p>
                 </div>
               </div>
 
-              <div className="px-5 py-4" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
-                <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: "#8E8E93" }}>Chief Complaint</p>
-                <p className="text-sm leading-snug" style={{ color: "#3A3A3C" }}>
+              <div className="px-5 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Chief Complaint</p>
+                <p className="text-sm leading-snug" style={{ color: "rgba(255,255,255,0.7)" }}>
                   "{todaysCase.patient_info.chief_complaint.length > 90
                     ? todaysCase.patient_info.chief_complaint.slice(0, 90) + "…"
                     : todaysCase.patient_info.chief_complaint}"
@@ -420,12 +420,12 @@ function CaseOfTheDaySection() {
 
               <div className="px-5 py-4 flex flex-col gap-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold" style={{ color: "#636366" }}>
+                  <span className="text-xs font-semibold" style={{ color: "rgba(255,255,255,0.45)" }}>
                     {todaysCase.patient_info.age}-yr {todaysCase.patient_info.gender}
                     {todaysCase.patient_info.occupation ? ` · ${todaysCase.patient_info.occupation}` : ""}
                   </span>
                   <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                    style={{ background: "rgba(0,122,255,0.1)", color: "#007AFF" }}>
+                    style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8" }}>
                     {todaysCase.options.length} options
                   </span>
                 </div>
@@ -656,23 +656,23 @@ function NewsletterSection() {
   };
 
   return (
-    <section className="py-16 relative" style={{ borderTop: "1px solid rgba(60,60,67,0.08)", backgroundImage: "url('https://images.unsplash.com/photo-1481214110143-ed630356e1bb?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-      <div className="absolute inset-0" style={{ background: "rgba(242,242,247,0.93)" }} />
+    <section className="py-16 relative" style={{ borderTop: "1px solid rgba(255,255,255,0.04)", background: "#06060C" }}>
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 70% 50% at 50% 50%, rgba(0,194,168,0.05) 0%, transparent 70%)" }} />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-5"
-          style={{ background: "rgba(0,122,255,0.1)", border: "1px solid rgba(0,122,255,0.2)", color: "#007AFF" }}>
+          style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.2)", color: "#00C2A8" }}>
           <Send className="w-3.5 h-3.5" />
           Newsletter
         </div>
-        <h2 className="text-3xl font-display font-bold mb-3" style={{ color: "#1C1C1E" }}>
+        <h2 className="text-3xl font-display font-bold mb-3" style={{ color: "#EEEEF8" }}>
           Weekly Medical Insights + NEET-PG Tips
         </h2>
-        <p className="mb-8 max-w-xl mx-auto" style={{ color: "#636366" }}>
+        <p className="mb-8 max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.45)" }}>
           Get the latest clinical tips, medical news, exam updates, and exclusive deals — direct to your inbox. Join 12,000+ Indian doctors.
         </p>
         {done ? (
           <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold"
-            style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00A893" }}>
+            style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.25)", color: "#00C2A8" }}>
             <CheckCircle2 className="w-5 h-5" />
             You're subscribed! Weekly updates incoming.
           </div>
@@ -681,16 +681,16 @@ function NewsletterSection() {
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
               placeholder="doctor@hospital.in"
               className="flex-1 px-5 py-3.5 rounded-xl text-sm focus:outline-none"
-              style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.15)", color: "#1C1C1E", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }} />
+              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#EEEEF8" }} />
             <button type="submit" disabled={loading}
               className="px-6 py-3.5 font-bold rounded-xl transition-all disabled:opacity-60 flex items-center gap-2 justify-center whitespace-nowrap hover:opacity-90"
-              style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF", boxShadow: "0 2px 12px rgba(0,122,255,0.25)" }}>
+              style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF", boxShadow: "0 2px 16px rgba(0,194,168,0.3)" }}>
               <Send className="w-4 h-4" />
               {loading ? "Subscribing..." : "Subscribe Free"}
             </button>
           </form>
         )}
-        <p className="mt-4 text-xs" style={{ color: "#AEAEB2" }}>No spam. Unsubscribe any time.</p>
+        <p className="mt-4 text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>No spam. Unsubscribe any time.</p>
       </div>
     </section>
   );
@@ -721,12 +721,13 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#F4F4F6" }}>
+    <div className="min-h-screen" style={{ background: "#06060C" }}>
 
       {/* ── Hero Section ── */}
       <section className="relative overflow-hidden"
-        style={{ minHeight: "calc(100vh - 104px)", display: "flex", alignItems: "center", backgroundImage: "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-        <div className="absolute inset-0" style={{ background: "rgba(244,244,246,0.91)" }} />
+        style={{ minHeight: "calc(100vh - 104px)", display: "flex", alignItems: "center", background: "linear-gradient(135deg, #06060C 0%, #0A0A18 50%, #06060C 100%)" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0,100,200,0.07) 0%, transparent 70%)" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 40% at 80% 60%, rgba(0,194,168,0.04) 0%, transparent 60%)" }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-16 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left: Copy */}
@@ -736,36 +737,36 @@ export default function Home() {
               transition={{ duration: 0.6 }}
             >
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-6"
-                style={{ background: "#e8f3ff", color: "#007AFF" }}>
+                style={{ background: "rgba(0,194,168,0.1)", color: "#00C2A8", border: "1px solid rgba(0,194,168,0.2)" }}>
                 <Activity className="w-3.5 h-3.5" />
                 Built for Indian Doctors &amp; Medical Students
               </div>
 
               <h1 className="font-display font-bold leading-[1.05] tracking-tight mb-5"
-                style={{ color: "#1c1c1e", fontSize: "clamp(2.4rem, 5vw, 3rem)", letterSpacing: "-0.03em" }}>
+                style={{ color: "#EEEEF8", fontSize: "clamp(2.4rem, 5vw, 3rem)", letterSpacing: "-0.03em" }}>
                 Medicine Made{" "}
-                <span style={{ color: "#007AFF" }}>Effortless.</span>
+                <span style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Effortless.</span>
               </h1>
 
-              <p className="mb-8 max-w-[480px] leading-relaxed" style={{ fontSize: 17, color: "#8e8e93" }}>
+              <p className="mb-8 max-w-[480px] leading-relaxed" style={{ fontSize: 17, color: "rgba(255,255,255,0.5)" }}>
                 Drug references, AI clinical assistant, NEET-PG prep — one platform, zero switching.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/shop"
                   className="inline-flex items-center justify-center text-base font-semibold text-center transition-all hover:opacity-90 active:scale-[0.97]"
-                  style={{ background: "#007AFF", color: "#FFFFFF", borderRadius: 12, padding: "14px 28px", fontSize: 16, fontWeight: 600, boxShadow: "0 4px 20px rgba(0,122,255,0.25)" }}>
+                  style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF", borderRadius: 12, padding: "14px 28px", fontSize: 16, fontWeight: 600, boxShadow: "0 4px 20px rgba(0,194,168,0.2)" }}>
                   Shop Essentials →
                 </Link>
                 <Link href="/ai-assistant"
-                  className="inline-flex items-center justify-center text-base font-semibold text-center transition-all hover:border-[#007AFF] hover:text-[#007AFF] active:scale-[0.97]"
-                  style={{ background: "#FFFFFF", color: "#1c1c1e", borderRadius: 12, padding: "14px 28px", fontSize: 16, fontWeight: 600, border: "1px solid #e8e8ed" }}>
+                  className="inline-flex items-center justify-center text-base font-semibold text-center transition-all active:scale-[0.97]"
+                  style={{ background: "rgba(255,255,255,0.06)", color: "#EEEEF8", borderRadius: 12, padding: "14px 28px", fontSize: 16, fontWeight: 600, border: "1px solid rgba(255,255,255,0.12)" }}>
                   <Sparkles className="mr-2 w-4 h-4" />
                   Try AI Chat
                 </Link>
               </div>
 
-              <p className="mt-5 text-sm" style={{ color: "#aeaeb2" }}>
+              <p className="mt-5 text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>
                 Free to start · No credit card required · 20 queries/day on free plan
               </p>
             </motion.div>
@@ -804,15 +805,17 @@ export default function Home() {
                 },
               ].map((card) => (
                 <Link key={card.href} href={card.href}
-                  className="flex items-start gap-4 p-5 rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-md group"
-                  style={{ background: "#FFFFFF", border: "1px solid #e8e8ed" }}>
+                  className="flex items-start gap-4 p-5 rounded-2xl transition-all hover:-translate-y-0.5 group"
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.07)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.04)"; }}>
                   <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105"
                     style={{ background: card.bg }}>
                     <card.icon className="w-5 h-5" style={{ color: card.accent }} />
                   </div>
                   <div>
-                    <p className="font-bold text-sm mb-0.5" style={{ color: "#1c1c1e" }}>{card.title}</p>
-                    <p className="text-xs leading-relaxed" style={{ color: "#8e8e93" }}>{card.desc}</p>
+                    <p className="font-bold text-sm mb-0.5" style={{ color: "#EEEEF8" }}>{card.title}</p>
+                    <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{card.desc}</p>
                   </div>
                 </Link>
               ))}
@@ -823,15 +826,15 @@ export default function Home() {
 
 
       {/* ── Platform Breakdown ── */}
-      <section className="py-20 relative" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-        <div className="absolute inset-0" style={{ background: "rgba(242,242,247,0.93)" }} />
+      <section className="py-20 relative" style={{ background: "linear-gradient(180deg, #06060C 0%, #0A0A18 50%, #06060C 100%)" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(0,80,160,0.05) 0%, transparent 70%)" }} />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-display font-bold mb-3" style={{ color: "#1C1C1E" }}>
+            <h2 className="text-3xl sm:text-4xl font-display font-bold mb-3" style={{ color: "#EEEEF8" }}>
               Everything Medicine.{" "}
               <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg,#007AFF,#00C2A8)" }}>One Platform.</span>
             </h2>
-            <p className="max-w-xl mx-auto" style={{ color: "#636366" }}>
+            <p className="max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.45)" }}>
               Three powerful pillars — seamlessly connected for every medical professional.
             </p>
           </div>
@@ -867,15 +870,15 @@ export default function Home() {
               },
             ].map((card, i) => (
               <div key={i} className="rounded-2xl p-7 flex flex-col transition-all hover:-translate-y-1"
-                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 2px 16px rgba(0,0,0,0.05)" }}
-                onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.10)")}
-                onMouseLeave={e => (e.currentTarget.style.boxShadow = "0 2px 16px rgba(0,0,0,0.05)")}>
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: card.color + "15", color: card.color }}>
+                style={{ background: "#0E0E1A", border: "1px solid rgba(255,255,255,0.07)", boxShadow: "0 2px 20px rgba(0,0,0,0.4)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = `${card.color}40`; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 40px rgba(0,0,0,0.5), 0 0 20px ${card.color}15`; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(255,255,255,0.07)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 20px rgba(0,0,0,0.4)"; }}>
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: card.color + "18", color: card.color }}>
                   {card.icon}
                 </div>
                 <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: card.color }}>{card.tag}</div>
-                <h3 className="font-display font-bold text-xl mb-3" style={{ color: "#1C1C1E" }}>{card.title}</h3>
-                <p className="text-sm leading-relaxed flex-1 mb-6" style={{ color: "#636366" }}>{card.desc}</p>
+                <h3 className="font-display font-bold text-xl mb-3" style={{ color: "#EEEEF8" }}>{card.title}</h3>
+                <p className="text-sm leading-relaxed flex-1 mb-6" style={{ color: "rgba(255,255,255,0.45)" }}>{card.desc}</p>
                 <Link href={card.href}
                   className="inline-flex items-center gap-2 text-sm font-bold transition-colors"
                   style={{ color: card.color }}>
@@ -888,18 +891,18 @@ export default function Home() {
       </section>
 
       {/* ── Trust Badges ── */}
-      <section className="py-10" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)", borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
+      <section className="py-10" style={{ background: "#0A0A14", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {trustBadges.map((badge, i) => (
               <div key={i} className="flex items-center gap-4 p-4 rounded-2xl transition-all hover:-translate-y-0.5"
-                style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.1)" }}>
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(0,122,255,0.1)" }}>
-                  <badge.icon className="w-5 h-5" style={{ color: "#007AFF" }} />
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(0,194,168,0.1)" }}>
+                  <badge.icon className="w-5 h-5" style={{ color: "#00C2A8" }} />
                 </div>
                 <div>
-                  <div className="text-sm font-bold" style={{ color: "#1C1C1E" }}>{badge.label}</div>
-                  <div className="text-xs mt-0.5" style={{ color: "#AEAEB2" }}>{badge.desc}</div>
+                  <div className="text-sm font-bold" style={{ color: "#EEEEF8" }}>{badge.label}</div>
+                  <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>{badge.desc}</div>
                 </div>
               </div>
             ))}
@@ -908,20 +911,20 @@ export default function Home() {
       </section>
 
       {/* ── Why AETHEX ── */}
-      <section className="py-20 relative" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center top", backgroundRepeat: "no-repeat" }}>
-        <div className="absolute inset-0" style={{ background: "rgba(242,242,247,0.93)" }} />
+      <section className="py-20 relative" style={{ background: "#06060C" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 0% 50%, rgba(0,80,180,0.05) 0%, transparent 70%)" }} />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-6"
-                style={{ background: "rgba(0,122,255,0.1)", border: "1px solid rgba(0,122,255,0.2)", color: "#007AFF" }}>
+                style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.2)", color: "#00C2A8" }}>
                 <ShieldCheck className="w-4 h-4" />
                 Why AETHEX?
               </div>
-              <h2 className="text-3xl sm:text-4xl font-display font-bold mb-6" style={{ color: "#1C1C1E" }}>
+              <h2 className="text-3xl sm:text-4xl font-display font-bold mb-6" style={{ color: "#EEEEF8" }}>
                 Built differently, for Indian doctors.
               </h2>
-              <p className="text-lg mb-8 leading-relaxed" style={{ color: "#636366" }}>
+              <p className="text-lg mb-8 leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
                 We built AETHEX because nothing else combined AI-powered clinical assistance with a reliable medical store — in one place.
               </p>
               <div className="space-y-4">
@@ -932,11 +935,11 @@ export default function Home() {
                   { icon: Smartphone, text: "Fast, mobile-first experience designed for busy clinical schedules" },
                 ].map(({ icon: Icon, text }, i) => (
                   <div key={i} className="flex items-start gap-4 p-4 rounded-2xl"
-                    style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.08)" }}>
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(0,122,255,0.1)" }}>
-                      <Icon className="w-4.5 h-4.5" style={{ color: "#007AFF" }} />
+                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(0,194,168,0.1)" }}>
+                      <Icon className="w-4.5 h-4.5" style={{ color: "#00C2A8" }} />
                     </div>
-                    <p className="text-sm font-medium leading-relaxed pt-1.5" style={{ color: "#1C1C1E" }}>{text}</p>
+                    <p className="text-sm font-medium leading-relaxed pt-1.5" style={{ color: "rgba(255,255,255,0.75)" }}>{text}</p>
                   </div>
                 ))}
               </div>
@@ -951,9 +954,9 @@ export default function Home() {
                 { value: "24/7", label: "AI Availability", color: "#00C2A8" },
               ].map((item, i) => (
                 <div key={i} className="rounded-2xl p-6 flex flex-col items-center text-center"
-                  style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
+                  style={{ background: "#0E0E1A", border: "1px solid rgba(255,255,255,0.07)", boxShadow: "0 2px 20px rgba(0,0,0,0.4)" }}>
                   <div className="text-4xl font-display font-extrabold mb-2" style={{ color: item.color }}>{item.value}</div>
-                  <div className="text-sm font-medium" style={{ color: "#636366" }}>{item.label}</div>
+                  <div className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.45)" }}>{item.label}</div>
                 </div>
               ))}
             </div>
@@ -962,11 +965,11 @@ export default function Home() {
       </section>
 
       {/* ── Categories Section ── */}
-      <section className="py-16" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
+      <section className="py-16" style={{ background: "#0A0A14", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-display font-bold mb-3" style={{ color: "#1C1C1E" }}>Shop by Category</h2>
-            <p style={{ color: "#636366" }}>Everything a modern doctor needs</p>
+            <h2 className="text-3xl font-display font-bold mb-3" style={{ color: "#EEEEF8" }}>Shop by Category</h2>
+            <p style={{ color: "rgba(255,255,255,0.45)" }}>Everything a modern doctor needs</p>
           </div>
           {loadingCategories ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -983,15 +986,15 @@ export default function Home() {
                   <Link
                     key={cat.slug}
                     href={`/shop?category=${cat.slug}`}
-                    className="group flex flex-col items-center p-5 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-md"
-                    style={{ background: "#F2F2F7", border: "1px solid rgba(60,60,67,0.1)" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,122,255,0.2)"; (e.currentTarget as HTMLElement).style.background = "#FFFFFF"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(60,60,67,0.1)"; (e.currentTarget as HTMLElement).style.background = "#F2F2F7"; }}
+                    className="group flex flex-col items-center p-5 rounded-2xl transition-all hover:-translate-y-1"
+                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,194,168,0.25)"; (e.currentTarget as HTMLElement).style.background = "rgba(0,194,168,0.05)"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.07)"; (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"; }}
                   >
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-all group-hover:scale-110 bg-gradient-to-br ${gradient}`}>
                       <Icon className="w-7 h-7 text-white" />
                     </div>
-                    <span className="text-sm font-semibold text-center leading-tight" style={{ color: "#1C1C1E" }}>{cat.name}</span>
+                    <span className="text-sm font-semibold text-center leading-tight" style={{ color: "rgba(255,255,255,0.85)" }}>{cat.name}</span>
                   </Link>
                 );
               })}
@@ -1001,22 +1004,22 @@ export default function Home() {
       </section>
 
       {/* ── Trusted Brands ── */}
-      <section className="py-10 overflow-hidden" style={{ background: "#F2F2F7", borderTop: "1px solid rgba(60,60,67,0.08)", borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
+      <section className="py-10 overflow-hidden" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs uppercase tracking-widest mb-6" style={{ color: "#AEAEB2" }}>Trusted brands on aethex</p>
+          <p className="text-center text-xs uppercase tracking-widest mb-6" style={{ color: "rgba(255,255,255,0.25)" }}>Trusted brands on aethex</p>
           <div className="flex flex-wrap justify-center gap-3">
             {trustedBrands.map((brand, idx) => (
               <a key={idx} href={brand.url} target="_blank" rel="noopener noreferrer"
                 className="px-5 py-2.5 rounded-xl text-sm transition-all"
-                style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.12)", color: "#636366", textDecoration: "none" }}
+                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "#007AFF";
-                  (e.currentTarget as HTMLAnchorElement).style.color = "#007AFF";
-                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 2px 12px rgba(0,122,255,0.12)";
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "#00C2A8";
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#00C2A8";
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 2px 12px rgba(0,194,168,0.15)";
                 }}
                 onMouseLeave={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(60,60,67,0.12)";
-                  (e.currentTarget as HTMLAnchorElement).style.color = "#636366";
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.08)";
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.5)";
                   (e.currentTarget as HTMLAnchorElement).style.boxShadow = "none";
                 }}>
                 {brand.name}
@@ -1027,15 +1030,15 @@ export default function Home() {
       </section>
 
       {/* ── Featured Products ── */}
-      <section className="py-16 relative" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-        <div className="absolute inset-0" style={{ background: "rgba(242,242,247,0.94)" }} />
+      <section className="py-16 relative" style={{ background: "#0A0A14" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 40% at 50% 100%, rgba(0,122,255,0.04) 0%, transparent 70%)" }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <h2 className="text-3xl font-display font-bold mb-2" style={{ color: "#1C1C1E" }}>Featured Products</h2>
-              <p style={{ color: "#636366" }}>Top picks for Indian doctors</p>
+              <h2 className="text-3xl font-display font-bold mb-2" style={{ color: "#EEEEF8" }}>Featured Products</h2>
+              <p style={{ color: "rgba(255,255,255,0.45)" }}>Top picks for Indian doctors</p>
             </div>
-            <Link href="/shop" className="hidden sm:flex items-center gap-2 font-semibold text-sm" style={{ color: "#007AFF" }}>
+            <Link href="/shop" className="hidden sm:flex items-center gap-2 font-semibold text-sm" style={{ color: "#00C2A8" }}>
               View all <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -1084,25 +1087,25 @@ export default function Home() {
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="py-20 relative overflow-hidden" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
-        {/* Soft background blobs */}
+      <section className="py-20 relative overflow-hidden" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+        {/* Atmospheric glows */}
         <div className="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl pointer-events-none"
-          style={{ background: "rgba(0,122,255,0.05)", transform: "translate(-40%,-40%)" }} />
+          style={{ background: "rgba(0,122,255,0.04)", transform: "translate(-40%,-40%)" }} />
         <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none"
-          style={{ background: "rgba(0,194,168,0.06)", transform: "translate(30%,30%)" }} />
+          style={{ background: "rgba(0,194,168,0.04)", transform: "translate(30%,30%)" }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Heading */}
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-4"
-              style={{ background: "rgba(0,122,255,0.08)", border: "1px solid rgba(0,122,255,0.15)", color: "#007AFF" }}>
+              style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.2)", color: "#00C2A8" }}>
               <BadgeCheck className="w-3.5 h-3.5" />
               Verified Reviews
             </div>
-            <h2 className="text-3xl sm:text-4xl font-display font-bold mb-3" style={{ color: "#1C1C1E" }}>
+            <h2 className="text-3xl sm:text-4xl font-display font-bold mb-3" style={{ color: "#EEEEF8" }}>
               What Doctors Are Saying
             </h2>
-            <p className="max-w-xl mx-auto text-base" style={{ color: "#636366" }}>
+            <p className="max-w-xl mx-auto text-base" style={{ color: "rgba(255,255,255,0.45)" }}>
               Trusted by medical professionals across India — from AIIMS to community hospitals.
             </p>
           </div>
@@ -1113,16 +1116,16 @@ export default function Home() {
               <div key={idx}
                 className="group flex flex-col p-6 rounded-2xl relative transition-all duration-200 hover:-translate-y-1.5"
                 style={{
-                  background: "#FAFAFA",
-                  border: "1px solid rgba(60,60,67,0.09)",
-                  boxShadow: "0 2px 16px rgba(0,0,0,0.05)",
+                  background: "#0E0E1A",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                  boxShadow: "0 2px 20px rgba(0,0,0,0.4)",
                 }}>
                 {/* Hover accent border */}
                 <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                  style={{ boxShadow: "0 0 0 1.5px rgba(0,122,255,0.2), 0 8px 32px rgba(0,122,255,0.08)" }} />
+                  style={{ boxShadow: "0 0 0 1.5px rgba(0,194,168,0.2), 0 8px 32px rgba(0,194,168,0.06)" }} />
 
                 {/* Quote mark */}
-                <Quote className="absolute top-5 right-5 w-8 h-8 opacity-[0.07]" style={{ color: "#007AFF" }} />
+                <Quote className="absolute top-5 right-5 w-8 h-8 opacity-[0.07]" style={{ color: "#00C2A8" }} />
 
                 {/* Stars */}
                 <div className="flex items-center gap-0.5 mb-4">
@@ -1135,7 +1138,7 @@ export default function Home() {
                 </div>
 
                 {/* Quote text */}
-                <p className="text-sm leading-relaxed flex-1 mb-6" style={{ color: "#3A3A3C" }}>
+                <p className="text-sm leading-relaxed flex-1 mb-6" style={{ color: "rgba(255,255,255,0.7)" }}>
                   "{t.quote}"
                 </p>
 
@@ -1147,10 +1150,10 @@ export default function Home() {
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1">
-                      <span className="font-bold text-sm truncate" style={{ color: "#1C1C1E" }}>{t.name}</span>
-                      <BadgeCheck className="w-3.5 h-3.5 shrink-0" style={{ color: "#007AFF" }} />
+                      <span className="font-bold text-sm truncate" style={{ color: "#EEEEF8" }}>{t.name}</span>
+                      <BadgeCheck className="w-3.5 h-3.5 shrink-0" style={{ color: "#00C2A8" }} />
                     </div>
-                    <p className="text-xs truncate" style={{ color: "#8E8E93" }}>
+                    <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.4)" }}>
                       {t.role} · {t.city}
                     </p>
                   </div>
@@ -1168,11 +1171,11 @@ export default function Home() {
                 style={{
                   width: "82vw",
                   maxWidth: 320,
-                  background: "#FAFAFA",
-                  border: "1px solid rgba(60,60,67,0.09)",
-                  boxShadow: "0 2px 16px rgba(0,0,0,0.05)",
+                  background: "#0E0E1A",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                  boxShadow: "0 2px 20px rgba(0,0,0,0.4)",
                 }}>
-                <Quote className="absolute top-4 right-4 w-7 h-7 opacity-[0.07]" style={{ color: "#007AFF" }} />
+                <Quote className="absolute top-4 right-4 w-7 h-7 opacity-[0.07]" style={{ color: "#00C2A8" }} />
                 <div className="flex items-center gap-0.5 mb-3">
                   {[1,2,3,4,5].map(s => (
                     <svg key={s} className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#FF9500">
@@ -1180,7 +1183,7 @@ export default function Home() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: "#3A3A3C" }}>
+                <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: "rgba(255,255,255,0.7)" }}>
                   "{t.quote}"
                 </p>
                 <div className="flex items-center gap-3">
@@ -1190,22 +1193,22 @@ export default function Home() {
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1">
-                      <span className="font-bold text-sm truncate" style={{ color: "#1C1C1E" }}>{t.name}</span>
-                      <BadgeCheck className="w-3.5 h-3.5 shrink-0" style={{ color: "#007AFF" }} />
+                      <span className="font-bold text-sm truncate" style={{ color: "#EEEEF8" }}>{t.name}</span>
+                      <BadgeCheck className="w-3.5 h-3.5 shrink-0" style={{ color: "#00C2A8" }} />
                     </div>
-                    <p className="text-xs" style={{ color: "#8E8E93" }}>{t.role} · {t.city}</p>
+                    <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{t.role} · {t.city}</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
           {/* Swipe hint for mobile */}
-          <p className="md:hidden text-center text-xs mt-3" style={{ color: "#AEAEB2" }}>Swipe to see more →</p>
+          <p className="md:hidden text-center text-xs mt-3" style={{ color: "rgba(255,255,255,0.25)" }}>Swipe to see more →</p>
         </div>
       </section>
 
       {/* ── AI Demo Preview Section ── */}
-      <section className="py-20" style={{ background: "#F2F2F7" }}>
+      <section className="py-20" style={{ background: "#0A0A14" }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="rounded-3xl p-8 lg:p-14 relative overflow-hidden"
             style={{ background: "linear-gradient(135deg, #0F172A 0%, #1E293B 100%)", border: "1px solid rgba(255,255,255,0.06)" }}>
@@ -1244,9 +1247,9 @@ export default function Home() {
       </section>
 
       {/* ── Payment Partners ── */}
-      <section className="py-10" style={{ background: "#FFFFFF", borderTop: "1px solid rgba(60,60,67,0.08)" }}>
+      <section className="py-10" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-semibold uppercase tracking-widest mb-7" style={{ color: "#aeaeb2" }}>Secure Payments via</p>
+          <p className="text-center text-xs font-semibold uppercase tracking-widest mb-7" style={{ color: "rgba(255,255,255,0.25)" }}>Secure Payments via</p>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
             {[
               { src: `${import.meta.env.BASE_URL}images/payments/upi.svg`, alt: "UPI", w: "w-16" },
@@ -1257,12 +1260,12 @@ export default function Home() {
               { src: `${import.meta.env.BASE_URL}images/payments/gpay.svg`, alt: "Google Pay", w: "w-20" },
               { src: `${import.meta.env.BASE_URL}images/payments/paytm.svg`, alt: "Paytm", w: "w-16" },
             ].map((logo) => (
-              <div key={logo.alt} className="flex items-center justify-center h-11 px-3 rounded-xl border border-black/[0.07] bg-white shadow-sm">
-                <img src={logo.src} alt={logo.alt} className={`${logo.w} h-7 object-contain`} />
+              <div key={logo.alt} className="flex items-center justify-center h-11 px-3 rounded-xl" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <img src={logo.src} alt={logo.alt} className={`${logo.w} h-7 object-contain`} style={{ filter: "brightness(0) invert(1) opacity(0.7)" }} />
               </div>
             ))}
             {/* Net Banking */}
-            <div className="flex items-center justify-center h-11 px-4 rounded-xl border border-black/[0.07] bg-white shadow-sm gap-2">
+            <div className="flex items-center justify-center h-11 px-4 rounded-xl gap-2" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <svg viewBox="0 0 24 24" className="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
                 <rect x="2" y="11" width="20" height="10" rx="1.5" fill="#1A1F71"/>
                 <rect x="4" y="13" width="3" height="6" rx="0.5" fill="white" opacity="0.8"/>
@@ -1306,7 +1309,7 @@ export default function Home() {
 
       {/* ── Sticky Mobile CTA ── */}
       <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden p-4"
-        style={{ background: "rgba(242,242,247,0.95)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(60,60,67,0.12)" }}>
+        style={{ background: "rgba(6,6,12,0.95)", backdropFilter: "blur(16px)", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
         <Link href="/ai-assistant"
           className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full font-bold text-base"
           style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF", boxShadow: "0 4px 20px rgba(0,122,255,0.3)" }}>

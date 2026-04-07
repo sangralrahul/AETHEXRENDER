@@ -62,14 +62,14 @@ export function BrandSwitcherBar() {
   ];
 
   return (
-    <div data-brand-switcher className="no-print w-full" style={{ background: "linear-gradient(90deg,#0055CC 0%,#007AFF 60%,#0088FF 100%)" }}>
+    <div data-brand-switcher className="no-print w-full" style={{ background: "linear-gradient(90deg,#060608 0%,#0D0D18 60%,#080812 100%)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-9">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
             <Link key={tab.href} href={tab.href}
               className="flex items-center gap-1.5 px-3.5 h-full text-xs font-semibold relative transition-all select-none"
-              style={{ color: tab.active ? "#FFFFFF" : "rgba(255,255,255,0.65)", borderBottom: tab.active ? "2px solid #FFFFFF" : "2px solid transparent", marginBottom: -1 }}>
+              style={{ color: tab.active ? "#00C2A8" : "rgba(255,255,255,0.45)", borderBottom: tab.active ? "2px solid #00C2A8" : "2px solid transparent", marginBottom: -1 }}>
               {tab.useLogoImg ? (
                 <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="Aethex" className="w-4 h-4 rounded object-contain" style={{ filter: "brightness(1.1)" }} />
               ) : Icon ? <Icon className="w-3.5 h-3.5" /> : null}
@@ -173,44 +173,44 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
 
       {open && (
         <div className="fixed z-50 rounded-b-2xl overflow-hidden"
-          style={{ top: dropdownTop, right: 24, width: 740, background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)", borderTop: "2px solid #007AFF", boxShadow: "0 16px 48px rgba(0,0,0,0.14)" }}>
-          <div className="flex divide-x" style={{ divideColor: "rgba(60,60,67,0.08)" }}>
+          style={{ top: dropdownTop, right: 24, width: 740, background: "#0E0E1A", border: "1px solid rgba(255,255,255,0.08)", borderTop: "2px solid #00C2A8", boxShadow: "0 16px 48px rgba(0,0,0,0.7)" }}>
+          <div className="flex divide-x" style={{ divideColor: "rgba(255,255,255,0.05)" }}>
             <div className="flex-shrink-0 w-72 p-3 flex flex-col gap-0.5">
               <div className="flex items-center justify-between px-2 py-1.5">
-                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#AEAEB2" }}>Clinical Tools</p>
-                <Link href="/tools" onClick={onClose} className="text-[10px] font-semibold" style={{ color: "#007AFF" }}>View all →</Link>
+                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.3)" }}>Clinical Tools</p>
+                <Link href="/tools" onClick={onClose} className="text-[10px] font-semibold" style={{ color: "#00C2A8" }}>View all →</Link>
               </div>
               {clinicalToolsMenu.map(item => (
                 <Link key={item.href} href={item.href} onClick={onClose}
                   className="flex items-center gap-2.5 px-2 py-2 rounded-xl transition-all"
                   style={{ background: "transparent" }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `${item.color}0d`; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `rgba(255,255,255,0.05)`; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ background: `${item.color}14`, border: `1px solid ${item.color}25` }}>
+                    style={{ background: `${item.color}18`, border: `1px solid ${item.color}30` }}>
                     <item.icon className="w-3.5 h-3.5" style={{ color: item.color }} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold leading-tight" style={{ color: "#1C1C1E" }}>{item.label}</p>
-                    <p className="text-[10px] leading-tight mt-0.5 truncate" style={{ color: "#AEAEB2" }}>{item.desc}</p>
+                    <p className="text-xs font-semibold leading-tight" style={{ color: "rgba(255,255,255,0.88)" }}>{item.label}</p>
+                    <p className="text-[10px] leading-tight mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{item.desc}</p>
                   </div>
                 </Link>
               ))}
-              <div className="mt-2 pt-2" style={{ borderTop: "1px solid rgba(60,60,67,0.08)" }}>
-                <p className="text-[10px] font-bold uppercase tracking-wider px-2 py-1.5" style={{ color: "#AEAEB2" }}>Community & Careers</p>
+              <div className="mt-2 pt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                <p className="text-[10px] font-bold uppercase tracking-wider px-2 py-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Community & Careers</p>
                 {communityMenu.map(item => (
                   <Link key={item.href} href={item.href} onClick={onClose}
                     className="flex items-center gap-2.5 px-2 py-2 rounded-xl transition-all"
                     style={{ background: "transparent" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `${item.color}0d`; }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `rgba(255,255,255,0.05)`; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
                     <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ background: `${item.color}14`, border: `1px solid ${item.color}25` }}>
+                      style={{ background: `${item.color}18`, border: `1px solid ${item.color}30` }}>
                       <item.icon className="w-3.5 h-3.5" style={{ color: item.color }} />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold leading-tight" style={{ color: "#1C1C1E" }}>{item.label}</p>
-                      <p className="text-[10px] leading-tight mt-0.5 truncate" style={{ color: "#AEAEB2" }}>{item.desc}</p>
+                      <p className="text-xs font-semibold leading-tight" style={{ color: "rgba(255,255,255,0.88)" }}>{item.label}</p>
+                      <p className="text-[10px] leading-tight mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{item.desc}</p>
                     </div>
                   </Link>
                 ))}
@@ -218,8 +218,8 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
             </div>
             <div className="flex-1 p-3">
               <div className="flex items-center justify-between px-2 py-1.5 mb-1">
-                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#AEAEB2" }}>Medical Calculators</p>
-                <Link href="/calculator" onClick={onClose} className="text-[10px] font-semibold" style={{ color: "#007AFF" }}>View all →</Link>
+                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.3)" }}>Medical Calculators</p>
+                <Link href="/calculator" onClick={onClose} className="text-[10px] font-semibold" style={{ color: "#00C2A8" }}>View all →</Link>
               </div>
               <div className="grid grid-cols-2 gap-0.5">
                 {calculatorsMenu.map((calc) => {
@@ -227,10 +227,10 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
                   return (
                     <Link key={calc.id} href={`/calculator?id=${calc.id}`} onClick={onClose}
                       className="flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all text-xs"
-                      style={{ color: isActive ? "#007AFF" : "#1C1C1E", background: isActive ? "rgba(0,122,255,0.08)" : "transparent", fontWeight: isActive ? 600 : 400 }}
-                      onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,122,255,0.05)"; }}
+                      style={{ color: isActive ? "#00C2A8" : "rgba(255,255,255,0.75)", background: isActive ? "rgba(0,194,168,0.1)" : "transparent", fontWeight: isActive ? 600 : 400 }}
+                      onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.05)"; }}
                       onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
-                      <Calculator className="w-3 h-3 shrink-0" style={{ color: "#007AFF", opacity: 0.7 }} />
+                      <Calculator className="w-3 h-3 shrink-0" style={{ color: "#00C2A8", opacity: 0.7 }} />
                       {calc.name}
                     </Link>
                   );
@@ -321,14 +321,14 @@ function InstitutionsDropdown({ open, onToggle, onClose, dropdownRef }: {
             top: dropdownTop,
             right: 24,
             width: 480,
-            background: "#FFFFFF",
-            border: "1px solid rgba(60,60,67,0.1)",
-            borderTop: "2px solid #007AFF",
-            boxShadow: "0 16px 48px rgba(0,0,0,0.14)",
+            background: "#0E0E1A",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderTop: "2px solid #00C2A8",
+            boxShadow: "0 16px 48px rgba(0,0,0,0.7)",
           }}
         >
-          <div className="px-4 pt-3 pb-2" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)" }}>
-            <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "#AEAEB2" }}>Colleges &amp; Hospitals</p>
+          <div className="px-4 pt-3 pb-2" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.3)" }}>Colleges &amp; Hospitals</p>
           </div>
           <div className="p-3 grid grid-cols-2 gap-1">
             {institutionsMenu.map((item) => (
@@ -338,22 +338,22 @@ function InstitutionsDropdown({ open, onToggle, onClose, dropdownRef }: {
                 onClick={onClose}
                 className="flex items-center gap-3 p-3 rounded-xl transition-all hover:-translate-y-0.5"
                 style={{ background: "transparent" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `${item.color}08`; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `rgba(255,255,255,0.05)`; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}
               >
                 <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ background: `${item.color}14`, border: `1px solid ${item.color}25` }}>
+                  style={{ background: `${item.color}18`, border: `1px solid ${item.color}30` }}>
                   <item.icon className="w-4 h-4" style={{ color: item.color }} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold truncate" style={{ color: "#1C1C1E" }}>{item.label}</p>
-                  <p className="text-[10px] truncate" style={{ color: "#AEAEB2" }}>{item.desc}</p>
+                  <p className="text-xs font-semibold truncate" style={{ color: "rgba(255,255,255,0.88)" }}>{item.label}</p>
+                  <p className="text-[10px] truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{item.desc}</p>
                 </div>
               </Link>
             ))}
           </div>
-          <div className="px-4 py-2.5" style={{ borderTop: "1px solid rgba(60,60,67,0.08)", background: "rgba(60,60,67,0.02)" }}>
-            <Link href="/institutions" onClick={onClose} className="text-xs font-semibold" style={{ color: "#007AFF" }}>
+          <div className="px-4 py-2.5" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
+            <Link href="/institutions" onClick={onClose} className="text-xs font-semibold" style={{ color: "#00C2A8" }}>
               View all Colleges &amp; Hospitals →
             </Link>
           </div>
@@ -479,7 +479,7 @@ export function Navbar() {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="block w-full pl-9 pr-9 py-2 text-sm focus:outline-none rounded-sm"
-                style={{ background: "#FFFFFF", color: "#1C1C1E", border: "none" }}
+                style={{ background: "rgba(255,255,255,0.06)", color: "#EEEEF8", border: "1px solid rgba(255,255,255,0.1)" }}
                 placeholder="Search for medical products, drugs, books and more..."
               />
               {/* Voice search mic button */}

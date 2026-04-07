@@ -1,4 +1,5 @@
 import { useState, useRef, KeyboardEvent } from "react";
+import { PageHero } from "@/components/PageHero";
 import { Link } from "wouter";
 import {
   Pill, X, AlertTriangle, CheckCircle2, Info, ChevronLeft,
@@ -179,29 +180,12 @@ export default function DrugInteractionCheckerPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
-      {/* Header */}
-      <div className="sticky top-0 z-20 px-4 py-3"
-        style={{ background: "rgba(242,242,247,0.92)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-black/5">
-              <ChevronLeft className="w-4 h-4" style={{ color: "#007AFF" }} />
-            </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <Pill className="w-4 h-4" style={{ color: "#F59E0B" }} />
-                <span className="text-sm font-bold" style={{ color: "#1C1C1E" }}>Drug Interaction Checker</span>
-              </div>
-              <p className="text-xs" style={{ color: "#8E8E93" }}>Check interactions for up to 5 drugs</p>
-            </div>
-          </div>
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
-            style={{ background: "rgba(245,158,11,0.12)", color: "#C45000" }}>
-            <Shield className="w-3 h-3" />
-            Clinical reference only
-          </div>
-        </div>
-      </div>
+      <PageHero
+        tag="Clinical Reference Only"
+        title="Drug Interaction Checker"
+        subtitle="Check interactions for up to 5 drugs simultaneously — powered by a curated pharmacology database"
+        icon={<Pill className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
 
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-5">
 

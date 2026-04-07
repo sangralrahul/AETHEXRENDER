@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { PageHero } from "@/components/PageHero";
 import { motion } from "framer-motion";
 import {
   Building2, GraduationCap, HeartPulse, ShieldCheck, Truck, BadgePercent,
@@ -164,88 +165,20 @@ export default function InstitutionHub({ mode }: InstitutionHubProps = {}) {
   return (
     <div className="min-h-screen" style={{ background: "#F5F5F7" }}>
 
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden pt-20 pb-24">
-        {/* Background photo — different per mode */}
-        <div className="absolute inset-0"
-          style={{
-            backgroundImage: mode === "colleges"
-              ? "url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1600&q=80')"
-              : mode === "hospitals"
-              ? "url('https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=1600&q=80')"
-              : "url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1600&q=80')",
-            backgroundSize: "cover",
-            backgroundPosition: "center top",
-          }} />
-        {/* Overlay — lighter for colleges so building shows, dark navy for hospitals */}
-        <div className="absolute inset-0" style={{
-          background: mode === "colleges"
-            ? "linear-gradient(160deg, rgba(0,30,70,0.72) 0%, rgba(0,60,110,0.65) 50%, rgba(0,40,90,0.78) 100%)"
-            : "linear-gradient(135deg, rgba(8,18,36,0.93) 0%, rgba(10,26,50,0.88) 50%, rgba(8,18,36,0.93) 100%)"
-        }} />
-        {/* Glow orbs */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"
-            style={{ background: mode === "colleges" ? "rgba(0,194,168,0.15)" : "rgba(0,122,255,0.12)" }} />
-          <div className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full blur-3xl translate-y-1/2"
-            style={{ background: mode === "colleges" ? "rgba(0,122,255,0.12)" : "rgba(0,194,168,0.1)" }} />
-        </div>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6"
-              style={{ background: "rgba(0,122,255,0.15)", border: "1px solid rgba(0,122,255,0.25)", color: "#60A5FA" }}>
-              {mode === "colleges"
-                ? <><GraduationCap className="w-3.5 h-3.5" /> Medical College Partnerships</>
-                : mode === "hospitals"
-                ? <><HeartPulse className="w-3.5 h-3.5" /> Hospital Partnerships</>
-                : <><Building2 className="w-3.5 h-3.5" /> Institutional Partnerships</>}
-            </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white mb-5 leading-none" style={{ letterSpacing: "-2px" }}>
-              {mode === "colleges"
-                ? "Medical Colleges"
-                : mode === "hospitals"
-                ? "Major Hospitals"
-                : <>Medical Colleges &<br />Hospitals</>}
-            </h1>
-            <p className="text-lg mb-8 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
-              {mode === "colleges"
-                ? "Special bulk pricing, GST invoicing, priority delivery, and dedicated account management for every NMC-recognized medical college across India."
-                : mode === "hospitals"
-                ? "Bulk procurement portal, SLA-backed delivery, GST billing, and a dedicated account manager for every hospital and clinic chain across India."
-                : "Special bulk pricing, GST invoicing, priority delivery, and dedicated account management for every NMC-recognized institution across India."}
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <a href="#inquiry"
-                className="px-7 py-3.5 rounded-full font-bold text-sm transition-all hover:scale-105"
-                style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF", boxShadow: "0 4px 20px rgba(0,122,255,0.3)" }}>
-                Request Institutional Access
-              </a>
-              <a href="#institutions"
-                className="px-7 py-3.5 rounded-full font-bold text-sm border transition-all hover:bg-white/5"
-                style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.85)" }}>
-                {mode === "colleges" ? "Browse Colleges" : mode === "hospitals" ? "Browse Hospitals" : "Browse Institutions"}
-              </a>
-            </div>
-          </motion.div>
-
-          {/* Stats row */}
-          <div className={`grid gap-4 mt-16 ${mode ? "grid-cols-3" : "grid-cols-2 sm:grid-cols-4"}`}>
-            {[
-              ...(mode !== "hospitals" ? [{ value: "757+", label: "NMC Colleges" }] : []),
-              ...(mode !== "colleges" ? [{ value: "50+", label: "Major Hospitals" }] : []),
-              { value: "34", label: "States & UTs" },
-              { value: "35%", label: "Bulk Discount" },
-            ].map((stat, i) => (
-              <motion.div key={stat.label} initial="hidden" animate="visible" variants={fadeUp} custom={i + 1}
-                className="text-center py-5 px-4 rounded-2xl"
-                style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)", backdropFilter: "blur(12px)" }}>
-                <div className="text-2xl font-black text-white mb-1">{stat.value}</div>
-                <div className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PageHero
+        tag={mode === "colleges" ? "Medical College Partnerships" : mode === "hospitals" ? "Hospital Partnerships" : "Institutional Partnerships"}
+        title={mode === "colleges" ? "Medical Colleges" : mode === "hospitals" ? "Major Hospitals" : "Colleges & Hospitals"}
+        subtitle={mode === "colleges"
+          ? "Bulk pricing, GST invoicing and priority delivery for every NMC-recognized college across India."
+          : mode === "hospitals"
+          ? "Bulk procurement, SLA-backed delivery and a dedicated account manager for every hospital chain across India."
+          : "Dedicated account management, GST invoicing and priority delivery for all NMC-recognized institutions."}
+        icon={mode === "colleges"
+          ? <GraduationCap className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />
+          : mode === "hospitals"
+          ? <HeartPulse className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />
+          : <Building2 className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
 
       {/* ── Institution Browser ── */}
       <section id="institutions" className="py-20" style={{ background: "#F5F5F7" }}>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { PageHero } from "@/components/PageHero";
 import { Link } from "wouter";
 import {
   User, Heart, Activity, Thermometer, Wind, Droplets,
@@ -124,28 +125,18 @@ export default function CaseOfTheDay() {
 
   return (
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
-      {/* Header */}
-      <div className="sticky top-0 z-20 px-4 py-3"
-        style={{ background: "rgba(242,242,247,0.92)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-black/5">
-              <ChevronLeft className="w-4 h-4" style={{ color: "#007AFF" }} />
-            </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <Stethoscope className="w-4 h-4" style={{ color: "#007AFF" }} />
-                <span className="text-sm font-bold" style={{ color: "#1C1C1E" }}>Case of the Day</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Calendar className="w-3 h-3" style={{ color: "#8E8E93" }} />
-                <span className="text-xs" style={{ color: "#8E8E93" }}>
-                  {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-                </span>
-              </div>
-            </div>
-          </div>
-
+      <PageHero
+        tag="Daily Clinical Learning"
+        title="Case of the Day"
+        subtitle={new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+        icon={<Stethoscope className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
+      {/* Case navigation bar */}
+      <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(60,60,67,0.08)", background: "#F2F2F7" }}>
+        <div className="max-w-3xl mx-auto flex items-center justify-between">
+          <span className="text-xs font-medium" style={{ color: "#8E8E93" }}>
+            Case {caseIndex + 1} of {clinicalCases.length}
+          </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setCaseIndex((i) => (i - 1 + clinicalCases.length) % clinicalCases.length)}
@@ -153,10 +144,6 @@ export default function CaseOfTheDay() {
               title="Previous case">
               <ChevronLeft className="w-3.5 h-3.5" style={{ color: "#636366" }} />
             </button>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
-              style={{ background: "rgba(0,122,255,0.1)", color: "#007AFF" }}>
-              {caseIndex + 1}/{clinicalCases.length}
-            </span>
             <button
               onClick={() => setCaseIndex((i) => (i + 1) % clinicalCases.length)}
               className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-black/5"

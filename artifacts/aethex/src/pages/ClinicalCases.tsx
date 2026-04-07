@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { PageHero } from "@/components/PageHero";
 import { Eye, EyeOff, Sparkles, ChevronDown, ChevronUp, Search, BookOpen, Stethoscope, AlertCircle, CheckCircle, Lightbulb, ClipboardList, FlaskConical, Tag, Filter } from "lucide-react";
 
 interface Investigation {
@@ -579,23 +580,13 @@ export default function ClinicalCases() {
 
   return (
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
+      <PageHero
+        tag="Case Library"
+        title="Clinical Cases"
+        subtitle="Real-world anonymised cases with diagnosis reveal, management steps and teaching points"
+        icon={<Stethoscope className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-              <Stethoscope className="w-6 h-6" style={{ color: "#EF4444" }} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold" style={{ color: "#1C1C1E" }}>Clinical Case Library</h1>
-              <p className="text-sm" style={{ color: "#636366" }}>Real-world anonymised cases with diagnosis reveal, management and teaching points</p>
-            </div>
-          </div>
-          <div className="p-3 rounded-xl text-xs mt-3" style={{ background: "rgba(255,149,0,0.08)", border: "1px solid rgba(255,149,0,0.2)", color: "#92400E" }}>
-            All cases are anonymised and for educational purposes only. Cadus AI assists, not replaces, clinical decision-making.
-          </div>
-        </div>
-
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1">

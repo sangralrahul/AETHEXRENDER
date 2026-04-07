@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { PageHero } from "@/components/PageHero";
 import { Globe, RefreshCw, Zap, Clock, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -53,22 +54,13 @@ export default function MedicalNews() {
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen">
-      {/* Hero */}
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white py-14 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold mb-3">
-            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" /> Live Medical News
-          </div>
-          <h1 className="text-4xl font-bold mb-2">Medical News</h1>
-          <p className="text-slate-400 text-lg">Stay current with India's medical landscape — ICMR updates, drug approvals, NEET-PG news, and global health developments.</p>
-          {isDemo && (
-            <div className="mt-4 bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-2 text-amber-300 text-sm inline-flex items-center gap-2">
-              <Zap className="w-4 h-4" /> Demo news shown. Add NEWS_API_KEY secret to enable live news.
-            </div>
-          )}
-        </div>
-      </div>
+    <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
+      <PageHero
+        tag="Live Medical News"
+        title="Medical News"
+        subtitle="Stay current with India's medical landscape — ICMR updates, drug approvals, NEET-PG news and global health developments"
+        icon={<Globe className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
 
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Breaking News Banner */}

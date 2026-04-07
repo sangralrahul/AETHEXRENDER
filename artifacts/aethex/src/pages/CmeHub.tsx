@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageHero } from "@/components/PageHero";
 import { Link } from "wouter";
 import {
   GraduationCap, Clock, Users, Star, Lock, Play, BookOpen,
@@ -468,56 +469,12 @@ export default function CmeHub() {
   return (
     <div className="min-h-screen" style={{ background: "#F4F4F6" }}>
 
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden py-16 lg:py-20">
-        {/* Background photo — doctor continuing medical education */}
-        <div className="absolute inset-0"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1600&q=80')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }} />
-        {/* Dark overlay */}
-        <div className="absolute inset-0"
-          style={{ background: "linear-gradient(135deg, rgba(10,15,30,0.82) 0%, rgba(13,27,42,0.78) 60%, rgba(15,32,64,0.84) 100%)" }} />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl pointer-events-none"
-          style={{ background: "rgba(0,122,255,0.08)", transform: "translate(30%, -30%)" }} />
-        <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl pointer-events-none"
-          style={{ background: "rgba(0,194,168,0.06)", transform: "translate(-30%, 30%)" }} />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold mb-6"
-              style={{ background: "rgba(0,122,255,0.15)", border: "1px solid rgba(0,122,255,0.3)", color: "#60A5FA" }}>
-              <GraduationCap className="w-3.5 h-3.5" />
-              NMC · MCI · IAP · CSI Approved Courses
-            </div>
-
-            <h1 className="text-4xl lg:text-5xl font-display font-bold text-white mb-5 leading-tight">
-              CME Hub —{" "}
-              <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg,#60A5FA,#2DD4BF)" }}>
-                Continuing Medical Education
-              </span>
-            </h1>
-            <p className="text-lg mb-8 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
-              Earn CME credits and stay updated with the latest in medical education. NMC-approved courses designed for Indian doctors.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a href="#courses"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-sm transition-all hover:opacity-90"
-                style={{ background: "linear-gradient(135deg,#007AFF,#00C2A8)", color: "#FFFFFF", boxShadow: "0 4px 20px rgba(0,122,255,0.35)" }}>
-                <BookOpen className="w-4 h-4" /> Browse Courses
-              </a>
-              <a href="#courses"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-sm transition-all"
-                style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.15)" }}>
-                <TrendingUp className="w-4 h-4" /> View My Progress
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        tag="NMC · MCI · IAP · CSI Approved"
+        title="CME Hub"
+        subtitle="Accredited continuing medical education — earn CME credits with NMC-approved courses for Indian doctors"
+        icon={<GraduationCap className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
 
       {/* ── Stats Bar ── */}
       <section className="py-8" style={{ background: "#FFFFFF", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>

@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { PageHero } from "@/components/PageHero";
 import { Link } from "wouter";
 import {
   Pill, Calculator, Weight, BookOpen, Brain, Stethoscope,
@@ -279,78 +280,30 @@ export default function ClinicalTools() {
   return (
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
 
-      {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden pt-16 pb-20">
-        {/* Background photo — clinical / hospital setting */}
-        <div className="absolute inset-0"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
-        {/* Dark gradient overlay */}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(8,18,36,0.93) 0%, rgba(10,26,50,0.88) 50%, rgba(8,18,36,0.93) 100%)" }} />
-        {/* Ambient glow orbs */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" style={{ background: "rgba(0,122,255,0.12)" }} />
-          <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full blur-3xl translate-y-1/3" style={{ background: "rgba(0,194,168,0.08)" }} />
-        </div>
-
-        <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
-            style={{ background: "rgba(0,122,255,0.15)", border: "1px solid rgba(0,122,255,0.25)", color: "#60A5FA" }}>
-            <Zap className="w-3.5 h-3.5" />
-            <span className="text-[12px] font-semibold">13 clinical tools · 21 medical calculators</span>
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight" style={{ letterSpacing: "-1px" }}>
-            Clinical{" "}
-            <span style={{ background: "linear-gradient(135deg,#00C2A8,#007AFF)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Tools
-            </span>
-          </h1>
-          <p className="text-base max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
-            Essential tools for daily clinical practice — from drug checks to AI-powered diagnostics.
-          </p>
-
-          {/* Search */}
-          <div className="relative max-w-md mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "rgba(255,255,255,0.4)" }} />
+      <PageHero
+        tag="13 Tools · 21 Calculators"
+        title="Clinical Tools"
+        subtitle="Essential tools for daily clinical practice — drug interactions, AI diagnostics, calculators and more"
+        icon={<Stethoscope className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+        right={
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "rgba(255,255,255,0.35)" }} />
             <input
               type="text"
               placeholder="Search tools..."
               value={query}
               onChange={e => setQuery(e.target.value)}
-              className="w-full pl-11 pr-10 py-3.5 rounded-2xl text-sm outline-none"
-              style={{
-                background: "rgba(255,255,255,0.07)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                color: "#FFFFFF",
-                boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-              }}
+              className="w-full pl-10 pr-9 py-2.5 rounded-xl text-sm outline-none"
+              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", color: "#FFFFFF" }}
             />
             {query && (
-              <button onClick={() => setQuery("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-100 opacity-60">
-                <X className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+              <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100">
+                <X className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.6)" }} />
               </button>
             )}
           </div>
-
-          {/* Stats row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 max-w-2xl mx-auto">
-            {[
-              { value: "13+", label: "Clinical Tools" },
-              { value: "AI", label: "Powered Diagnostics" },
-              { value: "Free", label: "For All Doctors" },
-              { value: "24/7", label: "Available" },
-            ].map((stat, i) => (
-              <div key={i} className="text-center py-3 px-2 rounded-xl"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <div className="text-xl font-black text-white mb-0.5">{stat.value}</div>
-                <div className="text-[11px]" style={{ color: "rgba(255,255,255,0.45)" }}>{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* ── Body ─────────────────────────────────────────────────────── */}
       <div className="max-w-5xl mx-auto px-4 py-8">

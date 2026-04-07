@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { PageHero } from "@/components/PageHero";
 import { MapPin, Clock, Briefcase, IndianRupee, Search, Filter, MessageCircle, Mail, Building2, ChevronDown, Star, CheckCircle } from "lucide-react";
 
 interface Job {
@@ -155,28 +156,13 @@ export default function Jobs() {
 
   return (
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
+      <PageHero
+        tag="Careers"
+        title="Medical Jobs Board"
+        subtitle="Curated hospital & clinic opportunities across India — full-time, part-time, locum & internships"
+        icon={<Briefcase className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.2)" }}>
-              <Briefcase className="w-6 h-6" style={{ color: "#00C2A8" }} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold" style={{ color: "#1C1C1E" }}>Medical Jobs Board</h1>
-              <p className="text-sm" style={{ color: "#636366" }}>Curated hospital & clinic opportunities across India</p>
-            </div>
-          </div>
-          <div className="flex gap-4 mt-4">
-            {[{ label: "Active Listings", val: JOBS.length }, { label: "Urgent Roles", val: JOBS.filter(j => j.urgent).length }, { label: "Cities", val: 5 }].map(s => (
-              <div key={s.label} className="flex-1 rounded-xl p-3 text-center" style={{ background: "#FFFFFF", border: "1px solid rgba(60,60,67,0.1)" }}>
-                <p className="text-xl font-bold" style={{ color: "#007AFF" }}>{s.val}</p>
-                <p className="text-[11px]" style={{ color: "#636366" }}>{s.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Search + Filter */}
         <div className="mb-5 space-y-3">
           <div className="flex gap-2">

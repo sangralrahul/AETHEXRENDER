@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
+import { PageHero } from "@/components/PageHero";
 import { Search, Calculator, Heart, Brain, Activity, Stethoscope, Flame, Wind, Baby, Zap, Droplets, Scale, ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
 
 interface CalcField {
@@ -725,22 +726,13 @@ export default function CalculatorPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
+      <PageHero
+        tag="Clinical Calculators"
+        title="Medical Calculator Suite"
+        subtitle={`${calculators.length} validated calculators — CURB-65, SOFA, GRACE, Wells, GCS, CHA₂DS₂-VASc & more`}
+        icon={<Activity className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
       <div className="max-w-5xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: "rgba(0,122,255,0.12)", border: "1px solid rgba(0,122,255,0.2)" }}>
-              <Calculator className="w-6 h-6" style={{ color: "#007AFF" }} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold" style={{ color: "#1C1C1E" }}>Medical Calculator Suite</h1>
-              <p className="text-sm" style={{ color: "#636366" }}>{calculators.length} clinical calculators — CURB-65, SOFA, GRACE, Wells, GCS & more</p>
-            </div>
-          </div>
-          <div className="p-3 rounded-xl text-xs" style={{ background: "rgba(255,149,0,0.08)", border: "1px solid rgba(255,149,0,0.2)", color: "#92400E" }}>
-            Cadus AI assists, not replaces, clinical decision-making. Always verify results with clinical judgement.
-          </div>
-        </div>
 
         {/* Search + Filter */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">

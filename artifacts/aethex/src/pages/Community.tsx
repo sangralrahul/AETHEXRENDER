@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { PageHero } from "@/components/PageHero";
 import { ThumbsUp, ThumbsDown, MessageSquare, Sparkles, TrendingUp, Search, Plus, Clock, ChevronUp, ChevronDown, BookOpen, Stethoscope, GraduationCap, FlaskConical, Building2, Pill, Tag, X, Send } from "lucide-react";
 
 interface Comment {
@@ -377,13 +378,13 @@ export default function Community() {
 
   return (
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
+      <PageHero
+        tag="Community"
+        title="Doctor Community"
+        subtitle="Peer discussions, clinical cases, career advice and drug updates — by doctors, for doctors"
+        icon={<MessageSquare className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-1" style={{ color: "#1C1C1E" }}>Doctor Community</h1>
-          <p className="text-sm" style={{ color: "#636366" }}>Peer discussions, clinical cases, career advice and drug updates — by doctors, for doctors</p>
-        </div>
-
         <div className="flex gap-6">
           {/* Main feed */}
           <div className="flex-1 min-w-0">

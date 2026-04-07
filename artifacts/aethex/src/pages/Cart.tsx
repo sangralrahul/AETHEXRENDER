@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { PageHero } from "@/components/PageHero";
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from "lucide-react";
 import { useGetCart, useAddToCart, useRemoveFromCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
@@ -42,11 +43,14 @@ export default function Cart() {
   const isEmpty = !cart || cart.items.length === 0;
 
   return (
-    <div className="min-h-screen  bg-slate-50 pb-24">
+    <div className="min-h-screen bg-slate-50 pb-24">
+      <PageHero
+        tag="Shopping"
+        title="Your Cart"
+        subtitle="Review your items and proceed to checkout"
+        icon={<ShoppingBag className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-8">
-          Your Cart
-        </h1>
 
         {isEmpty ? (
           <div className="bg-white rounded-3xl p-12 text-center shadow-sm border border-border/50 max-w-2xl mx-auto">

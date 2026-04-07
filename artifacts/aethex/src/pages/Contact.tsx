@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageHero } from "@/components/PageHero";
 import { Mail, User, FileText, MessageSquare, Send, CheckCircle, Bot } from "lucide-react";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -52,20 +53,13 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-[#F2F2F7] pb-16">
-      <div className="max-w-3xl mx-auto px-4">
-
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#00C2A8]/10 border border-[#00C2A8]/20 text-[#00C2A8] text-sm font-medium mb-4">
-            <Bot className="w-4 h-4" />
-            AI-Powered Support
-          </div>
-          <h1 className="text-3xl md:text-4xl font-display font-bold text-[#1c1c1e] mb-3">
-            Contact AETHEX
-          </h1>
-          <p className="text-[#6c6c70] text-base max-w-lg mx-auto">
-            Submit your query and Cadus AI will respond instantly. You'll also receive the response in your email.
-          </p>
-        </div>
+      <PageHero
+        tag="AI-Powered Support"
+        title="Contact AETHEX"
+        subtitle="Submit your query and Cadus AI will respond instantly. You'll also receive the response in your email."
+        icon={<Mail className="w-7 h-7" style={{ color: "rgba(255,255,255,0.82)" }} />}
+      />
+      <div className="max-w-3xl mx-auto px-4 pt-8">
 
         {result ? (
           <div className="bg-white border border-black/10 rounded-2xl p-8">

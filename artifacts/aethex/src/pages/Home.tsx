@@ -366,11 +366,7 @@ function CaseOfTheDaySection() {
         <div className="flex flex-col lg:flex-row items-start gap-16">
           {/* Left: Text */}
           <div className="flex-1">
-            <div className="flex items-center gap-4 mb-8">
-              <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.25em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>Case of the Day</span>
-            </div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4.5vw, 3.8rem)", lineHeight: 1.05, color: "#EEEEF8", marginBottom: "1.5rem" }}>
+            <h2 className="fade-up" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4.5vw, 3.8rem)", lineHeight: 1.05, color: "#EEEEF8", marginBottom: "1.5rem" }}>
               Sharpen Your
               <br />
               <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.4)" }}>Clinical Thinking.</span>
@@ -482,11 +478,7 @@ function BlogNewsSection() {
       <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Header */}
         <div className="mb-14">
-          <div className="flex items-center gap-4 mb-8">
-            <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.25em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>Blog &amp; News</span>
-          </div>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4.5vw, 3.8rem)", lineHeight: 1.05, color: "#EEEEF8" }}>
+          <h2 className="fade-up" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4.5vw, 3.8rem)", lineHeight: 1.05, color: "#EEEEF8" }}>
             Latest from Aethex
           </h2>
         </div>
@@ -654,15 +646,10 @@ function NewsletterSection() {
     <section className="py-24 relative" style={{ borderTop: "1px solid rgba(255,255,255,0.04)", background: "#06060C" }}>
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,194,168,0.04) 0%, transparent 70%)" }} />
       <div className="max-w-4xl mx-auto px-6 sm:px-8 text-center relative z-10">
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.25em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>Newsletter</span>
-          <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-        </div>
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.05, color: "#EEEEF8", marginBottom: "1rem" }}>
+        <h2 className="fade-up" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.05, color: "#EEEEF8", marginBottom: "1rem" }}>
           Weekly Medical Insights
           <br />
-          <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.4)" }}>+ NEET-PG Tips</span>
+          <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.4)" }}>Delivered Free.</span>
         </h2>
         <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.35)", maxWidth: 420, margin: "0 auto 2.5rem", lineHeight: 1.8 }}>
           Clinical tips, medical news, exam updates, and exclusive deals — direct to your inbox. Join 12,000+ Indian doctors.
@@ -819,21 +806,37 @@ export default function Home() {
         </motion.div>
       </section>
 
+      {/* ── Stats Band — dramatic numbers after hero ── */}
+      <section className="py-0 relative" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/[0.05]">
+            {[
+              { value: "40,000+", label: "Indian Doctors" },
+              { value: "20+",     label: "Clinical AI Modes" },
+              { value: "2-Day",   label: "Delivery Pan-India" },
+              { value: "100%",    label: "Authentic Brands" },
+            ].map((s, i) => (
+              <div key={i} className="flex flex-col items-center justify-center py-12 px-6 text-center">
+                <div className="stat-glow fade-up" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 5vw, 3.8rem)", color: "#EEEEF8", lineHeight: 1, letterSpacing: "-0.02em", animationDelay: `${i * 0.12}s` }}>
+                  {s.value}
+                </div>
+                <div className="mt-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.18em", color: "#00C2A8", textTransform: "uppercase", fontWeight: 600 }}>
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="section-line" />
+      </section>
 
       {/* ── Platform Breakdown — editorial luxury layout ── */}
-      <section className="relative py-32" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <section className="relative py-32" style={{ background: "#06060C" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 40% at 50% 100%, rgba(0,80,160,0.05) 0%, transparent 70%)" }} />
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
 
-          {/* Section label */}
-          <div className="flex items-center gap-4 mb-20">
-            <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.25em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>The Platform</span>
-          </div>
-
-          {/* Headline */}
           <div className="mb-20">
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.8rem, 6vw, 5.5rem)", lineHeight: 1.0, color: "#EEEEF8", letterSpacing: "-0.01em" }}>
+            <h2 className="fade-up" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.8rem, 6vw, 5.5rem)", lineHeight: 1.0, color: "#EEEEF8", letterSpacing: "-0.01em" }}>
               Everything Medicine.
               <br />
               <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.35)" }}>One Platform.</span>
@@ -925,11 +928,7 @@ export default function Home() {
 
             {/* Left — headline + manifesto */}
             <div>
-              <div className="flex items-center gap-4 mb-10">
-                <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.25em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>Why AETHEX</span>
-              </div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.05, color: "#EEEEF8", marginBottom: "1.5rem", letterSpacing: "-0.01em" }}>
+              <h2 className="fade-up" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.05, color: "#EEEEF8", marginBottom: "1.5rem", letterSpacing: "-0.01em" }}>
                 Built differently,
                 <br />
                 <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.4)" }}>for Indian doctors.</span>
@@ -1012,27 +1011,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Trusted Brands ── */}
-      <section className="py-10 overflow-hidden" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs uppercase tracking-widest mb-6" style={{ color: "rgba(255,255,255,0.25)" }}>Trusted brands on aethex</p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {trustedBrands.map((brand, idx) => (
-              <a key={idx} href={brand.url} target="_blank" rel="noopener noreferrer"
-                className="px-5 py-2.5 rounded-xl text-sm transition-all"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "#00C2A8";
-                  (e.currentTarget as HTMLAnchorElement).style.color = "#00C2A8";
-                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 2px 12px rgba(0,194,168,0.15)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.08)";
-                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.5)";
-                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = "none";
-                }}>
+      {/* ── Trusted Brands — infinite marquee ── */}
+      <section className="overflow-hidden" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)", paddingTop: 28, paddingBottom: 28 }}>
+        <p className="text-center mb-5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.25em", color: "rgba(255,255,255,0.2)", textTransform: "uppercase" }}>
+          Stocked &amp; sold on Aethex
+        </p>
+        <div style={{ maskImage: "linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%)", WebkitMaskImage: "linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%)" }}>
+          <div className="marquee-track" style={{ gap: 48, width: "max-content" }}>
+            {[...trustedBrands, ...trustedBrands].map((brand, idx) => (
+              <span key={idx} style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: "1.15rem", color: "rgba(255,255,255,0.22)", letterSpacing: "0.04em", whiteSpace: "nowrap" }}>
                 {brand.name}
-              </a>
+                {idx % trustedBrands.length < trustedBrands.length - 1 && (
+                  <span style={{ color: "rgba(0,194,168,0.3)", margin: "0 12px" }}>·</span>
+                )}
+              </span>
             ))}
           </div>
         </div>
@@ -1155,14 +1147,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
-              <div className="flex items-center gap-4 mb-10">
-                <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.25em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>Cadus AI</span>
-              </div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.05, color: "#EEEEF8", marginBottom: "1.5rem", letterSpacing: "-0.01em" }}>
-                See Cadus AI
-                <br />
-                <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.4)" }}>in Action</span>
+              <div className="mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.28em", color: "#00C2A8", textTransform: "uppercase", fontWeight: 600 }}>Cadus AI</div>
+              <h2 className="fade-up" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.05, color: "#EEEEF8", marginBottom: "1.5rem", letterSpacing: "-0.01em" }}>
+                Your Clinical<br />
+                <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.4)" }}>Intelligence Layer.</span>
               </h2>
               <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.8, maxWidth: 400, marginBottom: "2.5rem" }}>
                 Ask clinical questions, get instant DDx, generate SOAP notes, check drug interactions, and prepare for exams — all in one conversation.

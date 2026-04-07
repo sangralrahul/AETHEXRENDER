@@ -7,6 +7,7 @@ import NotFound from "@/pages/not-found";
 import { SplashScreen, useSplashScreen } from "@/components/SplashScreen";
 
 import { Navbar, BrandSwitcherBar } from "@/components/layout/Navbar";
+import { AmbientBackground } from "@/components/AmbientBackground";
 import { Footer } from "@/components/layout/Footer";
 
 import Home from "@/pages/Home";
@@ -150,12 +151,13 @@ function Router() {
       {/* Pages with Navbar + Footer */}
       <Route>
         {() => (
-          <div className="flex flex-col min-h-screen">
-            <div className="fixed top-0 left-0 right-0 z-[60]" style={{ background: "#06060C" }}>
+          <div className="flex flex-col min-h-screen" style={{ background: "#06060C" }}>
+            <AmbientBackground />
+            <div className="fixed top-0 left-0 right-0 z-[60]" style={{ background: "rgba(4,4,8,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
               <BrandSwitcherBar />
               <Navbar />
             </div>
-            <main className="flex-1 pt-[140px]">
+            <main className="flex-1 pt-[140px] relative z-[1]">
               <Switch>
                 <Route path="/" component={Home} />
 

@@ -68,7 +68,7 @@ export function BrandSwitcherBar() {
           return (
             <Link key={tab.href} href={tab.href}
               className="flex items-center gap-1.5 px-3.5 h-full text-xs font-semibold relative transition-all select-none"
-              style={{ color: tab.active ? "#00C2A8" : "rgba(255,255,255,0.45)", borderBottom: tab.active ? "2px solid #00C2A8" : "2px solid transparent", marginBottom: -1 }}>
+              style={{ color: tab.active ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.45)", borderBottom: tab.active ? "2px solid rgba(255,255,255,0.5)" : "2px solid transparent", marginBottom: -1 }}>
               {tab.useLogoImg ? (
                 <img src={`${import.meta.env.BASE_URL}aethex-logo.jpg`} alt="Aethex" className="w-4 h-4 rounded object-contain" style={{ filter: "brightness(1.1)" }} />
               ) : Icon ? <Icon className="w-3.5 h-3.5" /> : null}
@@ -165,12 +165,12 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
 
       {open && (
         <div className="fixed z-50 rounded-b-2xl overflow-hidden"
-          style={{ top: dropdownTop, right: 24, width: 740, background: "#0E0E1A", border: "1px solid rgba(255,255,255,0.08)", borderTop: "2px solid #00C2A8", boxShadow: "0 16px 48px rgba(0,0,0,0.7)" }}>
+          style={{ top: dropdownTop, right: 24, width: 740, background: "#0E0E1A", border: "1px solid rgba(255,255,255,0.08)", borderTop: "2px solid rgba(255,255,255,0.1)", boxShadow: "0 16px 48px rgba(0,0,0,0.7)" }}>
           <div className="flex divide-x" style={{ divideColor: "rgba(255,255,255,0.05)" }}>
             <div className="flex-shrink-0 w-72 p-3 flex flex-col gap-0.5">
               <div className="flex items-center justify-between px-2 py-1.5">
                 <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.3)" }}>Clinical Tools</p>
-                <Link href="/tools" onClick={onClose} className="text-[10px] font-semibold" style={{ color: "#00C2A8" }}>View all →</Link>
+                <Link href="/tools" onClick={onClose} className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.4)" }}>View all →</Link>
               </div>
               {clinicalToolsMenu.map(item => (
                 <Link key={item.href} href={item.href} onClick={onClose}
@@ -211,7 +211,7 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
             <div className="flex-1 p-3">
               <div className="flex items-center justify-between px-2 py-1.5 mb-1">
                 <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.3)" }}>Medical Calculators</p>
-                <Link href="/calculator" onClick={onClose} className="text-[10px] font-semibold" style={{ color: "#00C2A8" }}>View all →</Link>
+                <Link href="/calculator" onClick={onClose} className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.4)" }}>View all →</Link>
               </div>
               <div className="grid grid-cols-2 gap-0.5">
                 {calculatorsMenu.map((calc) => {
@@ -219,10 +219,10 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
                   return (
                     <Link key={calc.id} href={`/calculator?id=${calc.id}`} onClick={onClose}
                       className="flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all text-xs"
-                      style={{ color: isActive ? "#00C2A8" : "rgba(255,255,255,0.75)", background: isActive ? "rgba(0,194,168,0.1)" : "transparent", fontWeight: isActive ? 600 : 400 }}
+                      style={{ color: isActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.75)", background: isActive ? "rgba(255,255,255,0.08)" : "transparent", fontWeight: isActive ? 600 : 400 }}
                       onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.05)"; }}
                       onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
-                      <Calculator className="w-3 h-3 shrink-0" style={{ color: "#00C2A8", opacity: 0.7 }} />
+                      <Calculator className="w-3 h-3 shrink-0" style={{ color: "rgba(255,255,255,0.4)" }} />
                       {calc.name}
                     </Link>
                   );
@@ -315,7 +315,7 @@ function InstitutionsDropdown({ open, onToggle, onClose, dropdownRef }: {
             width: 480,
             background: "#0E0E1A",
             border: "1px solid rgba(255,255,255,0.08)",
-            borderTop: "2px solid #00C2A8",
+            borderTop: "2px solid rgba(255,255,255,0.1)",
             boxShadow: "0 16px 48px rgba(0,0,0,0.7)",
           }}
         >
@@ -345,7 +345,7 @@ function InstitutionsDropdown({ open, onToggle, onClose, dropdownRef }: {
             ))}
           </div>
           <div className="px-4 py-2.5" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
-            <Link href="/institutions" onClick={onClose} className="text-xs font-semibold" style={{ color: "#00C2A8" }}>
+            <Link href="/institutions" onClick={onClose} className="text-xs font-semibold" style={{ color: "rgba(255,255,255,0.4)" }}>
               View all Colleges &amp; Hospitals →
             </Link>
           </div>
@@ -455,8 +455,8 @@ export function Navbar() {
                 href={cat.href}
                 className="flex items-center gap-1.5 px-3.5 shrink-0 text-xs font-medium relative transition-all whitespace-nowrap"
                 style={{
-                  color: active ? "#00C2A8" : "rgba(255,255,255,0.45)",
-                  borderBottom: active ? "2px solid #00C2A8" : "2px solid transparent",
+                  color: active ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.45)",
+                  borderBottom: active ? "2px solid rgba(255,255,255,0.5)" : "2px solid transparent",
                   letterSpacing: "0.04em",
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
                 }}
@@ -604,7 +604,7 @@ export function Navbar() {
                         </div>
                         <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.45)" }}>{user?.email}</p>
                         {isPro && (
-                          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(0,194,168,0.15)", color: "#00C2A8" }}>
+                          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(255,180,0,0.15)", color: "#FFB400" }}>
                             <Crown className="w-3 h-3" />PRO
                           </span>
                         )}

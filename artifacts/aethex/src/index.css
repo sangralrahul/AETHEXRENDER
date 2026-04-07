@@ -659,7 +659,7 @@
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #00C2A8;
+  background: rgba(255,255,255,0.3);
 }
 
 /* ── Star particle overlay — matches splash video ─────────────────────────── */
@@ -701,7 +701,7 @@ body::before {
 /* ── Cinematic horizontal rule ─────────────────────────────────────────────── */
 .aethex-rule {
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(0,194,168,0.4) 30%, rgba(255,255,255,0.08) 70%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 40%, rgba(255,255,255,0.04) 70%, transparent 100%);
 }
 
 /* ── Large teal glow — hero accent ────────────────────────────────────────── */
@@ -761,7 +761,7 @@ body::before {
   height: 600px;
   top: -10%;
   left: -5%;
-  background: radial-gradient(circle, #00C2A8 0%, transparent 70%);
+  background: radial-gradient(circle, #0028AA 0%, transparent 70%);
   animation: orb-drift-1 22s ease-in-out infinite;
 }
 .orb-2 {
@@ -778,7 +778,7 @@ body::before {
   height: 700px;
   bottom: -15%;
   left: 20%;
-  background: radial-gradient(circle, #00C2A8 0%, transparent 70%);
+  background: radial-gradient(circle, #00148C 0%, transparent 70%);
   animation: orb-drift-3 34s ease-in-out infinite;
   animation-delay: -14s;
 }
@@ -787,7 +787,7 @@ body::before {
   height: 400px;
   top: 60%;
   left: 55%;
-  background: radial-gradient(circle, #1A1A8C 0%, transparent 70%);
+  background: radial-gradient(circle, #12126A 0%, transparent 70%);
   animation: orb-drift-4 19s ease-in-out infinite;
   animation-delay: -4s;
 }
@@ -805,7 +805,7 @@ body::before {
 }
 .particle {
   position: absolute;
-  background: rgba(0,194,168,0.5);
+  background: rgba(180,200,255,0.2);
   border-radius: 50%;
   animation: particle-float linear infinite;
 }
@@ -867,16 +867,16 @@ body::before {
   height: 1px;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(0,194,168,0.3) 20%,
-    rgba(255,255,255,0.06) 80%,
+    rgba(255,255,255,0.08) 30%,
+    rgba(255,255,255,0.03) 80%,
     transparent 100%
   );
 }
 
-/* ── Teal number counter glow ───────────────────────────────────────────────── */
+/* ── Number counter glow ────────────────────────────────────────────────────── */
 @keyframes count-glow {
-  0%, 100% { text-shadow: 0 0 30px rgba(0,194,168,0.0); }
-  50% { text-shadow: 0 0 30px rgba(0,194,168,0.35); }
+  0%, 100% { text-shadow: 0 0 30px rgba(255,255,255,0.0); }
+  50% { text-shadow: 0 0 30px rgba(255,255,255,0.12); }
 }
 .stat-glow { animation: count-glow 4s ease-in-out infinite; }
 
@@ -886,5 +886,5 @@ body::before {
 }
 .card-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,194,168,0.12);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
 }

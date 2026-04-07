@@ -114,12 +114,12 @@ function AIChatPreview() {
             </div>
             <div>
               <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, fontWeight: 600, color: "#EEEEF8", lineHeight: 1 }}>Cadus AI</p>
-              <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, color: "#00C2A8", marginTop: 2 }}>● Clinical Mode</p>
+              <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.35)", marginTop: 2 }}>● Clinical Mode</p>
             </div>
           </div>
           <Link href="/ai-assistant"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.1em", fontWeight: 700, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", transition: "color 0.2s" }}
-            onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#00C2A8"}
+            onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.8)"}
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.3)"}>
             Full Experience →
           </Link>
@@ -130,7 +130,7 @@ function AIChatPreview() {
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               <div className="max-w-[88%] px-4 py-3 rounded-2xl"
                 style={msg.role === "user"
-                  ? { background: "#00C2A8", color: "#000", borderBottomRightRadius: 4, fontSize: 13, fontFamily: "'Plus Jakarta Sans', sans-serif" }
+                  ? { background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.9)", border: "1px solid rgba(255,255,255,0.1)", borderBottomRightRadius: 4, fontSize: 13, fontFamily: "'Plus Jakarta Sans', sans-serif" }
                   : { background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.8)", borderBottomLeftRadius: 4, border: "1px solid rgba(255,255,255,0.07)", fontSize: 13, fontFamily: "'Plus Jakarta Sans', sans-serif", lineHeight: 1.6 }}>
                 {msg.text}
               </div>
@@ -141,7 +141,7 @@ function AIChatPreview() {
               <div className="px-4 py-3 rounded-2xl" style={{ background: "rgba(255,255,255,0.05)", borderBottomLeftRadius: 4, border: "1px solid rgba(255,255,255,0.07)" }}>
                 <div className="flex gap-1.5 items-center h-4">
                   {[0, 1, 2].map(i => (
-                    <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#00C2A8", animation: `bounce 1.2s ${i * 0.2}s infinite` }} />
+                    <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.4)", animation: `bounce 1.2s ${i * 0.2}s infinite` }} />
                   ))}
                 </div>
               </div>
@@ -151,8 +151,8 @@ function AIChatPreview() {
             <div className="flex flex-col gap-2 pt-2">
               {SUGGESTIONS.map(s => (
                 <button key={s} onClick={() => send(s)}
-                  className="text-left px-3.5 py-2.5 rounded-xl transition-all hover:border-teal-500/40"
-                  style={{ background: "rgba(0,194,168,0.04)", border: "1px solid rgba(0,194,168,0.15)", color: "rgba(255,255,255,0.5)", fontSize: 12, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  className="text-left px-3.5 py-2.5 rounded-xl transition-all hover:border-white/20"
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)", fontSize: 12, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   {s}
                 </button>
               ))}
@@ -209,8 +209,8 @@ function CaseOfTheDaySection() {
             <div className="rounded-2xl overflow-hidden" style={{ background: "#0E0E1A", border: "1px solid rgba(255,255,255,0.07)" }}>
               <div className="px-5 pt-5 pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                 <div className="flex items-center gap-2 mb-3">
-                  <CalendarCheck className="w-4 h-4" style={{ color: "#00C2A8" }} />
-                  <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#00C2A8", fontWeight: 600 }}>
+                  <CalendarCheck className="w-4 h-4" style={{ color: "rgba(255,255,255,0.45)" }} />
+                  <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", fontWeight: 600 }}>
                     {today.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                   </span>
                 </div>
@@ -242,7 +242,7 @@ function CaseOfTheDaySection() {
 
 const BLOG_CAT_COLORS: Record<string, string> = {
   "Clinical Tips": "#007AFF", "NEET-PG Prep": "#5856D6", "Medical News": "#FF3B30",
-  "Product Guides": "#34C759", "Doctor Life": "#FF9500", "Research & Studies": "#00C2A8",
+  "Product Guides": "#34C759", "Doctor Life": "#FF9500", "Research & Studies": "#8888A8",
 };
 
 function BlogNewsSection() {
@@ -307,7 +307,7 @@ function BlogNewsSection() {
                         {post.category} · {new Date(post.publishedAt || post.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
                       </span>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#00C2A8", marginTop: 2 }} />
+                    <ArrowRight className="w-3.5 h-3.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "rgba(255,255,255,0.5)", marginTop: 2 }} />
                   </Link>
                 ))}
                 <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }} />
@@ -341,7 +341,7 @@ function BlogNewsSection() {
                         {article.source?.name ?? "Medical News"} · {timeAgo(article.publishedAt)}
                       </span>
                     </div>
-                    <ExternalLink className="w-3 h-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#00C2A8", marginTop: 3 }} />
+                    <ExternalLink className="w-3 h-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "rgba(255,255,255,0.5)", marginTop: 3 }} />
                   </a>
                 ))}
                 <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }} />
@@ -370,7 +370,7 @@ function NewsletterSection() {
 
   return (
     <section className="py-28 relative" style={{ borderTop: "1px solid rgba(255,255,255,0.04)", background: "#040408" }}>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 100%, rgba(0,194,168,0.04) 0%, transparent 70%)" }} />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 100%, rgba(0,40,140,0.06) 0%, transparent 70%)" }} />
       <div className="max-w-4xl mx-auto px-6 sm:px-8 text-center relative z-10">
         <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.0, color: "#EEEEF8", marginBottom: "1rem", letterSpacing: "-0.01em" }}>
           Weekly insights<br />
@@ -381,7 +381,7 @@ function NewsletterSection() {
         </p>
         {done ? (
           <div className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl"
-            style={{ background: "rgba(0,194,168,0.08)", border: "1px solid rgba(0,194,168,0.2)", color: "#00C2A8", fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 14, fontWeight: 600 }}>
+            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.8)", fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 14, fontWeight: 600 }}>
             <CheckCircle2 className="w-4 h-4" /> You're in. Weekly updates incoming.
           </div>
         ) : (
@@ -437,18 +437,18 @@ export default function Home() {
 
       {/* ══ HERO — left-aligned, editorial, cinematic ══ */}
       <section className="relative overflow-hidden" style={{ minHeight: "100vh", background: "#040408", display: "flex", alignItems: "center" }}>
-        {/* Atmospheric glows — match splash video palette */}
+        {/* Atmospheric glows — deep blue, matches splash video */}
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 60% 70% at 10% 60%, rgba(0,194,168,0.09) 0%, transparent 65%)" }} />
+          style={{ background: "radial-gradient(ellipse 60% 70% at 10% 60%, rgba(0,40,160,0.1) 0%, transparent 65%)" }} />
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 50% 55% at 90% 25%, rgba(0,50,160,0.1) 0%, transparent 60%)" }} />
+          style={{ background: "radial-gradient(ellipse 50% 55% at 90% 25%, rgba(0,30,130,0.09) 0%, transparent 60%)" }} />
 
         {/* Large ghost letterform — purely decorative, creates depth */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none select-none hidden lg:block"
           style={{
             fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "clamp(14rem, 28vw, 22rem)",
             lineHeight: 1, color: "transparent",
-            WebkitTextStroke: "1px rgba(0,194,168,0.04)",
+            WebkitTextStroke: "1px rgba(255,255,255,0.04)",
             letterSpacing: "-0.04em", userSelect: "none",
             transform: "translateY(-48%) translateX(8%)",
           }}>
@@ -465,8 +465,8 @@ export default function Home() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex items-center gap-4 mb-12"
           >
-            <div style={{ width: 28, height: 1, background: "#00C2A8" }} />
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.32em", color: "#00C2A8", textTransform: "uppercase", fontWeight: 600 }}>
+            <div style={{ width: 28, height: 1, background: "rgba(255,255,255,0.2)" }} />
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.32em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", fontWeight: 600 }}>
               India's Clinical Platform
             </span>
           </motion.div>
@@ -561,7 +561,7 @@ export default function Home() {
           transition={{ delay: 1.5, duration: 0.8 }}
           className="absolute bottom-10 right-10 flex flex-col items-center gap-2"
         >
-          <div style={{ width: 1, height: 40, background: "linear-gradient(to bottom, rgba(0,194,168,0.5), transparent)" }} />
+          <div style={{ width: 1, height: 40, background: "linear-gradient(to bottom, rgba(255,255,255,0.25), transparent)" }} />
           <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 7, letterSpacing: "0.3em", color: "rgba(255,255,255,0.12)", textTransform: "uppercase", writingMode: "horizontal-tb" }}>Scroll</span>
         </motion.div>
 
@@ -624,7 +624,7 @@ export default function Home() {
                     className="group-hover:text-white transition-colors">
                     {pillar.name}
                   </div>
-                  <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "#00C2A8", fontWeight: 600, marginTop: 8 }}>
+                  <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.28)", fontWeight: 600, marginTop: 8 }}>
                     {pillar.headline}
                   </div>
                 </div>
@@ -641,7 +641,7 @@ export default function Home() {
                   <span className="inline-flex items-center gap-2 transition-all group-hover:gap-3"
                     style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", fontWeight: 600 }}>
                     {pillar.cta}
-                    <ArrowRight className="w-3.5 h-3.5 transition-colors group-hover:text-teal-400" style={{ color: "#00C2A8" }} />
+                    <ArrowRight className="w-3.5 h-3.5 transition-colors group-hover:text-white/70" style={{ color: "rgba(255,255,255,0.2)" }} />
                   </span>
                 </div>
               </div>
@@ -653,7 +653,7 @@ export default function Home() {
       {/* ══ AI DEMO — the centerpiece ══ */}
       <section className="relative py-32 overflow-hidden" style={{ background: "#040408", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 70% 60% at 100% 50%, rgba(0,194,168,0.055) 0%, transparent 60%)" }} />
+          style={{ background: "radial-gradient(ellipse 70% 60% at 100% 50%, rgba(0,50,150,0.07) 0%, transparent 60%)" }} />
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: "radial-gradient(ellipse 50% 50% at 0% 50%, rgba(0,40,160,0.07) 0%, transparent 60%)" }} />
 
@@ -680,7 +680,7 @@ export default function Home() {
                   "Paediatric dose calculator",
                 ].map((f, i) => (
                   <div key={i} className="flex items-center gap-3 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                    <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#00C2A8", flexShrink: 0 }} />
+                    <div style={{ width: 5, height: 5, borderRadius: "50%", background: "rgba(255,255,255,0.4)", flexShrink: 0 }} />
                     <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.5)" }}>{f}</span>
                   </div>
                 ))}
@@ -738,7 +738,7 @@ export default function Home() {
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#0A0A14"; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#06060C"; }}
                     >
-                      <Icon className="w-6 h-6 transition-colors group-hover:text-teal-400" style={{ color: "rgba(255,255,255,0.2)" }} />
+                      <Icon className="w-6 h-6 transition-colors group-hover:text-white/80" style={{ color: "rgba(255,255,255,0.2)" }} />
                       <div>
                         <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.6)", lineHeight: 1.3, display: "block" }}>{cat.name}</span>
                         {cat.productCount > 0 && (
@@ -802,7 +802,7 @@ export default function Home() {
               <span key={idx} style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: "1.1rem", color: "rgba(255,255,255,0.2)", letterSpacing: "0.05em", whiteSpace: "nowrap" }}>
                 {brand}
                 {idx % trustedBrands.length < trustedBrands.length - 1 && (
-                  <span style={{ color: "rgba(0,194,168,0.25)", margin: "0 14px" }}>·</span>
+                  <span style={{ color: "rgba(255,255,255,0.15)", margin: "0 14px" }}>·</span>
                 )}
               </span>
             ))}
@@ -845,13 +845,13 @@ export default function Home() {
                 <div className={`lg:col-span-3 flex flex-col justify-center ${i % 2 !== 0 ? "lg:order-first" : ""}`}>
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-                      style={{ background: "linear-gradient(135deg, #007AFF, #00C2A8)" }}>
+                      style={{ background: "linear-gradient(135deg, #001A6E, #0048C0)" }}>
                       {t.initials}
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 12, fontWeight: 600, color: "#EEEEF8" }}>{t.name}</span>
-                        <BadgeCheck className="w-3 h-3" style={{ color: "#00C2A8" }} />
+                        <BadgeCheck className="w-3 h-3" style={{ color: "rgba(255,255,255,0.4)" }} />
                       </div>
                       <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.3)" }}>{t.role}</span>
                     </div>

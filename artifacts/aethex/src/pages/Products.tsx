@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
+import { PageHero } from "@/components/PageHero";
 import { useLocation, useSearch } from "wouter";
 import {
   Filter, X, Search as SearchIcon, SlidersHorizontal,
@@ -417,29 +418,26 @@ export default function Products() {
           </div>
         </div>
       ) : (
-        /* ── Default white header ── */
-        <div className="bg-white border-b border-slate-200 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="flex-1">
-              <h1 className="font-display font-extrabold text-2xl md:text-3xl text-[#1C1C1E] tracking-tight">
-                {searchFilter ? `Results for "${searchFilter}"` : "Medical Store"}
-              </h1>
-              <p className="text-sm text-[#8E8E93] mt-0.5">
-                {loadingProducts ? "Loading…" : `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} found`}
-              </p>
-            </div>
+        /* ── Animated dark hero for default / search views ── */
+        <PageHero
+          tag="Medical Store"
+          title={searchFilter ? `Results for "${searchFilter}"` : "Medical Store"}
+          subtitle={loadingProducts ? "Loading products…" : `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} found · Quality medical supplies for Indian doctors`}
+          icon={<Pill className="w-7 h-7" style={{ color: "rgba(255,255,255,0.85)" }} />}
+          right={
             <form onSubmit={handleSearchSubmit} className="relative w-full sm:w-72">
-              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "rgba(255,255,255,0.35)" }} />
               <input
                 type="text"
                 value={localSearch}
                 onChange={e => setLocalSearch(e.target.value)}
                 placeholder="Search products…"
-                className="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#007AFF] focus:ring-2 focus:ring-[#007AFF]/20 transition-all"
+                className="w-full pl-9 pr-4 py-3 text-sm rounded-xl outline-none"
+                style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: "#FFFFFF" }}
               />
             </form>
-          </div>
-        </div>
+          }
+        />
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

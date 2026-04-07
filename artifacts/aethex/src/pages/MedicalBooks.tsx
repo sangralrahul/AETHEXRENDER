@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
+import { PageHero } from "@/components/PageHero";
 import {
   BookOpen, Search, ShoppingCart, Star, ChevronRight,
   GraduationCap, Library, Tag, TrendingUp, BookMarked,
@@ -402,86 +403,31 @@ export default function MedicalBooks() {
     }}>
 
       {/* ── Hero ── */}
-      <div className="relative overflow-hidden py-12">
-        {/* Background photo — library / medical books */}
-        <div className="absolute inset-0"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1600&q=80')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }} />
-        {/* Dark overlay so text stays readable */}
-        <div className="absolute inset-0"
-          style={{ background: "linear-gradient(135deg, rgba(6,10,20,0.82) 0%, rgba(13,27,42,0.78) 60%, rgba(16,32,64,0.84) 100%)" }} />
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10"
-            style={{ background: "#007AFF", transform: "translate(30%,-30%)" }} />
-          <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full blur-3xl opacity-8"
-            style={{ background: "#00C2A8", transform: "translate(-30%,30%)" }} />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-5"
-                style={{ background: "rgba(0,122,255,0.15)", border: "1px solid rgba(0,122,255,0.3)", color: "#60A5FA" }}>
-                <Library className="w-3.5 h-3.5" />
-                Aethex Medical Library — Indian Curriculum
-              </div>
-              <h1 className="text-4xl lg:text-5xl font-display font-bold text-white leading-tight mb-4">
-                Medical Books{" "}
-                <span className="bg-clip-text text-transparent"
-                  style={{ backgroundImage: "linear-gradient(135deg,#60A5FA,#2DD4BF)" }}>
-                  by Degree & Year
-                </span>
-              </h1>
-              <p className="text-base mb-6" style={{ color: "rgba(255,255,255,0.55)", maxWidth: "34rem" }}>
-                Complete Indian medical curriculum book catalog — from MBBS Year 1 to DM/MCh superspecialty. 
-                Indian editions, best INR prices, organized exactly as per NMC syllabus.
-              </p>
-              <div className="flex flex-wrap items-center gap-5 text-sm">
-                {[
-                  { icon: BookMarked, text: `${totalBooks}+ Books` },
-                  { icon: GraduationCap, text: `${totalDegrees} Degrees` },
-                  { icon: Tag, text: "Best INR Prices" },
-                  { icon: TrendingUp, text: "NMC Curriculum Mapped" },
-                ].map(({ icon: Ic, text }) => (
-                  <span key={text} className="flex items-center gap-1.5 font-semibold" style={{ color: "rgba(255,255,255,0.5)" }}>
-                    <Ic className="w-4 h-4" style={{ color: "#007AFF" }} />
-                    {text}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Search */}
-            <div className="w-full lg:w-80">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#AEAEB2" }} />
-                <input
-                  type="text"
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  placeholder="Search books, authors, subjects…"
-                  className="w-full pl-11 pr-10 py-4 rounded-2xl text-sm outline-none font-medium"
-                  style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)", color: "#FFFFFF", backdropFilter: "blur(8px)" }}
-                />
-                {search && (
-                  <button onClick={() => setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2"
-                    style={{ color: "#AEAEB2" }}>
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-              {search && (
-                <p className="text-xs mt-2 text-center" style={{ color: "rgba(255,255,255,0.4)" }}>
-                  {searchResults?.length ?? 0} result{searchResults?.length !== 1 ? "s" : ""} found
-                </p>
-              )}
-            </div>
+      <PageHero
+        tag="Medical Library"
+        title="Medical Books by Degree & Year"
+        subtitle={`${totalBooks}+ books · MBBS to DM/MCh · NMC curriculum mapped · Best INR prices`}
+        icon={<BookOpen className="w-7 h-7" style={{ color: "rgba(255,255,255,0.85)" }} />}
+        right={
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "rgba(255,255,255,0.35)" }} />
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search books, authors, subjects…"
+              className="w-full pl-11 pr-10 py-3.5 rounded-2xl text-sm outline-none font-medium"
+              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: "#FFFFFF" }}
+            />
+            {search && (
+              <button onClick={() => setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2"
+                style={{ color: "rgba(255,255,255,0.5)" }}>
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* ── Degree Tabs ── */}
       <div className="sticky top-16 z-30" style={{ background: "rgba(255,255,255,0.96)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(60,60,67,0.1)" }}>

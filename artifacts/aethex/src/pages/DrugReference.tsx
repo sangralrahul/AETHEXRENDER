@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { Search, X, ChevronDown, FlaskConical, Pill, Info, Shield, AlertTriangle, CheckCircle2, Package, Stethoscope, Lock, Star, Crown, Zap, Globe, Database, ChevronRight } from "lucide-react";
+import { PageHero } from "@/components/PageHero";
 import { DRUG_DATABASE, FREE_DRUG_LIMIT, DRUG_CLASSES_LIST, type Drug, type Schedule } from "@/data/drugDatabase";
 
 /* ── Schedule badge meta ─────────────────────────────────────────── */
@@ -468,77 +469,31 @@ export default function DrugReference() {
     <div className="min-h-screen" style={{ background: "#F2F2F7" }}>
 
       {/* ── Hero ──────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1585435557343-3b092031a831?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
-        <div className="absolute inset-0"
-          style={{ background: "linear-gradient(135deg, rgba(8,18,36,0.94) 0%, rgba(10,26,50,0.9) 50%, rgba(8,18,36,0.94) 100%)" }} />
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"
-            style={{ background: "rgba(0,194,168,0.10)" }} />
-          <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full blur-3xl translate-y-1/3"
-            style={{ background: "rgba(0,122,255,0.08)" }} />
-        </div>
-
-        <div className="max-w-5xl mx-auto px-4 text-center relative z-10 py-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-5"
-            style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.25)", color: "#2DD4BF" }}>
-            <Globe className="w-3.5 h-3.5" />
-            <span className="text-[12px] font-semibold">{DRUG_DATABASE.length}+ worldwide drugs · CDSCO + WHO Schedules</span>
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl font-black text-white mb-3 leading-tight" style={{ letterSpacing: "-1px" }}>
-            Indian Drug{" "}
-            <span style={{ background: "linear-gradient(135deg,#00C2A8,#007AFF)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Reference
-            </span>
-          </h1>
-          <p className="text-sm max-w-lg mx-auto mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>
-            Comprehensive worldwide drug database — search by drug name, salt, or brand. First {FREE_DRUG_LIMIT} drugs free.
-          </p>
-
-          {/* Free / Pro indicator */}
-          <div className="inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-full"
-            style={{ background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)", color: "#FBBF24" }}>
-            <Lock className="w-3.5 h-3.5" />
-            <span className="text-[12px] font-semibold">First {totalFree} drugs free · {totalLocked} premium drugs require subscription</span>
-          </div>
-
-          {/* Search */}
-          <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "rgba(255,255,255,0.35)" }} />
+      <PageHero
+        tag="Drug Reference"
+        title="Indian Drug Reference"
+        subtitle={`${DRUG_DATABASE.length}+ drugs · CDSCO & WHO Schedules · First ${FREE_DRUG_LIMIT} free`}
+        icon={<Pill className="w-7 h-7" style={{ color: "rgba(255,255,255,0.85)" }} />}
+        right={
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "rgba(255,255,255,0.35)" }} />
             <input
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
-              placeholder="Search by drug name, salt, brand, or indication..."
-              className="w-full pl-12 pr-10 py-4 rounded-2xl text-sm outline-none"
-              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: "#FFFFFF", boxShadow: "0 2px 12px rgba(0,0,0,0.2)" }} />
+              placeholder="Search drug name, salt, brand…"
+              className="w-full pl-11 pr-10 py-3.5 rounded-2xl text-sm outline-none"
+              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: "#FFFFFF" }}
+            />
             {query && (
-              <button onClick={() => setQuery("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 transition-opacity">
+              <button onClick={() => setQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 transition-opacity">
                 <X className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
               </button>
             )}
           </div>
+        }
+      />
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 max-w-xl mx-auto">
-            {[
-              { value: `${DRUG_DATABASE.length}+`, label: "Total Drugs" },
-              { value: `${totalFree}`, label: "Free Access" },
-              { value: `${totalLocked}+`, label: "Premium Drugs" },
-              { value: "India", label: "Brands & Salts" },
-            ].map((stat, i) => (
-              <div key={i} className="text-center py-3 px-2 rounded-xl"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <div className="text-lg font-black text-white mb-0.5">{stat.value}</div>
-                <div className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* ── Body ──────────────────────────────────────────────────── */}
       <div className="max-w-5xl mx-auto px-4 py-8">

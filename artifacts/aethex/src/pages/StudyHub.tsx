@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react";
+import { PageHero } from "@/components/PageHero";
 import { Link, useLocation } from "wouter";
 import { Star, ExternalLink, BookOpen, PlayCircle, CheckCircle2, Filter, Crown, GraduationCap, Award, Zap, Clock, Globe, Users, Sparkles, ArrowUpRight, Brain, FlaskConical, Stethoscope, ArrowRight, Search, X, ChevronRight } from "lucide-react";
 import { medicalSubjects } from "@/data/medicalSubjects";
@@ -510,50 +511,12 @@ export default function StudyHub() {
     <div className="min-h-screen " style={{ background: "#F2F2F7" }}>
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-16 pb-20">
-        {/* Background photo — medical students studying */}
-        <div className="absolute inset-0"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=1600&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
-        {/* Dark gradient overlay — lighter so the image shows */}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(8,18,36,0.78) 0%, rgba(10,26,50,0.72) 50%, rgba(8,18,36,0.80) 100%)" }} />
-        {/* Ambient glow orbs */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" style={{ background: "rgba(0,194,168,0.12)" }} />
-          <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full blur-3xl translate-y-1/3" style={{ background: "rgba(0,122,255,0.1)" }} />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5"
-              style={{ background: "rgba(0,194,168,0.15)", border: "1px solid rgba(0,194,168,0.25)", color: "#5EEAD4" }}>
-              <GraduationCap className="w-3.5 h-3.5" /> AETHEX STUDY HUB
-            </div>
-            <h1 className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight" style={{ letterSpacing: "-1px" }}>
-              Medical Exam Prep —<br />
-              <span style={{ background: "linear-gradient(135deg,#00C2A8,#007AFF)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                Everything in One Place
-              </span>
-            </h1>
-            <p className="text-base mb-8 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
-              Compare top platforms for NEET PG, NEXT, FMGE & USMLE. Essential books, YouTube channels, and the AI-powered Medical Knowledge Hub.
-            </p>
-          </div>
-          {/* Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 max-w-3xl mx-auto">
-            {[
-              { value: "10+", label: "Platforms Compared" },
-              { value: "500+", label: "Knowledge Topics" },
-              { value: "6", label: "Top Books Listed" },
-              { value: "2026", label: "Edition" },
-            ].map((stat, i) => (
-              <div key={i} className="text-center py-4 px-3 rounded-2xl"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <div className="text-2xl font-black text-white mb-0.5">{stat.value}</div>
-                <div className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PageHero
+        tag="Study Hub"
+        title="Medical Exam Prep — Everything in One Place"
+        subtitle="Compare top platforms for NEET PG, NEXT, FMGE & USMLE. AI-powered Medical Knowledge Hub."
+        icon={<GraduationCap className="w-7 h-7" style={{ color: "rgba(255,255,255,0.85)" }} />}
+      />
 
       {/* ── Compare Bar ──────────────────────────────────────────────── */}
       {compareIds.length > 0 && (

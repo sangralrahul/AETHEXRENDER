@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { PageHero } from "@/components/PageHero";
 import { Link, useSearch } from "wouter";
 import { Search, Clock, Eye, Rss, ChevronLeft, ChevronRight, Mail, CheckCircle2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -104,21 +105,31 @@ export default function Blog() {
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-primary to-primary/80 text-white py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold bg-white/20 rounded-full px-3 py-1 mb-4"><Rss className="w-3 h-3" /> Aethex Medical Blog</div>
-          <h1 className="text-4xl font-bold mb-3">Medical Insights, News & Study Tips</h1>
-          <p className="text-primary-foreground/80 text-lg mb-8">Expert articles for Indian doctors and medical students — NEET-PG prep, clinical tips, product guides, and the latest in medicine.</p>
-          <form onSubmit={handleSearch} className="max-w-md mx-auto flex gap-2">
+      <PageHero
+        tag="Medical Blog"
+        title="Medical Insights, News & Study Tips"
+        subtitle="Expert articles for Indian doctors and medical students — NEET-PG prep, clinical tips, product guides, and the latest in medicine."
+        icon={<Rss className="w-7 h-7" style={{ color: "rgba(255,255,255,0.85)" }} />}
+        right={
+          <form onSubmit={handleSearch} className="flex gap-2 w-full sm:w-80">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input value={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder="Search articles..."
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-white/40" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "rgba(255,255,255,0.35)" }} />
+              <input
+                value={searchInput}
+                onChange={e => setSearchInput(e.target.value)}
+                placeholder="Search articles…"
+                className="w-full pl-9 pr-4 py-3 rounded-xl text-sm outline-none"
+                style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: "#FFFFFF" }}
+              />
             </div>
-            <button type="submit" className="px-4 py-2.5 bg-white text-primary font-semibold text-sm rounded-xl hover:bg-slate-100 transition-all">Search</button>
+            <button type="submit"
+              className="px-4 py-3 font-semibold text-sm rounded-xl transition-all hover:opacity-90 shrink-0"
+              style={{ background: "#00C2A8", color: "#FFFFFF" }}>
+              Search
+            </button>
           </form>
-        </div>
-      </div>
+        }
+      />
 
       <div className="max-w-7xl mx-auto px-4 py-10 flex gap-8">
         {/* Main Content */}

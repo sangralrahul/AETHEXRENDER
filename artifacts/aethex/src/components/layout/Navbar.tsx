@@ -81,15 +81,6 @@ export function BrandSwitcherBar() {
   );
 }
 
-export function AnnouncementBar() {
-  return (
-    <div data-navbar-announcement className="no-print w-full text-center py-2 px-4" style={{ background: "rgba(0,194,168,0.06)", borderBottom: "1px solid rgba(0,194,168,0.1)" }}>
-      <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, letterSpacing: "0.14em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", fontWeight: 500 }}>
-        India's Medical Platform &nbsp;·&nbsp; Trusted by Doctors Nationwide
-      </span>
-    </div>
-  );
-}
 
 const clinicalToolsMenu = [
   { href: "/tools/prescription", icon: FileText, label: "Prescription Writer", desc: "AI-powered Rx generator", color: "#007AFF" },

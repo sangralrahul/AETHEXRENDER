@@ -455,7 +455,7 @@ export function Navbar() {
       <header
         className="no-print transition-all duration-500"
         style={{
-          background: isScrolled ? "rgba(6,6,12,0.92)" : "rgba(6,6,12,0.60)",
+          background: isScrolled ? "rgba(4,4,8,0.98)" : "rgba(4,4,8,0.97)",
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",
           height: 60,

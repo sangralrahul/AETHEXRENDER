@@ -670,14 +670,45 @@ body::before {
   pointer-events: none;
   z-index: 0;
   background-image:
-    radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.35) 0%, transparent 100%),
-    radial-gradient(1px 1px at 34% 44%, rgba(255,255,255,0.2) 0%, transparent 100%),
-    radial-gradient(1px 1px at 56% 8%, rgba(255,255,255,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 78% 62%, rgba(255,255,255,0.25) 0%, transparent 100%),
-    radial-gradient(1px 1px at 91% 25%, rgba(255,255,255,0.2) 0%, transparent 100%),
-    radial-gradient(1px 1px at 22% 75%, rgba(255,255,255,0.15) 0%, transparent 100%),
-    radial-gradient(1px 1px at 67% 85%, rgba(255,255,255,0.2) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 45% 55%, rgba(0,194,168,0.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 5% 50%, rgba(255,255,255,0.1) 0%, transparent 100%),
-    radial-gradient(1px 1px at 88% 90%, rgba(255,255,255,0.15) 0%, transparent 100%);
+    radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 34% 44%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 56% 8%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 78% 62%, rgba(255,255,255,0.18) 0%, transparent 100%),
+    radial-gradient(1px 1px at 91% 25%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 22% 75%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 67% 85%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 45% 55%, rgba(0,194,168,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 50%, rgba(255,255,255,0.08) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 90%, rgba(255,255,255,0.12) 0%, transparent 100%);
+}
+
+/* ── Film grain cinematic texture ──────────────────────────────────────────── */
+.aethex-grain {
+  position: relative;
+  isolation: isolate;
+}
+.aethex-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  background-size: 256px 256px;
+}
+
+/* ── Cinematic horizontal rule ─────────────────────────────────────────────── */
+.aethex-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,194,168,0.4) 30%, rgba(255,255,255,0.08) 70%, transparent 100%);
+}
+
+/* ── Large teal glow — hero accent ────────────────────────────────────────── */
+@keyframes aethex-pulse-glow {
+  0%, 100% { opacity: 0.06; transform: scale(1); }
+  50% { opacity: 0.12; transform: scale(1.04); }
+}
+.aethex-hero-glow {
+  animation: aethex-pulse-glow 8s ease-in-out infinite;
 }

@@ -720,120 +720,102 @@ export default function Home() {
   return (
     <div className="min-h-screen" style={{ background: "#06060C" }}>
 
-      {/* ── HERO — full-screen cinematic ── */}
-      <section className="relative overflow-hidden flex flex-col items-center justify-center"
-        style={{ minHeight: "100vh", background: "#06060C" }}>
+      {/* ── HERO — cinematic full-screen ── */}
+      <section className="aethex-grain relative overflow-hidden flex flex-col items-center justify-center"
+        style={{ minHeight: "100vh", background: "#040408" }}>
 
-        {/* Atmospheric background glows */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,194,168,0.06) 0%, transparent 65%)" }} />
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 40% 60% at 15% 60%, rgba(0,80,180,0.05) 0%, transparent 65%)" }} />
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 40% 50% at 85% 40%, rgba(0,194,168,0.04) 0%, transparent 65%)" }} />
+        {/* Deep atmospheric glow — pulsing like splash */}
+        <div className="aethex-hero-glow absolute pointer-events-none"
+          style={{ inset: 0, background: "radial-gradient(ellipse 70% 55% at 50% 30%, rgba(0,194,168,0.18) 0%, transparent 65%)" }} />
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 50% 40% at 20% 70%, rgba(0,60,140,0.1) 0%, transparent 60%)" }} />
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 40% 35% at 80% 30%, rgba(0,194,168,0.07) 0%, transparent 60%)" }} />
 
-        {/* Horizontal rule — cinema feel */}
-        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(0,194,168,0.3) 50%, transparent 100%)" }} />
+        {/* Top cinematic rule */}
+        <div className="aethex-rule absolute top-0 left-0 right-0" />
 
-        <div className="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-8 text-center py-32">
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 text-center" style={{ paddingTop: "22vh", paddingBottom: "18vh" }}>
 
-          {/* Eyebrow — refined label */}
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="flex items-center justify-center gap-3 mb-10"
-          >
-            <div style={{ width: 32, height: 1, background: "rgba(0,194,168,0.5)" }} />
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, letterSpacing: "0.2em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>
-              India's Medical Platform
-            </span>
-            <div style={{ width: 32, height: 1, background: "rgba(0,194,168,0.5)" }} />
-          </motion.div>
-
-          {/* Main headline — dramatic serif */}
+          {/* Main headline — as dramatic as the video */}
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.1 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
             style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontWeight: 300,
-              fontSize: "clamp(3.6rem, 9vw, 8rem)",
-              lineHeight: 0.95,
-              letterSpacing: "-0.01em",
-              color: "#EEEEF8",
-              marginBottom: "0.5em",
+              fontSize: "clamp(4.5rem, 13vw, 11rem)",
+              lineHeight: 0.92,
+              letterSpacing: "-0.02em",
+              color: "#F2F2F8",
+              marginBottom: "0.6em",
             }}
           >
-            Medicine,
+            Everything
             <br />
-            <span style={{ fontStyle: "italic", background: "linear-gradient(135deg,#A8D8D0 0%,#00C2A8 40%,#A8D8D0 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", fontWeight: 400 }}>
-              Redefined.
-            </span>
+            <span style={{ fontStyle: "italic", color: "rgba(242,242,248,0.38)", fontWeight: 300 }}>Medicine.</span>
           </motion.h1>
 
-          {/* Sub-headline */}
+          {/* Sub-tagline — restrained, refined */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(1rem, 2vw, 1.2rem)", color: "rgba(255,255,255,0.45)", maxWidth: 520, margin: "0 auto 3rem", lineHeight: 1.7, fontWeight: 400 }}
+            transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(0.875rem, 1.8vw, 1.05rem)", color: "rgba(255,255,255,0.35)", maxWidth: 480, margin: "0 auto 3.5rem", lineHeight: 1.8, fontWeight: 400, letterSpacing: "0.01em" }}
           >
-            AI clinical assistant · Drug reference · NEET-PG prep · Medical store —
+            AI clinical assistant · Drug reference · NEET-PG prep · Medical store —<br className="hidden sm:block" />
             one platform built for Indian doctors.
           </motion.p>
 
           {/* CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.45 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            transition={{ duration: 0.8, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-3"
           >
             <Link href="/ai-assistant"
               className="inline-flex items-center gap-2.5 transition-all hover:opacity-90 active:scale-[0.97]"
-              style={{ background: "#00C2A8", color: "#000", borderRadius: 4, padding: "14px 32px", fontSize: 14, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: "0 0 32px rgba(0,194,168,0.25)" }}>
-              <Sparkles className="w-4 h-4" />
+              style={{ background: "#00C2A8", color: "#000010", borderRadius: 2, padding: "13px 30px", fontSize: 13, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: "0 0 40px rgba(0,194,168,0.2)" }}>
+              <Sparkles className="w-3.5 h-3.5" />
               Try Cadus AI
             </Link>
             <Link href="/shop"
-              className="inline-flex items-center gap-2 transition-all active:scale-[0.97]"
-              style={{ background: "transparent", color: "rgba(255,255,255,0.7)", borderRadius: 4, padding: "14px 32px", fontSize: 14, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "'Plus Jakarta Sans', sans-serif", border: "1px solid rgba(255,255,255,0.15)" }}>
-              Shop Essentials <ArrowRight className="w-4 h-4" />
+              className="inline-flex items-center gap-2 transition-all hover:border-white/30 active:scale-[0.97]"
+              style={{ background: "transparent", color: "rgba(255,255,255,0.55)", borderRadius: 2, padding: "13px 30px", fontSize: 13, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "'Plus Jakarta Sans', sans-serif", border: "1px solid rgba(255,255,255,0.12)" }}>
+              Shop Essentials <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </motion.div>
 
-          {/* Trust indicators */}
+          {/* Trust strip — minimal, small */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.7 }}
-            className="flex items-center justify-center gap-6 mt-14 flex-wrap"
+            transition={{ duration: 1.2, delay: 0.85 }}
+            className="flex items-center justify-center gap-8 mt-16 flex-wrap"
           >
-            {[
-              { label: "Doctors Trust Us" },
-              { label: "AI-Powered Clinical Tools" },
-              { label: "Free to Start" },
-              { label: "Pan-India Delivery" },
-            ].map((item, i) => (
+            {["Doctors Trust Us", "AI-Powered", "Free to Start", "Pan-India Delivery"].map((label, i) => (
               <div key={i} className="flex items-center gap-2">
-                <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#00C2A8" }} />
-                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 500 }}>{item.label}</span>
+                <div style={{ width: 3, height: 3, borderRadius: "50%", background: "rgba(0,194,168,0.6)" }} />
+                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.22)", letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 500 }}>{label}</span>
               </div>
             ))}
           </motion.div>
         </div>
 
-        {/* Bottom fade into next section */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none" style={{ background: "linear-gradient(to bottom, transparent, #06060C)" }} />
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none" style={{ background: "linear-gradient(to bottom, transparent, #06060C)" }} />
 
         {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          transition={{ delay: 1.4, duration: 0.8 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5"
         >
-          <div style={{ width: 1, height: 40, background: "linear-gradient(to bottom, rgba(0,194,168,0.5), transparent)" }} />
-          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.2em", color: "rgba(255,255,255,0.2)", textTransform: "uppercase" }}>Scroll</span>
+          <div style={{ width: 1, height: 36, background: "linear-gradient(to bottom, rgba(0,194,168,0.4), transparent)" }} />
+          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 8, letterSpacing: "0.25em", color: "rgba(255,255,255,0.15)", textTransform: "uppercase" }}>Scroll</span>
         </motion.div>
       </section>
 
@@ -994,43 +976,34 @@ export default function Home() {
       <section className="py-24" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-14 gap-4">
-            <div>
-              <div className="flex items-center gap-4 mb-5">
-                <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.25em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>Medical Store</span>
-              </div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4.5vw, 3.8rem)", lineHeight: 1.05, color: "#EEEEF8" }}>
-                Shop by Category
-              </h2>
-            </div>
-            <Link href="/shop" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 12, letterSpacing: "0.1em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", fontWeight: 600, whiteSpace: "nowrap" }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 5vw, 4.2rem)", lineHeight: 1.0, color: "#EEEEF8", letterSpacing: "-0.01em" }}>
+              Shop by Category
+            </h2>
+            <Link href="/shop" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, letterSpacing: "0.12em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", fontWeight: 600, whiteSpace: "nowrap" }}>
               View All →
             </Link>
           </div>
           {loadingCategories ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-36 animate-pulse rounded-2xl" style={{ background: "rgba(120,120,128,0.1)" }} />
+                <div key={i} className="h-28 animate-pulse" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.05)" }} />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               {(categories || []).map((cat: any) => {
                 const Icon = categoryIconMap[cat.iconName as string] || Activity;
-                const gradient = categoryGradients[cat.slug] ?? "from-blue-500 to-blue-700";
                 return (
                   <Link
                     key={cat.slug}
                     href={`/shop?category=${cat.slug}`}
-                    className="group flex flex-col items-center p-5 rounded-2xl transition-all hover:-translate-y-1"
-                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,194,168,0.25)"; (e.currentTarget as HTMLElement).style.background = "rgba(0,194,168,0.05)"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.07)"; (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"; }}
+                    className="group flex flex-col items-start p-5 transition-all"
+                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 2 }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,194,168,0.3)"; (e.currentTarget as HTMLElement).style.background = "rgba(0,194,168,0.04)"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.03)"; }}
                   >
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-all group-hover:scale-110 bg-gradient-to-br ${gradient}`}>
-                      <Icon className="w-7 h-7 text-white" />
-                    </div>
-                    <span className="text-sm font-semibold text-center leading-tight" style={{ color: "rgba(255,255,255,0.85)" }}>{cat.name}</span>
+                    <Icon className="w-5 h-5 mb-4 transition-all group-hover:text-teal-400" style={{ color: "rgba(255,255,255,0.35)" }} />
+                    <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.7)", lineHeight: 1.3 }}>{cat.name}</span>
                   </Link>
                 );
               })}
@@ -1067,19 +1040,13 @@ export default function Home() {
 
       {/* ── Featured Products ── */}
       <section className="py-24 relative" style={{ background: "#080810" }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,194,168,0.03) 0%, transparent 70%)" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,194,168,0.025) 0%, transparent 70%)" }} />
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-14 gap-4">
-            <div>
-              <div className="flex items-center gap-4 mb-5">
-                <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.25em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>Featured</span>
-              </div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4.5vw, 3.8rem)", lineHeight: 1.05, color: "#EEEEF8" }}>
-                Top Picks
-              </h2>
-            </div>
-            <Link href="/shop" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 12, letterSpacing: "0.1em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", fontWeight: 600, whiteSpace: "nowrap" }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 5vw, 4.2rem)", lineHeight: 1.0, color: "#EEEEF8", letterSpacing: "-0.01em" }}>
+              Top Picks
+            </h2>
+            <Link href="/shop" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, letterSpacing: "0.12em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", fontWeight: 600, whiteSpace: "nowrap" }}>
               View All →
             </Link>
           </div>
@@ -1108,135 +1075,77 @@ export default function Home() {
 
       {/* ── Daily MCQ Widget ── */}
       <section className="py-24 relative overflow-hidden" style={{ background: "#080810", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 0%, rgba(0,80,160,0.08) 0%, transparent 70%)" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 0%, rgba(0,80,160,0.06) 0%, transparent 70%)" }} />
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
-          <div className="flex items-center gap-4 mb-10">
-            <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.25em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>Free Daily Practice</span>
-          </div>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 1.05, color: "#EEEEF8", marginBottom: "3rem" }}>
-            Question of the Day
-          </h2>
-          <div className="max-w-2xl">
-            <DailyMCQWidget />
+          <div className="flex flex-col lg:flex-row lg:items-start gap-16">
+            <div className="lg:w-80 shrink-0">
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(3rem, 6vw, 5rem)", lineHeight: 0.9, color: "rgba(255,255,255,0.07)", marginBottom: "1rem", letterSpacing: "-0.02em" }}>MCQ</div>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", lineHeight: 1.1, color: "#EEEEF8", marginBottom: "1.2rem" }}>
+                Question of the Day
+              </h2>
+              <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)", lineHeight: 1.7 }}>
+                One clinical question. Every day. Free.
+              </p>
+            </div>
+            <div className="flex-1">
+              <DailyMCQWidget />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
-      <section className="py-24 relative overflow-hidden" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-        <div className="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl pointer-events-none"
-          style={{ background: "rgba(0,122,255,0.04)", transform: "translate(-40%,-40%)" }} />
-        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none"
-          style={{ background: "rgba(0,194,168,0.03)", transform: "translate(30%,30%)" }} />
-
+      {/* ── Testimonials — editorial pull-quote style ── */}
+      <section className="py-28 relative overflow-hidden" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
-          {/* Heading */}
-          <div className="mb-14">
-            <div className="flex items-center gap-4 mb-8">
-              <div style={{ width: 24, height: 1, background: "rgba(0,194,168,0.5)" }} />
-              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.25em", color: "#00C2A8", fontWeight: 600, textTransform: "uppercase" }}>Verified Reviews</span>
-            </div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4.5vw, 3.8rem)", lineHeight: 1.05, color: "#EEEEF8" }}>
+          {/* Heading — asymmetric editorial */}
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-20 gap-4">
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 5vw, 4.2rem)", lineHeight: 1.0, color: "#EEEEF8", letterSpacing: "-0.01em" }}>
               What Doctors<br />
-              <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.35)" }}>Are Saying</span>
+              <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.28)" }}>Are Saying</span>
             </h2>
+            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.2)", letterSpacing: "0.15em", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+              Verified reviews
+            </div>
           </div>
 
-          {/* Desktop 3×2 grid */}
-          <div className="hidden md:grid md:grid-cols-3 gap-5">
-            {testimonials.map((t, idx) => (
-              <div key={idx}
-                className="group flex flex-col p-6 rounded-2xl relative transition-all duration-200 hover:-translate-y-1.5"
-                style={{
-                  background: "#0E0E1A",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                  boxShadow: "0 2px 20px rgba(0,0,0,0.4)",
-                }}>
-                {/* Hover accent border */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                  style={{ boxShadow: "0 0 0 1.5px rgba(0,194,168,0.2), 0 8px 32px rgba(0,194,168,0.06)" }} />
-
-                {/* Quote mark */}
-                <Quote className="absolute top-5 right-5 w-8 h-8 opacity-[0.07]" style={{ color: "#00C2A8" }} />
-
-                {/* Stars */}
-                <div className="flex items-center gap-0.5 mb-4">
-                  {[1,2,3,4,5].map(s => (
-                    <svg key={s} className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#FF9500">
-                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                    </svg>
-                  ))}
-                  <span className="text-xs font-semibold ml-1.5" style={{ color: "#FF9500" }}>5.0</span>
-                </div>
-
-                {/* Quote text */}
-                <p className="text-sm leading-relaxed flex-1 mb-6" style={{ color: "rgba(255,255,255,0.7)" }}>
-                  "{t.quote}"
-                </p>
-
-                {/* Doctor info */}
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm shrink-0 text-white"
-                    style={{ background: t.gradient }}>
-                    {t.initials}
+          {/* Editorial quote rows — alternating sides */}
+          <div className="space-y-0">
+            {testimonials.slice(0, 4).map((t, idx) => (
+              <div key={idx} className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10"
+                style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                {/* Stars + attribution — narrow column */}
+                <div className={`lg:col-span-3 flex flex-col justify-center ${idx % 2 !== 0 ? "lg:order-last" : ""}`}>
+                  <div className="flex gap-0.5 mb-3">
+                    {[1,2,3,4,5].map(s => (
+                      <svg key={s} className="w-3 h-3" viewBox="0 0 24 24" fill="#FF9500">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                      </svg>
+                    ))}
                   </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-1">
-                      <span className="font-bold text-sm truncate" style={{ color: "#EEEEF8" }}>{t.name}</span>
-                      <BadgeCheck className="w-3.5 h-3.5 shrink-0" style={{ color: "#00C2A8" }} />
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 text-white"
+                      style={{ background: t.gradient }}>
+                      {t.initials}
                     </div>
-                    <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.4)" }}>
-                      {t.role} · {t.city}
-                    </p>
+                    <div>
+                      <div className="flex items-center gap-1">
+                        <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 12, fontWeight: 600, color: "#EEEEF8" }}>{t.name}</span>
+                        <BadgeCheck className="w-3 h-3 shrink-0" style={{ color: "#00C2A8" }} />
+                      </div>
+                      <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.35)" }}>{t.role} · {t.city}</p>
+                    </div>
                   </div>
+                </div>
+                {/* Quote — wide column */}
+                <div className={`lg:col-span-9 ${idx % 2 !== 0 ? "lg:order-first" : ""}`}>
+                  <p style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontStyle: "italic", fontSize: "clamp(1.3rem, 2.5vw, 2rem)", lineHeight: 1.45, color: "rgba(255,255,255,0.75)" }}>
+                    "{t.quote}"
+                  </p>
                 </div>
               </div>
             ))}
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }} />
           </div>
-
-          {/* Mobile horizontal carousel */}
-          <div className="flex md:hidden gap-4 overflow-x-auto pb-4 snap-x snap-mandatory"
-            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
-            {testimonials.map((t, idx) => (
-              <div key={idx}
-                className="flex flex-col p-5 rounded-2xl relative shrink-0 snap-start"
-                style={{
-                  width: "82vw",
-                  maxWidth: 320,
-                  background: "#0E0E1A",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                  boxShadow: "0 2px 20px rgba(0,0,0,0.4)",
-                }}>
-                <Quote className="absolute top-4 right-4 w-7 h-7 opacity-[0.07]" style={{ color: "#00C2A8" }} />
-                <div className="flex items-center gap-0.5 mb-3">
-                  {[1,2,3,4,5].map(s => (
-                    <svg key={s} className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#FF9500">
-                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: "rgba(255,255,255,0.7)" }}>
-                  "{t.quote}"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 text-white"
-                    style={{ background: t.gradient }}>
-                    {t.initials}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-1">
-                      <span className="font-bold text-sm truncate" style={{ color: "#EEEEF8" }}>{t.name}</span>
-                      <BadgeCheck className="w-3.5 h-3.5 shrink-0" style={{ color: "#00C2A8" }} />
-                    </div>
-                    <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{t.role} · {t.city}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          {/* Swipe hint for mobile */}
-          <p className="md:hidden text-center text-xs mt-3" style={{ color: "rgba(255,255,255,0.25)" }}>Swipe to see more →</p>
         </div>
       </section>
 

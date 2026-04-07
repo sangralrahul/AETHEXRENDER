@@ -151,7 +151,7 @@ function Router() {
       <Route>
         {() => (
           <div className="flex flex-col min-h-screen">
-            <div className="fixed top-0 left-0 right-0 z-[60]">
+            <div className="fixed top-0 left-0 right-0 z-[60]" style={{ background: "#06060C" }}>
               <BrandSwitcherBar />
               <AnnouncementBar />
               <Navbar />

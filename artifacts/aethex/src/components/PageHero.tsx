@@ -112,34 +112,38 @@ export function PageHero({ tag, title, subtitle, icon, right }: PageHeroProps) {
       {/* very subtle horizontal rule at bottom */}
       <div className="absolute bottom-0 inset-x-0 h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
 
-      {/* minimal top bar — AETHEX home link */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 flex items-center gap-3">
+      {/* top bar — prominent home button */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-1 flex items-center">
         <Link
           href="/"
-          className="flex items-center gap-2 group"
+          className="inline-flex items-center gap-2.5 group active:scale-95 transition-transform"
           style={{ textDecoration: "none" }}
         >
+          {/* pill button — clearly tappable on mobile */}
           <div
-            className="flex items-center justify-center w-7 h-7 rounded-lg transition-all group-hover:bg-white/10"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
-          >
-            <ChevronLeft className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.5)" }} />
-          </div>
-          <span
+            className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all group-hover:bg-white/15 active:bg-white/20"
             style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontWeight: 400,
-              fontSize: "1.05rem",
-              letterSpacing: "0.06em",
-              color: "rgba(255,255,255,0.55)",
-              transition: "color 0.2s",
+              background: "rgba(255,255,255,0.10)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              backdropFilter: "blur(8px)",
+              minHeight: 36,
             }}
-            className="group-hover:text-white/80"
           >
-            AETHEX
-          </span>
+            <ChevronLeft className="w-4 h-4 shrink-0" style={{ color: "rgba(255,255,255,0.85)" }} />
+            <span
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontWeight: 400,
+                fontSize: "1.05rem",
+                letterSpacing: "0.07em",
+                color: "rgba(255,255,255,0.88)",
+              }}
+            >
+              AETHEX
+            </span>
+            <Home className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(255,255,255,0.45)" }} />
+          </div>
         </Link>
-        <Home className="w-3 h-3" style={{ color: "rgba(255,255,255,0.18)" }} />
       </div>
 
       {/* content */}

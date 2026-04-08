@@ -7,10 +7,10 @@ import {
   Microscope, PenLine, Trophy, ShieldCheck, Truck, RotateCcw, Receipt, Send,
   MessageSquare, Search, Image, Zap, Wrench, ClipboardList, CheckCircle2,
   Smartphone, Users, CheckCheck, Bot, ChevronRight, Pill, Plus, Syringe,
-  Bone, Thermometer, Eye, Baby, Brain,
+  Bone, Thermometer, Eye, Baby, Brain, Store, Calculator,
   Wind, Droplets, Waves, ScanLine, Heart, AlertTriangle, Scan, Dna,
   Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2,
-  Rss, Globe, Clock, ExternalLink, CalendarCheck, BadgeCheck, Star
+  Rss, Globe, Clock, ExternalLink, CalendarCheck, BadgeCheck, Star, ArrowUpRight
 } from "lucide-react";
 import { getTodaysCase } from "@/data/clinicalCases";
 import { useListProducts, useListCategories } from "@workspace/api-client-react";
@@ -20,6 +20,71 @@ import { useAddToCart } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { DailyMCQWidget } from "@/components/DailyMCQWidget";
+
+function HeroAIInput() {
+  const [query, setQuery] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      window.location.href = `/ai-assistant?q=${encodeURIComponent(query.trim())}`;
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="w-full">
+      <div className="relative rounded-2xl transition-all duration-300 group"
+        style={{
+          background: "#FFFFFF",
+          border: "1.5px solid rgba(0,0,0,0.1)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.05)",
+        }}
+        onFocus={() => {}}
+      >
+        <div className="flex items-center px-5 py-4 gap-4">
+          <Sparkles className="w-5 h-5 shrink-0" style={{ color: "#00C2A8" }} />
+          <input
+            type="text"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Ask Cadus AI — symptom, drug, calculation, differential…"
+            className="flex-1 bg-transparent border-0 outline-none text-base placeholder:text-gray-400"
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: 15,
+              color: "#0A0A0F",
+            }}
+            onFocus={e => {
+              const wrapper = e.currentTarget.closest("div[class*='rounded-2xl']") as HTMLElement | null;
+              if (wrapper) {
+                wrapper.style.borderColor = "rgba(0,194,168,0.45)";
+                wrapper.style.boxShadow = "0 0 0 4px rgba(0,194,168,0.08), 0 4px 24px rgba(0,0,0,0.07)";
+              }
+            }}
+            onBlur={e => {
+              const wrapper = e.currentTarget.closest("div[class*='rounded-2xl']") as HTMLElement | null;
+              if (wrapper) {
+                wrapper.style.borderColor = "rgba(0,0,0,0.1)";
+                wrapper.style.boxShadow = "0 4px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.05)";
+              }
+            }}
+          />
+          <button type="submit"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:opacity-90 active:scale-[0.97] shrink-0"
+            style={{
+              background: "#00C2A8",
+              color: "#FFFFFF",
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              boxShadow: "0 2px 12px rgba(0,194,168,0.3)",
+            }}>
+            <Send className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Ask AI</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+}
 
 const categoryIconMap: Record<string, React.ElementType> = {
   Shirt, FlaskConical, BookOpen, Stethoscope, Scissors, Activity, Shield, HeartPulse,
@@ -435,257 +500,169 @@ export default function Home() {
   return (
     <div className="min-h-screen" style={{ background: "#06060C" }}>
 
-      {/* ══ HERO — cinematic, editorial, world-class ══ */}
-      <section className="relative overflow-hidden" style={{ minHeight: "100vh", background: "#030307", display: "flex", alignItems: "center" }}>
+      {/* ══ HERO — Replit-inspired centered layout ══ */}
+      <section className="relative overflow-hidden" style={{ minHeight: "calc(100vh - 141px)", background: "#FAFAF8", display: "flex", alignItems: "center" }}>
 
-        {/* ── Multi-layer atmospheric depth ── */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 90% at -10% 70%, rgba(0,30,140,0.14) 0%, transparent 55%)" }} />
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 70% at 110% 20%, rgba(0,20,100,0.1) 0%, transparent 55%)" }} />
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 40% 40% at 65% 80%, rgba(0,194,168,0.03) 0%, transparent 60%)" }} />
+        {/* Subtle grain texture */}
+        <div className="absolute inset-0 pointer-events-none" style={{ opacity: 0.018, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: "200px 200px" }} />
 
-        {/* ── Fine grain texture overlay ── */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
-          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")", backgroundSize: "200px 200px" }} />
+        {/* Centered hero content */}
+        <div className="relative z-10 w-full max-w-3xl mx-auto px-6 py-20 text-center">
 
-        {/* ── Ghost Æ letterform — right side, creates depth ── */}
-        <div className="absolute right-0 top-0 bottom-0 flex items-center pointer-events-none select-none hidden lg:flex"
-          style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontWeight: 700,
-            fontSize: "clamp(16rem, 32vw, 28rem)",
-            lineHeight: 1,
-            color: "transparent",
-            WebkitTextStroke: "1px rgba(255,255,255,0.028)",
-            letterSpacing: "-0.04em",
-            userSelect: "none",
-            transform: "translateX(12%)",
-            zIndex: 0,
-          }}>Æ</div>
-
-        {/* ── Thin horizontal grid lines — adds precision ── */}
-        {[30, 55, 78].map(pct => (
-          <div key={pct} className="absolute left-0 right-0 pointer-events-none" style={{ top: `${pct}%`, height: 1, background: "rgba(255,255,255,0.025)" }} />
-        ))}
-
-        {/* ── MAIN HERO CONTENT ── */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16" style={{ paddingTop: "20vh", paddingBottom: "16vh" }}>
-
-          {/* Eyebrow — ultra-restrained */}
+          {/* Eyebrow badge */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-center gap-4 mb-10"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="inline-flex items-center gap-2 mb-8"
           >
-            <div className="flex items-center gap-2">
-              <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#00C2A8", boxShadow: "0 0 8px rgba(0,194,168,0.8)" }} />
-              <div style={{ width: 32, height: 1, background: "linear-gradient(90deg, rgba(0,194,168,0.6), rgba(255,255,255,0.15))" }} />
-            </div>
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.36em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", fontWeight: 600 }}>
-              India's Clinical Platform · Est. 2024
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold"
+              style={{ background: "rgba(0,194,168,0.1)", color: "#009E87", border: "1px solid rgba(0,194,168,0.22)", fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: "0.04em" }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#00C2A8", display: "inline-block" }} />
+              India's Clinical Platform
             </span>
           </motion.div>
 
-          {/* ── Two-column layout: headline left, stats right ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-end">
-
-            {/* LEFT — headline */}
-            <div className="lg:col-span-7">
-              <div style={{ overflow: "hidden" }}>
-                <motion.h1
-                  initial={{ y: 100, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
-                  style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontWeight: 300,
-                    fontSize: "clamp(5rem, 14vw, 12rem)",
-                    lineHeight: 0.86,
-                    letterSpacing: "-0.03em",
-                    color: "#F0F0F8",
-                    display: "block",
-                  }}
-                >
-                  Every
-                </motion.h1>
-              </div>
-              <div style={{ overflow: "hidden" }}>
-                <motion.h1
-                  initial={{ y: 100, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-                  style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontWeight: 300,
-                    fontSize: "clamp(5rem, 14vw, 12rem)",
-                    lineHeight: 0.86,
-                    letterSpacing: "-0.03em",
-                    color: "#F0F0F8",
-                    display: "block",
-                  }}
-                >
-                  thing
-                </motion.h1>
-              </div>
-              <div style={{ overflow: "hidden" }}>
-                <motion.h1
-                  initial={{ y: 100, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
-                  style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontWeight: 300,
-                    fontStyle: "italic",
-                    fontSize: "clamp(5rem, 14vw, 12rem)",
-                    lineHeight: 0.86,
-                    letterSpacing: "-0.03em",
-                    color: "rgba(240,240,248,0.2)",
-                    display: "block",
-                  }}
-                >
-                  Medicine.
-                </motion.h1>
-              </div>
-
-              {/* Sub-line + CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 28 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-10 pt-8"
-                style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-              >
-                <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(0.8rem, 1.4vw, 0.95rem)", color: "rgba(255,255,255,0.3)", lineHeight: 1.9, maxWidth: 400, marginBottom: "2rem" }}>
-                  AI clinical intelligence · Drug reference · NEET-PG prep ·
-                  Medical supplies — one platform, built for Indian physicians.
-                </p>
-
-                <div className="flex items-center gap-4 flex-wrap">
-                  {/* PRIMARY CTA */}
-                  <Link href="/ai-assistant"
-                    className="group relative inline-flex items-center gap-2.5 transition-all hover:opacity-95 active:scale-[0.97]"
-                    style={{
-                      background: "#00C2A8",
-                      color: "#000814",
-                      borderRadius: 3,
-                      padding: "15px 36px",
-                      fontSize: 11,
-                      fontWeight: 800,
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      fontFamily: "'Plus Jakarta Sans', sans-serif",
-                      boxShadow: "0 0 48px rgba(0,194,168,0.22), 0 2px 16px rgba(0,194,168,0.12)",
-                      whiteSpace: "nowrap",
-                    }}>
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Try Cadus AI — Free
-                    {/* Shimmer */}
-                    <div className="absolute inset-0 rounded-sm overflow-hidden pointer-events-none">
-                      <div className="absolute top-0 -left-full h-full w-1/2 bg-white opacity-[0.08] transform skew-x-12 group-hover:translate-x-[500%] transition-transform duration-700" />
-                    </div>
-                  </Link>
-
-                  {/* SECONDARY CTA */}
-                  <Link href="/shop"
-                    className="inline-flex items-center gap-2 transition-all active:scale-[0.97] group"
-                    style={{ color: "rgba(255,255,255,0.28)", fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap", padding: "15px 4px" }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)"}
-                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.28)"}>
-                    Shop Essentials
-                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* RIGHT — three large stat cards, staggered */}
-            <div className="hidden lg:flex lg:col-span-5 flex-col gap-3 items-end pb-2">
-              {[
-                { value: "40,000", sup: "+", label: "Verified Doctors", sub: "Active on platform" },
-                { value: "20", sup: "+", label: "AI Clinical Modes", sub: "Built for Indian medicine" },
-                { value: "2-Day", sup: "", label: "Pan-India Delivery", sub: "100% genuine products" },
-              ].map((stat, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.7 + i * 0.12 }}
-                  className="flex items-center gap-5 px-7 py-5 rounded-2xl"
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    backdropFilter: "blur(12px)",
-                    width: "100%",
-                    maxWidth: 340,
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
-                  }}
-                >
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.8rem, 5vw, 3.8rem)", color: "#EEEEF8", lineHeight: 1, letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
-                    {stat.value}<span style={{ fontSize: "0.6em", color: "#00C2A8", verticalAlign: "super", lineHeight: 0 }}>{stat.sup}</span>
-                  </div>
-                  <div>
-                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14, color: "rgba(255,255,255,0.88)", lineHeight: 1.2 }}>{stat.label}</div>
-                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.28)", marginTop: 3 }}>{stat.sub}</div>
-                  </div>
-                </motion.div>
-              ))}
-
-              {/* NMC Trust badge */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.1, duration: 0.8 }}
-                className="flex items-center gap-2 mt-1 mr-1"
-              >
-                <ShieldCheck className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.2)" }} />
-                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.2em", color: "rgba(255,255,255,0.18)", textTransform: "uppercase" }}>NMC · CDSCO Compliant</span>
-              </motion.div>
-            </div>
+          {/* Main headline */}
+          <div style={{ overflow: "hidden", marginBottom: "0.2em" }}>
+            <motion.h1
+              initial={{ y: 60, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontWeight: 600,
+                fontSize: "clamp(3.5rem, 10vw, 7.5rem)",
+                lineHeight: 0.95,
+                letterSpacing: "-0.03em",
+                color: "#0A0A0F",
+              }}
+            >
+              Everything
+            </motion.h1>
           </div>
+          <div style={{ overflow: "hidden", marginBottom: "1.5rem" }}>
+            <motion.h1
+              initial={{ y: 60, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.16 }}
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontWeight: 300,
+                fontStyle: "italic",
+                fontSize: "clamp(3.5rem, 10vw, 7.5rem)",
+                lineHeight: 0.95,
+                letterSpacing: "-0.03em",
+                color: "rgba(10,10,15,0.28)",
+              }}
+            >
+              Medicine.
+            </motion.h1>
+          </div>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(14px, 2vw, 17px)", color: "rgba(0,0,0,0.45)", lineHeight: 1.65, marginBottom: "2.5rem", maxWidth: 520, margin: "0 auto 2.5rem" }}
+          >
+            AI clinical assistant · Drug reference · NEET‑PG prep · Medical supplies — one platform built for Indian physicians.
+          </motion.p>
+
+          {/* ── MAIN AI INPUT BOX — like Replit's prompt input ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.42, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-6"
+          >
+            <HeroAIInput />
+          </motion.div>
+
+          {/* ── CATEGORY QUICK LINKS ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.58, ease: [0.16, 1, 0.3, 1] }}
+            className="flex items-center justify-center gap-1 flex-wrap mb-5"
+          >
+            {[
+              { href: "/ai-assistant", icon: Brain, label: "AI Consult" },
+              { href: "/drug-reference", icon: Pill, label: "Drug Ref" },
+              { href: "/neet-pg", icon: FileText, label: "NEET-PG" },
+              { href: "/shop", icon: Store, label: "Shop" },
+              { href: "/books", icon: BookOpen, label: "Books" },
+              { href: "/calculator", icon: Calculator, label: "Calculators" },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link key={item.href} href={item.href}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all"
+                  style={{ color: "rgba(0,0,0,0.5)", background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.07)", fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.background = "#FFFFFF";
+                    (e.currentTarget as HTMLElement).style.color = "rgba(0,0,0,0.8)";
+                    (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(0,0,0,0.04)";
+                    (e.currentTarget as HTMLElement).style.color = "rgba(0,0,0,0.5)";
+                    (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                  }}>
+                  <Icon className="w-3.5 h-3.5 shrink-0" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </motion.div>
+
+          {/* ── EXAMPLE PROMPTS ── */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.72 }}
+          >
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, color: "rgba(0,0,0,0.3)", marginRight: 8 }}>Try an example →</span>
+            {[
+              "Diabetic nephropathy DDx",
+              "NEET PG 2025 schedule",
+              "Drug interaction check",
+            ].map((prompt) => (
+              <Link key={prompt} href={`/ai-assistant?q=${encodeURIComponent(prompt)}`}
+                className="inline-flex items-center px-3 py-1.5 rounded-full text-xs transition-all mr-2 mb-2"
+                style={{ background: "#FFFFFF", color: "rgba(0,0,0,0.6)", border: "1px solid rgba(0,0,0,0.1)", fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 500, boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#00C2A8"; (e.currentTarget as HTMLElement).style.color = "#009E87"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,0,0,0.1)"; (e.currentTarget as HTMLElement).style.color = "rgba(0,0,0,0.6)"; }}>
+                {prompt}
+              </Link>
+            ))}
+          </motion.div>
+
+          {/* Trust line */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.9 }}
+            className="flex items-center justify-center gap-6 mt-10 pt-8"
+            style={{ borderTop: "1px solid rgba(0,0,0,0.07)" }}
+          >
+            {[
+              { value: "40,000+", label: "Doctors" },
+              { value: "20+", label: "AI Modes" },
+              { value: "2-Day", label: "Delivery" },
+              { value: "NMC", label: "Compliant" },
+            ].map((s, i) => (
+              <div key={i} className="text-center">
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, fontSize: "clamp(1.3rem, 2.5vw, 1.8rem)", color: "#0A0A0F", lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.18em", color: "rgba(0,0,0,0.3)", textTransform: "uppercase", marginTop: 4 }}>{s.label}</div>
+              </div>
+            ))}
+          </motion.div>
         </div>
 
-        {/* ── ECG / HEARTBEAT LINE — unique to a medical platform ── */}
-        <div className="absolute bottom-20 left-0 right-0 pointer-events-none overflow-hidden" style={{ height: 64, zIndex: 5 }}>
-          <svg width="100%" height="64" viewBox="0 0 1440 64" preserveAspectRatio="none" style={{ opacity: 1 }}>
-            {/* Faint baseline */}
-            <line x1="0" y1="32" x2="1440" y2="32" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
-            {/* ECG trace — realistic QRS complexes every 240px */}
-            <path
-              className="ecg-path"
-              d="M-40 32 L60 32 L80 32 L88 22 L96 42 L100 14 L108 50 L116 32 L124 32 L300 32 L320 32 L328 22 L336 42 L340 14 L348 50 L356 32 L364 32 L540 32 L560 32 L568 22 L576 42 L580 14 L588 50 L596 32 L604 32 L780 32 L800 32 L808 22 L816 42 L820 14 L828 50 L836 32 L844 32 L1020 32 L1040 32 L1048 22 L1056 42 L1060 14 L1068 50 L1076 32 L1084 32 L1260 32 L1280 32 L1288 22 L1296 42 L1300 14 L1308 50 L1316 32 L1480 32"
-              fill="none"
-              stroke="rgba(0,194,168,0.55)"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            {/* Glow duplicate */}
-            <path
-              className="ecg-path"
-              d="M-40 32 L60 32 L80 32 L88 22 L96 42 L100 14 L108 50 L116 32 L124 32 L300 32 L320 32 L328 22 L336 42 L340 14 L348 50 L356 32 L364 32 L540 32 L560 32 L568 22 L576 42 L580 14 L588 50 L596 32 L604 32 L780 32 L800 32 L808 22 L816 42 L820 14 L828 50 L836 32 L844 32 L1020 32 L1040 32 L1048 22 L1056 42 L1060 14 L1068 50 L1076 32 L1084 32 L1260 32 L1280 32 L1288 22 L1296 42 L1300 14 L1308 50 L1316 32 L1480 32"
-              fill="none"
-              stroke="rgba(0,194,168,0.18)"
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ filter: "blur(3px)" }}
-            />
-          </svg>
-        </div>
-
-        {/* ── Scroll indicator ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.8, duration: 0.8 }}
-          className="absolute bottom-8 right-10 flex items-center gap-3"
-        >
-          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 8, letterSpacing: "0.35em", color: "rgba(255,255,255,0.12)", textTransform: "uppercase" }}>Scroll</span>
-          <div style={{ width: 1, height: 28, background: "linear-gradient(to bottom, rgba(255,255,255,0.2), transparent)" }} />
-        </motion.div>
-
-        {/* ── Bottom fade ── */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
+        {/* Gradient bridge to dark sections below */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
           style={{ background: "linear-gradient(to bottom, transparent, #06060C)" }} />
       </section>
 

@@ -154,7 +154,7 @@ function Router() {
         {() => (
           <div className="flex flex-col min-h-screen" style={{ background: "#06060C" }}>
             <AmbientBackground />
-            <div className="fixed top-0 left-0 right-0 z-[60]" style={{ background: "rgba(4,4,8,0.95)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <div className="fixed top-0 left-0 right-0 z-[60]">
               <BrandSwitcherBar />
               <Navbar />
             </div>

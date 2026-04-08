@@ -938,3 +938,34 @@ body::before {
   to   { opacity: 1; transform: translateX(0) translateY(0); }
 }
 .float-in-right { animation: float-in-right 1s cubic-bezier(0.22,1,0.36,1) 0.7s both; }
+
+/* ── Aethex logo shimmer animation (light navbar) ───────────────────────────── */
+@keyframes aethex-logo-reveal {
+  0%   { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes aethex-logo-shimmer {
+  0%   { background-position: -400% center; }
+  100% { background-position: 400% center; }
+}
+.aethex-logo-text {
+  background: linear-gradient(
+    105deg,
+    #1a1a2e 0%,
+    #2d2d4e 20%,
+    #4a4a6a 38%,
+    #8585a8 45%,
+    #b0b0cc 50%,
+    #8585a8 55%,
+    #4a4a6a 62%,
+    #2d2d4e 80%,
+    #1a1a2e 100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation:
+    aethex-logo-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both,
+    aethex-logo-shimmer 4s linear 0.7s infinite;
+}

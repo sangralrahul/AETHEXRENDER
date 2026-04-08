@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from "react";
+import { Link } from "wouter";
 import { PageHero } from "@/components/PageHero";
 import {
   BookOpen, Search, ShoppingCart, Star, ChevronRight,
   GraduationCap, Library, Tag, TrendingUp, BookMarked,
-  Sparkles, Trophy, ChevronDown, X, Filter,
+  Sparkles, Trophy, ChevronDown, X, Filter, ExternalLink,
 } from "lucide-react";
 import { useAddToCart } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -88,9 +89,13 @@ function BookCard({
   return (
     <div
       ref={cardRef}
-      className="group flex flex-col rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
+      className="group flex flex-col rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl relative"
       style={{ background: "rgba(255,255,255,0.85)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.9)", boxShadow: "0 2px 14px rgba(0,0,0,0.07)" }}
     >
+      {/* Full-card clickable overlay — sits behind buttons */}
+      {dbId && (
+        <Link href={`/products/${dbId}`} className="absolute inset-0 z-0" aria-label={`View ${book.name} details`} />
+      )}
       {/* Cover */}
       <div className="relative shrink-0 overflow-hidden flex items-center justify-center" style={{ height: 180, background: `linear-gradient(160deg,${color}22,${color}08)` }}>
         {coverLoading && (
@@ -175,10 +180,10 @@ function BookCard({
           )}
         </div>
 
-        {/* Cart button */}
+        {/* Cart button — z-10 to sit above the card-link overlay */}
         <button
-          onClick={() => dbId && onCart(dbId)}
-          className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold transition-all hover:opacity-90 active:scale-95 mt-1"
+          onClick={e => { e.preventDefault(); e.stopPropagation(); if (dbId) onCart(dbId); }}
+          className="relative z-10 w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold transition-all hover:opacity-90 active:scale-95 mt-1"
           style={{
             background: dbId ? `linear-gradient(135deg,${color},${color}CC)` : "#E5E5EA",
             color: dbId ? "#fff" : "#AEAEB2",

@@ -1,8 +1,16 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
+
+function ScrollToTop() {
+  const [location] = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [location]);
+  return null;
+}
 import NotFound from "@/pages/not-found";
 import { SplashScreen, useSplashScreen } from "@/components/SplashScreen";
 
@@ -311,6 +319,7 @@ function App() {
       <TooltipProvider>
         {showSplash && <SplashScreen onComplete={handleComplete} />}
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <ScrollToTop />
           <Router />
           <CadusQuickConsult />
         </WouterRouter>

@@ -4,8 +4,9 @@ import { PageHero } from "@/components/PageHero";
 import {
   BookOpen, Search, ShoppingCart, Star, ChevronRight,
   GraduationCap, Library, Tag, TrendingUp, BookMarked,
-  Sparkles, Trophy, ChevronDown, X, Filter, ExternalLink,
+  Sparkles, Trophy, ChevronDown, X, Filter,
 } from "lucide-react";
+import { bookSlug } from "@/pages/BookDetail";
 import { useAddToCart } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "@/hooks/use-session";
@@ -92,10 +93,8 @@ function BookCard({
       className="group flex flex-col rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl relative"
       style={{ background: "rgba(255,255,255,0.85)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.9)", boxShadow: "0 2px 14px rgba(0,0,0,0.07)" }}
     >
-      {/* Full-card clickable overlay — sits behind buttons */}
-      {dbId && (
-        <Link href={`/products/${dbId}`} className="absolute inset-0 z-0" aria-label={`View ${book.name} details`} />
-      )}
+      {/* Full-card clickable overlay — sits behind buttons; every book gets its own detail page */}
+      <Link href={`/books/${bookSlug(book.name)}`} className="absolute inset-0 z-0" aria-label={`View ${book.name} details`} />
       {/* Cover */}
       <div className="relative shrink-0 overflow-hidden flex items-center justify-center" style={{ height: 180, background: `linear-gradient(160deg,${color}22,${color}08)` }}>
         {coverLoading && (

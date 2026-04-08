@@ -13,6 +13,7 @@ import { Footer } from "@/components/layout/Footer";
 import Home from "@/pages/Home";
 import Products from "@/pages/Products";
 import ProductDetail from "@/pages/ProductDetail";
+import BookDetail from "@/pages/BookDetail";
 import Cart from "@/pages/Cart";
 import AiAssistant from "@/pages/AiAssistant";
 import OrderTracking from "@/pages/OrderTracking";
@@ -174,6 +175,7 @@ function Router() {
 
                 {/* Books Library */}
                 <Route path="/books" component={MedicalBooks} />
+                <Route path="/books/:slug" component={BookDetail} />
 
                 {/* Shop routes (also alias /products) */}
                 <Route path="/shop" component={Products} />

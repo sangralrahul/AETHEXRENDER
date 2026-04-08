@@ -168,7 +168,7 @@ function AIChatPreview() {
   return (
     <div className="w-full" style={{ maxWidth: 520 }}>
       <div className="rounded-2xl overflow-hidden flex flex-col"
-        style={{ background: "#0A0A14", border: "1px solid rgba(255,255,255,0.08)", height: 440, boxShadow: "0 32px 80px rgba(0,0,0,0.6)" }}>
+        style={{ background: "#0A0F2A", border: "1px solid rgba(255,255,255,0.08)", height: 440, boxShadow: "0 32px 80px rgba(0,0,0,0.6)" }}>
 
         <div className="px-5 py-3.5 flex items-center justify-between shrink-0"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
@@ -190,7 +190,7 @@ function AIChatPreview() {
           </Link>
         </div>
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-3" style={{ background: "#0A0A14" }}>
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-3" style={{ background: "#0A0F2A" }}>
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               <div className="max-w-[88%] px-4 py-3 rounded-2xl"
@@ -252,7 +252,7 @@ function CaseOfTheDaySection() {
   const today = new Date();
 
   return (
-    <section className="py-24 relative" style={{ background: "#040408", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+    <section className="py-24 relative" style={{ background: "#060818", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
       <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex flex-col lg:flex-row items-start gap-16">
           <div className="flex-1">
@@ -271,7 +271,7 @@ function CaseOfTheDaySection() {
           </div>
 
           <div className="flex-1 w-full max-w-md">
-            <div className="rounded-2xl overflow-hidden" style={{ background: "#0E0E1A", border: "1px solid rgba(255,255,255,0.07)" }}>
+            <div className="rounded-2xl overflow-hidden" style={{ background: "#0C1230", border: "1px solid rgba(255,255,255,0.07)" }}>
               <div className="px-5 pt-5 pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                 <div className="flex items-center gap-2 mb-3">
                   <CalendarCheck className="w-4 h-4" style={{ color: "rgba(255,255,255,0.45)" }} />
@@ -334,7 +334,7 @@ function BlogNewsSection() {
   };
 
   return (
-    <section className="py-24 relative" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+    <section className="py-24 relative" style={{ background: "#07091E", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
       <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex items-end justify-between mb-14 gap-4">
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 3.8rem)", lineHeight: 1.0, color: "#EEEEF8" }}>
@@ -434,7 +434,7 @@ function NewsletterSection() {
   };
 
   return (
-    <section className="py-28 relative" style={{ borderTop: "1px solid rgba(255,255,255,0.04)", background: "#040408" }}>
+    <section className="py-28 relative" style={{ borderTop: "1px solid rgba(255,255,255,0.04)", background: "#060818" }}>
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 100%, rgba(0,40,140,0.06) 0%, transparent 70%)" }} />
       <div className="max-w-4xl mx-auto px-6 sm:px-8 text-center relative z-10">
         <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.0, color: "#EEEEF8", marginBottom: "1rem", letterSpacing: "-0.01em" }}>
@@ -498,7 +498,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: "#06060C" }}>
+    <div className="min-h-screen" style={{ background: "#07091E" }}>
 
       {/* ══ HERO — Replit-inspired centered layout ══ */}
       <section className="relative overflow-hidden" style={{ minHeight: "calc(100vh - 141px)", background: "#FAFAF8", display: "flex", alignItems: "center" }}>
@@ -663,11 +663,11 @@ export default function Home() {
 
         {/* Gradient bridge to dark sections below */}
         <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, transparent, #06060C)" }} />
+          style={{ background: "linear-gradient(to bottom, transparent, #07091E)" }} />
       </section>
 
       {/* ══ PLATFORM — table of contents, architectural ══ */}
-      <section className="relative" style={{ background: "#06060C" }}>
+      <section className="relative" style={{ background: "#07091E" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           {/* Section label */}
           <div className="flex items-center gap-4 pt-20 pb-12" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
@@ -748,7 +748,7 @@ export default function Home() {
       </section>
 
       {/* ══ AI DEMO — the centerpiece ══ */}
-      <section className="relative py-32 overflow-hidden" style={{ background: "#040408", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <section className="relative py-32 overflow-hidden" style={{ background: "#060818", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: "radial-gradient(ellipse 70% 60% at 100% 50%, rgba(0,50,150,0.07) 0%, transparent 60%)" }} />
         <div className="absolute inset-0 pointer-events-none"
@@ -799,7 +799,7 @@ export default function Home() {
       </section>
 
       {/* ══ CATEGORIES — curated editorial selection ══ */}
-      <section className="py-24 relative" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <section className="py-24 relative" style={{ background: "#07091E", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex items-end justify-between mb-14">
             <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.0, color: "#EEEEF8", letterSpacing: "-0.01em" }}>
@@ -816,7 +816,7 @@ export default function Home() {
 
           {loadingCategories ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-px" style={{ background: "rgba(255,255,255,0.04)" }}>
-              {[...Array(8)].map((_, i) => <div key={i} className="h-28 animate-pulse" style={{ background: "#06060C" }} />)}
+              {[...Array(8)].map((_, i) => <div key={i} className="h-28 animate-pulse" style={{ background: "#07091E" }} />)}
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-px" style={{ background: "rgba(255,255,255,0.05)" }}>
@@ -831,7 +831,7 @@ export default function Home() {
                       key={cat.slug}
                       href={`/shop?category=${cat.slug}`}
                       className="group flex flex-col justify-between p-7 transition-all"
-                      style={{ background: "#06060C", aspectRatio: "1/1" }}
+                      style={{ background: "#07091E", aspectRatio: "1/1" }}
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#0A0A14"; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#06060C"; }}
                     >
@@ -853,7 +853,7 @@ export default function Home() {
       </section>
 
       {/* ══ FEATURED PRODUCTS ══ */}
-      <section className="py-24 relative" style={{ background: "#040408", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <section className="py-24 relative" style={{ background: "#060818", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex items-end justify-between mb-14">
             <div>
@@ -889,7 +889,7 @@ export default function Home() {
       </section>
 
       {/* ══ TRUSTED BRANDS — marquee ══ */}
-      <section className="overflow-hidden" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)", paddingTop: 24, paddingBottom: 24 }}>
+      <section className="overflow-hidden" style={{ background: "#07091E", borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)", paddingTop: 24, paddingBottom: 24 }}>
         <p className="text-center mb-5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.28em", color: "rgba(255,255,255,0.18)", textTransform: "uppercase" }}>
           Stocked &amp; sold on Aethex
         </p>
@@ -908,7 +908,7 @@ export default function Home() {
       </section>
 
       {/* ══ TESTIMONIALS — pull-quote editorial ══ */}
-      <section className="py-28 relative" style={{ background: "#040408", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <section className="py-28 relative" style={{ background: "#060818", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex items-end justify-between mb-20">
             <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.0, color: "#EEEEF8", letterSpacing: "-0.01em" }}>
@@ -969,7 +969,7 @@ export default function Home() {
       </section>
 
       {/* ══ DAILY MCQ — minimal sidebar layout ══ */}
-      <section className="py-24 relative" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <section className="py-24 relative" style={{ background: "#07091E", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex flex-col lg:flex-row lg:items-start gap-16">
             <div className="lg:w-72 shrink-0">
@@ -992,11 +992,11 @@ export default function Home() {
       <CaseOfTheDaySection />
 
       {/* ══ DRUG INTERACTION CTA — tight strip ══ */}
-      <section className="py-8" style={{ background: "#06060C", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <section className="py-8" style={{ background: "#07091E", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <Link href="/drug-interaction-checker"
             className="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6"
-            style={{ background: "#0A0A14", border: "1px solid rgba(245,158,11,0.15)", borderRadius: 4 }}
+            style={{ background: "#0A0F2A", border: "1px solid rgba(245,158,11,0.15)", borderRadius: 4 }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.35)"; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.15)"; }}>
             <div className="flex items-center gap-5">

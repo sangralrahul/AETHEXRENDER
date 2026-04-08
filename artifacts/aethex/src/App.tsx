@@ -152,7 +152,7 @@ function Router() {
       {/* HOME — with full Navbar */}
       <Route path="/">
         {() => (
-          <div className="flex flex-col min-h-screen" style={{ background: "#06060C" }}>
+          <div className="flex flex-col min-h-screen" style={{ background: "#07091E" }}>
             <AmbientBackground />
             <div className="fixed top-0 left-0 right-0 z-[60]">
               <BrandSwitcherBar />

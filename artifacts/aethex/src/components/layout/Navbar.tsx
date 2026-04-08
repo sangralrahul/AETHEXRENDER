@@ -464,16 +464,16 @@ export function Navbar() {
               </div>
               <div className="flex flex-col leading-none">
                 <span style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontWeight: 600,
-                  fontSize: 22,
-                  letterSpacing: "0.09em",
-                  background: "linear-gradient(135deg, #F0F0FA 0%, #B8B8CC 45%, #F0F0FA 100%)",
+                  fontFamily: "'Pinyon Script', 'Great Vibes', cursive",
+                  fontWeight: 400,
+                  fontSize: 32,
+                  letterSpacing: "0.02em",
+                  background: "linear-gradient(135deg, #F4F4FC 0%, #C0C0D8 40%, #ECECF8 70%, #A8A8C4 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   lineHeight: 1,
-                }}>AETHEX</span>
-                <span className="hidden lg:block" style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: "0.18em", color: "rgba(255,255,255,0.22)", textTransform: "uppercase", marginTop: 3 }}>
+                }}>Aethex</span>
+                <span className="hidden lg:block" style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.2em", color: "rgba(255,255,255,0.2)", textTransform: "uppercase", marginTop: 1, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   Medical Platform
                 </span>
               </div>

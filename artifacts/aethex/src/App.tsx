@@ -157,7 +157,7 @@ function Router() {
               <BrandSwitcherBar />
               <Navbar />
             </div>
-            <main className="flex-1 pt-[140px] relative z-[1]">
+            <main className="flex-1 pt-[141px] relative z-[1]">
               <Home />
             </main>
             <Footer />

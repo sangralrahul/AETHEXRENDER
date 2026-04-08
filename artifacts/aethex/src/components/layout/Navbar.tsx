@@ -383,7 +383,7 @@ export function Navbar() {
                 fontFamily: "'Pinyon Script', 'Great Vibes', cursive",
                 fontWeight: 400,
                 fontSize: 36,
-                lineHeight: 1,
+                lineHeight: 1.4,
                 letterSpacing: "0.01em",
                 display: "block",
               }}>

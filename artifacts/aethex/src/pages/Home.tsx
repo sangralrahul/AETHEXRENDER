@@ -627,7 +627,7 @@ function BlogNewsSection() {
     <section className="py-24 relative" style={{ background: "#FAFAF8", borderTop: "1px solid rgba(0,0,0,0.07)" }}>
       <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex items-end justify-between mb-14 gap-4">
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 3.8rem)", lineHeight: 1.0, color: "#0A0A0F" }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 3.8rem)", lineHeight: 1.15, color: "#0A0A0F" }}>
             Latest from Aethex
           </h2>
           <Link href="/blog" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.15em", color: "rgba(0,0,0,0.35)", textTransform: "uppercase", fontWeight: 600 }}>
@@ -727,7 +727,7 @@ function NewsletterSection() {
     <section className="py-28 relative" style={{ borderTop: "1px solid rgba(0,0,0,0.07)", background: "#F3F1ED" }}>
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 100%, rgba(0,40,140,0.06) 0%, transparent 70%)" }} />
       <div className="max-w-4xl mx-auto px-6 sm:px-8 text-center relative z-10">
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.0, color: "#0A0A0F", marginBottom: "1rem", letterSpacing: "-0.01em" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.15, color: "#0A0A0F", marginBottom: "1rem", letterSpacing: "-0.01em" }}>
           Weekly insights<br />
           <span style={{ fontStyle: "italic", color: "rgba(0,0,0,0.4)" }}>delivered free.</span>
         </h2>
@@ -823,7 +823,7 @@ export default function Home() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontWeight: 600,
                 fontSize: "clamp(3.5rem, 10vw, 7.5rem)",
-                lineHeight: 0.95,
+                lineHeight: 1.1,
                 letterSpacing: "-0.03em",
                 color: "#0A0A0F",
               }}
@@ -841,7 +841,7 @@ export default function Home() {
                 fontWeight: 300,
                 fontStyle: "italic",
                 fontSize: "clamp(3.5rem, 10vw, 7.5rem)",
-                lineHeight: 0.95,
+                lineHeight: 1.1,
                 letterSpacing: "-0.03em",
                 color: "rgba(10,10,15,0.28)",
               }}
@@ -1006,7 +1006,7 @@ export default function Home() {
 
                 {/* Service name — large */}
                 <div className="lg:col-span-3">
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4vw, 3.2rem)", color: "#0A0A0F", lineHeight: 1, letterSpacing: "-0.01em" }}
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4vw, 3.2rem)", color: "#0A0A0F", lineHeight: 1.15, letterSpacing: "-0.01em" }}
                     className="group-hover:text-black transition-colors">
                     {pillar.name}
                   </div>
@@ -1048,7 +1048,7 @@ export default function Home() {
 
             {/* Left — copy */}
             <div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(3rem, 6vw, 5.5rem)", lineHeight: 0.95, color: "#0A0A0F", marginBottom: "2rem", letterSpacing: "-0.02em" }}>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(3rem, 6vw, 5.5rem)", lineHeight: 1.1, color: "#0A0A0F", marginBottom: "2rem", letterSpacing: "-0.02em" }}>
                 Your clinical<br />
                 <em style={{ color: "rgba(0,0,0,0.32)", fontWeight: 300 }}>intelligence layer.</em>
               </h2>
@@ -1091,7 +1091,7 @@ export default function Home() {
       <section className="py-24 relative" style={{ background: "#FAFAF8", borderTop: "1px solid rgba(0,0,0,0.07)" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex items-end justify-between mb-14">
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.0, color: "#0A0A0F", letterSpacing: "-0.01em" }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.15, color: "#0A0A0F", letterSpacing: "-0.01em" }}>
               Shop by<br />
               <em style={{ color: "rgba(0,0,0,0.4)" }}>Specialty</em>
             </h2>
@@ -1150,7 +1150,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex items-end justify-between mb-14">
             <div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.0, color: "#0A0A0F", letterSpacing: "-0.01em" }}>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.15, color: "#0A0A0F", letterSpacing: "-0.01em" }}>
                 Editor's Selection
               </h2>
               <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, color: "rgba(0,0,0,0.35)", marginTop: 8 }}>
@@ -1204,7 +1204,7 @@ export default function Home() {
       <section className="py-28 relative" style={{ background: "#F3F1ED", borderTop: "1px solid rgba(0,0,0,0.07)" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex items-end justify-between mb-20">
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.0, color: "#0A0A0F", letterSpacing: "-0.01em" }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.15, color: "#0A0A0F", letterSpacing: "-0.01em" }}>
               What doctors<br />
               <em style={{ color: "rgba(0,0,0,0.35)" }}>are saying</em>
             </h2>
@@ -1266,7 +1266,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex flex-col lg:flex-row lg:items-start gap-16">
             <div className="lg:w-72 shrink-0">
-              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(3rem, 6vw, 5rem)", lineHeight: 0.88, color: "rgba(0,0,0,0.08)", marginBottom: "0.75rem", letterSpacing: "-0.03em" }}>MCQ</div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(3rem, 6vw, 5rem)", lineHeight: 1.05, color: "rgba(0,0,0,0.08)", marginBottom: "0.75rem", letterSpacing: "-0.03em" }}>MCQ</div>
               <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(1.8rem, 3vw, 2.5rem)", lineHeight: 1.1, color: "#0A0A0F", marginBottom: "1rem" }}>
                 Question of<br />the Day
               </h2>

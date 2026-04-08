@@ -313,12 +313,11 @@ export default function CadusQuickConsult() {
         <button
           onClick={() => setOpen(true)}
           aria-label="Ask Cadus AI"
-          className="relative flex items-center gap-2.5 rounded-full transition-all duration-200"
+          className="relative flex items-center justify-center rounded-full transition-all duration-200"
           style={{
             background: "linear-gradient(135deg,#007AFF 0%,#00C2A8 100%)",
             boxShadow: "0 6px 24px rgba(0,122,255,0.38), 0 2px 8px rgba(0,0,0,0.12)",
-            paddingLeft: 14,
-            paddingRight: 20,
+            width: 52,
             height: 52,
           }}
           onMouseEnter={e => {
@@ -343,10 +342,6 @@ export default function CadusQuickConsult() {
             <Brain className="text-white" style={{ width: 16, height: 16 }} />
           </div>
 
-          {/* Label: always visible on desktop, hidden on mobile */}
-          <span className="hidden sm:block text-sm font-bold text-white whitespace-nowrap">
-            Ask Cadus
-          </span>
         </button>
       </div>
     </>

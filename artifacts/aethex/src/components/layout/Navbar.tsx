@@ -1,23 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { ShoppingCart, Search, Menu, Sparkles, User, Star, MapPin, ShieldCheck, ChevronDown, Store, BookOpen, Newspaper, Crown, GraduationCap, LogOut, Settings, Package, X, Brain, Stethoscope, FlaskConical, Pill, Activity, Building2, GraduationCap as University, HeartPulse, Microscope, FileText, Syringe, Database, BadgeCheck, Calculator, Briefcase, MessageSquare, Smartphone, Bell, HeadphonesIcon, Megaphone, Download, Gift, ClipboardList, MoreHorizontal, Mic, MicOff, Sun, Moon, Globe } from "lucide-react";
 
-const LANGS = ["EN", "HI", "TA", "TE", "KN"];
-
-function useDarkMode() {
-  const [dark, setDark] = useState<boolean>(() => {
-    try { return localStorage.getItem("aethex_theme") === "light" ? false : true; } catch { return true; }
-  });
-  const toggle = () => {
-    setDark(d => {
-      const next = !d;
-      try { localStorage.setItem("aethex_theme", next ? "dark" : "light"); } catch {}
-      document.documentElement.classList.toggle("aethex-light", !next);
-      return next;
-    });
-  };
-  return { dark, toggle };
-}
-
 function useVoiceSearch(onResult: (text: string) => void) {
   const [listening, setListening] = useState(false);
   const recRef = useRef<any>(null);
@@ -37,6 +20,7 @@ function useVoiceSearch(onResult: (text: string) => void) {
   const stop = () => { recRef.current?.stop(); setListening(false); };
   return { listening, start, stop };
 }
+
 import { useGetCart } from "@workspace/api-client-react";
 import { useSession } from "@/hooks/use-session";
 import { useUserAuth } from "@/hooks/use-user-auth";
@@ -45,52 +29,48 @@ import { cn } from "@/lib/utils";
 import { NotificationBell } from "@/components/NotificationBell";
 import { AuthModal } from "@/components/AuthModal";
 
+const TICKER_ITEMS = [
+  "🩺  India's No. 1 Medical Platform",
+  "40,000+ Verified Doctors",
+  "NMC · CDSCO Compliant",
+  "Free Shipping on ₹499+",
+  "7-Day Easy Returns",
+  "20+ AI Clinical Modes",
+  "Pan-India 2-Day Delivery",
+  "100% Original Products",
+  "12,000+ Subscribers",
+  "Trusted by AIIMS Alumni",
+];
+
 export function BrandSwitcherBar() {
-  const [location] = useLocation();
-  const isCareers = location === "/jobs" || location.startsWith("/jobs");
-  const isApp = location === "/app";
-  const isColleges = location === "/colleges" || location.startsWith("/colleges/");
-  const isHospitals = location === "/hospitals" || location.startsWith("/hospitals/");
-
-  const tabs = [
-    { href: "/jobs", label: "Careers", icon: Briefcase, active: isCareers },
-    { href: "/app", label: "Mobile App", icon: Smartphone, active: isApp },
-    { href: "/colleges", label: "Colleges", icon: GraduationCap, active: isColleges },
-    { href: "/hospitals", label: "Hospitals", icon: Building2, active: isHospitals },
-  ];
-
+  const doubled = [...TICKER_ITEMS, ...TICKER_ITEMS];
   return (
-    <div data-brand-switcher className="no-print w-full" style={{ background: "linear-gradient(90deg, #020208 0%, #06060F 50%, #020208 100%)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-8">
-        {/* Left — sub-brand tabs */}
-        <div className="flex items-center h-full">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <Link key={tab.href} href={tab.href}
-                className="flex items-center gap-1.5 px-3.5 h-full text-[11px] font-semibold relative transition-colors select-none"
-                style={{
-                  color: tab.active ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.35)",
-                  borderBottom: tab.active ? "1.5px solid rgba(255,255,255,0.4)" : "1.5px solid transparent",
-                  letterSpacing: "0.04em",
-                }}>
-                <Icon className="w-3 h-3" />
-                {tab.label}
-              </Link>
-            );
-          })}
-        </div>
-        {/* Right — trust badges */}
-        <div className="hidden sm:flex items-center gap-4">
-          <span className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.22)", letterSpacing: "0.1em" }}>
-            🇮🇳 &nbsp;NMC · CDSCO · MCI Compliant
-          </span>
+    <div
+      data-brand-switcher
+      className="no-print w-full overflow-hidden"
+      style={{ background: "#010107", borderBottom: "1px solid rgba(255,255,255,0.04)", height: 28 }}
+    >
+      <div className="h-full flex items-center"
+        style={{ maskImage: "linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%)", WebkitMaskImage: "linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%)" }}>
+        <div className="ticker-track flex items-center" style={{ gap: 0 }}>
+          {doubled.map((item, i) => (
+            <span key={i} className="shrink-0 flex items-center">
+              <span style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontSize: 10,
+                color: "rgba(255,255,255,0.3)",
+                letterSpacing: "0.1em",
+                fontWeight: 500,
+                whiteSpace: "nowrap",
+              }}>{item}</span>
+              <span style={{ color: "rgba(255,255,255,0.08)", margin: "0 32px" }}>·</span>
+            </span>
+          ))}
         </div>
       </div>
     </div>
   );
 }
-
 
 const clinicalToolsMenu = [
   { href: "/tools/prescription", icon: FileText, label: "Prescription Writer", desc: "AI-powered Rx generator", color: "#007AFF" },
@@ -131,87 +111,77 @@ const communityMenu = [
   { href: "/jobs", icon: Briefcase, label: "Medical Jobs Board", desc: "20 hospital & clinic listings", color: "#10B981" },
 ];
 
-function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
+function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef }: {
   open: boolean;
   onToggle: () => void;
   onClose: () => void;
   dropdownRef: React.RefObject<HTMLDivElement | null>;
-  dark?: boolean;
 }) {
   const [location] = useLocation();
   const active = location === "/tools" || location.startsWith("/tools/") || location === "/calculator";
-  const [dropdownTop, setDropdownTop] = useState(140);
+  const [dropdownTop, setDropdownTop] = useState(136);
 
   const handleToggle = () => {
     if (!open) {
-      const brandBar = document.querySelector("[data-brand-switcher]") as HTMLElement | null;
-      const header = document.querySelector("header") as HTMLElement | null;
-      const catBar = document.querySelector("[data-category-bar]") as HTMLElement | null;
-      const bH = brandBar ? brandBar.getBoundingClientRect().height : 0;
-      const hH = header ? header.getBoundingClientRect().height : 64;
-      const cH = catBar ? catBar.getBoundingClientRect().height : 44;
-      setDropdownTop(Math.round(bH + hH + cH));
+      const el = document.querySelector("[data-nav-bottom]") as HTMLElement | null;
+      setDropdownTop(el ? el.getBoundingClientRect().bottom : 136);
     }
     onToggle();
   };
 
   return (
-    <div ref={dropdownRef} className="relative">
+    <div ref={dropdownRef} className="relative h-full flex items-center">
       <button
         onClick={handleToggle}
-        className="flex items-center gap-1.5 px-3 h-full shrink-0 text-xs font-medium relative transition-all rounded-full"
-        style={{
-          color: active || open ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.45)",
-          background: active || open ? "rgba(255,255,255,0.09)" : "transparent",
-        }}
+        className="nav-cat-tab h-full flex items-center gap-1.5 px-3 text-[11px] font-semibold tracking-wide transition-colors whitespace-nowrap"
+        style={{ color: active || open ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.42)", letterSpacing: "0.04em" }}
       >
         <Stethoscope className="w-3.5 h-3.5 shrink-0" />
-        <span>Clinical Tools</span>
-        <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
+        Clinical Tools
+        <ChevronDown className={`w-2.5 h-2.5 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
         <div className="fixed z-50 rounded-2xl overflow-hidden"
-          style={{ top: dropdownTop + 6, right: 24, width: 740, background: "#0A0A14", border: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 24px 64px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04) inset" }}>
-          {/* top accent line */}
-          <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)" }} />
+          style={{ top: dropdownTop + 6, right: 24, width: 740, background: "#0C0C18", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 32px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.03) inset" }}>
+          <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(0,194,168,0.3), transparent)" }} />
           <div className="flex divide-x" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
             <div className="flex-shrink-0 w-72 p-3 flex flex-col gap-0.5">
               <div className="flex items-center justify-between px-2 py-1.5 mb-1">
-                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>Clinical Tools</p>
-                <Link href="/tools" onClick={onClose} className="text-[10px] font-semibold transition-colors hover:text-white/70" style={{ color: "rgba(255,255,255,0.35)" }}>View all →</Link>
+                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.22)" }}>Clinical Tools</p>
+                <Link href="/tools" onClick={onClose} className="text-[10px] font-semibold transition-colors hover:text-white/70" style={{ color: "rgba(255,255,255,0.32)" }}>View all →</Link>
               </div>
               {clinicalToolsMenu.map(item => (
                 <Link key={item.href} href={item.href} onClick={onClose}
                   className="flex items-center gap-3 px-2.5 py-2.5 rounded-xl transition-all"
                   style={{ background: "transparent" }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `rgba(255,255,255,0.05)`; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `rgba(255,255,255,0.04)`; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: `${item.color}18`, border: `1px solid ${item.color}28` }}>
+                    style={{ background: `${item.color}15`, border: `1px solid ${item.color}25` }}>
                     <item.icon className="w-4 h-4" style={{ color: item.color }} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold leading-tight" style={{ color: "rgba(255,255,255,0.9)" }}>{item.label}</p>
-                    <p className="text-[10px] leading-tight mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.32)" }}>{item.desc}</p>
+                    <p className="text-xs font-semibold leading-tight" style={{ color: "rgba(255,255,255,0.88)" }}>{item.label}</p>
+                    <p className="text-[10px] leading-tight mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.3)" }}>{item.desc}</p>
                   </div>
                 </Link>
               ))}
               <div className="mt-2 pt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                <p className="text-[10px] font-bold uppercase tracking-widest px-2 py-1.5 mb-1" style={{ color: "rgba(255,255,255,0.25)" }}>Community &amp; Careers</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest px-2 py-1.5 mb-1" style={{ color: "rgba(255,255,255,0.22)" }}>Community &amp; Careers</p>
                 {communityMenu.map(item => (
                   <Link key={item.href} href={item.href} onClick={onClose}
                     className="flex items-center gap-3 px-2.5 py-2.5 rounded-xl transition-all"
                     style={{ background: "transparent" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `rgba(255,255,255,0.05)`; }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `rgba(255,255,255,0.04)`; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                      style={{ background: `${item.color}18`, border: `1px solid ${item.color}28` }}>
+                      style={{ background: `${item.color}15`, border: `1px solid ${item.color}25` }}>
                       <item.icon className="w-4 h-4" style={{ color: item.color }} />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold leading-tight" style={{ color: "rgba(255,255,255,0.9)" }}>{item.label}</p>
-                      <p className="text-[10px] leading-tight mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.32)" }}>{item.desc}</p>
+                      <p className="text-xs font-semibold leading-tight" style={{ color: "rgba(255,255,255,0.88)" }}>{item.label}</p>
+                      <p className="text-[10px] leading-tight mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.3)" }}>{item.desc}</p>
                     </div>
                   </Link>
                 ))}
@@ -219,8 +189,8 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
             </div>
             <div className="flex-1 p-3">
               <div className="flex items-center justify-between px-2 py-1.5 mb-2">
-                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>Medical Calculators</p>
-                <Link href="/calculator" onClick={onClose} className="text-[10px] font-semibold transition-colors hover:text-white/70" style={{ color: "rgba(255,255,255,0.35)" }}>View all →</Link>
+                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.22)" }}>Medical Calculators</p>
+                <Link href="/calculator" onClick={onClose} className="text-[10px] font-semibold transition-colors hover:text-white/70" style={{ color: "rgba(255,255,255,0.32)" }}>View all →</Link>
               </div>
               <div className="grid grid-cols-2 gap-px">
                 {calculatorsMenu.map((calc) => {
@@ -228,10 +198,10 @@ function ToolsMegaMenu({ open, onToggle, onClose, dropdownRef, dark }: {
                   return (
                     <Link key={calc.id} href={`/calculator?id=${calc.id}`} onClick={onClose}
                       className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all text-xs"
-                      style={{ color: isActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.65)", background: isActive ? "rgba(255,255,255,0.08)" : "transparent", fontWeight: isActive ? 600 : 400 }}
-                      onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.05)"; }}
+                      style={{ color: isActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.6)", background: isActive ? "rgba(255,255,255,0.07)" : "transparent", fontWeight: isActive ? 600 : 400 }}
+                      onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.04)"; }}
                       onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}>
-                      <Calculator className="w-3 h-3 shrink-0" style={{ color: "rgba(255,255,255,0.35)" }} />
+                      <Calculator className="w-3 h-3 shrink-0" style={{ color: "rgba(255,255,255,0.28)" }} />
                       {calc.name}
                     </Link>
                   );
@@ -262,34 +232,26 @@ function InstitutionsDropdown({ open, onToggle, onClose, dropdownRef }: {
 }) {
   const [location] = useLocation();
   const active = location === "/institutions" || location.startsWith("/institutions") || location === "/colleges" || location === "/hospitals";
-  const [dropdownTop, setDropdownTop] = useState(140);
+  const [dropdownTop, setDropdownTop] = useState(136);
 
   const handleToggle = () => {
     if (!open) {
-      const brandBar = document.querySelector("[data-brand-switcher]") as HTMLElement | null;
-      const header = document.querySelector("header") as HTMLElement | null;
-      const catBar = document.querySelector("[data-category-bar]") as HTMLElement | null;
-      const bH = brandBar ? brandBar.getBoundingClientRect().height : 0;
-      const hH = header ? header.getBoundingClientRect().height : 64;
-      const cH = catBar ? catBar.getBoundingClientRect().height : 44;
-      setDropdownTop(Math.round(bH + hH + cH));
+      const el = document.querySelector("[data-nav-bottom]") as HTMLElement | null;
+      setDropdownTop(el ? el.getBoundingClientRect().bottom : 136);
     }
     onToggle();
   };
 
   return (
-    <div ref={dropdownRef} className="relative shrink-0">
+    <div ref={dropdownRef} className="relative h-full flex items-center shrink-0">
       <button
         onClick={handleToggle}
-        className="flex items-center gap-1.5 px-3 h-full shrink-0 text-xs font-medium relative transition-all rounded-full whitespace-nowrap"
-        style={{
-          color: active || open ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.45)",
-          background: active || open ? "rgba(255,255,255,0.09)" : "transparent",
-        }}
+        className="nav-cat-tab h-full flex items-center gap-1.5 px-3 text-[11px] font-semibold tracking-wide transition-colors whitespace-nowrap"
+        style={{ color: active || open ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.42)", letterSpacing: "0.04em" }}
       >
         <Building2 className="w-3.5 h-3.5 shrink-0" />
-        <span>Institutions</span>
-        <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
+        Institutions
+        <ChevronDown className={`w-2.5 h-2.5 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
@@ -299,14 +261,14 @@ function InstitutionsDropdown({ open, onToggle, onClose, dropdownRef }: {
             top: dropdownTop + 6,
             right: 24,
             width: 480,
-            background: "#0A0A14",
-            border: "1px solid rgba(255,255,255,0.09)",
-            boxShadow: "0 24px 64px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04) inset",
+            background: "#0C0C18",
+            border: "1px solid rgba(255,255,255,0.08)",
+            boxShadow: "0 32px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.03) inset",
           }}
         >
-          <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)" }} />
+          <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(0,194,168,0.3), transparent)" }} />
           <div className="px-4 pt-3 pb-2" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>Colleges &amp; Hospitals</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.22)" }}>Colleges &amp; Hospitals</p>
           </div>
           <div className="p-3 grid grid-cols-2 gap-1">
             {institutionsMenu.map((item) => (
@@ -316,22 +278,22 @@ function InstitutionsDropdown({ open, onToggle, onClose, dropdownRef }: {
                 onClick={onClose}
                 className="flex items-center gap-3 p-3 rounded-xl transition-all"
                 style={{ background: "transparent" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `rgba(255,255,255,0.05)`; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = `rgba(255,255,255,0.04)`; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}
               >
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: `${item.color}18`, border: `1px solid ${item.color}28` }}>
+                  style={{ background: `${item.color}15`, border: `1px solid ${item.color}25` }}>
                   <item.icon className="w-4 h-4" style={{ color: item.color }} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold truncate" style={{ color: "rgba(255,255,255,0.9)" }}>{item.label}</p>
-                  <p className="text-[10px] truncate" style={{ color: "rgba(255,255,255,0.32)" }}>{item.desc}</p>
+                  <p className="text-xs font-semibold truncate" style={{ color: "rgba(255,255,255,0.88)" }}>{item.label}</p>
+                  <p className="text-[10px] truncate" style={{ color: "rgba(255,255,255,0.3)" }}>{item.desc}</p>
                 </div>
               </Link>
             ))}
           </div>
           <div className="px-4 py-2.5" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.015)" }}>
-            <Link href="/institutions" onClick={onClose} className="text-xs font-semibold transition-colors hover:text-white/60" style={{ color: "rgba(255,255,255,0.35)" }}>
+            <Link href="/institutions" onClick={onClose} className="text-xs font-semibold transition-colors hover:text-white/60" style={{ color: "rgba(255,255,255,0.32)" }}>
               View all Colleges &amp; Hospitals →
             </Link>
           </div>
@@ -349,28 +311,27 @@ const loginMenuItems = [
   { href: "/verification", icon: BadgeCheck, label: "Doctor Verification Badge" },
   { href: "/my-reviews", icon: Star, label: "My Reviews" },
   { href: "/orders/track", icon: MapPin, label: "Track Order" },
-  { href: "/settings", icon: Bell, label: "Notification Preferences" },
   { href: "/contact", icon: HeadphonesIcon, label: "24x7 Customer Care" },
   { href: "/enterprise", icon: Megaphone, label: "Advertise on Aethex" },
   { href: "/app", icon: Download, label: "Download App" },
 ];
 
 const categories = [
-  { href: "/", icon: Star, label: "For You", exact: true, authOnly: false },
-  { href: "/shop", icon: Store, label: "Shop", authOnly: false },
-  { href: "/books", icon: BookOpen, label: "Books", authOnly: false },
-  { href: "/study-hub", icon: GraduationCap, label: "Study Hub", authOnly: false },
-  { href: "/cme-hub", icon: Crown, label: "CME Hub", authOnly: false },
-  { href: "/neet-pg", icon: FileText, label: "NEET-PG", authOnly: false },
-  { href: "/drug-reference", icon: Pill, label: "Drug Ref", authOnly: false },
-  { href: "/ai-assistant", icon: Brain, label: "Cadus AI", authOnly: false },
-  { href: "/pricing", icon: Crown, label: "Pricing", authOnly: false },
-  { href: "/calculator", icon: Calculator, label: "Calculators", authOnly: true },
-  { href: "/cases", icon: Activity, label: "Cases", authOnly: true },
-  { href: "/community", icon: MessageSquare, label: "Community", authOnly: true },
-  { href: "/jobs", icon: Briefcase, label: "Jobs", authOnly: true },
-  { href: "/blog", icon: Newspaper, label: "Blog", authOnly: true },
-  { href: "/news", icon: Megaphone, label: "News", authOnly: true },
+  { href: "/", icon: Star, label: "For You", exact: true },
+  { href: "/shop", icon: Store, label: "Shop" },
+  { href: "/books", icon: BookOpen, label: "Books" },
+  { href: "/study-hub", icon: GraduationCap, label: "Study Hub" },
+  { href: "/cme-hub", icon: Crown, label: "CME Hub" },
+  { href: "/neet-pg", icon: FileText, label: "NEET-PG" },
+  { href: "/drug-reference", icon: Pill, label: "Drug Ref" },
+  { href: "/ai-assistant", icon: Brain, label: "Cadus AI" },
+  { href: "/pricing", icon: Crown, label: "Pricing" },
+  { href: "/calculator", icon: Calculator, label: "Calculators" },
+  { href: "/cases", icon: Activity, label: "Cases" },
+  { href: "/community", icon: MessageSquare, label: "Community" },
+  { href: "/jobs", icon: Briefcase, label: "Jobs" },
+  { href: "/blog", icon: Newspaper, label: "Blog" },
+  { href: "/news", icon: Megaphone, label: "News" },
 ];
 
 export function Navbar() {
@@ -382,42 +343,53 @@ export function Navbar() {
   const [accountOpen, setAccountOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [toolsOpen, setToolsOpen] = useState(false);
   const [institutionsOpen, setInstitutionsOpen] = useState(false);
-  const [lang, setLang] = useState(() => { try { return localStorage.getItem("aethex_lang") || "EN"; } catch { return "EN"; } });
-  const [langOpen, setLangOpen] = useState(false);
-  const langRef = useRef<HTMLDivElement>(null);
-  const { dark, toggle: toggleDark } = useDarkMode();
+  const [activeTabLeft, setActiveTabLeft] = useState<number | null>(null);
+  const [activeTabWidth, setActiveTabWidth] = useState<number>(0);
+  const catBarRef = useRef<HTMLDivElement>(null);
+  const accountRef = useRef<HTMLDivElement>(null);
+  const toolsRef = useRef<HTMLDivElement>(null);
+  const institutionsRef = useRef<HTMLDivElement>(null);
   const { listening: voiceListening, start: startVoice, stop: stopVoice } = useVoiceSearch((text) => {
     setSearchQuery(text);
     setLocation(`/shop?search=${encodeURIComponent(text)}`);
   });
-  const accountRef = useRef<HTMLDivElement>(null);
-  const toolsRef = useRef<HTMLDivElement>(null);
-  const institutionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (accountRef.current && !accountRef.current.contains(e.target as Node)) setAccountOpen(false);
       if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) setToolsOpen(false);
       if (institutionsRef.current && !institutionsRef.current.contains(e.target as Node)) setInstitutionsOpen(false);
-      if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
-
-  const { data: cart } = useGetCart(
-    { sessionId },
-    { query: { enabled: !!sessionId, staleTime: 1000 * 60 } }
-  );
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const bar = catBarRef.current;
+    if (!bar) return;
+    const activeEl = bar.querySelector("[data-active-tab='true']") as HTMLElement | null;
+    if (activeEl) {
+      const barRect = bar.getBoundingClientRect();
+      const el = activeEl.getBoundingClientRect();
+      setActiveTabLeft(el.left - barRect.left + bar.scrollLeft);
+      setActiveTabWidth(el.width);
+    } else {
+      setActiveTabLeft(null);
+    }
+  }, [location]);
+
+  const { data: cart } = useGetCart(
+    { sessionId },
+    { query: { enabled: !!sessionId, staleTime: 1000 * 60 } }
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -433,57 +405,62 @@ export function Navbar() {
 
   return (
     <>
-      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
 
       {/* ── MAIN NAV HEADER ── */}
       <header
         className="no-print transition-all duration-500"
         style={{
-          background: isScrolled ? "rgba(3,3,10,0.99)" : "rgba(4,4,12,0.97)",
-          backdropFilter: "blur(28px)",
-          WebkitBackdropFilter: "blur(28px)",
-          height: 64,
+          background: isScrolled ? "rgba(2,2,8,0.99)" : "rgba(3,3,10,0.97)",
+          backdropFilter: "blur(32px)",
+          WebkitBackdropFilter: "blur(32px)",
+          height: 68,
           display: "flex",
           alignItems: "center",
           borderBottom: isScrolled ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(255,255,255,0.04)",
-          boxShadow: isScrolled ? "0 4px 40px rgba(0,0,0,0.6)" : "none",
+          boxShadow: isScrolled ? "0 8px 48px rgba(0,0,0,0.7)" : "none",
         }}
       >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
 
             {/* ── LOGO ── */}
-            <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <Link href="/" className="flex items-center gap-3 shrink-0 group">
               <div className="relative">
                 <img
                   src={`${import.meta.env.BASE_URL}aethex-logo.jpg`}
                   alt="Aethex"
                   className="w-8 h-8 rounded-lg object-contain transition-all group-hover:scale-105"
-                  style={{ filter: "brightness(1.15) contrast(1.05) drop-shadow(0 0 8px rgba(255,255,255,0.12))" }}
+                  style={{ filter: "brightness(1.15) contrast(1.05)" }}
                 />
+                {/* Live pulse dot */}
+                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full flex items-center justify-center">
+                  <span className="absolute inline-flex h-full w-full rounded-full animate-ping opacity-60" style={{ background: "#00C2A8" }} />
+                  <span className="relative inline-flex rounded-full w-1.5 h-1.5" style={{ background: "#00C2A8" }} />
+                </span>
               </div>
-              <div className="flex flex-col leading-none">
+              <div className="flex flex-col leading-none gap-0.5">
                 <span style={{
                   fontFamily: "'Pinyon Script', 'Great Vibes', cursive",
                   fontWeight: 400,
-                  fontSize: 32,
-                  letterSpacing: "0.02em",
+                  fontSize: 34,
                   color: "#E8E8F4",
                   lineHeight: 1,
+                  letterSpacing: "0.01em",
                 }}>Aethex</span>
-                <span className="hidden lg:block" style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.2em", color: "rgba(255,255,255,0.2)", textTransform: "uppercase", marginTop: 1, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <span className="hidden lg:block" style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.22em", color: "rgba(255,255,255,0.18)", textTransform: "uppercase", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   Medical Platform
                 </span>
               </div>
             </Link>
 
             {/* Separator */}
-            <div className="hidden lg:block h-7 w-px shrink-0" style={{ background: "rgba(255,255,255,0.07)" }} />
+            <div className="hidden lg:block h-8 w-px shrink-0" style={{ background: "rgba(255,255,255,0.06)" }} />
 
             {/* ── SEARCH BAR ── */}
-            <form onSubmit={handleSearch} className="flex-1 relative max-w-xl">
+            <form onSubmit={handleSearch} className="flex-1 relative max-w-2xl">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-4 w-4" style={{ color: "rgba(255,255,255,0.28)" }} />
+                <Search className="h-3.5 w-3.5" style={{ color: "rgba(255,255,255,0.22)" }} />
               </div>
               <input
                 type="text"
@@ -491,74 +468,54 @@ export function Navbar() {
                 onChange={e => setSearchQuery(e.target.value)}
                 className="block w-full pl-11 pr-10 py-2.5 text-sm focus:outline-none transition-all"
                 style={{
-                  background: "rgba(255,255,255,0.055)",
+                  background: "rgba(255,255,255,0.045)",
                   color: "#EEEEF8",
-                  border: "1px solid rgba(255,255,255,0.09)",
+                  border: "1px solid rgba(255,255,255,0.07)",
                   borderRadius: 999,
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  boxShadow: "0 0 0 0 transparent",
+                  fontSize: 13,
                 }}
-                onFocus={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.16)"; }}
-                onBlur={e => { e.currentTarget.style.background = "rgba(255,255,255,0.055)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"; }}
-                placeholder="Search drugs, products, books…"
+                onFocus={e => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)";
+                  e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,194,168,0.06)";
+                }}
+                onBlur={e => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.045)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+                placeholder="Search drugs, products, books, calculators…"
               />
               <button
                 type="button"
                 onClick={voiceListening ? stopVoice : startVoice}
                 className="absolute inset-y-0 right-0 pr-4 flex items-center transition-all"
-                title={voiceListening ? "Stop listening" : "Search by voice"}>
-                {voiceListening
-                  ? <Mic className="h-4 w-4 animate-pulse" style={{ color: "#ef4444" }} />
-                  : <Mic className="h-4 w-4" style={{ color: "rgba(255,255,255,0.28)" }} />}
+                title={voiceListening ? "Stop" : "Voice search"}
+              >
+                <Mic className={`h-3.5 w-3.5 transition-colors ${voiceListening ? "text-red-500 animate-pulse" : ""}`}
+                  style={{ color: voiceListening ? "#ef4444" : "rgba(255,255,255,0.22)" }} />
               </button>
             </form>
 
             {/* ── RIGHT ACTIONS ── */}
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
 
               {/* Try Cadus AI — primary teal CTA */}
               <Link
                 href="/ai-assistant"
-                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all hover:opacity-90 active:scale-95 shrink-0"
+                className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all hover:opacity-90 active:scale-[0.97] shrink-0"
                 style={{
                   background: "#00C2A8",
-                  color: "#FFFFFF",
-                  boxShadow: "0 0 20px rgba(0,194,168,0.28), 0 2px 8px rgba(0,194,168,0.15)",
+                  color: "#000814",
                   letterSpacing: "0.01em",
+                  boxShadow: "0 0 24px rgba(0,194,168,0.22), 0 2px 8px rgba(0,194,168,0.12)",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
                 }}
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 Try Cadus AI
               </Link>
-
-              {/* Language selector */}
-              <div ref={langRef} className="relative hidden sm:block">
-                <button
-                  onClick={() => setLangOpen(o => !o)}
-                  className="flex items-center gap-1 px-2.5 py-2 rounded-full text-xs font-semibold transition-all hover:bg-white/8"
-                  style={{ color: "rgba(255,255,255,0.5)" }}>
-                  <Globe className="w-3.5 h-3.5" />{lang}
-                </button>
-                {langOpen && (
-                  <div className="absolute right-0 mt-2 w-32 z-[70] rounded-xl shadow-2xl overflow-hidden py-1"
-                    style={{ background: "#141420", border: "1px solid rgba(255,255,255,0.1)" }}>
-                    {LANGS.map(l => (
-                      <button key={l} onClick={() => { setLang(l); try { localStorage.setItem("aethex_lang", l); } catch {} setLangOpen(false); }}
-                        className="w-full text-left px-4 py-2 text-xs transition-all"
-                        style={{ color: lang === l ? "#00C2A8" : "rgba(255,255,255,0.7)", background: lang === l ? "rgba(0,194,168,0.08)" : "transparent" }}>
-                        {l === "EN" ? "🇬🇧 English" : l === "HI" ? "🇮🇳 हिन्दी" : l === "TA" ? "🇮🇳 தமிழ்" : l === "TE" ? "🇮🇳 తెలుగు" : "🇮🇳 ಕನ್ನಡ"}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Dark/Light mode */}
-              <button onClick={toggleDark} title={dark ? "Light mode" : "Dark mode"}
-                className="p-2 rounded-full transition-all hidden sm:flex items-center justify-center hover:bg-white/8"
-                style={{ color: "rgba(255,255,255,0.5)" }}>
-                {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </button>
 
               {/* Notification bell */}
               <div className="hidden sm:block">
@@ -569,33 +526,36 @@ export function Navbar() {
               <div ref={accountRef} className="relative">
                 <button
                   onClick={() => setAccountOpen(o => !o)}
-                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-full transition-all hover:bg-white/8"
+                  className="flex items-center gap-2 px-3 py-2 rounded-full transition-all"
+                  style={{ color: "rgba(255,255,255,0.82)" }}
+                  onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.06)"}
+                  onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = "transparent"}
                 >
                   <div
                     className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all"
                     style={{
                       background: isLoggedIn ? "rgba(0,122,255,0.18)" : "rgba(255,255,255,0.07)",
-                      border: `1px solid ${isLoggedIn ? "rgba(0,122,255,0.3)" : "rgba(255,255,255,0.12)"}`,
+                      border: `1px solid ${isLoggedIn ? "rgba(0,122,255,0.28)" : "rgba(255,255,255,0.1)"}`,
                     }}
                   >
-                    <User className="w-3.5 h-3.5" style={{ color: isLoggedIn ? "#60A5FA" : "rgba(255,255,255,0.7)" }} />
+                    <User className="w-3.5 h-3.5" style={{ color: isLoggedIn ? "#60A5FA" : "rgba(255,255,255,0.65)" }} />
                   </div>
-                  <span className="hidden sm:inline text-sm font-semibold" style={{ color: "rgba(255,255,255,0.82)" }}>
+                  <span className="hidden sm:inline text-sm font-semibold" style={{ color: "rgba(255,255,255,0.78)", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     {isLoggedIn ? (user?.name?.split(" ")[0] || "Account") : "Sign In"}
                   </span>
-                  <ChevronDown className={`w-3 h-3 transition-transform ${accountOpen ? "rotate-180" : ""}`} style={{ color: "rgba(255,255,255,0.4)" }} />
+                  <ChevronDown className={`w-3 h-3 transition-transform ${accountOpen ? "rotate-180" : ""}`} style={{ color: "rgba(255,255,255,0.35)" }} />
                 </button>
 
                 {accountOpen && (
                   <div
                     className="absolute right-0 mt-2 w-64 z-[70] rounded-2xl shadow-2xl overflow-hidden"
-                    style={{ background: "#111118", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 24px 64px rgba(0,0,0,0.8)" }}
+                    style={{ background: "#0E0E1A", border: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 24px 64px rgba(0,0,0,0.85)" }}
                   >
-                    <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)" }} />
+                    <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(0,194,168,0.3), transparent)" }} />
                     {!isLoggedIn ? (
                       <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-                        <span className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>New here?</span>
-                        <button onClick={openSignup} className="text-sm font-bold" style={{ color: "#00C2A8" }}>Create Account</button>
+                        <span className="text-sm" style={{ color: "rgba(255,255,255,0.45)", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>New here?</span>
+                        <button onClick={openSignup} className="text-sm font-bold" style={{ color: "#00C2A8", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Create Account</button>
                       </div>
                     ) : (
                       <div className="px-4 py-3.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
@@ -603,7 +563,7 @@ export function Navbar() {
                           <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
                           {user?.verified && <BadgeCheck className="w-3.5 h-3.5 shrink-0" style={{ color: "#007AFF" }} />}
                         </div>
-                        <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{user?.email}</p>
+                        <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.32)" }}>{user?.email}</p>
                         {isPro && (
                           <span className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded-full text-xs font-bold" style={{ background: "rgba(255,180,0,0.12)", color: "#FFB400", border: "1px solid rgba(255,180,0,0.2)" }}>
                             <Crown className="w-3 h-3" /> PRO Member
@@ -618,11 +578,11 @@ export function Navbar() {
                           key={href} href={href}
                           onClick={() => setAccountOpen(false)}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
-                          style={{ color: "rgba(255,255,255,0.78)" }}
+                          style={{ color: "rgba(255,255,255,0.72)", fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                           onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.04)"; }}
                           onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}
                         >
-                          <Icon className="w-4 h-4 shrink-0" style={{ color: "rgba(255,255,255,0.35)" }} />
+                          <Icon className="w-4 h-4 shrink-0" style={{ color: "rgba(255,255,255,0.3)" }} />
                           {label}
                         </Link>
                       ))}
@@ -658,8 +618,10 @@ export function Navbar() {
               {/* Cart */}
               <Link
                 href="/cart"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all hover:bg-white/8 relative"
-                style={{ color: "rgba(255,255,255,0.82)" }}
+                className="flex items-center gap-2 px-3 py-2 rounded-full transition-all relative"
+                style={{ color: "rgba(255,255,255,0.78)" }}
+                onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.06)"}
+                onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.background = "transparent"}
               >
                 <div className="relative">
                   <ShoppingCart className="w-5 h-5" />
@@ -669,14 +631,16 @@ export function Navbar() {
                     </span>
                   )}
                 </div>
-                <span className="hidden lg:inline text-sm font-semibold">Cart</span>
+                <span className="hidden lg:inline text-sm font-semibold" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Cart</span>
               </Link>
 
               {/* Mobile hamburger */}
               <button
                 onClick={() => setMobileOpen(o => !o)}
-                className="sm:hidden p-2 rounded-full transition-all hover:bg-white/8"
-                style={{ color: "rgba(255,255,255,0.82)" }}
+                className="sm:hidden p-2 rounded-full transition-all"
+                style={{ color: "rgba(255,255,255,0.78)" }}
+                onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.06)"}
+                onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = "transparent"}
               >
                 {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -685,22 +649,38 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Thin accent line below header */}
-      <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 20%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 80%, transparent 100%)" }} />
+      {/* ── THIN ACCENT LINE ── */}
+      <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(0,194,168,0.12) 30%, rgba(255,255,255,0.05) 50%, rgba(0,194,168,0.12) 70%, transparent 100%)" }} />
 
-      {/* ── CATEGORY PILL BAR ── */}
+      {/* ── CATEGORY TAB BAR ── */}
       <div
         data-category-bar
-        className="no-print overflow-x-auto"
+        data-nav-bottom
+        className="no-print overflow-x-auto relative"
         style={{
-          background: "rgba(3,3,10,0.98)",
+          background: "rgba(2,2,8,0.98)",
           borderBottom: "1px solid rgba(255,255,255,0.05)",
           scrollbarWidth: "none",
           height: 44,
         }}
+        ref={catBarRef}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-full gap-1">
-          {categories.filter(cat => !cat.authOnly || isLoggedIn).map((cat) => {
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-full gap-0 relative">
+
+          {/* Sliding active indicator */}
+          {activeTabLeft !== null && (
+            <div
+              className="absolute bottom-0 h-0.5 rounded-full transition-all duration-300 pointer-events-none"
+              style={{
+                left: activeTabLeft + 12,
+                width: Math.max(0, activeTabWidth - 24),
+                background: "#00C2A8",
+                boxShadow: "0 0 8px rgba(0,194,168,0.6)",
+              }}
+            />
+          )}
+
+          {categories.map((cat) => {
             const active = cat.exact
               ? location === cat.href
               : location === cat.href || location.startsWith(cat.href + "/");
@@ -709,17 +689,15 @@ export function Navbar() {
               <Link
                 key={cat.href}
                 href={cat.href}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full shrink-0 text-xs transition-all whitespace-nowrap"
+                data-active-tab={active ? "true" : "false"}
+                className="flex items-center gap-1.5 px-3 h-full shrink-0 text-[11px] font-semibold transition-colors whitespace-nowrap relative"
                 style={{
-                  color: active ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.4)",
-                  background: active ? "rgba(255,255,255,0.1)" : "transparent",
-                  fontWeight: active ? 600 : 450,
+                  color: active ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.38)",
+                  letterSpacing: "0.04em",
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  letterSpacing: "0.02em",
-                  border: active ? "1px solid rgba(255,255,255,0.12)" : "1px solid transparent",
                 }}
-                onMouseEnter={e => { if (!active) { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.72)"; (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.05)"; }}}
-                onMouseLeave={e => { if (!active) { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.4)"; (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}}
+                onMouseEnter={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.68)"; }}
+                onMouseLeave={e => { if (!active) (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.38)"; }}
               >
                 <Icon className="w-3.5 h-3.5 shrink-0" />
                 <span>{cat.label}</span>
@@ -727,8 +705,8 @@ export function Navbar() {
             );
           })}
 
-          {/* Separator before dropdowns */}
-          {isLoggedIn && <div className="h-5 w-px mx-1 shrink-0" style={{ background: "rgba(255,255,255,0.07)" }} />}
+          {/* Divider before mega menus */}
+          {isLoggedIn && <div className="h-4 w-px mx-2 shrink-0" style={{ background: "rgba(255,255,255,0.07)" }} />}
 
           {isLoggedIn && (
             <ToolsMegaMenu
@@ -736,7 +714,6 @@ export function Navbar() {
               onToggle={() => setToolsOpen(o => !o)}
               onClose={() => setToolsOpen(false)}
               dropdownRef={toolsRef}
-              dark
             />
           )}
 
@@ -755,26 +732,24 @@ export function Navbar() {
       {mobileOpen && (
         <div
           className="sm:hidden fixed inset-x-0 bottom-0 z-50 overflow-y-auto"
-          style={{ top: 140, background: "#0C0C18", borderTop: "1px solid rgba(255,255,255,0.08)" }}
+          style={{ top: 137, background: "#0C0C18", borderTop: "1px solid rgba(255,255,255,0.07)" }}
         >
           <div className="max-w-7xl mx-auto px-4 py-5 space-y-1">
-            {/* Mobile search */}
             <form onSubmit={e => { handleSearch(e); setMobileOpen(false); }} className="relative mb-4">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "rgba(255,255,255,0.3)" }} />
               <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none"
-                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", color: "#FFFFFF" }}
+                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.09)", color: "#FFFFFF", fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 placeholder="Search drugs, products, books…" />
             </form>
 
-            {/* Try Cadus AI — mobile CTA */}
             <Link href="/ai-assistant" onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-sm font-bold mb-3"
-              style={{ background: "#00C2A8", color: "#FFFFFF", boxShadow: "0 4px 20px rgba(0,194,168,0.25)" }}>
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-sm font-bold mb-3"
+              style={{ background: "#00C2A8", color: "#000814", boxShadow: "0 4px 24px rgba(0,194,168,0.28)", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
               <Sparkles className="w-4 h-4" /> Try Cadus AI
             </Link>
 
-            <p className="text-[10px] font-bold uppercase tracking-widest px-1 pt-1 pb-1.5" style={{ color: "rgba(255,255,255,0.25)", letterSpacing: "0.12em" }}>Navigation</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest px-1 pt-1 pb-1.5" style={{ color: "rgba(255,255,255,0.22)", letterSpacing: "0.14em", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Navigation</p>
             {[
               { href: "/shop", label: "Shop All Products", icon: Store },
               { href: "/books", label: "Medical Books", icon: BookOpen },
@@ -797,11 +772,11 @@ export function Navbar() {
                 <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
                   className="flex items-center gap-3 px-3.5 py-3 text-sm font-medium rounded-xl transition-all"
                   style={{
-                    color: active ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.65)",
-                    background: active ? "rgba(255,255,255,0.08)" : "transparent",
-                    border: active ? "1px solid rgba(255,255,255,0.1)" : "1px solid transparent",
+                    color: active ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.62)",
+                    background: active ? "rgba(255,255,255,0.07)" : "transparent",
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
                   }}>
-                  <Icon className="w-4 h-4 shrink-0" style={{ color: active ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.35)" }} />
+                  <Icon className="w-4 h-4 shrink-0" style={{ color: active ? "#00C2A8" : "rgba(255,255,255,0.3)" }} />
                   {item.label}
                 </Link>
               );
@@ -815,13 +790,13 @@ export function Navbar() {
                       <User className="w-4 h-4" style={{ color: "#60A5FA" }} />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-white">{user?.name}</p>
-                      <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>{user?.email}</p>
+                      <p className="text-sm font-semibold text-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{user?.name}</p>
+                      <p className="text-xs" style={{ color: "rgba(255,255,255,0.32)", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{user?.email}</p>
                     </div>
                   </div>
                   <button onClick={() => { logout(); setMobileOpen(false); }}
                     className="w-full flex items-center gap-3 px-3.5 py-3 text-sm rounded-xl transition-colors"
-                    style={{ color: "#FF453A" }}>
+                    style={{ color: "#FF453A", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     <LogOut className="w-4 h-4" /> Sign Out
                   </button>
                 </div>
@@ -829,12 +804,12 @@ export function Navbar() {
                 <div className="flex gap-2">
                   <button onClick={() => { openLogin(); setMobileOpen(false); }}
                     className="flex-1 py-3 text-sm font-semibold rounded-xl transition-all"
-                    style={{ color: "rgba(255,255,255,0.82)", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                    style={{ color: "rgba(255,255,255,0.82)", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     Sign In
                   </button>
                   <button onClick={() => { openSignup(); setMobileOpen(false); }}
                     className="flex-1 py-3 text-sm font-bold rounded-xl transition-all"
-                    style={{ color: "#FFFFFF", background: "#007AFF" }}>
+                    style={{ color: "#000814", background: "#00C2A8", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     Sign Up Free
                   </button>
                 </div>

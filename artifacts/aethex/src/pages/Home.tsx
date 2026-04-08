@@ -435,137 +435,257 @@ export default function Home() {
   return (
     <div className="min-h-screen" style={{ background: "#06060C" }}>
 
-      {/* ══ HERO — left-aligned, editorial, cinematic ══ */}
-      <section className="relative overflow-hidden" style={{ minHeight: "100vh", background: "#040408", display: "flex", alignItems: "center" }}>
-        {/* Atmospheric glows — deep blue, matches splash video */}
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 60% 70% at 10% 60%, rgba(0,40,160,0.1) 0%, transparent 65%)" }} />
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 50% 55% at 90% 25%, rgba(0,30,130,0.09) 0%, transparent 60%)" }} />
+      {/* ══ HERO — cinematic, editorial, world-class ══ */}
+      <section className="relative overflow-hidden" style={{ minHeight: "100vh", background: "#030307", display: "flex", alignItems: "center" }}>
 
-        {/* Large ghost letterform — purely decorative, creates depth */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none select-none hidden lg:block"
+        {/* ── Multi-layer atmospheric depth ── */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 90% at -10% 70%, rgba(0,30,140,0.14) 0%, transparent 55%)" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 70% at 110% 20%, rgba(0,20,100,0.1) 0%, transparent 55%)" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 40% 40% at 65% 80%, rgba(0,194,168,0.03) 0%, transparent 60%)" }} />
+
+        {/* ── Fine grain texture overlay ── */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
+          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")", backgroundSize: "200px 200px" }} />
+
+        {/* ── Ghost Æ letterform — right side, creates depth ── */}
+        <div className="absolute right-0 top-0 bottom-0 flex items-center pointer-events-none select-none hidden lg:flex"
           style={{
-            fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "clamp(14rem, 28vw, 22rem)",
-            lineHeight: 1, color: "transparent",
-            WebkitTextStroke: "1px rgba(255,255,255,0.04)",
-            letterSpacing: "-0.04em", userSelect: "none",
-            transform: "translateY(-48%) translateX(8%)",
-          }}>
-          Æ
-        </div>
+            fontFamily: "'Cormorant Garamond', serif",
+            fontWeight: 700,
+            fontSize: "clamp(16rem, 32vw, 28rem)",
+            lineHeight: 1,
+            color: "transparent",
+            WebkitTextStroke: "1px rgba(255,255,255,0.028)",
+            letterSpacing: "-0.04em",
+            userSelect: "none",
+            transform: "translateX(12%)",
+            zIndex: 0,
+          }}>Æ</div>
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16"
-          style={{ paddingTop: "22vh", paddingBottom: "18vh" }}>
+        {/* ── Thin horizontal grid lines — adds precision ── */}
+        {[30, 55, 78].map(pct => (
+          <div key={pct} className="absolute left-0 right-0 pointer-events-none" style={{ top: `${pct}%`, height: 1, background: "rgba(255,255,255,0.025)" }} />
+        ))}
 
-          {/* Eyebrow — one line, restrained */}
+        {/* ── MAIN HERO CONTENT ── */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16" style={{ paddingTop: "20vh", paddingBottom: "16vh" }}>
+
+          {/* Eyebrow — ultra-restrained */}
           <motion.div
-            initial={{ opacity: 0, x: -16 }}
+            initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-center gap-4 mb-12"
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="flex items-center gap-4 mb-10"
           >
-            <div style={{ width: 28, height: 1, background: "rgba(255,255,255,0.2)" }} />
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.32em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", fontWeight: 600 }}>
-              India's Clinical Platform
+            <div className="flex items-center gap-2">
+              <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#00C2A8", boxShadow: "0 0 8px rgba(0,194,168,0.8)" }} />
+              <div style={{ width: 32, height: 1, background: "linear-gradient(90deg, rgba(0,194,168,0.6), rgba(255,255,255,0.15))" }} />
+            </div>
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.36em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", fontWeight: 600 }}>
+              India's Clinical Platform · Est. 2024
             </span>
           </motion.div>
 
-          {/* Headline — massive, left-aligned, weight contrast */}
-          <div style={{ overflow: "hidden" }}>
-            <motion.h1
-              initial={{ y: 80, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontWeight: 300,
-                fontSize: "clamp(5.5rem, 15vw, 13rem)",
-                lineHeight: 0.88,
-                letterSpacing: "-0.03em",
-                color: "#F2F2F8",
-                maxWidth: "80%",
-              }}
-            >
-              Everything
-            </motion.h1>
-          </div>
-          <div style={{ overflow: "hidden" }}>
-            <motion.h1
-              initial={{ y: 80, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1], delay: 0.18 }}
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontWeight: 300,
-                fontStyle: "italic",
-                fontSize: "clamp(5.5rem, 15vw, 13rem)",
-                lineHeight: 0.88,
-                letterSpacing: "-0.03em",
-                color: "rgba(242,242,248,0.22)",
-              }}
-            >
-              Medicine.
-            </motion.h1>
-          </div>
+          {/* ── Two-column layout: headline left, stats right ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-end">
 
-          {/* Bottom row — description + CTAs aligned at opposite ends */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-10 mt-16 pt-10"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-          >
-            <div style={{ maxWidth: 420 }}>
-              <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(0.875rem, 1.5vw, 1rem)", color: "rgba(255,255,255,0.32)", lineHeight: 1.85 }}>
-                AI clinical assistant · Drug reference · NEET-PG prep · Medical supplies —
-                one platform built for Indian physicians.
-              </p>
-              {/* 3 key numbers — integrated, not a separate section */}
-              <div className="flex items-center gap-10 mt-8">
-                {[
-                  { value: "40,000+", label: "Doctors" },
-                  { value: "20+", label: "AI Modes" },
-                  { value: "2-Day", label: "Delivery" },
-                ].map((s, i) => (
-                  <div key={i}>
-                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(1.5rem, 2.5vw, 2rem)", color: "#EEEEF8", lineHeight: 1 }}>{s.value}</div>
-                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.2em", color: "rgba(255,255,255,0.28)", textTransform: "uppercase", marginTop: 5 }}>{s.label}</div>
-                  </div>
-                ))}
+            {/* LEFT — headline */}
+            <div className="lg:col-span-7">
+              <div style={{ overflow: "hidden" }}>
+                <motion.h1
+                  initial={{ y: 100, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontWeight: 300,
+                    fontSize: "clamp(5rem, 14vw, 12rem)",
+                    lineHeight: 0.86,
+                    letterSpacing: "-0.03em",
+                    color: "#F0F0F8",
+                    display: "block",
+                  }}
+                >
+                  Every
+                </motion.h1>
               </div>
+              <div style={{ overflow: "hidden" }}>
+                <motion.h1
+                  initial={{ y: 100, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontWeight: 300,
+                    fontSize: "clamp(5rem, 14vw, 12rem)",
+                    lineHeight: 0.86,
+                    letterSpacing: "-0.03em",
+                    color: "#F0F0F8",
+                    display: "block",
+                  }}
+                >
+                  thing
+                </motion.h1>
+              </div>
+              <div style={{ overflow: "hidden" }}>
+                <motion.h1
+                  initial={{ y: 100, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontWeight: 300,
+                    fontStyle: "italic",
+                    fontSize: "clamp(5rem, 14vw, 12rem)",
+                    lineHeight: 0.86,
+                    letterSpacing: "-0.03em",
+                    color: "rgba(240,240,248,0.2)",
+                    display: "block",
+                  }}
+                >
+                  Medicine.
+                </motion.h1>
+              </div>
+
+              {/* Sub-line + CTAs */}
+              <motion.div
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                className="mt-10 pt-8"
+                style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(0.8rem, 1.4vw, 0.95rem)", color: "rgba(255,255,255,0.3)", lineHeight: 1.9, maxWidth: 400, marginBottom: "2rem" }}>
+                  AI clinical intelligence · Drug reference · NEET-PG prep ·
+                  Medical supplies — one platform, built for Indian physicians.
+                </p>
+
+                <div className="flex items-center gap-4 flex-wrap">
+                  {/* PRIMARY CTA */}
+                  <Link href="/ai-assistant"
+                    className="group relative inline-flex items-center gap-2.5 transition-all hover:opacity-95 active:scale-[0.97]"
+                    style={{
+                      background: "#00C2A8",
+                      color: "#000814",
+                      borderRadius: 3,
+                      padding: "15px 36px",
+                      fontSize: 11,
+                      fontWeight: 800,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      boxShadow: "0 0 48px rgba(0,194,168,0.22), 0 2px 16px rgba(0,194,168,0.12)",
+                      whiteSpace: "nowrap",
+                    }}>
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Try Cadus AI — Free
+                    {/* Shimmer */}
+                    <div className="absolute inset-0 rounded-sm overflow-hidden pointer-events-none">
+                      <div className="absolute top-0 -left-full h-full w-1/2 bg-white opacity-[0.08] transform skew-x-12 group-hover:translate-x-[500%] transition-transform duration-700" />
+                    </div>
+                  </Link>
+
+                  {/* SECONDARY CTA */}
+                  <Link href="/shop"
+                    className="inline-flex items-center gap-2 transition-all active:scale-[0.97] group"
+                    style={{ color: "rgba(255,255,255,0.28)", fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap", padding: "15px 4px" }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)"}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.28)"}>
+                    Shop Essentials
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </div>
+              </motion.div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
-              <Link href="/ai-assistant"
-                className="inline-flex items-center gap-2.5 transition-all hover:opacity-90 active:scale-[0.98]"
-                style={{ background: "#00C2A8", color: "#000010", borderRadius: 2, padding: "14px 32px", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: "0 0 40px rgba(0,194,168,0.18)", whiteSpace: "nowrap" }}>
-                <Sparkles className="w-3.5 h-3.5" /> Try Cadus AI
-              </Link>
-              <Link href="/shop"
-                className="inline-flex items-center gap-2 transition-all active:scale-[0.98]"
-                style={{ color: "rgba(255,255,255,0.3)", fontSize: 12, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap", padding: "14px 8px" }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.6)"}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.3)"}>
-                Shop Essentials <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Link>
+            {/* RIGHT — three large stat cards, staggered */}
+            <div className="hidden lg:flex lg:col-span-5 flex-col gap-3 items-end pb-2">
+              {[
+                { value: "40,000", sup: "+", label: "Verified Doctors", sub: "Active on platform" },
+                { value: "20", sup: "+", label: "AI Clinical Modes", sub: "Built for Indian medicine" },
+                { value: "2-Day", sup: "", label: "Pan-India Delivery", sub: "100% genuine products" },
+              ].map((stat, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.7 + i * 0.12 }}
+                  className="flex items-center gap-5 px-7 py-5 rounded-2xl"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    backdropFilter: "blur(12px)",
+                    width: "100%",
+                    maxWidth: 340,
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
+                  }}
+                >
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.8rem, 5vw, 3.8rem)", color: "#EEEEF8", lineHeight: 1, letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
+                    {stat.value}<span style={{ fontSize: "0.6em", color: "#00C2A8", verticalAlign: "super", lineHeight: 0 }}>{stat.sup}</span>
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14, color: "rgba(255,255,255,0.88)", lineHeight: 1.2 }}>{stat.label}</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.28)", marginTop: 3 }}>{stat.sub}</div>
+                  </div>
+                </motion.div>
+              ))}
+
+              {/* NMC Trust badge */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.1, duration: 0.8 }}
+                className="flex items-center gap-2 mt-1 mr-1"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.2)" }} />
+                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.2em", color: "rgba(255,255,255,0.18)", textTransform: "uppercase" }}>NMC · CDSCO Compliant</span>
+              </motion.div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Scroll indicator — bottom right, not centered */}
+        {/* ── ECG / HEARTBEAT LINE — unique to a medical platform ── */}
+        <div className="absolute bottom-20 left-0 right-0 pointer-events-none overflow-hidden" style={{ height: 64, zIndex: 5 }}>
+          <svg width="100%" height="64" viewBox="0 0 1440 64" preserveAspectRatio="none" style={{ opacity: 1 }}>
+            {/* Faint baseline */}
+            <line x1="0" y1="32" x2="1440" y2="32" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+            {/* ECG trace — realistic QRS complexes every 240px */}
+            <path
+              className="ecg-path"
+              d="M-40 32 L60 32 L80 32 L88 22 L96 42 L100 14 L108 50 L116 32 L124 32 L300 32 L320 32 L328 22 L336 42 L340 14 L348 50 L356 32 L364 32 L540 32 L560 32 L568 22 L576 42 L580 14 L588 50 L596 32 L604 32 L780 32 L800 32 L808 22 L816 42 L820 14 L828 50 L836 32 L844 32 L1020 32 L1040 32 L1048 22 L1056 42 L1060 14 L1068 50 L1076 32 L1084 32 L1260 32 L1280 32 L1288 22 L1296 42 L1300 14 L1308 50 L1316 32 L1480 32"
+              fill="none"
+              stroke="rgba(0,194,168,0.55)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Glow duplicate */}
+            <path
+              className="ecg-path"
+              d="M-40 32 L60 32 L80 32 L88 22 L96 42 L100 14 L108 50 L116 32 L124 32 L300 32 L320 32 L328 22 L336 42 L340 14 L348 50 L356 32 L364 32 L540 32 L560 32 L568 22 L576 42 L580 14 L588 50 L596 32 L604 32 L780 32 L800 32 L808 22 L816 42 L820 14 L828 50 L836 32 L844 32 L1020 32 L1040 32 L1048 22 L1056 42 L1060 14 L1068 50 L1076 32 L1084 32 L1260 32 L1280 32 L1288 22 L1296 42 L1300 14 L1308 50 L1316 32 L1480 32"
+              fill="none"
+              stroke="rgba(0,194,168,0.18)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ filter: "blur(3px)" }}
+            />
+          </svg>
+        </div>
+
+        {/* ── Scroll indicator ── */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-          className="absolute bottom-10 right-10 flex flex-col items-center gap-2"
+          transition={{ delay: 1.8, duration: 0.8 }}
+          className="absolute bottom-8 right-10 flex items-center gap-3"
         >
-          <div style={{ width: 1, height: 40, background: "linear-gradient(to bottom, rgba(255,255,255,0.25), transparent)" }} />
-          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 7, letterSpacing: "0.3em", color: "rgba(255,255,255,0.12)", textTransform: "uppercase", writingMode: "horizontal-tb" }}>Scroll</span>
+          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 8, letterSpacing: "0.35em", color: "rgba(255,255,255,0.12)", textTransform: "uppercase" }}>Scroll</span>
+          <div style={{ width: 1, height: 28, background: "linear-gradient(to bottom, rgba(255,255,255,0.2), transparent)" }} />
         </motion.div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
+        {/* ── Bottom fade ── */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
           style={{ background: "linear-gradient(to bottom, transparent, #06060C)" }} />
       </section>
 

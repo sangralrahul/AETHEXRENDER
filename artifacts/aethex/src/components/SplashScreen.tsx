@@ -1,17 +1,18 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 const SPLASH_KEY = "aethex_splash_seen";
-const LETTERS = ["A", "e", "t", "h", "e", "x"];
+const LETTERS = ["A", "E", "T", "H", "E", "X"];
 
 export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   const [phase, setPhase] = useState(0);
-  const [revealed, setRevealed] = useState<boolean[]>(LETTERS.map(() => false));
+  const [visibleCount, setVisibleCount] = useState(0);
+  const [sweepActive, setSweepActive] = useState(false);
   const completedRef = useRef(false);
-  const timersRef = useRef<number[]>([]);
+  const timers = useRef<number[]>([]);
 
-  const addTimer = (fn: () => void, ms: number) => {
+  const t = (fn: () => void, ms: number) => {
     const id = window.setTimeout(fn, ms);
-    timersRef.current.push(id);
+    timers.current.push(id);
   };
 
   const triggerComplete = useCallback(() => {
@@ -22,24 +23,32 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   }, [onComplete]);
 
   useEffect(() => {
-    addTimer(() => setPhase(1), 100);
-    LETTERS.forEach((_, i) => {
-      addTimer(() => {
-        setRevealed(prev => { const n = [...prev]; n[i] = true; return n; });
-      }, 420 + i * 130);
-    });
-    addTimer(() => setPhase(2), 1600);
-    addTimer(() => setPhase(3), 2400);
-    addTimer(() => setPhase(4), 3500);
-    addTimer(() => setPhase(5), 4900);
-    addTimer(() => triggerComplete(), 5700);
+    // Blobs start immediately
+    t(() => setPhase(1), 80);
 
-    return () => { timersRef.current.forEach(clearTimeout); };
+    // Letters stagger in
+    LETTERS.forEach((_, i) => t(() => setVisibleCount(i + 1), 500 + i * 110));
+
+    // Light sweep across letters
+    t(() => setSweepActive(true), 1400);
+    t(() => setSweepActive(false), 2200);
+
+    // Tagline + accent
+    t(() => setPhase(2), 1700);
+
+    // Loading indicator
+    t(() => setPhase(3), 2600);
+
+    // Fade out
+    t(() => setPhase(4), 4200);
+    t(() => triggerComplete(), 5100);
+
+    return () => timers.current.forEach(clearTimeout);
   }, [triggerComplete]);
 
   const handleSkip = () => {
-    setPhase(5);
-    addTimer(triggerComplete, 500);
+    setPhase(4);
+    t(triggerComplete, 600);
   };
 
   return (
@@ -50,310 +59,280 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
         display: "flex", alignItems: "center", justifyContent: "center",
         cursor: "pointer", overflow: "hidden",
         background: "#FAFAF8",
-        opacity: phase === 5 ? 0 : 1,
-        transition: "opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1)",
+        opacity: phase === 4 ? 0 : 1,
+        transform: phase === 4 ? "scale(1.015)" : "scale(1)",
+        transition: "opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1)",
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Plus+Jakarta+Sans:wght@300;400&display=swap');
 
-        @keyframes sp-letter {
-          0%   { opacity: 0; transform: translateY(28px) scale(0.96); filter: blur(14px); }
-          60%  { filter: blur(0); }
-          100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        /* Morphing aurora blobs */
+        @keyframes blob-tl {
+          0%,100% { border-radius:68% 32% 55% 45%/55% 60% 40% 45%; transform:translate(-45%,-55%) scale(1) rotate(0deg); }
+          25%      { border-radius:40% 60% 70% 30%/60% 35% 65% 40%; transform:translate(-48%,-52%) scale(1.08) rotate(12deg); }
+          50%      { border-radius:55% 45% 35% 65%/40% 65% 35% 60%; transform:translate(-42%,-58%) scale(0.94) rotate(25deg); }
+          75%      { border-radius:30% 70% 55% 45%/65% 35% 65% 35%; transform:translate(-46%,-50%) scale(1.04) rotate(15deg); }
         }
-        @keyframes sp-shimmer {
-          0%   { background-position: -400% center; }
-          100% { background-position: 400% center; }
+        @keyframes blob-br {
+          0%,100% { border-radius:55% 45% 68% 32%/40% 55% 45% 60%; transform:translate(-55%,-45%) scale(1) rotate(0deg); }
+          30%      { border-radius:35% 65% 40% 60%/65% 35% 60% 40%; transform:translate(-52%,-48%) scale(1.06) rotate(-15deg); }
+          60%      { border-radius:65% 35% 55% 45%/45% 65% 35% 55%; transform:translate(-58%,-42%) scale(0.92) rotate(-28deg); }
         }
-        @keyframes sp-line-grow {
-          0%   { transform: scaleX(0); opacity: 0; }
-          100% { transform: scaleX(1); opacity: 1; }
+        @keyframes blob-tr {
+          0%,100% { border-radius:50% 50% 30% 70%/60% 40% 60% 40%; transform:translate(-50%,-50%) scale(1); }
+          40%      { border-radius:70% 30% 60% 40%/40% 70% 40% 60%; transform:translate(-52%,-48%) scale(1.1); }
+          80%      { border-radius:35% 65% 50% 50%/55% 45% 55% 45%; transform:translate(-48%,-52%) scale(0.9); }
         }
-        @keyframes sp-tag-in {
-          0%   { opacity: 0; transform: translateY(10px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes sp-dot-float {
-          0%, 100% { transform: translateY(0); opacity: 0.5; }
-          50%       { transform: translateY(-6px); opacity: 1; }
-        }
-        @keyframes sp-grid-in {
-          0%   { opacity: 0; }
-          100% { opacity: 1; }
+        @keyframes blob-bl {
+          0%,100% { border-radius:40% 60% 45% 55%/55% 45% 55% 45%; transform:translate(-50%,-50%) scale(1) rotate(0deg); }
+          33%      { border-radius:60% 40% 70% 30%/35% 65% 35% 65%; transform:translate(-52%,-48%) scale(0.95) rotate(20deg); }
+          66%      { border-radius:30% 70% 40% 60%/65% 35% 65% 35%; transform:translate(-48%,-52%) scale(1.08) rotate(10deg); }
         }
 
-        /* Floating orbs */
-        @keyframes sp-orb-1 {
-          0%,100% { transform: translate(-50%,-50%) scale(1) rotate(0deg); }
-          33%     { transform: translate(-46%,-54%) scale(1.08) rotate(8deg); }
-          66%     { transform: translate(-54%,-46%) scale(0.94) rotate(-6deg); }
-        }
-        @keyframes sp-orb-2 {
-          0%,100% { transform: translate(-50%,-50%) scale(1) rotate(0deg); }
-          33%     { transform: translate(-54%,-48%) scale(0.92) rotate(-10deg); }
-          66%     { transform: translate(-46%,-54%) scale(1.1) rotate(7deg); }
-        }
-        @keyframes sp-orb-3 {
-          0%,100% { transform: translate(-50%,-50%) scale(1); }
-          50%     { transform: translate(-50%,-45%) scale(1.12); }
+        /* Letter entrance — spring overshoot */
+        @keyframes letter-in {
+          0%   { opacity:0; transform:translateY(40px) scaleY(0.7) scaleX(0.95); filter:blur(12px); }
+          55%  { opacity:1; transform:translateY(-6px) scaleY(1.04) scaleX(1.01); filter:blur(0); }
+          75%  { transform:translateY(3px) scaleY(0.98) scaleX(1); }
+          90%  { transform:translateY(-1px) scaleY(1.01) scaleX(1); }
+          100% { opacity:1; transform:translateY(0) scaleY(1) scaleX(1); filter:blur(0); }
         }
 
-        /* Expanding rings */
-        @keyframes sp-ring {
-          0%   { transform: translate(-50%,-50%) scale(0.1); opacity: 0.18; }
-          100% { transform: translate(-50%,-50%) scale(1);   opacity: 0; }
+        /* Accent line grow */
+        @keyframes line-grow {
+          0%   { transform:scaleX(0); opacity:0; }
+          60%  { opacity:1; }
+          100% { transform:scaleX(1); opacity:1; }
         }
 
-        /* Floating particles */
-        @keyframes sp-particle-1 {
-          0%,100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.35; }
-          25%     { transform: translateY(-22px) translateX(8px) scale(1.15); opacity: 0.6; }
-          75%     { transform: translateY(10px) translateX(-6px) scale(0.88); opacity: 0.25; }
-        }
-        @keyframes sp-particle-2 {
-          0%,100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.28; }
-          40%     { transform: translateY(18px) translateX(-10px) scale(0.9); opacity: 0.5; }
-          70%     { transform: translateY(-12px) translateX(5px) scale(1.1); opacity: 0.38; }
-        }
-        @keyframes sp-particle-3 {
-          0%,100% { transform: translateY(0) scale(1); opacity: 0.22; }
-          50%     { transform: translateY(-28px) scale(1.2); opacity: 0.48; }
-        }
-        @keyframes sp-particle-4 {
-          0%,100% { transform: translateY(0) translateX(0); opacity: 0.18; }
-          33%     { transform: translateY(14px) translateX(12px); opacity: 0.42; }
-          66%     { transform: translateY(-8px) translateX(-8px); opacity: 0.28; }
-        }
-        @keyframes sp-particle-5 {
-          0%,100% { transform: translateY(0) scale(1); opacity: 0.3; }
-          60%     { transform: translateY(20px) scale(0.85); opacity: 0.15; }
+        /* Tagline word-by-word */
+        @keyframes word-in {
+          0%   { opacity:0; transform:translateY(8px); }
+          100% { opacity:1; transform:translateY(0); }
         }
 
-        /* Cross/plus marks */
-        @keyframes sp-cross {
-          0%,100% { opacity: 0.06; transform: rotate(0deg) scale(1); }
-          50%     { opacity: 0.14; transform: rotate(45deg) scale(1.1); }
+        /* Pulsing dot (loader) */
+        @keyframes pulse-dot {
+          0%,100% { transform:scale(1); opacity:0.35; }
+          50%     { transform:scale(1.5); opacity:1; }
+        }
+
+        /* Floating grain */
+        @keyframes grain {
+          0%,100% { transform:translate(0,0); }
+          10%     { transform:translate(-2%,-3%); }
+          30%     { transform:translate(3%,-1%); }
+          50%     { transform:translate(-1%,3%); }
+          70%     { transform:translate(2%,1%); }
+          90%     { transform:translate(-3%,2%); }
+        }
+
+        /* Sweep line */
+        @keyframes sweep {
+          0%   { left:-20%; opacity:0; }
+          5%   { opacity:1; }
+          95%  { opacity:1; }
+          100% { left:120%; opacity:0; }
+        }
+
+        /* Subtle halo pulse */
+        @keyframes halo {
+          0%,100% { transform:translate(-50%,-50%) scale(1); opacity:0.55; }
+          50%     { transform:translate(-50%,-50%) scale(1.12); opacity:0.75; }
         }
       `}</style>
 
-      {/* ── LAYER 1: Dot grid ── */}
-      <div style={{
-        position: "absolute", inset: 0, pointerEvents: "none",
-        backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.055) 1px, transparent 1px)",
-        backgroundSize: "28px 28px",
-        animation: phase >= 1 ? "sp-grid-in 1.6s ease both" : "none",
-        opacity: phase >= 1 ? 1 : 0,
-      }} />
+      {/* ── AURORA BLOBS ── */}
+      <div style={{ position:"absolute", inset:0, pointerEvents:"none",
+        opacity: phase >= 1 ? 1 : 0, transition:"opacity 2.2s ease" }}>
 
-      {/* ── LAYER 2: Three floating gradient orbs ── */}
-      {/* Teal orb — top-left */}
-      <div style={{
-        position: "absolute", left: "22%", top: "28%",
-        width: 520, height: 520, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(0,194,168,0.09) 0%, rgba(0,194,168,0.03) 45%, transparent 70%)",
-        animation: "sp-orb-1 9s ease-in-out infinite",
-        pointerEvents: "none",
-        opacity: phase >= 1 ? 1 : 0,
-        transition: "opacity 2s ease",
-      }} />
-      {/* Warm peach orb — bottom-right */}
-      <div style={{
-        position: "absolute", left: "62%", top: "52%",
-        width: 440, height: 440, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(232,177,122,0.11) 0%, rgba(232,177,122,0.04) 40%, transparent 68%)",
-        animation: "sp-orb-2 11s ease-in-out infinite",
-        pointerEvents: "none",
-        opacity: phase >= 1 ? 1 : 0,
-        transition: "opacity 2.4s ease",
-      }} />
-      {/* Lavender orb — center-top */}
-      <div style={{
-        position: "absolute", left: "48%", top: "18%",
-        width: 380, height: 380, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(150,130,220,0.07) 0%, rgba(150,130,220,0.02) 50%, transparent 70%)",
-        animation: "sp-orb-3 13s ease-in-out infinite",
-        pointerEvents: "none",
-        opacity: phase >= 1 ? 1 : 0,
-        transition: "opacity 2s ease",
-      }} />
-
-      {/* ── LAYER 3: Expanding concentric rings ── */}
-      {phase >= 2 && [0, 1, 2].map(i => (
-        <div key={i} style={{
-          position: "absolute", left: "50%", top: "50%",
-          width: Math.min(window.innerWidth, window.innerHeight) * 1.6,
-          height: Math.min(window.innerWidth, window.innerHeight) * 1.6,
-          borderRadius: "50%",
-          border: "1px solid rgba(0,194,168,0.14)",
-          animation: `sp-ring ${3.5 + i * 0.6}s cubic-bezier(0.1, 0, 0.9, 1) ${i * 1.1}s infinite`,
-          pointerEvents: "none",
+        {/* Teal — top-left */}
+        <div style={{
+          position:"absolute", left:"12%", top:"8%",
+          width:680, height:680,
+          background:"radial-gradient(circle at 40% 40%, rgba(0,194,168,0.13) 0%, rgba(0,194,168,0.05) 45%, transparent 72%)",
+          animation:"blob-tl 14s ease-in-out infinite",
         }} />
-      ))}
 
-      {/* ── LAYER 4: Floating soft particles / blobs ── */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none",
-        opacity: phase >= 1 ? 1 : 0, transition: "opacity 2s ease" }}>
-        {/* Particle cluster */}
-        {[
-          { left: "8%",  top: "15%", size: 8,  anim: "sp-particle-1 7s ease-in-out infinite" },
-          { left: "88%", top: "12%", size: 6,  anim: "sp-particle-2 9s ease-in-out 1.2s infinite" },
-          { left: "6%",  top: "70%", size: 10, anim: "sp-particle-3 8s ease-in-out 0.4s infinite" },
-          { left: "92%", top: "65%", size: 7,  anim: "sp-particle-4 10s ease-in-out 2s infinite" },
-          { left: "50%", top: "8%",  size: 5,  anim: "sp-particle-5 6s ease-in-out 0.8s infinite" },
-          { left: "18%", top: "88%", size: 9,  anim: "sp-particle-1 11s ease-in-out 1.5s infinite" },
-          { left: "78%", top: "85%", size: 6,  anim: "sp-particle-3 8.5s ease-in-out 0.3s infinite" },
-          { left: "32%", top: "5%",  size: 7,  anim: "sp-particle-2 7.5s ease-in-out 2.5s infinite" },
-          { left: "65%", top: "6%",  size: 5,  anim: "sp-particle-4 9.5s ease-in-out 1.8s infinite" },
-          { left: "95%", top: "40%", size: 8,  anim: "sp-particle-5 8s ease-in-out 0.6s infinite" },
-          { left: "3%",  top: "42%", size: 6,  anim: "sp-particle-1 10s ease-in-out 3s infinite" },
-        ].map((p, idx) => (
-          <div key={idx} style={{
-            position: "absolute",
-            left: p.left, top: p.top,
-            width: p.size, height: p.size,
-            borderRadius: "50%",
-            background: idx % 3 === 0
-              ? "rgba(0,194,168,0.35)"
-              : idx % 3 === 1
-                ? "rgba(232,177,122,0.4)"
-                : "rgba(150,130,220,0.3)",
-            animation: p.anim,
-          }} />
-        ))}
+        {/* Amber — bottom-right */}
+        <div style={{
+          position:"absolute", left:"62%", top:"50%",
+          width:600, height:600,
+          background:"radial-gradient(circle at 55% 55%, rgba(245,158,11,0.11) 0%, rgba(245,158,11,0.04) 50%, transparent 72%)",
+          animation:"blob-br 17s ease-in-out infinite",
+        }} />
+
+        {/* Rose — top-right */}
+        <div style={{
+          position:"absolute", left:"60%", top:"4%",
+          width:500, height:500,
+          background:"radial-gradient(circle at 50% 50%, rgba(244,114,182,0.08) 0%, rgba(244,114,182,0.03) 50%, transparent 70%)",
+          animation:"blob-tr 11s ease-in-out infinite",
+        }} />
+
+        {/* Lavender — bottom-left */}
+        <div style={{
+          position:"absolute", left:"4%", top:"55%",
+          width:540, height:540,
+          background:"radial-gradient(circle at 45% 55%, rgba(167,139,250,0.09) 0%, rgba(167,139,250,0.03) 50%, transparent 70%)",
+          animation:"blob-bl 15s ease-in-out infinite",
+        }} />
       </div>
 
-      {/* ── LAYER 5: Subtle medical cross marks ── */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none",
-        opacity: phase >= 1 ? 1 : 0, transition: "opacity 2.5s ease" }}>
-        {[
-          { left: "14%", top: "22%", size: 16, delay: "0s" },
-          { left: "82%", top: "18%", size: 12, delay: "1.4s" },
-          { left: "10%", top: "60%", size: 14, delay: "2.1s" },
-          { left: "86%", top: "72%", size: 18, delay: "0.7s" },
-          { left: "48%", top: "92%", size: 12, delay: "1.8s" },
-          { left: "72%", top: "30%", size: 10, delay: "3s" },
-        ].map((c, i) => (
-          <div key={i} style={{
-            position: "absolute", left: c.left, top: c.top,
-            width: c.size, height: c.size,
-            animation: `sp-cross ${5 + i * 0.7}s ease-in-out ${c.delay} infinite`,
-          }}>
-            <div style={{
-              position: "absolute", left: "50%", top: 0,
-              width: 1.5, height: "100%",
-              background: "rgba(0,194,168,0.5)",
-              transform: "translateX(-50%)",
-            }} />
-            <div style={{
-              position: "absolute", top: "50%", left: 0,
-              height: 1.5, width: "100%",
-              background: "rgba(0,194,168,0.5)",
-              transform: "translateY(-50%)",
-            }} />
-          </div>
-        ))}
-      </div>
+      {/* ── GRAIN TEXTURE ── */}
+      <svg style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none", opacity:0.028, animation:"grain 0.8s steps(1) infinite" }}>
+        <filter id="sp-noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch" />
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#sp-noise)" />
+      </svg>
 
-      {/* ── LAYER 6: Warm vignette ── */}
+      {/* ── VIGNETTE ── */}
       <div style={{
-        position: "absolute", inset: 0, pointerEvents: "none",
-        background: "radial-gradient(ellipse 75% 75% at 50% 50%, transparent 35%, rgba(224,218,210,0.5) 100%)",
+        position:"absolute", inset:0, pointerEvents:"none",
+        background:"radial-gradient(ellipse 90% 85% at 50% 50%, transparent 40%, rgba(210,205,198,0.55) 100%)",
       }} />
+
+      {/* ── DOT GRID ── */}
+      <div style={{
+        position:"absolute", inset:0, pointerEvents:"none",
+        backgroundImage:"radial-gradient(circle, rgba(0,0,0,0.045) 1px, transparent 1px)",
+        backgroundSize:"32px 32px",
+        opacity: phase >= 1 ? 0.8 : 0,
+        transition:"opacity 2s ease",
+      }} />
+
+      {/* ── CENTER HALO ── */}
+      <div style={{
+        position:"absolute", left:"50%", top:"50%",
+        width:700, height:280, borderRadius:"50%",
+        background:"radial-gradient(ellipse, rgba(0,194,168,0.06) 0%, transparent 70%)",
+        animation: phase >= 1 ? "halo 4s ease-in-out infinite" : "none",
+        pointerEvents:"none",
+        opacity: phase >= 1 ? 1 : 0,
+        transition:"opacity 1.8s ease",
+      }} />
+
+      {/* ── LIGHT SWEEP ── */}
+      {sweepActive && (
+        <div style={{
+          position:"absolute", top:0, bottom:0,
+          width:"12%",
+          background:"linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 40%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.55) 60%, transparent 100%)",
+          animation:"sweep 0.82s cubic-bezier(0.4,0,0.2,1) forwards",
+          pointerEvents:"none",
+          zIndex:20,
+        }} />
+      )}
 
       {/* ── MAIN CONTENT ── */}
       <div style={{
-        position: "relative", zIndex: 10,
-        display: "flex", flexDirection: "column", alignItems: "center",
-        textAlign: "center", padding: "0 24px",
+        position:"relative", zIndex:15,
+        display:"flex", flexDirection:"column", alignItems:"center",
+        textAlign:"center", padding:"0 24px",
       }}>
-        {/* Letter-by-letter headline */}
+
+        {/* Word mark */}
         <div style={{
-          display: "flex", alignItems: "baseline",
-          fontFamily: "'Cinzel', Georgia, serif",
-          fontWeight: 600,
-          fontSize: "clamp(4rem, 14vw, 9rem)",
-          lineHeight: 1,
-          letterSpacing: "0.06em",
-          userSelect: "none",
+          display:"flex", alignItems:"center", gap: 2,
+          fontFamily:"'Cinzel Decorative', Georgia, serif",
+          fontWeight:700,
+          fontSize:"clamp(3.6rem, 12vw, 8.5rem)",
+          lineHeight:1,
+          letterSpacing:"0.12em",
+          userSelect:"none",
         }}>
           {LETTERS.map((letter, i) => (
             <span key={i} style={{
-              display: "inline-block",
-              backgroundImage: phase >= 2
-                ? "linear-gradient(110deg, #1a1a2e 0%, #2d2d50 28%, #7878a8 44%, #b8b8d0 50%, #7878a8 56%, #2d2d50 72%, #1a1a2e 100%)"
-                : "linear-gradient(180deg, #0A0A0F 0%, #2a2a3e 100%)",
-              backgroundSize: phase >= 2 ? "300% auto" : "100%",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              animation: revealed[i]
-                ? `sp-letter 0.75s cubic-bezier(0.16,1,0.3,1) both${phase >= 2 ? `, sp-shimmer 4s linear ${i * 0.15 + 0.5}s infinite` : ""}`
-                : "none",
-              opacity: revealed[i] ? 1 : 0,
+              display:"inline-block",
+              backgroundImage: sweepActive || phase >= 2
+                ? "linear-gradient(150deg, #111827 0%, #374151 20%, #6B7280 40%, #9CA3AF 50%, #6B7280 60%, #374151 80%, #111827 100%)"
+                : "linear-gradient(170deg, #111827 0%, #1F2937 60%, #374151 100%)",
+              backgroundSize: sweepActive ? "300% auto" : "100%",
+              WebkitBackgroundClip:"text",
+              backgroundClip:"text",
+              WebkitTextFillColor:"transparent",
+              animationName: i < visibleCount ? "letter-in" : "none",
+              animationDuration: "0.72s",
+              animationTimingFunction: "cubic-bezier(0.16,1,0.3,1)",
+              animationFillMode: "both",
+              opacity: i < visibleCount ? 1 : 0,
             }}>
               {letter}
             </span>
           ))}
         </div>
 
-        {/* Teal accent line */}
+        {/* Teal divider line */}
         <div style={{
-          height: 2,
-          width: 48,
-          marginTop: 20,
-          borderRadius: 3,
-          background: "linear-gradient(90deg, transparent, #00C2A8, transparent)",
-          transformOrigin: "center",
-          animation: phase >= 2 ? "sp-line-grow 0.65s cubic-bezier(0.16,1,0.3,1) both" : "none",
+          marginTop:18,
+          height:1.5,
+          width:56,
+          borderRadius:2,
+          background:"linear-gradient(90deg, transparent, #00C2A8 30%, #00C2A8 70%, transparent)",
+          transformOrigin:"center",
+          animation: phase >= 2 ? "line-grow 0.7s cubic-bezier(0.16,1,0.3,1) both" : "none",
           opacity: phase >= 2 ? 1 : 0,
         }} />
 
-        {/* Tagline */}
-        <p style={{
-          fontFamily: "'Plus Jakarta Sans', -apple-system, system-ui, sans-serif",
-          fontWeight: 300,
-          fontSize: "clamp(0.55rem, 1.4vw, 0.72rem)",
-          letterSpacing: "0.36em",
-          textTransform: "uppercase",
-          color: "rgba(0,0,0,0.28)",
-          marginTop: 20,
-          animation: phase >= 3 ? "sp-tag-in 0.8s cubic-bezier(0.16,1,0.3,1) both" : "none",
-          opacity: phase >= 3 ? 1 : 0,
-        }}>
-          Where Medicine Meets Intelligence
-        </p>
-
-        {/* Animated loading dots */}
+        {/* Tagline — word by word */}
         <div style={{
-          display: "flex", gap: 6, marginTop: 52,
-          opacity: phase >= 4 ? 1 : 0,
-          transition: "opacity 0.5s ease",
+          marginTop:16,
+          display:"flex", gap:"0.38em", flexWrap:"wrap", justifyContent:"center",
+          fontFamily:"'Plus Jakarta Sans', system-ui, sans-serif",
+          fontWeight:300,
+          fontSize:"clamp(0.52rem, 1.3vw, 0.68rem)",
+          letterSpacing:"0.38em",
+          textTransform:"uppercase",
+          color:"rgba(0,0,0,0.26)",
+          opacity: phase >= 2 ? 1 : 0,
         }}>
-          {[0, 1, 2].map(i => (
+          {["Where","Medicine","Meets","Intelligence"].map((word, i) => (
+            <span key={word} style={{
+              display:"inline-block",
+              animation: phase >= 2 ? `word-in 0.55s cubic-bezier(0.16,1,0.3,1) ${i * 0.1}s both` : "none",
+            }}>
+              {word}
+            </span>
+          ))}
+        </div>
+
+        {/* Elegant loader — three dots */}
+        <div style={{
+          marginTop:56,
+          display:"flex", gap:8, alignItems:"center",
+          opacity: phase >= 3 ? 1 : 0,
+          transition:"opacity 0.5s ease",
+        }}>
+          {[0,1,2].map(i => (
             <div key={i} style={{
-              width: 5, height: 5, borderRadius: "50%",
-              background: "#00C2A8",
-              animation: `sp-dot-float 1.2s ease-in-out ${i * 0.2}s infinite`,
+              width:4, height:4, borderRadius:"50%",
+              background:"#00C2A8",
+              animation: phase >= 3 ? `pulse-dot 1.4s ease-in-out ${i * 0.22}s infinite` : "none",
             }} />
           ))}
         </div>
       </div>
 
       {/* Skip hint */}
-      <p style={{
-        position: "absolute", bottom: 28,
-        left: 0, right: 0, textAlign: "center",
-        fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-        fontWeight: 400, fontSize: 10,
-        letterSpacing: "0.22em", textTransform: "uppercase",
-        color: "rgba(0,0,0,0.18)",
-        zIndex: 10,
-        opacity: phase >= 3 ? 1 : 0,
-        transition: "opacity 0.5s ease",
+      <div style={{
+        position:"absolute", bottom:24, left:0, right:0,
+        display:"flex", justifyContent:"center", alignItems:"center", gap:8,
+        zIndex:20,
+        opacity: phase >= 2 ? 1 : 0,
+        transition:"opacity 0.6s ease",
       }}>
-        Tap to skip
-      </p>
+        <div style={{ width:16, height:1, background:"rgba(0,0,0,0.18)", borderRadius:1 }} />
+        <span style={{
+          fontFamily:"'Plus Jakarta Sans', system-ui, sans-serif",
+          fontWeight:400, fontSize:9,
+          letterSpacing:"0.28em", textTransform:"uppercase",
+          color:"rgba(0,0,0,0.2)",
+        }}>Tap to skip</span>
+        <div style={{ width:16, height:1, background:"rgba(0,0,0,0.18)", borderRadius:1 }} />
+      </div>
     </div>
   );
 }

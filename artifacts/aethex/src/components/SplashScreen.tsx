@@ -129,7 +129,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           {LETTERS.map((letter, i) => (
             <span key={i} style={{
               display: "inline-block",
-              background: phase >= 2
+              backgroundImage: phase >= 2
                 ? "linear-gradient(110deg, #1a1a2e 0%, #2d2d50 28%, #7878a8 44%, #b8b8d0 50%, #7878a8 56%, #2d2d50 72%, #1a1a2e 100%)"
                 : "linear-gradient(180deg, #0A0A0F 0%, #2a2a3e 100%)",
               backgroundSize: phase >= 2 ? "300% auto" : "100%",

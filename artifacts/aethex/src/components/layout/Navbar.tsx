@@ -468,9 +468,7 @@ export function Navbar() {
                   fontWeight: 400,
                   fontSize: 32,
                   letterSpacing: "0.02em",
-                  background: "linear-gradient(135deg, #F4F4FC 0%, #C0C0D8 40%, #ECECF8 70%, #A8A8C4 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
+                  color: "#E8E8F4",
                   lineHeight: 1,
                 }}>Aethex</span>
                 <span className="hidden lg:block" style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.2em", color: "rgba(255,255,255,0.2)", textTransform: "uppercase", marginTop: 1, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>

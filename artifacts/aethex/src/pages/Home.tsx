@@ -93,6 +93,138 @@ const categoryIconMap: Record<string, React.ElementType> = {
   Gauge, Dumbbell, Pipette, Apple, HeartHandshake, Radiation, TestTube2, Trophy, Zap
 };
 
+// ── Shop-by-Specialty animated backgrounds ────────────────────
+function CategoryAnimBg({ slug }: { slug: string }) {
+  const wrap: React.CSSProperties = { position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 };
+
+  if (slug === "stethoscopes") return (
+    <div style={wrap}>
+      <svg viewBox="0 0 240 70" style={{ position: "absolute", left: 0, bottom: "22%", width: "100%", opacity: 0.13 }} preserveAspectRatio="none">
+        <path d="M-10,35 L20,35 L30,12 L40,58 L48,35 L70,35 L78,14 L86,56 L92,35 L130,35 L140,12 L150,58 L158,35 L180,35 L188,14 L196,56 L202,35 L250,35"
+          fill="none" stroke="#00C2A8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+          strokeDasharray="560" strokeDashoffset="560"
+          style={{ animation: "catECGDraw 3s ease-in-out infinite" }} />
+      </svg>
+      <div style={{ position: "absolute", left: "8%", bottom: "22%", width: 7, height: 7, borderRadius: "50%", background: "rgba(0,194,168,0.65)", transform: "translateY(3px)", animation: "catNeuralPulse 1.5s ease-in-out infinite" }} />
+    </div>
+  );
+
+  if (slug === "cardiac-care") return (
+    <div style={wrap}>
+      {[0, 1, 2, 3].map(i => (
+        <div key={i} style={{ position: "absolute", left: "50%", top: "52%", width: 28, height: 28, borderRadius: "50%", border: "1.5px solid rgba(244,63,94,0.55)", marginLeft: -14, marginTop: -14, animation: `catPulseRing 3s cubic-bezier(0,0,0.2,1) ${i * 0.75}s infinite` }} />
+      ))}
+      <svg viewBox="0 0 220 60" style={{ position: "absolute", left: 0, bottom: "18%", width: "100%", opacity: 0.12 }}>
+        <path d="M-10,30 L22,30 L32,10 L42,50 L50,30 L70,30 L78,12 L86,48 L92,30 L124,30 L134,10 L144,50 L152,30 L172,30 L180,12 L188,48 L194,30 L230,30"
+          fill="none" stroke="#F43F5E" strokeWidth="2.5" strokeLinecap="round"
+          strokeDasharray="560" strokeDashoffset="560"
+          style={{ animation: "catECGDraw 2.6s ease-in-out 0.4s infinite" }} />
+      </svg>
+    </div>
+  );
+
+  if (slug === "neurology") return (
+    <div style={wrap}>
+      <svg viewBox="0 0 200 200" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.15 }}>
+        {([[28,38,82,70],[82,70,145,48],[82,70,105,128],[28,38,62,128],[62,128,105,128],[105,128,162,142],[145,48,172,98],[172,98,162,142],[62,128,48,172],[105,128,122,175]] as number[][]).map(([x1,y1,x2,y2],i) => (
+          <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#7C3AED" strokeWidth="1" style={{ animation: `catNeuralPulse 2.8s ease-in-out ${i*0.28}s infinite` }} />
+        ))}
+        {([[28,38,4.5,0],[82,70,6,0.4],[145,48,3.5,0.8],[62,128,4,0.2],[105,128,5,0.6],[162,142,3,1.0],[172,98,3.5,0.3],[48,172,3,0.7],[122,175,3,0.9]] as number[][]).map(([cx,cy,r,d],i) => (
+          <circle key={i} cx={cx} cy={cy} r={r} fill="#7C3AED" style={{ animation: `catNeuralPulse 2.8s ease-in-out ${d}s infinite` }} />
+        ))}
+      </svg>
+    </div>
+  );
+
+  if (slug === "equipment") return (
+    <div style={wrap}>
+      <svg viewBox="0 0 100 100" style={{ position: "absolute", right: "-14%", bottom: "-14%", width: "62%", height: "62%", opacity: 0.09, overflow: "visible" }}>
+        <g style={{ transformOrigin: "50px 50px", animation: "catGearSpin 14s linear infinite" }}>
+          <circle cx="50" cy="50" r="28" fill="none" stroke="#64748B" strokeWidth="2.5" />
+          <circle cx="50" cy="50" r="13" fill="none" stroke="#64748B" strokeWidth="1.5" />
+          {[0,30,60,90,120,150,180,210,240,270,300,330].map(a => (
+            <rect key={a} x="46" y="14" width="8" height="11" rx="1.5" fill="#64748B" transform={`rotate(${a} 50 50)`} />
+          ))}
+        </g>
+      </svg>
+      <svg viewBox="0 0 60 60" style={{ position: "absolute", left: "-8%", top: "-8%", width: "38%", height: "38%", opacity: 0.09, overflow: "visible" }}>
+        <g style={{ transformOrigin: "30px 30px", animation: "catGearSpin 9s linear infinite reverse" }}>
+          <circle cx="30" cy="30" r="16" fill="none" stroke="#64748B" strokeWidth="2" />
+          <circle cx="30" cy="30" r="7" fill="none" stroke="#64748B" strokeWidth="1.5" />
+          {[0,45,90,135,180,225,270,315].map(a => (
+            <rect key={a} x="27" y="8" width="6" height="9" rx="1" fill="#64748B" transform={`rotate(${a} 30 30)`} />
+          ))}
+        </g>
+      </svg>
+    </div>
+  );
+
+  if (slug === "surgical") return (
+    <div style={wrap}>
+      <svg viewBox="0 0 200 200" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.1 }}>
+        <circle cx="100" cy="100" r="52" fill="none" stroke="#EF4444" strokeWidth="0.8" />
+        <circle cx="100" cy="100" r="28" fill="none" stroke="#EF4444" strokeWidth="0.8" />
+        <circle cx="100" cy="100" r="4" fill="#EF4444" />
+        <line x1="100" y1="36" x2="100" y2="70" stroke="#EF4444" strokeWidth="0.8" />
+        <line x1="100" y1="130" x2="100" y2="164" stroke="#EF4444" strokeWidth="0.8" />
+        <line x1="36" y1="100" x2="70" y2="100" stroke="#EF4444" strokeWidth="0.8" />
+        <line x1="130" y1="100" x2="164" y2="100" stroke="#EF4444" strokeWidth="0.8" />
+        <path d="M14,14 L14,36 M14,14 L36,14" fill="none" stroke="#EF4444" strokeWidth="1.2" />
+        <path d="M186,14 L186,36 M186,14 L164,14" fill="none" stroke="#EF4444" strokeWidth="1.2" />
+        <path d="M14,186 L14,164 M14,186 L36,186" fill="none" stroke="#EF4444" strokeWidth="1.2" />
+        <path d="M186,186 L186,164 M186,186 L164,186" fill="none" stroke="#EF4444" strokeWidth="1.2" />
+      </svg>
+      <div style={{ position: "absolute", left: 0, right: 0, height: 1.5, background: "linear-gradient(to right, transparent, rgba(239,68,68,0.55), transparent)", animation: "catScan 3.2s ease-in-out infinite" }} />
+    </div>
+  );
+
+  if (slug === "books") return (
+    <div style={wrap}>
+      {[{l:"18%",delay:0,dur:3.6},{l:"46%",delay:1.3,dur:4},{l:"72%",delay:0.7,dur:3.3},{l:"32%",delay:2.1,dur:3.9},{l:"60%",delay:1.7,dur:4.2}].map((p,i) => (
+        <div key={i} style={{ position: "absolute", left: p.l, bottom: "-10%", width: 14, height: 18, borderRadius: 2, background: "rgba(217,119,6,0.2)", border: "1px solid rgba(217,119,6,0.3)", animation: `catFloatUp ${p.dur}s ease-in-out ${p.delay}s infinite` }} />
+      ))}
+      <svg viewBox="0 0 130 90" style={{ position: "absolute", bottom: "10%", right: "4%", width: "58%", opacity: 0.08 }}>
+        <path d="M65,8 Q40,10 12,20 L12,75 Q40,65 65,63 Q90,65 118,75 L118,20 Q90,10 65,8 Z" fill="none" stroke="#D97706" strokeWidth="2" />
+        <line x1="65" y1="8" x2="65" y2="63" stroke="#D97706" strokeWidth="1.5" />
+        <line x1="22" y1="32" x2="60" y2="30" stroke="#D97706" strokeWidth="1" />
+        <line x1="22" y1="43" x2="60" y2="41" stroke="#D97706" strokeWidth="1" />
+        <line x1="70" y1="30" x2="108" y2="32" stroke="#D97706" strokeWidth="1" />
+        <line x1="70" y1="41" x2="108" y2="43" stroke="#D97706" strokeWidth="1" />
+        <line x1="22" y1="54" x2="60" y2="52" stroke="#D97706" strokeWidth="0.8" />
+        <line x1="70" y1="52" x2="108" y2="54" stroke="#D97706" strokeWidth="0.8" />
+      </svg>
+    </div>
+  );
+
+  if (slug === "scrubs") return (
+    <div style={wrap}>
+      <div style={{ position: "absolute", inset: "-100%", backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(59,130,246,0.07) 18px, rgba(59,130,246,0.07) 20px)", animation: "catDiagStripe 3s linear infinite" }} />
+      <svg viewBox="0 0 130 140" style={{ position: "absolute", bottom: "-8%", right: "-2%", width: "55%", opacity: 0.08 }}>
+        <path d="M40,18 L18,42 L38,48 L38,112 L92,112 L92,48 L112,42 L90,18 Q65,28 40,18 Z" fill="none" stroke="#3B82F6" strokeWidth="2" />
+        <path d="M40,18 Q52,10 65,10 Q78,10 90,18" fill="none" stroke="#3B82F6" strokeWidth="1.5" />
+        <line x1="45" y1="65" x2="85" y2="65" stroke="#3B82F6" strokeWidth="1" strokeDasharray="4 3" />
+        <line x1="45" y1="78" x2="85" y2="78" stroke="#3B82F6" strokeWidth="1" strokeDasharray="4 3" />
+      </svg>
+    </div>
+  );
+
+  if (slug === "orthopaedic") return (
+    <div style={wrap}>
+      <svg viewBox="0 0 200 220" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.11, animation: "catBoneGlow 4.5s ease-in-out infinite" }}>
+        <path d="M80,22 Q98,18 104,34 L100,72 L112,108 L112,152 L100,185 Q96,198 80,198 Q64,198 60,185 L48,152 L48,108 L60,72 L56,34 Q62,18 80,22 Z" fill="none" stroke="#0EA5E9" strokeWidth="1.8" />
+        <circle cx="122" cy="36" r="22" fill="none" stroke="#0EA5E9" strokeWidth="1.8" />
+        <line x1="60" y1="90" x2="100" y2="90" stroke="#0EA5E9" strokeWidth="1.2" strokeDasharray="4 3" />
+        <line x1="60" y1="150" x2="100" y2="150" stroke="#0EA5E9" strokeWidth="1.2" strokeDasharray="4 3" />
+        <line x1="66" y1="100" x2="94" y2="140" stroke="#0EA5E9" strokeWidth="0.8" />
+        <line x1="94" y1="100" x2="66" y2="140" stroke="#0EA5E9" strokeWidth="0.8" />
+        <circle cx="80" cy="120" r="5" fill="none" stroke="#0EA5E9" strokeWidth="1" />
+      </svg>
+    </div>
+  );
+
+  return null;
+}
+
 const trustedBrands = [
   "3M Littmann", "OMRON", "Accu-Chek", "MDF Instruments",
   "Dr. Trust", "SurgiMed", "Heine", "Elsevier", "DAMS", "Tynor",
@@ -829,13 +961,14 @@ export default function Home() {
                     <Link
                       key={cat.slug}
                       href={`/shop?category=${cat.slug}`}
-                      className="group flex flex-col justify-between p-7 transition-all"
+                      className="group flex flex-col justify-between p-7 transition-all relative overflow-hidden"
                       style={{ background: "#FAFAF8", aspectRatio: "1/1" }}
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#EDE9E3"; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#FAFAF8"; }}
                     >
-                      <Icon className="w-6 h-6 transition-colors group-hover:text-black" style={{ color: "rgba(0,0,0,0.28)" }} />
-                      <div>
+                      <CategoryAnimBg slug={cat.slug} />
+                      <Icon className="w-6 h-6 transition-colors group-hover:text-black relative z-10" style={{ color: "rgba(0,0,0,0.28)" }} />
+                      <div className="relative z-10">
                         <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, fontWeight: 500, color: "rgba(0,0,0,0.6)", lineHeight: 1.3, display: "block" }}>{cat.name}</span>
                         {cat.productCount > 0 && (
                           <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, color: "rgba(0,0,0,0.28)", display: "block", marginTop: 4 }}>

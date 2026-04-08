@@ -662,45 +662,8 @@
   background: rgba(255,255,255,0.3);
 }
 
-/* ── Star particle overlay — navy deep-space starfield ─────────────────────── */
 body {
-  background-color: #07091E;
-}
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image:
-    /* Bright stars */
-    radial-gradient(1.5px 1.5px at  6%  9%, rgba(255,255,255,0.55) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 18% 22%, rgba(220,230,255,0.45) 0%, transparent 100%),
-    radial-gradient(2px   2px   at 32% 14%, rgba(255,255,255,0.50) 0%, transparent 100%),
-    radial-gradient(1px   1px   at 44% 38%, rgba(200,220,255,0.40) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 57%  6%, rgba(255,255,255,0.48) 0%, transparent 100%),
-    radial-gradient(1px   1px   at 70% 27%, rgba(220,240,255,0.38) 0%, transparent 100%),
-    radial-gradient(2px   2px   at 83% 19%, rgba(255,255,255,0.52) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 92%  8%, rgba(200,215,255,0.44) 0%, transparent 100%),
-    /* Mid stars */
-    radial-gradient(1px 1px at 10% 48%, rgba(255,255,255,0.30) 0%, transparent 100%),
-    radial-gradient(1px 1px at 24% 61%, rgba(210,225,255,0.28) 0%, transparent 100%),
-    radial-gradient(1px 1px at 38% 53%, rgba(255,255,255,0.25) 0%, transparent 100%),
-    radial-gradient(1px 1px at 52% 72%, rgba(200,220,255,0.32) 0%, transparent 100%),
-    radial-gradient(1px 1px at 65% 44%, rgba(255,255,255,0.27) 0%, transparent 100%),
-    radial-gradient(1px 1px at 77% 68%, rgba(215,230,255,0.30) 0%, transparent 100%),
-    radial-gradient(1px 1px at 88% 55%, rgba(255,255,255,0.22) 0%, transparent 100%),
-    radial-gradient(1px 1px at  3% 78%, rgba(200,215,255,0.20) 0%, transparent 100%),
-    /* Dim stars */
-    radial-gradient(1px 1px at 14% 86%, rgba(255,255,255,0.18) 0%, transparent 100%),
-    radial-gradient(1px 1px at 28% 91%, rgba(210,225,255,0.16) 0%, transparent 100%),
-    radial-gradient(1px 1px at 42% 82%, rgba(255,255,255,0.15) 0%, transparent 100%),
-    radial-gradient(1px 1px at 61% 88%, rgba(200,220,255,0.18) 0%, transparent 100%),
-    radial-gradient(1px 1px at 75% 92%, rgba(255,255,255,0.15) 0%, transparent 100%),
-    radial-gradient(1px 1px at 95% 80%, rgba(215,230,255,0.12) 0%, transparent 100%),
-    /* Blue nebula tints */
-    radial-gradient(80px 80px at 20% 30%, rgba(30,80,200,0.06) 0%, transparent 100%),
-    radial-gradient(120px 80px at 75% 60%, rgba(10,50,180,0.05) 0%, transparent 100%);
+  background-color: #FAFAF8;
 }
 
 /* ── Film grain cinematic texture ──────────────────────────────────────────── */

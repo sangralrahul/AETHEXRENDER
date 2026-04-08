@@ -298,52 +298,6 @@ export default function CadusQuickConsult() {
         </div>
       </div>
 
-      {/* ── FAB ── */}
-      <div
-        className="fixed z-[88]"
-        style={{
-          bottom: 24,
-          right: 20,
-          pointerEvents: open ? "none" : "auto",
-          opacity: open ? 0 : 1,
-          transform: open ? "scale(0.8) translateY(8px)" : "scale(1)",
-          transition: "opacity 0.22s ease, transform 0.22s ease",
-        }}
-      >
-        <button
-          onClick={() => setOpen(true)}
-          aria-label="Ask Cadus AI"
-          className="relative flex items-center justify-center rounded-full transition-all duration-200"
-          style={{
-            background: "linear-gradient(135deg,#007AFF 0%,#00C2A8 100%)",
-            boxShadow: "0 6px 24px rgba(0,122,255,0.38), 0 2px 8px rgba(0,0,0,0.12)",
-            width: 52,
-            height: 52,
-          }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLElement).style.boxShadow = "0 10px 32px rgba(0,122,255,0.48), 0 2px 10px rgba(0,0,0,0.18)";
-            (e.currentTarget as HTMLElement).style.transform = "scale(1.04)";
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(0,122,255,0.38), 0 2px 8px rgba(0,0,0,0.12)";
-            (e.currentTarget as HTMLElement).style.transform = "scale(1)";
-          }}
-        >
-          {/* Pulse ring */}
-          <span className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              border: "2px solid rgba(0,122,255,0.55)",
-              animation: "cadus-fab-pulse 2.4s cubic-bezier(0.4,0,0.6,1) infinite",
-            }} />
-
-          {/* Brain icon */}
-          <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "rgba(255,255,255,0.2)" }}>
-            <Brain className="text-white" style={{ width: 16, height: 16 }} />
-          </div>
-
-        </button>
-      </div>
     </>
   );
 }

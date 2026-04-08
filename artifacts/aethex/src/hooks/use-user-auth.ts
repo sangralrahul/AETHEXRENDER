@@ -147,6 +147,32 @@ export function useUserAuth() {
     saveUser(profile);
   };
 
+  const googleLogin = (firebaseUser: { uid: string; displayName: string | null; email: string | null; photoURL: string | null }): void => {
+    const emailKey = (firebaseUser.email || `google:${firebaseUser.uid}`).toLowerCase();
+    const users = getUsers();
+    let profile: UserProfile;
+    if (users[emailKey]) {
+      const { passwordHash: _ph, ...existing } = users[emailKey];
+      profile = { ...existing, avatar: firebaseUser.photoURL || existing.avatar };
+    } else {
+      const name = firebaseUser.displayName || (firebaseUser.email?.split("@")[0] ?? "Doctor");
+      profile = {
+        id: firebaseUser.uid,
+        name,
+        email: emailKey,
+        avatar: firebaseUser.photoURL || undefined,
+        isPro: false,
+        addresses: [],
+        wishlist: [],
+        cadusDailyCount: 0,
+        cadusLastDate: "",
+      };
+      users[emailKey] = { ...profile, passwordHash: "" };
+      saveUsers(users);
+    }
+    saveUser(profile);
+  };
+
   const phoneLogin = (phone: string, jwt: string): void => {
     localStorage.setItem(JWT_KEY, jwt);
     const phoneKey = `phone:${phone}`;
@@ -232,6 +258,7 @@ export function useUserAuth() {
     signup,
     login,
     otpLogin,
+    googleLogin,
     phoneLogin,
     getJwt,
     logout,

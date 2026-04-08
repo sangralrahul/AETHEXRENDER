@@ -98,6 +98,9 @@ importers:
       dompurify:
         specifier: ^3.3.3
         version: 3.3.3
+      firebase:
+        specifier: ^12.11.0
+        version: 12.11.0
       jspdf:
         specifier: ^4.2.1
         version: 4.2.1

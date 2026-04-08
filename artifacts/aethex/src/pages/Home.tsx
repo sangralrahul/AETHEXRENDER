@@ -20,6 +20,7 @@ import { useAddToCart } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { DailyMCQWidget } from "@/components/DailyMCQWidget";
+import { formatINR } from "@/lib/utils";
 
 function HeroAIInput() {
   const [query, setQuery] = useState("");
@@ -223,6 +224,163 @@ function CategoryAnimBg({ slug }: { slug: string }) {
   );
 
   return null;
+}
+
+// ── Specialty catalogue metadata (color must mirror CategoryAnimBg) ──
+const SPECIALTY_META: Record<string, { color: string; bg: string; description: string }> = {
+  "stethoscopes": { color: "#00C2A8", bg: "rgba(0,194,168,0.07)",   description: "Auscultation & diagnostic instruments" },
+  "cardiac-care": { color: "#F43F5E", bg: "rgba(244,63,94,0.07)",   description: "ECG, BP monitors & cardiac devices" },
+  "neurology":    { color: "#7C3AED", bg: "rgba(124,58,237,0.07)",  description: "Neurological assessment & imaging" },
+  "equipment":    { color: "#64748B", bg: "rgba(100,116,139,0.07)", description: "Clinical & diagnostic equipment" },
+  "surgical":     { color: "#EF4444", bg: "rgba(239,68,68,0.07)",   description: "Instruments, PPE & procedure kits" },
+  "books":        { color: "#D97706", bg: "rgba(217,119,6,0.07)",   description: "Textbooks, references & study guides" },
+  "scrubs":       { color: "#3B82F6", bg: "rgba(59,130,246,0.07)",  description: "Clinical wear & professional uniforms" },
+  "orthopaedic":  { color: "#0EA5E9", bg: "rgba(14,165,233,0.07)",  description: "Braces, rehabilitation & ortho tools" },
+};
+const SPECIALTY_ORDER = ["stethoscopes","cardiac-care","neurology","equipment","surgical","books","scrubs","orthopaedic"];
+
+function CatalogueCard({ product, color }: { product: any; color: string }) {
+  const discount = product.originalPrice
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0;
+  return (
+    <Link href={`/products/${product.id}`} className="group block rounded-xl overflow-hidden transition-all duration-200"
+      style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.08)", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 28px rgba(0,0,0,0.1)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
+    >
+      {/* Colored top accent bar */}
+      <div style={{ height: 3, background: color, flexShrink: 0 }} />
+
+      {/* Image */}
+      <div style={{ background: "#F7F5F1", aspectRatio: "4/3", overflow: "hidden", position: "relative" }}>
+        <img
+          src={product.imageUrl || "https://images.unsplash.com/photo-1584362917165-526a968579e8?w=600&q=80"}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          onError={e => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1584362917165-526a968579e8?w=600&q=80"; }}
+        />
+        {discount > 0 && (
+          <span style={{ position: "absolute", top: 10, left: 10, fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, fontWeight: 700, color: "#FFFFFF", background: color, borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" }}>
+            -{discount}%
+          </span>
+        )}
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: "14px 16px 16px" }}>
+        {product.brand && (
+          <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(0,0,0,0.32)", marginBottom: 5 }}>{product.brand}</p>
+        )}
+        <h4 className="line-clamp-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, fontWeight: 500, color: "#0A0A0F", lineHeight: 1.4, marginBottom: 12 }}>
+          {product.name}
+        </h4>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 15, fontWeight: 700, color: "#0A0A0F" }}>{formatINR(product.price)}</span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, color: "rgba(0,0,0,0.3)", textDecoration: "line-through", marginLeft: 6 }}>{formatINR(product.originalPrice)}</span>
+            )}
+          </div>
+          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, fontWeight: 700, color, letterSpacing: "0.1em", textTransform: "uppercase" }} className="group-hover:underline">
+            View →
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function SpecialtyCatalogue({ categories }: { categories: any[] }) {
+  const [activeSlug, setActiveSlug] = useState("stethoscopes");
+  const { data: productsData, isLoading } = useListProducts({ category: activeSlug, limit: 6 });
+  const meta = SPECIALTY_META[activeSlug] || SPECIALTY_META["stethoscopes"];
+  const products = (productsData?.products || []).slice(0, 6);
+  const activeCat = categories.find((c: any) => c.slug === activeSlug);
+
+  return (
+    <div style={{ marginTop: 32 }}>
+      {/* ── Tab bar ─────────────────────────────────── */}
+      <div className="overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+        <div style={{ display: "flex", borderBottom: "1px solid rgba(0,0,0,0.08)", gap: 0, minWidth: "max-content" }}>
+          {SPECIALTY_ORDER.map(slug => {
+            const cat = categories.find((c: any) => c.slug === slug);
+            const m = SPECIALTY_META[slug];
+            const Icon = categoryIconMap[cat?.iconName as string] || Activity;
+            const isActive = slug === activeSlug;
+            return (
+              <button key={slug} onClick={() => setActiveSlug(slug)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  padding: "10px 18px",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, fontWeight: isActive ? 600 : 400,
+                  color: isActive ? m.color : "rgba(0,0,0,0.38)",
+                  borderBottom: isActive ? `2px solid ${m.color}` : "2px solid transparent",
+                  marginBottom: -1, background: "transparent", border: "none", cursor: "pointer",
+                  transition: "color 0.18s",
+                  borderBottomStyle: "solid", borderBottomWidth: 2, borderBottomColor: isActive ? m.color : "transparent",
+                  whiteSpace: "nowrap",
+                }}
+                onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "rgba(0,0,0,0.65)"; }}
+                onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "rgba(0,0,0,0.38)"; }}
+              >
+                <Icon style={{ width: 13, height: 13, flexShrink: 0, color: isActive ? m.color : undefined }} />
+                {cat?.name || slug}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Catalogue meta row ───────────────────────── */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0 18px", flexWrap: "wrap", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#FFFFFF", background: meta.color, borderRadius: 4, padding: "3px 8px" }}>
+            {activeCat?.productCount ? `${activeCat.productCount} items` : "Catalogue"}
+          </span>
+          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 12, color: "rgba(0,0,0,0.45)" }}>
+            {meta.description}
+          </span>
+        </div>
+        <Link href={`/shop?category=${activeSlug}`}
+          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: meta.color, fontWeight: 600 }}>
+          Browse all →
+        </Link>
+      </div>
+
+      {/* ── Product grid ─────────────────────────────── */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {isLoading
+          ? [...Array(6)].map((_, i) => (
+              <div key={i} style={{ borderRadius: 12, overflow: "hidden", border: "1px solid rgba(0,0,0,0.07)" }}>
+                <div style={{ height: 3, background: meta.color, opacity: 0.4 }} />
+                <div style={{ background: "rgba(0,0,0,0.04)", aspectRatio: "4/3" }} className="animate-pulse" />
+                <div style={{ padding: "14px 16px 16px" }}>
+                  <div style={{ height: 8, background: "rgba(0,0,0,0.06)", borderRadius: 4, marginBottom: 10, width: "40%" }} className="animate-pulse" />
+                  <div style={{ height: 12, background: "rgba(0,0,0,0.06)", borderRadius: 4, marginBottom: 6 }} className="animate-pulse" />
+                  <div style={{ height: 12, background: "rgba(0,0,0,0.04)", borderRadius: 4, width: "70%" }} className="animate-pulse" />
+                </div>
+              </div>
+            ))
+          : products.length > 0
+            ? products.map((product: any) => (
+                <CatalogueCard key={product.id} product={product} color={meta.color} />
+              ))
+            : (
+              <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "60px 0" }}>
+                <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, color: "rgba(0,0,0,0.35)" }}>
+                  No products yet in this specialty — check back soon.
+                </p>
+                <Link href={`/shop?category=${activeSlug}`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 12, color: meta.color, fontWeight: 600, marginTop: 12, display: "inline-block" }}>
+                  Browse full catalogue →
+                </Link>
+              </div>
+            )
+        }
+      </div>
+    </div>
+  );
 }
 
 const trustedBrands = [
@@ -981,6 +1139,9 @@ export default function Home() {
                 })}
             </div>
           )}
+
+          {/* ── Specialty Catalogue ──────────────────── */}
+          <SpecialtyCatalogue categories={categories || []} />
         </div>
       </section>
 

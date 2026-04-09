@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Eye, EyeOff, RefreshCw, ShieldCheck, Sparkles, GraduationCap, ShoppingBag, BrainCircuit, CheckCircle2, Mail, Phone } from "lucide-react";
 import { useUserAuth } from "@/hooks/use-user-auth";
+import { auth } from "@/lib/firebase";
+import { signInWithPhoneNumber, RecaptchaVerifier, type ConfirmationResult } from "firebase/auth";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const LOGO = `${import.meta.env.BASE_URL}aethex-logo.jpg`;
@@ -37,6 +39,9 @@ export default function Login() {
   const [phoneMode, setPhoneMode] = useState<PhoneMode>("phone-enter");
   const [phoneOtp, setPhoneOtp] = useState("");
   const [phoneTimer, setPhoneTimer] = useState(0);
+  const confirmationResultRef = useRef<ConfirmationResult | null>(null);
+  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
+  const recaptchaContainerRef = useRef<HTMLDivElement>(null);
 
   // Common states
   const [error, setError] = useState("");
@@ -99,34 +104,38 @@ export default function Login() {
     finally { setLoading(false); }
   };
 
-  // ── Phone handlers ────────────────────────────────────────────────────────
+  // ── Phone handlers (Firebase) ─────────────────────────────────────────────
+  const formatPhone = (raw: string) => {
+    const d = raw.replace(/\D/g, "");
+    return d.length === 10 ? `+91${d}` : raw;
+  };
+
   const handleSendPhoneOtp = async (e: React.FormEvent) => {
     e.preventDefault(); setError(""); setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/send-phone-otp`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
-      });
-      const data = await res.json();
-      if (!res.ok) { setError(data.error || "Failed to send OTP."); return; }
+      if (!recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaContainerRef.current!, { size: "invisible" });
+      }
+      const result = await signInWithPhoneNumber(auth, formatPhone(phone), recaptchaVerifierRef.current);
+      confirmationResultRef.current = result;
       setPhoneMode("phone-verify"); setPhoneTimer(60);
-    } catch { setError("Network error. Please try again."); }
-    finally { setLoading(false); }
+    } catch (err: any) {
+      setError(err.message || "Failed to send OTP. Check your number.");
+      recaptchaVerifierRef.current?.clear();
+      recaptchaVerifierRef.current = null;
+    } finally { setLoading(false); }
   };
 
   const handleVerifyPhoneOtp = async (e: React.FormEvent) => {
     e.preventDefault(); setError(""); setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/verify-phone-otp`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, otp: phoneOtp }),
-      });
-      const data = await res.json();
-      if (!res.ok) { setError(data.error || "Verification failed."); return; }
-      phoneLogin(phone, data.token);
+      if (!confirmationResultRef.current) { setError("Session expired. Please resend OTP."); return; }
+      const result = await confirmationResultRef.current.confirm(phoneOtp);
+      const u = result.user;
+      phoneLogin(u.phoneNumber || phone, "");
       setSuccess(true);
       setTimeout(() => setLocation("/"), 1000);
-    } catch { setError("Network error. Please try again."); }
+    } catch { setError("Invalid OTP. Please check and try again."); }
     finally { setLoading(false); }
   };
 
@@ -134,13 +143,14 @@ export default function Login() {
     if (phoneTimer > 0) return;
     setLoading(true); setError("");
     try {
-      const res = await fetch(`${API_BASE}/api/auth/send-phone-otp`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
-      });
-      const data = await res.json();
-      if (res.ok) { setPhoneOtp(""); setPhoneTimer(60); } else setError(data.error || "Failed.");
-    } catch { setError("Network error."); } finally { setLoading(false); }
+      recaptchaVerifierRef.current?.clear();
+      recaptchaVerifierRef.current = null;
+      recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaContainerRef.current!, { size: "invisible" });
+      const result = await signInWithPhoneNumber(auth, formatPhone(phone), recaptchaVerifierRef.current);
+      confirmationResultRef.current = result;
+      setPhoneOtp(""); setPhoneTimer(60);
+    } catch (err: any) { setError(err.message || "Failed to resend OTP."); }
+    finally { setLoading(false); }
   };
 
   return (
@@ -339,6 +349,7 @@ export default function Login() {
                 {/* ── Phone tab ── */}
                 {tab === "phone" && (
                   <>
+                    <div ref={recaptchaContainerRef} />
                     {phoneMode === "phone-verify" ? (
                       <>
                         <p style={{ fontSize: 13, color: "#636366", marginBottom: 20 }}>

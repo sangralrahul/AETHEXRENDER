@@ -3,6 +3,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
+import { auth } from "@/lib/firebase";
+import { getRedirectResult } from "firebase/auth";
+import { useUserAuth } from "@/hooks/use-user-auth";
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -311,12 +314,23 @@ function Router() {
   );
 }
 
+function FirebaseAuthHandler() {
+  const { googleLogin } = useUserAuth();
+  useEffect(() => {
+    getRedirectResult(auth).then((result) => {
+      if (result?.user) googleLogin(result.user);
+    }).catch(() => {});
+  }, []);
+  return null;
+}
+
 function App() {
   const { showSplash, handleComplete } = useSplashScreen();
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <FirebaseAuthHandler />
         {showSplash && <SplashScreen onComplete={handleComplete} />}
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <ScrollToTop />

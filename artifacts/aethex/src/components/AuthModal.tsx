@@ -3,7 +3,7 @@ import { X, Mail, Lock, User, Eye, EyeOff, Sparkles, ShieldCheck, RefreshCw, Gra
 import { useUserAuth } from "@/hooks/use-user-auth";
 import { MEDICAL_COLLEGES, HOSPITALS } from "@/lib/india-institutions";
 import { auth } from "@/lib/firebase";
-import { GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, signInWithPhoneNumber, RecaptchaVerifier, type ConfirmationResult } from "firebase/auth";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -125,6 +125,15 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
   const [otpSuccess, setOtpSuccess] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const [otpMethod, setOtpMethod] = useState<"email" | "phone">("email");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneOtpCode, setPhoneOtpCode] = useState("");
+  const [phoneStep, setPhoneStep] = useState<"input" | "verify">("input");
+  const [phoneLoading, setPhoneLoading] = useState(false);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const recaptchaRef = useRef<HTMLDivElement>(null);
+  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
+
   useEffect(() => {
     if (!open) { setTab(defaultMode); reset(); resetOtp(); }
   }, [open, defaultMode]);
@@ -144,6 +153,8 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
     setOtpStep("email"); setOtpEmail(""); setOtpCode("");
     setOtpTimer(0); setOtpSuccess(false); setError("");
     if (timerRef.current) clearInterval(timerRef.current);
+    setPhoneNumber(""); setPhoneOtpCode(""); setPhoneStep("input");
+    setConfirmationResult(null);
   }
 
   function switchTab(t: Tab) { setTab(t); reset(); resetOtp(); }
@@ -153,34 +164,61 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
     setError("");
     try {
       const provider = new GoogleAuthProvider();
-      try {
-        const result = await signInWithPopup(auth, provider);
-        googleLogin(result.user);
-        onClose();
-      } catch (popupErr: any) {
-        if (popupErr.code === "auth/popup-blocked" || popupErr.code === "auth/popup-closed-by-user") {
-          await signInWithRedirect(auth, provider);
-        } else if (popupErr.code === "auth/unauthorized-domain") {
-          setError("Google Sign-In is not yet enabled for this domain. Please add aethex.in to Firebase authorized domains.");
-        } else if (popupErr.code !== "auth/cancelled-popup-request") {
-          setError(popupErr.message || "Google sign-in failed.");
-        }
-      }
+      const result = await signInWithPopup(auth, provider);
+      googleLogin(result.user);
+      onClose();
     } catch (err: any) {
-      setError(err.message || "Google sign-in failed.");
+      if (err.code === "auth/popup-closed-by-user" || err.code === "auth/cancelled-popup-request") {
+      } else if (err.code === "auth/unauthorized-domain") {
+        setError("Google Sign-In is not enabled for this domain.");
+      } else if (err.code === "auth/popup-blocked") {
+        setError("Popup was blocked by your browser. Please allow popups for aethex.in and try again.");
+      } else {
+        setError(err.message || "Google sign-in failed. Please try again.");
+      }
     } finally {
       setGoogleLoading(false);
     }
   };
 
-  useEffect(() => {
-    getRedirectResult(auth).then((result) => {
-      if (result?.user) {
-        googleLogin(result.user);
-        onClose();
+  const handleSendPhoneOtp = async () => {
+    setPhoneLoading(true);
+    setError("");
+    try {
+      const digits = phoneNumber.replace(/\D/g, "");
+      const formatted = digits.length === 10 ? `+91${digits}` : digits.startsWith("91") && digits.length === 12 ? `+${digits}` : phoneNumber;
+      if (!recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaRef.current!, { size: "invisible" });
       }
-    }).catch(() => {});
-  }, []);
+      const result = await signInWithPhoneNumber(auth, formatted, recaptchaVerifierRef.current);
+      setConfirmationResult(result);
+      setPhoneStep("verify");
+      startTimer();
+    } catch (err: any) {
+      setError(err.message || "Failed to send OTP. Check your number and try again.");
+      recaptchaVerifierRef.current?.clear();
+      recaptchaVerifierRef.current = null;
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
+
+  const handleVerifyPhoneOtp = async () => {
+    if (!confirmationResult || phoneOtpCode.length !== 6) return;
+    setPhoneLoading(true);
+    setError("");
+    try {
+      const result = await confirmationResult.confirm(phoneOtpCode);
+      const u = result.user;
+      googleLogin({ uid: u.uid, displayName: u.displayName, email: u.email, photoURL: u.photoURL });
+      setOtpSuccess(true);
+      setTimeout(() => onClose(), 1200);
+    } catch (err: any) {
+      setError("Invalid OTP. Please check the code and try again.");
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
 
   function startTimer() {
     setOtpTimer(60);
@@ -321,6 +359,7 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
 
         {tab === "otp" ? (
           <div className="p-6 pt-2">
+            <div ref={recaptchaRef} />
             {otpSuccess ? (
               <div className="text-center py-8">
                 <div className="w-16 h-16 rounded-full bg-[#00C2A8]/20 flex items-center justify-center mx-auto mb-4">
@@ -329,52 +368,118 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
                 <p className="text-[#1c1c1e] font-bold text-lg">Verified!</p>
                 <p className="text-[#6c6c70] text-sm mt-1">Logging you in…</p>
               </div>
-            ) : otpStep === "email" ? (
-              <form onSubmit={handleSendOtp} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Email Address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
-                    <input type="email" value={otpEmail} onChange={e => setOtpEmail(e.target.value)} required
-                      placeholder="doctor@hospital.in"
-                      className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
-                  </div>
-                </div>
-                {error && <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-400">{error}</div>}
-                <button type="submit" disabled={loading}
-                  className="w-full py-3 bg-[#00C2A8] hover:bg-[#00D4B8] text-[#0D1117] font-bold rounded-xl transition-all disabled:opacity-60">
-                  {loading ? "Sending OTP…" : "Send OTP"}
-                </button>
-                <p className="text-center text-xs text-[#8e8e93]">A 6-digit code will be sent to your email</p>
-              </form>
             ) : (
-              <form onSubmit={handleVerifyOtp} className="space-y-4">
-                <div className="p-3 bg-[#00C2A8]/10 border border-[#00C2A8]/20 rounded-xl text-sm text-[#00C2A8] text-center">
-                  OTP sent to <strong>{otpEmail}</strong>
+              <>
+                {/* Email / Phone toggle */}
+                <div className="flex rounded-xl bg-black/5 p-1 mb-5">
+                  {(["email", "phone"] as const).map(m => (
+                    <button key={m} type="button" onClick={() => { setOtpMethod(m); setError(""); }}
+                      className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${otpMethod === m ? "bg-[#00C2A8] text-[#0D1117]" : "text-[#6c6c70] hover:text-[#1c1c1e]"}`}>
+                      {m === "email" ? "Email OTP" : "Phone OTP"}
+                    </button>
+                  ))}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Enter 6-digit OTP</label>
-                  <input type="text" inputMode="numeric" pattern="\d{6}" maxLength={6}
-                    value={otpCode} onChange={e => setOtpCode(e.target.value.replace(/\D/g, ""))} required
-                    placeholder="• • • • • •"
-                    className="w-full text-center text-2xl font-mono tracking-[0.5em] py-4 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
-                </div>
-                {error && <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-400">{error}</div>}
-                <button type="submit" disabled={loading || otpCode.length !== 6}
-                  className="w-full py-3 bg-[#00C2A8] hover:bg-[#00D4B8] text-[#0D1117] font-bold rounded-xl transition-all disabled:opacity-60">
-                  {loading ? "Verifying…" : "Verify & Login"}
-                </button>
-                <div className="flex items-center justify-between text-xs">
-                  <button type="button" onClick={() => { resetOtp(); }} className="text-[#6c6c70] hover:text-[#1c1c1e] transition-colors">
-                    ← Change email
-                  </button>
-                  <button type="button" onClick={handleResendOtp} disabled={otpTimer > 0 || loading}
-                    className="flex items-center gap-1 text-[#6c6c70] hover:text-[#00C2A8] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-                    <RefreshCw className="w-3 h-3" />
-                    {otpTimer > 0 ? `Resend in ${otpTimer}s` : "Resend OTP"}
-                  </button>
-                </div>
-              </form>
+
+                {otpMethod === "email" ? (
+                  otpStep === "email" ? (
+                    <form onSubmit={handleSendOtp} className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Email Address</label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8e8e93]" />
+                          <input type="email" value={otpEmail} onChange={e => setOtpEmail(e.target.value)} required
+                            placeholder="doctor@hospital.in"
+                            className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                        </div>
+                      </div>
+                      {error && <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-400">{error}</div>}
+                      <button type="submit" disabled={loading}
+                        className="w-full py-3 bg-[#00C2A8] hover:bg-[#00D4B8] text-[#0D1117] font-bold rounded-xl transition-all disabled:opacity-60">
+                        {loading ? "Sending OTP…" : "Send OTP"}
+                      </button>
+                      <p className="text-center text-xs text-[#8e8e93]">A 6-digit code will be sent to your email</p>
+                    </form>
+                  ) : (
+                    <form onSubmit={handleVerifyOtp} className="space-y-4">
+                      <div className="p-3 bg-[#00C2A8]/10 border border-[#00C2A8]/20 rounded-xl text-sm text-[#00C2A8] text-center">
+                        OTP sent to <strong>{otpEmail}</strong>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Enter 6-digit OTP</label>
+                        <input type="text" inputMode="numeric" pattern="\d{6}" maxLength={6}
+                          value={otpCode} onChange={e => setOtpCode(e.target.value.replace(/\D/g, ""))} required
+                          placeholder="• • • • • •"
+                          className="w-full text-center text-2xl font-mono tracking-[0.5em] py-4 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                      </div>
+                      {error && <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-400">{error}</div>}
+                      <button type="submit" disabled={loading || otpCode.length !== 6}
+                        className="w-full py-3 bg-[#00C2A8] hover:bg-[#00D4B8] text-[#0D1117] font-bold rounded-xl transition-all disabled:opacity-60">
+                        {loading ? "Verifying…" : "Verify & Login"}
+                      </button>
+                      <div className="flex items-center justify-between text-xs">
+                        <button type="button" onClick={() => { resetOtp(); }} className="text-[#6c6c70] hover:text-[#1c1c1e] transition-colors">
+                          ← Change email
+                        </button>
+                        <button type="button" onClick={handleResendOtp} disabled={otpTimer > 0 || loading}
+                          className="flex items-center gap-1 text-[#6c6c70] hover:text-[#00C2A8] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                          <RefreshCw className="w-3 h-3" />
+                          {otpTimer > 0 ? `Resend in ${otpTimer}s` : "Resend OTP"}
+                        </button>
+                      </div>
+                    </form>
+                  )
+                ) : (
+                  phoneStep === "input" ? (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Mobile Number</label>
+                        <div className="flex gap-2">
+                          <div className="flex items-center px-3 py-3 bg-black/5 border border-black/10 rounded-xl text-[#3c3c43] text-sm font-medium shrink-0">
+                            🇮🇳 +91
+                          </div>
+                          <input type="tel" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                            placeholder="10-digit mobile number"
+                            className="flex-1 px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/30 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                        </div>
+                      </div>
+                      {error && <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-400">{error}</div>}
+                      <button type="button" onClick={handleSendPhoneOtp} disabled={phoneLoading || phoneNumber.length !== 10}
+                        className="w-full py-3 bg-[#00C2A8] hover:bg-[#00D4B8] text-[#0D1117] font-bold rounded-xl transition-all disabled:opacity-60">
+                        {phoneLoading ? "Sending OTP…" : "Send OTP via SMS"}
+                      </button>
+                      <p className="text-center text-xs text-[#8e8e93]">OTP sent via Firebase · Indian numbers only</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="p-3 bg-[#00C2A8]/10 border border-[#00C2A8]/20 rounded-xl text-sm text-[#00C2A8] text-center">
+                        OTP sent to <strong>+91 {phoneNumber}</strong>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-[#3c3c43] mb-1.5">Enter 6-digit OTP</label>
+                        <input type="text" inputMode="numeric" maxLength={6}
+                          value={phoneOtpCode} onChange={e => setPhoneOtpCode(e.target.value.replace(/\D/g, ""))}
+                          placeholder="• • • • • •"
+                          className="w-full text-center text-2xl font-mono tracking-[0.5em] py-4 bg-black/5 border border-black/10 rounded-xl text-[#1c1c1e] placeholder-black/25 focus:outline-none focus:border-[#00C2A8] focus:ring-1 focus:ring-[#00C2A8]/30 transition-all" />
+                      </div>
+                      {error && <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-400">{error}</div>}
+                      <button type="button" onClick={handleVerifyPhoneOtp} disabled={phoneLoading || phoneOtpCode.length !== 6}
+                        className="w-full py-3 bg-[#00C2A8] hover:bg-[#00D4B8] text-[#0D1117] font-bold rounded-xl transition-all disabled:opacity-60">
+                        {phoneLoading ? "Verifying…" : "Verify & Login"}
+                      </button>
+                      <div className="flex items-center justify-between text-xs">
+                        <button type="button" onClick={() => { setPhoneStep("input"); setPhoneOtpCode(""); setError(""); }} className="text-[#6c6c70] hover:text-[#1c1c1e] transition-colors">
+                          ← Change number
+                        </button>
+                        <button type="button" onClick={handleSendPhoneOtp} disabled={phoneLoading || otpTimer > 0}
+                          className="flex items-center gap-1 text-[#6c6c70] hover:text-[#00C2A8] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                          <RefreshCw className="w-3 h-3" />
+                          {otpTimer > 0 ? `Resend in ${otpTimer}s` : "Resend OTP"}
+                        </button>
+                      </div>
+                    </div>
+                  )
+                )}
+              </>
             )}
           </div>
         ) : (

@@ -1544,7 +1544,7 @@ export default function AiAssistant() {
             <div className="flex flex-col items-center mb-8">
               <div className="mb-5 relative">
                 <div style={{ position:"absolute", inset:-28, borderRadius:"50%", background:"radial-gradient(circle, rgba(0,194,168,0.18) 0%, transparent 70%)", pointerEvents:"none" }} />
-                <div style={{ width:100, height:100, borderRadius:26, background:"linear-gradient(145deg,#0d1117 0%,#1a2035 60%,#111c2e 100%)", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 12px 40px rgba(0,194,168,0.22), 0 4px 16px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.07)", border:"1px solid rgba(0,194,168,0.18)" }}>
+                <div style={{ width:104, height:104, borderRadius:28, background:"linear-gradient(145deg,#0d1117 0%,#1a2035 60%,#111c2e 100%)", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 12px 40px rgba(0,194,168,0.25), 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.07)", border:"1px solid rgba(0,194,168,0.2)" }}>
                   <CadusLogo size="md" thinking={false} baseUrl={import.meta.env.BASE_URL} />
                 </div>
               </div>

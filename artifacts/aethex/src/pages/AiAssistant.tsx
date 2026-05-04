@@ -206,12 +206,95 @@ const modelGreetings: Record<ModelId, string> = {
 
 const quickSuggestions: Record<ModelId, string[]> = {
   pulse45: [
-    "What is the dosage of Amoxicillin for adults?",
-    "Explain Type 2 Diabetes management guidelines",
-    "Give me a NEET-PG question on cardiology",
+    "What is the first-line treatment for Type 2 Diabetes in India?",
+    "Explain the management of diabetic ketoacidosis step by step",
+    "Pathophysiology of acute myocardial infarction",
+    "Approach to a patient presenting with chest pain",
+    "Normal ECG — describe all components and clinical significance",
   ],
-  flux36: ["Warfarin drug interactions?", "Normal LFT values?", "CAP antibiotic choice?"],
-  nova46: ["Rare autoimmune mimicking SLE?", "Complex multimorbidity regimen?", "Latest ACC guidelines?"],
+  flux36: [
+    "Warfarin drug interactions with NSAIDs and antibiotics",
+    "Normal LFT values and causes of elevated ALT/AST",
+    "First-line antibiotic for community-acquired pneumonia in adults",
+    "Renal dose adjustment for aminoglycosides",
+    "Antidotes for common poisonings — organophosphate, digoxin, heparin",
+  ],
+  nova46: [
+    "Rare autoimmune conditions mimicking SLE — differential diagnosis",
+    "Complex multimorbidity management in elderly patient",
+    "Latest ACC/AHA heart failure guidelines summary",
+    "Approach to pyrexia of unknown origin",
+    "NEET PG high-yield pharmacology one-liners",
+  ],
+};
+
+type HomeSpecialty = "All" | "Internal Med" | "Cardiology" | "Emergency" | "Pharmacology" | "Surgery" | "Pediatrics" | "NEET PG";
+
+const SPECIALTY_PROMPTS: Record<HomeSpecialty, string[]> = {
+  "All": [
+    "What is the first-line treatment for Type 2 Diabetes in India?",
+    "Pathophysiology of Acute MI — explain step by step",
+    "Normal ECG — describe all components and significance",
+    "What are the causes of megaloblastic anemia?",
+    "NEET PG high-yield: Drugs acting on renal tubule",
+    "Approach to a patient with jaundice",
+  ],
+  "Internal Med": [
+    "Step-by-step management of diabetic ketoacidosis (DKA)",
+    "Causes and treatment approach to hyponatremia",
+    "Pyrexia of Unknown Origin (PUO) — workup and common causes",
+    "Approach to a patient presenting with jaundice",
+    "Interpretation: K⁺ 2.8, BP 160/100, hypokalemic alkalosis — diagnosis?",
+    "Management of SLE flare — SLICC criteria and treatment",
+  ],
+  "Cardiology": [
+    "STEMI vs NSTEMI — key differences and management protocols",
+    "Classify heart failure by ejection fraction and explain GDMT",
+    "ECG findings in LBBB — causes and clinical significance",
+    "Hypertensive emergency vs urgency — management approach",
+    "Atrial fibrillation — rate vs rhythm control strategy",
+    "Aortic stenosis — when to intervene (TAVR vs SAVR)?",
+  ],
+  "Emergency": [
+    "ACLS algorithm for pulseless VT/VF — step by step",
+    "Anaphylaxis management — drug doses and timing",
+    "Polytrauma primary survey — ABCDE approach",
+    "Sepsis-3 criteria and Surviving Sepsis Bundle 2024",
+    "Status epilepticus management protocol",
+    "GCS scoring — calculate for: E2 V3 M4",
+  ],
+  "Pharmacology": [
+    "Drug interactions between warfarin and common medications",
+    "Mechanism of action of beta-blockers with clinical uses",
+    "Which antibiotics are safe in pregnancy? Complete list",
+    "Renal dose adjustments — aminoglycosides, vancomycin, metformin",
+    "Antidotes: Organophosphate, digoxin, heparin, paracetamol overdose",
+    "NSAID vs selective COX-2 inhibitor — indications and risks",
+  ],
+  "Surgery": [
+    "Layers of the anterior abdominal wall — lateral to medial",
+    "Types of hernia — inguinal, femoral, umbilical — repair techniques",
+    "Pre-operative assessment and consent for elective surgery",
+    "Complications of appendicectomy — early and late",
+    "Management of acute small bowel obstruction",
+    "Thyroid surgery complications — RLN injury, hypoparathyroidism",
+  ],
+  "Pediatrics": [
+    "WHO growth chart interpretation — failure to thrive criteria",
+    "Management of simple febrile seizures in children",
+    "IMCI algorithm — child with cough and fast breathing",
+    "IAP immunisation schedule 2024 — complete list",
+    "Approach to neonatal jaundice — phototherapy thresholds",
+    "Pediatric fluid management — Holliday-Segar formula",
+  ],
+  "NEET PG": [
+    "High-yield pharmacology one-liners for NEET PG 2025",
+    "Most common causes of each hepatitis type — quick table",
+    "Biochemistry — glycolysis: key enzymes and rate-limiting steps",
+    "Anatomy — brachial plexus: roots, trunks, divisions, cords, branches",
+    "Pathology: Reed-Sternberg cells — disease, type, marker",
+    "Physiology: Starling forces and oedema formation",
+  ],
 };
 
 interface Attachment {
@@ -514,6 +597,7 @@ export default function AiAssistant() {
   const [showBanner, setShowBanner] = useState(true);
   const [sidebarView, setSidebarView] = useState<"home" | "chats" | "models">("home");
   const [categoryIndex, setCategoryIndex] = useState(0);
+  const [homeSpecialty, setHomeSpecialty] = useState<HomeSpecialty>("All");
   const [showModelPicker, setShowModelPicker] = useState(false);
   const modelPickerRef = useRef<HTMLDivElement>(null);
 
@@ -1467,6 +1551,21 @@ export default function AiAssistant() {
               </p>
             </div>
 
+            {/* ── Stats trust bar ── */}
+            <div className="flex items-center gap-4 mb-7 flex-wrap justify-center">
+              {[
+                { icon: "🏥", label: "10,000+ Clinicians" },
+                { icon: "📚", label: "200+ Medical Topics" },
+                { icon: "⚡", label: "NEET PG Ready" },
+                { icon: "🔒", label: "HIPAA-Aligned" },
+              ].map(({ icon, label }) => (
+                <div key={label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs"
+                  style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.07)", color: "rgba(0,0,0,0.45)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                  <span>{icon}</span>{label}
+                </div>
+              ))}
+            </div>
+
             {/* ── INPUT FORM (Replit-style) ── */}
             <div className="w-full max-w-2xl mb-5">
               {isProLocked ? (
@@ -1615,48 +1714,92 @@ export default function AiAssistant() {
               )}
             </div>
 
-            {/* ── Scrollable tool chip row ── */}
-            {!isProLocked && (() => {
-              const categories: { icon: React.ElementType; label: string; mode: ChatMode; color?: string; pro?: boolean }[] = [
-                { icon: Stethoscope,   label: "Diagnose",       mode: "normal",               color: "#60A5FA" },
-                { icon: Brain,         label: "DDx Generator",  mode: "ddx",                  color: "#A78BFA" },
-                { icon: Search,        label: "Research",       mode: "deep-research",        color: "#34D399" },
-                { icon: ImagePlus,     label: "Image",          mode: "create-image",         color: "#F472B6" },
-                { icon: Presentation,  label: "Slides",         mode: "create-presentation",  color: "#FBBF24" },
-                { icon: Pill,          label: "Drug Inter.",    mode: "drug-interactions",    color: "#F87171" },
-                { icon: Calculator,    label: "Dosage Calc",    mode: "dosage-calc",          color: "#FB923C" },
-                { icon: TestTube2,     label: "Lab Values",     mode: "lab-values",           color: "#4ADE80" },
-                { icon: ClipboardList, label: "SOAP Note",      mode: "soap-note",            color: "#38BDF8" },
-                { icon: HelpCircle,    label: "MCQ / Exam",     mode: "mcq-gen",              color: "#C084FC" },
-                { icon: Languages,     label: "Patient Edu",    mode: "patient-edu",          color: "#FB7185" },
-                { icon: Zap,           label: "Procedure",      mode: "procedure-guide",      color: "#FDE047" },
-                { icon: Microscope,    label: "Scan Analysis",  mode: "image-analysis",       color: "#2DD4BF", pro: true },
-              ];
-              return (
-                <div className="w-full max-w-2xl mb-6">
-                  <div className="flex gap-2 overflow-x-auto cadus-tool-scroll pb-1">
-                    {categories.map(({ icon: Icon, label, mode, color, pro: isPro }) => {
-                      const isActive = chatMode === mode;
-                      return (
-                        <button key={label}
-                          onClick={() => { if (isPro) { setShowProModal(true); return; } toggleMode(mode); }}
-                          className="relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all shrink-0"
-                          style={{
-                            background: isActive ? `${color}12` : "rgba(0,0,0,0.04)",
-                            border: isActive ? `1px solid ${color}50` : "1px solid rgba(0,0,0,0.08)",
-                            color: isActive ? color : "rgba(0,0,0,0.5)",
-                            fontFamily: "'Plus Jakarta Sans', sans-serif",
-                          }}>
-                          {isPro && <span className="absolute -top-1.5 -right-1.5 text-[7px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.12)", color: "rgba(109,40,217,0.9)", border:"1px solid rgba(109,40,217,0.2)" }}>PRO</span>}
-                          <Icon className="w-3.5 h-3.5" style={{ color: isActive ? color : undefined }} />
-                          {label}
-                        </button>
-                      );
-                    })}
-                  </div>
+            {/* ── Specialty selector ── */}
+            {!isProLocked && (
+              <div className="w-full max-w-2xl mb-5">
+                <div className="flex gap-2 overflow-x-auto cadus-tool-scroll pb-1">
+                  {(["All", "Internal Med", "Cardiology", "Emergency", "Pharmacology", "Surgery", "Pediatrics", "NEET PG"] as HomeSpecialty[]).map((sp) => {
+                    const isAct = homeSpecialty === sp;
+                    const spColors: Record<string, string> = {
+                      "All": "#00C2A8", "Internal Med": "#60A5FA", "Cardiology": "#F87171",
+                      "Emergency": "#FB923C", "Pharmacology": "#A78BFA", "Surgery": "#4ADE80",
+                      "Pediatrics": "#F472B6", "NEET PG": "#FBBF24",
+                    };
+                    const c = spColors[sp];
+                    return (
+                      <button key={sp} onClick={() => setHomeSpecialty(sp)}
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all shrink-0 whitespace-nowrap"
+                        style={{
+                          background: isAct ? c : "rgba(0,0,0,0.04)",
+                          color: isAct ? "#fff" : "rgba(0,0,0,0.45)",
+                          border: isAct ? `1px solid ${c}` : "1px solid rgba(0,0,0,0.08)",
+                          fontFamily: "'Plus Jakarta Sans', sans-serif",
+                          boxShadow: isAct ? `0 2px 8px ${c}40` : "none",
+                        }}>
+                        {sp}
+                      </button>
+                    );
+                  })}
                 </div>
-              );
-            })()}
+              </div>
+            )}
+
+            {/* ── Feature card grid ── */}
+            {!isProLocked && (
+              <div className="w-full max-w-2xl mb-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-3"
+                  style={{ color: "rgba(0,0,0,0.28)", fontFamily:"'Plus Jakarta Sans', sans-serif", letterSpacing:"0.12em" }}>Clinical Tools</p>
+                <div className="grid grid-cols-3 gap-2.5">
+                  {([
+                    { icon: Stethoscope,   label: "Diagnose",          desc: "Symptom analysis & clinical reasoning",   mode: "normal" as ChatMode,             color: "#00C2A8", bg: "rgba(0,194,168,0.07)" },
+                    { icon: Brain,         label: "DDx Generator",     desc: "Differential diagnosis with evidence",    mode: "ddx" as ChatMode,                color: "#A78BFA", bg: "rgba(167,139,250,0.07)" },
+                    { icon: Search,        label: "Deep Research",     desc: "Evidence-based medical literature",       mode: "deep-research" as ChatMode,      color: "#34D399", bg: "rgba(52,211,153,0.07)" },
+                    { icon: Pill,          label: "Drug Checker",      desc: "Interactions, dosage & safety",          mode: "drug-interactions" as ChatMode,   color: "#F87171", bg: "rgba(248,113,113,0.07)" },
+                    { icon: Calculator,    label: "Dosage Calc",       desc: "Weight-based & renal dose adjustment",   mode: "dosage-calc" as ChatMode,         color: "#FB923C", bg: "rgba(251,146,60,0.07)" },
+                    { icon: TestTube2,     label: "Lab Interpreter",   desc: "CBC, LFT, RFT, ABG, coagulation",       mode: "lab-values" as ChatMode,          color: "#4ADE80", bg: "rgba(74,222,128,0.07)" },
+                    { icon: ClipboardList, label: "SOAP Notes",        desc: "Clinical documentation & discharge",     mode: "soap-note" as ChatMode,           color: "#38BDF8", bg: "rgba(56,189,248,0.07)" },
+                    { icon: HelpCircle,    label: "MCQ / NEET PG",    desc: "Question bank & exam explanations",      mode: "mcq-gen" as ChatMode,             color: "#C084FC", bg: "rgba(192,132,252,0.07)" },
+                    { icon: Zap,           label: "Procedure Guide",   desc: "Step-by-step clinical procedures",       mode: "procedure-guide" as ChatMode,     color: "#FDE047", bg: "rgba(253,224,71,0.07)" },
+                    { icon: Languages,     label: "Patient Edu",       desc: "Simplified patient instructions",        mode: "patient-edu" as ChatMode,         color: "#FB7185", bg: "rgba(251,113,133,0.07)" },
+                    { icon: Presentation,  label: "Make Slides",       desc: "Clinical presentations & cases",         mode: "create-presentation" as ChatMode, color: "#FBBF24", bg: "rgba(251,191,36,0.07)" },
+                    { icon: Microscope,    label: "Scan Analysis",     desc: "Radiology & pathology AI reading",       mode: "image-analysis" as ChatMode,      color: "#2DD4BF", bg: "rgba(45,212,191,0.07)", pro: true },
+                  ]).map(({ icon: Icon, label, desc, mode, color, bg, pro: isPro }) => {
+                    const isAct = chatMode === mode && mode !== "normal";
+                    return (
+                      <button key={label}
+                        onClick={() => { if (isPro) { setShowProModal(true); return; } toggleMode(mode); }}
+                        className="relative group flex flex-col items-start gap-2.5 p-3.5 rounded-2xl text-left transition-all hover:scale-[1.02] active:scale-100"
+                        style={{
+                          background: isAct ? bg : "#FFFFFF",
+                          border: isAct ? `1.5px solid ${color}60` : "1px solid rgba(0,0,0,0.07)",
+                          boxShadow: isAct ? `0 2px 12px ${color}20` : "0 1px 3px rgba(0,0,0,0.04)",
+                        }}>
+                        {isPro && (
+                          <span className="absolute top-2 right-2 text-[8px] font-bold px-1.5 py-0.5 rounded-full"
+                            style={{ background: "rgba(109,40,217,0.1)", color: "rgba(109,40,217,0.85)", border:"1px solid rgba(109,40,217,0.18)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                            PRO
+                          </span>
+                        )}
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                          style={{ background: bg }}>
+                          <Icon className="w-4 h-4" style={{ color }} />
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-bold leading-tight mb-0.5"
+                            style={{ color: isAct ? color : "#0A0A0F", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                            {label}
+                          </p>
+                          <p className="text-[9px] leading-relaxed"
+                            style={{ color: "rgba(0,0,0,0.38)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                            {desc}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* ── Pinned prompts ── */}
             {!isProLocked && pinnedPrompts.length > 0 && (
@@ -1684,22 +1827,31 @@ export default function AiAssistant() {
               </div>
             )}
 
-            {/* ── Try a prompt (list style) ── */}
+            {/* ── Specialty-filtered prompts ── */}
             {!isProLocked && (
               <div className="w-full max-w-2xl mb-8">
-                <div className="flex items-center gap-1.5 mb-3">
-                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "rgba(0,0,0,0.28)", letterSpacing:"0.12em", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>Try a prompt</span>
-                  <button className="p-1 rounded transition-all hover:bg-black/5 ml-1" style={{ color: "rgba(0,0,0,0.28)" }}>
-                    <RefreshCw className="w-3 h-3" />
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[10px] font-bold uppercase tracking-widest"
+                    style={{ color: "rgba(0,0,0,0.28)", letterSpacing:"0.12em", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                    {homeSpecialty === "All" ? "Try a Prompt" : `${homeSpecialty} Prompts`}
+                  </span>
+                  <button
+                    onClick={() => {
+                      const keys = Object.keys(SPECIALTY_PROMPTS) as HomeSpecialty[];
+                      setHomeSpecialty(keys[(keys.indexOf(homeSpecialty) + 1) % keys.length]);
+                    }}
+                    className="flex items-center gap-1 text-[11px] transition-all hover:opacity-70"
+                    style={{ color: "#00C2A8", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                    <RefreshCw className="w-3 h-3" /> Switch specialty
                   </button>
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  {quickSuggestions[activeModel].slice(0, 5).map((q) => (
-                    <div key={q} className="group flex items-center gap-3">
+                <div className="flex flex-col gap-1">
+                  {SPECIALTY_PROMPTS[homeSpecialty].map((q) => (
+                    <div key={q} className="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all hover:bg-black/[0.03]">
                       <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#00C2A8", opacity: 0.55 }} />
                       <button type="button" onClick={() => sendDirect(q)}
-                        className="flex-1 text-left text-sm py-1.5 transition-all hover:opacity-70"
-                        style={{ color: "rgba(0,0,0,0.52)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                        className="flex-1 text-left text-sm transition-all hover:opacity-70"
+                        style={{ color: "rgba(0,0,0,0.6)", fontFamily:"'Plus Jakarta Sans', sans-serif", lineHeight: 1.4 }}>
                         {q}
                       </button>
                       <button type="button" onClick={() => handleTogglePin(q)}

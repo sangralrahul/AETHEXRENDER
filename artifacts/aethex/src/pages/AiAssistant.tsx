@@ -66,43 +66,43 @@ function getThemeVars(theme: "dark" | "auto" | "light"): React.CSSProperties {
     "--sp-caret-color":              "#0099bb",
   } as React.CSSProperties;
 
-  /* dark + auto → refined monochrome with teal accent */
+  /* dark + auto → AETHEX cream palette (matches landing page) */
   return {
-    "--sp-root-bg":                  "#080808",
-    "--sp-sidebar-bg":               "#0C0C0C",
-    "--sp-sidebar-border":           "rgba(255,255,255,0.055)",
-    "--sp-topbar-bg":                "rgba(12,12,12,0.98)",
-    "--sp-topbar-border":            "rgba(255,255,255,0.06)",
-    "--sp-divider":                  "rgba(255,255,255,0.06)",
-    "--sp-label":                    "rgba(255,255,255,0.25)",
-    "--sp-text-primary":             "rgba(255,255,255,0.92)",
-    "--sp-text-muted":               "rgba(255,255,255,0.42)",
-    "--sp-text-dim":                 "rgba(255,255,255,0.28)",
-    "--sp-text-faint":               "rgba(255,255,255,0.18)",
-    "--sp-text-footer":              "rgba(255,255,255,0.32)",
-    "--sp-model-inactive-color":     "rgba(255,255,255,0.52)",
-    "--sp-model-inactive-bg":        "rgba(255,255,255,0.03)",
-    "--sp-model-inactive-border":    "rgba(255,255,255,0.07)",
-    "--sp-model-icon-inactive":      "rgba(255,255,255,0.04)",
-    "--sp-session-active-bg":        "rgba(255,255,255,0.06)",
-    "--sp-session-active-border":    "rgba(255,255,255,0.09)",
-    "--sp-session-active-text":      "rgba(255,255,255,0.92)",
-    "--sp-session-inactive-text":    "rgba(255,255,255,0.42)",
-    "--sp-session-meta":             "rgba(255,255,255,0.20)",
-    "--sp-ai-bubble-bg":             "#111111",
-    "--sp-ai-bubble-border":         "rgba(0,194,168,0.18)",
-    "--sp-ai-text":                  "rgba(255,255,255,0.88)",
-    "--sp-user-bubble-bg":           "#1A1A1A",
-    "--sp-user-bubble-border":       "rgba(255,255,255,0.09)",
-    "--sp-user-text":                "rgba(255,255,255,0.92)",
-    "--sp-input-bg":                 "#111111",
-    "--sp-input-border":             "rgba(255,255,255,0.09)",
-    "--sp-textarea-color":           "rgba(255,255,255,0.88)",
-    "--sp-placeholder-color":        "rgba(255,255,255,0.25)",
-    "--sp-new-chat-bg":              "rgba(0,194,168,0.08)",
-    "--sp-new-chat-border":          "rgba(0,194,168,0.2)",
-    "--sp-new-chat-color":           "rgba(0,210,185,0.85)",
-    "--sp-toggle-color":             "rgba(255,255,255,0.38)",
+    "--sp-root-bg":                  "#F8F7F4",
+    "--sp-sidebar-bg":               "#FFFFFF",
+    "--sp-sidebar-border":           "rgba(0,0,0,0.07)",
+    "--sp-topbar-bg":                "rgba(255,255,255,0.97)",
+    "--sp-topbar-border":            "rgba(0,0,0,0.07)",
+    "--sp-divider":                  "rgba(0,0,0,0.07)",
+    "--sp-label":                    "rgba(0,0,0,0.32)",
+    "--sp-text-primary":             "#0A0A0F",
+    "--sp-text-muted":               "rgba(0,0,0,0.45)",
+    "--sp-text-dim":                 "rgba(0,0,0,0.32)",
+    "--sp-text-faint":               "rgba(0,0,0,0.22)",
+    "--sp-text-footer":              "rgba(0,0,0,0.35)",
+    "--sp-model-inactive-color":     "rgba(0,0,0,0.52)",
+    "--sp-model-inactive-bg":        "rgba(0,0,0,0.03)",
+    "--sp-model-inactive-border":    "rgba(0,0,0,0.08)",
+    "--sp-model-icon-inactive":      "rgba(0,0,0,0.05)",
+    "--sp-session-active-bg":        "rgba(0,194,168,0.06)",
+    "--sp-session-active-border":    "rgba(0,194,168,0.18)",
+    "--sp-session-active-text":      "#0A0A0F",
+    "--sp-session-inactive-text":    "rgba(0,0,0,0.42)",
+    "--sp-session-meta":             "rgba(0,0,0,0.28)",
+    "--sp-ai-bubble-bg":             "#FFFFFF",
+    "--sp-ai-bubble-border":         "rgba(0,0,0,0.08)",
+    "--sp-ai-text":                  "rgba(0,0,0,0.82)",
+    "--sp-user-bubble-bg":           "#007AFF",
+    "--sp-user-bubble-border":       "#007AFF",
+    "--sp-user-text":                "#FFFFFF",
+    "--sp-input-bg":                 "#FFFFFF",
+    "--sp-input-border":             "rgba(0,0,0,0.1)",
+    "--sp-textarea-color":           "#0A0A0F",
+    "--sp-placeholder-color":        "rgba(0,0,0,0.32)",
+    "--sp-new-chat-bg":              "#00C2A8",
+    "--sp-new-chat-border":          "#00C2A8",
+    "--sp-new-chat-color":           "#FFFFFF",
+    "--sp-toggle-color":             "rgba(0,0,0,0.35)",
     "--sp-caret-color":              "#00C2A8",
   } as React.CSSProperties;
 }
@@ -1139,12 +1139,27 @@ export default function AiAssistant() {
   return (
     <div className="h-screen flex overflow-hidden relative" style={{ background: "var(--sp-root-bg)", ...themeVars }}>
 
-      {/* Ambient teal glow — replaces old blue spotlight */}
-      <div style={{ position:"absolute", top:-80, left:"50%", transform:"translateX(-50%)", width:900, height:400,
-        borderRadius:"50%", pointerEvents:"none", zIndex:0,
-        background:"radial-gradient(ellipse, rgba(0,194,168,0.06) 0%, rgba(0,150,130,0.03) 45%, transparent 70%)" }} />
-      <div style={{ position:"absolute", inset:0, pointerEvents:"none", zIndex:0,
-        background:"linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%)" }} />
+      {/* AETHEX landing-page background — teal orb left, peach orb right, scattered dots */}
+      <div style={{ position:"absolute", inset:0, pointerEvents:"none", zIndex:0, overflow:"hidden" }}>
+        {/* Teal orb — left, like landing page */}
+        <div style={{ position:"absolute", left:"-12%", top:"-8%", width:"55vw", height:"55vw",
+          borderRadius:"50%", background:"radial-gradient(circle, rgba(0,194,168,0.13) 0%, rgba(0,194,168,0.05) 50%, transparent 75%)" }} />
+        {/* Peach/rose orb — right */}
+        <div style={{ position:"absolute", right:"-10%", top:"10%", width:"45vw", height:"45vw",
+          borderRadius:"50%", background:"radial-gradient(circle, rgba(255,180,150,0.1) 0%, rgba(255,200,180,0.05) 50%, transparent 75%)" }} />
+        {/* Bottom teal hint */}
+        <div style={{ position:"absolute", left:"30%", bottom:"-5%", width:"40vw", height:"20vw",
+          borderRadius:"50%", background:"radial-gradient(circle, rgba(0,194,168,0.06) 0%, transparent 70%)" }} />
+        {/* Scattered teal dots — matching landing page */}
+        {[
+          [8,15],[18,72],[32,38],[45,8],[55,62],[68,28],[78,78],[88,18],[12,88],[42,52],
+          [62,92],[82,42],[25,18],[72,68],[50,85],[90,55],[35,96],[15,48],[65,12],[95,80],
+        ].map(([l,t],i) => (
+          <div key={i} style={{ position:"absolute", left:`${l}%`, top:`${t}%`,
+            width: i%3===0 ? 4 : 3, height: i%3===0 ? 4 : 3,
+            borderRadius:"50%", background:"rgba(0,194,168,0.35)", opacity:0.6 }} />
+        ))}
+      </div>
 
       {/* Hidden inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFileSelect(e, "image")} />
@@ -1164,12 +1179,12 @@ export default function AiAssistant() {
         <div className="flex items-center gap-3 px-4 pt-4 pb-3 shrink-0">
           <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold tracking-tight" style={{ color: "rgba(255,255,255,0.92)" }}>Cadus AI</p>
-            <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.32)" }}>Clinical Intelligence</p>
+            <p className="text-sm font-bold tracking-tight" style={{ color: "#0A0A0F", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Cadus AI</p>
+            <p className="text-[10px]" style={{ color: "rgba(0,0,0,0.38)" }}>Clinical Intelligence</p>
           </div>
           <button onClick={() => setSidebarOpen(false)}
-            className="p-1.5 rounded-lg transition-all hover:bg-white/6 shrink-0"
-            style={{ color: "rgba(255,255,255,0.28)" }}>
+            className="p-1.5 rounded-lg transition-all hover:bg-black/5 shrink-0"
+            style={{ color: "rgba(0,0,0,0.32)" }}>
             <PanelLeft className="w-4 h-4" />
           </button>
         </div>
@@ -1187,9 +1202,9 @@ export default function AiAssistant() {
         {/* ── Search bar ── */}
         <div className="px-3 pb-2 shrink-0">
           <div className="flex items-center gap-2 px-3 py-2 rounded-xl"
-            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-            <Search className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(255,255,255,0.28)" }} />
-            <span className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>Search chats…</span>
+            style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.08)" }}>
+            <Search className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(0,0,0,0.28)" }} />
+            <span className="text-xs" style={{ color: "rgba(0,0,0,0.28)" }}>Search chats…</span>
           </div>
         </div>
 
@@ -1204,8 +1219,9 @@ export default function AiAssistant() {
               className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] transition-all"
               style={{
                 background: sidebarView === id ? "rgba(0,194,168,0.08)" : "transparent",
-                color: sidebarView === id ? "rgba(0,210,185,0.9)" : "rgba(255,255,255,0.45)",
-                borderLeft: sidebarView === id ? "2px solid rgba(0,194,168,0.5)" : "2px solid transparent",
+                color: sidebarView === id ? "#00C2A8" : "rgba(0,0,0,0.45)",
+                borderLeft: sidebarView === id ? "2px solid #00C2A8" : "2px solid transparent",
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
               }}>
               <Icon className="w-4 h-4" />
               {label}
@@ -1227,7 +1243,7 @@ export default function AiAssistant() {
                 list.length > 0 ? (
                   <div key={label} className="mb-3">
                     <p className="text-[10px] font-semibold uppercase tracking-widest px-2 mb-1.5 pt-1"
-                      style={{ color: "rgba(255,255,255,0.22)" }}>{label}</p>
+                      style={{ color: "rgba(0,0,0,0.3)", letterSpacing:"0.1em" }}>{label}</p>
                     {list.map((sess) => {
                       const isActive = sess.id === activeSessionId;
                       return (
@@ -1237,13 +1253,13 @@ export default function AiAssistant() {
                           className="group w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all mb-0.5 cursor-pointer"
                           style={{
                             background: isActive ? "rgba(0,194,168,0.07)" : "transparent",
-                            borderLeft: isActive ? "2px solid rgba(0,194,168,0.4)" : "2px solid transparent",
+                            borderLeft: isActive ? "2px solid #00C2A8" : "2px solid transparent",
                           }}>
-                          <MessageSquare className="w-3 h-3 shrink-0" style={{ color: isActive ? "rgba(0,194,168,0.7)" : "rgba(255,255,255,0.28)" }} />
-                          <span className="text-[12px] truncate flex-1" style={{ color: isActive ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.5)" }}>{sess.title}</span>
+                          <MessageSquare className="w-3 h-3 shrink-0" style={{ color: isActive ? "#00C2A8" : "rgba(0,0,0,0.28)" }} />
+                          <span className="text-[12px] truncate flex-1" style={{ color: isActive ? "#0A0A0F" : "rgba(0,0,0,0.5)" }}>{sess.title}</span>
                           <button onClick={(e) => handleDeleteSession(sess.id, e)}
                             className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded"
-                            style={{ color: "rgba(255,100,100,0.55)" }}>
+                            style={{ color: "rgba(220,50,50,0.5)" }}>
                             <X className="w-3 h-3" />
                           </button>
                         </div>
@@ -1253,7 +1269,7 @@ export default function AiAssistant() {
                 ) : null
               )}
               {sessions.every(s => s.messages.length === 0) && (
-                <p className="text-xs text-center px-2 py-6" style={{ color: "rgba(255,255,255,0.18)" }}>{tr.noChatsYet}</p>
+                <p className="text-xs text-center px-2 py-6" style={{ color: "rgba(0,0,0,0.22)" }}>{tr.noChatsYet}</p>
               )}
             </>
           )}
@@ -1267,16 +1283,16 @@ export default function AiAssistant() {
                     className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition-all"
                     style={isActive
                       ? { ...m.activeStyle, borderRadius: 12 }
-                      : { color: "rgba(255,255,255,0.48)", border: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
+                      : { color: "rgba(0,0,0,0.52)", border: "1px solid rgba(0,0,0,0.08)", background: "rgba(0,0,0,0.02)" }}>
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ background: isActive ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.05)" }}>
-                      {m.pro && !isActive ? <Lock className="w-3.5 h-3.5" style={{ color: "rgba(167,139,250,0.7)" }} /> : <MI className="w-3.5 h-3.5" />}
+                      style={{ background: isActive ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.05)" }}>
+                      {m.pro && !isActive ? <Lock className="w-3.5 h-3.5" style={{ color: "rgba(109,40,217,0.65)" }} /> : <MI className="w-3.5 h-3.5" />}
                     </div>
                     <div className="flex-1 text-left min-w-0">
-                      <div className="text-xs font-semibold truncate">{m.name}</div>
-                      <div className="text-[10px] opacity-40 truncate">{m.description.split(" · ")[0]}</div>
+                      <div className="text-xs font-semibold truncate" style={{ fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{m.name}</div>
+                      <div className="text-[10px] opacity-50 truncate">{m.description.split(" · ")[0]}</div>
                     </div>
-                    {m.pro && <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full shrink-0" style={{ background: "rgba(109,40,217,0.5)", color: "#c4b5fd" }}>PRO</span>}
+                    {m.pro && <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full shrink-0" style={{ background: "rgba(109,40,217,0.12)", color: "rgba(109,40,217,0.9)", border: "1px solid rgba(109,40,217,0.2)" }}>PRO</span>}
                   </button>
                 );
               })}
@@ -1285,7 +1301,7 @@ export default function AiAssistant() {
           {sidebarView === "home" && sessions.some(s => s.messages.length > 0) && (
             <div className="pt-1">
               <p className="text-[10px] font-semibold uppercase tracking-widest px-2 mb-1.5"
-                style={{ color: "rgba(255,255,255,0.22)" }}>Recent</p>
+                style={{ color: "rgba(0,0,0,0.3)", letterSpacing:"0.12em" }}>Recent</p>
               {sessions.filter(s => s.messages.length > 0).slice(0, 10).map(sess => {
                 const isActive = sess.id === activeSessionId;
                 return (
@@ -1293,10 +1309,10 @@ export default function AiAssistant() {
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-all mb-0.5"
                     style={{
                       background: isActive ? "rgba(0,194,168,0.07)" : "transparent",
-                      color: isActive ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.42)",
-                      borderLeft: isActive ? "2px solid rgba(0,194,168,0.4)" : "2px solid transparent",
+                      color: isActive ? "#0A0A0F" : "rgba(0,0,0,0.45)",
+                      borderLeft: isActive ? "2px solid #00C2A8" : "2px solid transparent",
                     }}>
-                    <MessageSquare className="w-3 h-3 shrink-0" style={{ color: isActive ? "rgba(0,194,168,0.6)" : "rgba(255,255,255,0.22)" }} />
+                    <MessageSquare className="w-3 h-3 shrink-0" style={{ color: isActive ? "#00C2A8" : "rgba(0,0,0,0.25)" }} />
                     <span className="truncate">{sess.title}</span>
                   </button>
                 );
@@ -1309,23 +1325,23 @@ export default function AiAssistant() {
 
         {/* ── Pro upgrade card ── */}
         <div className="mx-3 mb-3 shrink-0 rounded-2xl overflow-hidden"
-          style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.14) 0%, rgba(15,23,90,0.2) 100%)", border: "1px solid rgba(139,92,246,0.18)" }}>
+          style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.08) 0%, rgba(109,40,217,0.05) 100%)", border: "1px solid rgba(139,92,246,0.2)" }}>
           <div className="px-3.5 py-3">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
                 style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)" }}>
                 <Crown className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="text-[12px] font-bold" style={{ color: "rgba(220,210,255,0.95)" }}>Cadus Magnus</span>
+              <span className="text-[12px] font-bold" style={{ color: "rgba(90,40,180,0.95)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>Cadus Magnus</span>
               <span className="ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full"
-                style={{ background: "rgba(139,92,246,0.35)", color: "#c4b5fd", border: "1px solid rgba(167,139,250,0.2)" }}>PRO</span>
+                style={{ background: "rgba(109,40,217,0.12)", color: "rgba(109,40,217,0.9)", border: "1px solid rgba(109,40,217,0.2)" }}>PRO</span>
             </div>
-            <p className="text-[10px] leading-relaxed mb-2.5" style={{ color: "rgba(180,170,220,0.6)" }}>
+            <p className="text-[10px] leading-relaxed mb-2.5" style={{ color: "rgba(0,0,0,0.42)" }}>
               Unlock advanced diagnosis, deep research &amp; image analysis.
             </p>
             <button onClick={() => setShowProModal(true)}
               className="w-full text-[11px] font-bold py-2 rounded-xl transition-all hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-1.5"
-              style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)", color: "white" }}>
+              style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)", color: "white", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
               <Crown className="w-3.5 h-3.5" /> View Plans
             </button>
           </div>
@@ -1339,8 +1355,8 @@ export default function AiAssistant() {
             { icon: Crown, label: "Refer & Earn", onClick: () => setShowProModal(true) },
           ].map(({ icon: Icon, label, onClick }) => (
             <button key={label} onClick={onClick}
-              className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:bg-white/5"
-              style={{ color: "rgba(255,255,255,0.30)" }}>
+              className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:bg-black/5"
+              style={{ color: "rgba(0,0,0,0.35)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
               <Icon className="w-3.5 h-3.5" />
               {label}
             </button>
@@ -1358,20 +1374,20 @@ export default function AiAssistant() {
           style={{ borderBottom: "1px solid var(--sp-sidebar-border)", background: "var(--sp-topbar-bg)" }}>
           {!sidebarOpen && (
             <button onClick={() => setSidebarOpen(true)}
-              className="p-1.5 rounded-lg transition-all hover:bg-white/6 shrink-0"
-              style={{ color: "rgba(255,255,255,0.38)" }}>
+              className="p-1.5 rounded-lg transition-all hover:bg-black/5 shrink-0"
+              style={{ color: "rgba(0,0,0,0.35)" }}>
               <PanelLeft className="w-4 h-4" />
             </button>
           )}
           {!sidebarOpen && (
             <div className="flex items-center gap-2 shrink-0">
               <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
-              <span className="text-sm font-bold" style={{ color: "rgba(255,255,255,0.85)" }}>Cadus AI</span>
+              <span className="text-sm font-bold" style={{ color: "#0A0A0F", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>Cadus AI</span>
             </div>
           )}
           <div className="flex-1 min-w-0 flex items-center gap-2">
             {hasMessages && (
-              <span className="text-sm truncate" style={{ color: "rgba(255,255,255,0.45)" }}>
+              <span className="text-sm truncate" style={{ color: "rgba(0,0,0,0.45)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                 {activeSession?.title ?? "New chat"}
               </span>
             )}
@@ -1380,43 +1396,43 @@ export default function AiAssistant() {
           <div className="relative shrink-0" ref={modelPickerRef}>
             <button type="button" onClick={() => setShowModelPicker(v => !v)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
-              style={{ background: showModelPicker ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)", color: model.activeStyle.color, border: "1px solid rgba(255,255,255,0.08)" }}>
+              style={{ background: showModelPicker ? "rgba(0,0,0,0.06)" : "rgba(0,0,0,0.04)", color: model.activeStyle.color, border: "1px solid rgba(0,0,0,0.09)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
               <ModelIcon className="w-3.5 h-3.5" />
               <span>{model.name}</span>
               <ChevronDown className="w-3 h-3 opacity-50" />
             </button>
             {showModelPicker && (
-              <div className="absolute top-full right-0 mt-1.5 rounded-2xl shadow-2xl overflow-hidden z-50 w-60"
-                style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.1)" }}>
+              <div className="absolute top-full right-0 mt-1.5 rounded-2xl shadow-xl overflow-hidden z-50 w-60"
+                style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.1)", boxShadow:"0 8px 40px rgba(0,0,0,0.12)" }}>
                 <div className="px-4 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-widest"
-                  style={{ color: "rgba(255,255,255,0.25)" }}>AI Models</div>
+                  style={{ color: "rgba(0,0,0,0.28)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>AI Models</div>
                 {MODELS.map((m) => {
                   const MI = m.icon;
                   const isAct = m.id === activeModel;
                   return (
                     <button key={m.id} type="button"
                       onClick={() => { setShowModelPicker(false); handleModelSelect(m); }}
-                      className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-all hover:bg-white/5"
-                      style={{ background: isAct ? "rgba(255,255,255,0.05)" : "transparent" }}>
+                      className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-all hover:bg-black/4"
+                      style={{ background: isAct ? "rgba(0,194,168,0.05)" : "transparent" }}>
                       <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                        style={{ background: isAct ? m.activeStyle.background : "rgba(255,255,255,0.05)", border: isAct ? m.activeStyle.border : "1px solid rgba(255,255,255,0.07)" }}>
-                        {m.pro && !isAct ? <Lock className="w-3.5 h-3.5" style={{ color: "rgba(167,139,250,0.7)" }} /> : <MI className="w-3.5 h-3.5" style={{ color: isAct ? m.activeStyle.color : "rgba(255,255,255,0.42)" }} />}
+                        style={{ background: isAct ? m.activeStyle.background : "rgba(0,0,0,0.04)", border: isAct ? m.activeStyle.border : "1px solid rgba(0,0,0,0.07)" }}>
+                        {m.pro && !isAct ? <Lock className="w-3.5 h-3.5" style={{ color: "rgba(109,40,217,0.65)" }} /> : <MI className="w-3.5 h-3.5" style={{ color: isAct ? m.activeStyle.color : "rgba(0,0,0,0.42)" }} />}
                       </div>
                       <div className="flex-1 text-left min-w-0">
-                        <div className="text-xs font-semibold flex items-center gap-1.5" style={{ color: isAct ? m.activeStyle.color : "rgba(255,255,255,0.78)" }}>
+                        <div className="text-xs font-semibold flex items-center gap-1.5" style={{ color: isAct ? m.activeStyle.color : "#0A0A0F", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                           {m.name}
-                          {m.pro && <span className="text-[8px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.45)", color: "#c4b5fd" }}>PRO</span>}
+                          {m.pro && <span className="text-[8px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.1)", color: "rgba(109,40,217,0.85)" }}>PRO</span>}
                         </div>
-                        <div className="text-[10px] opacity-40 truncate">{m.description.split(" · ")[0]}</div>
+                        <div className="text-[10px] opacity-40 truncate" style={{ fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{m.description.split(" · ")[0]}</div>
                       </div>
                       {isAct && <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: m.activeStyle.color }} />}
                     </button>
                   );
                 })}
-                <div className="px-4 py-2.5 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                <div className="px-4 py-2.5 border-t" style={{ borderColor: "rgba(0,0,0,0.07)" }}>
                   <button onClick={() => { setShowModelPicker(false); setShowProModal(true); }}
                     className="w-full flex items-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold transition-all hover:opacity-90"
-                    style={{ background: "linear-gradient(135deg,rgba(124,58,237,0.25),rgba(147,51,234,0.2))", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.2)" }}>
+                    style={{ background: "linear-gradient(135deg,rgba(124,58,237,0.1),rgba(147,51,234,0.08))", color: "rgba(109,40,217,0.9)", border: "1px solid rgba(139,92,246,0.2)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                     <Crown className="w-3.5 h-3.5" /> Unlock Cadus Magnus
                   </button>
                 </div>
@@ -1426,7 +1442,7 @@ export default function AiAssistant() {
           {showBanner && !hasMessages && (
             <button onClick={() => setShowProModal(true)}
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all hover:opacity-90 shrink-0"
-              style={{ background: "linear-gradient(135deg,rgba(124,58,237,0.2),rgba(147,51,234,0.15))", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.2)" }}>
+              style={{ background: "linear-gradient(135deg,rgba(124,58,237,0.1),rgba(147,51,234,0.08))", color: "rgba(109,40,217,0.9)", border: "1px solid rgba(139,92,246,0.2)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
               <Crown className="w-3 h-3" /> Upgrade
             </button>
           )}
@@ -1439,13 +1455,14 @@ export default function AiAssistant() {
             {/* Logo + greeting hero */}
             <div className="flex flex-col items-center mb-8">
               <div className="mb-4 relative">
-                <div style={{ position:"absolute", inset:-20, borderRadius:"50%", background:"radial-gradient(circle, rgba(0,194,168,0.12) 0%, transparent 70%)", pointerEvents:"none" }} />
+                <div style={{ position:"absolute", inset:-24, borderRadius:"50%", background:"radial-gradient(circle, rgba(0,194,168,0.14) 0%, transparent 70%)", pointerEvents:"none" }} />
                 <CadusLogo size="md" thinking={false} baseUrl={import.meta.env.BASE_URL} />
               </div>
-              <h1 className="text-[1.8rem] font-bold text-center leading-tight mb-2" style={{ color: "rgba(255,255,255,0.94)" }}>
+              <h1 className="text-[1.8rem] font-bold text-center leading-tight mb-2"
+                style={{ color: "#0A0A0F", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                 {greeting}{greetingName}.
               </h1>
-              <p className="text-base text-center" style={{ color: "rgba(255,255,255,0.38)" }}>
+              <p className="text-base text-center" style={{ color: "rgba(0,0,0,0.42)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                 What would you like to explore today?
               </p>
             </div>
@@ -1454,28 +1471,28 @@ export default function AiAssistant() {
             <div className="w-full max-w-2xl mb-5">
               {isProLocked ? (
                 <div className="rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
-                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.09)" }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.07)" }}>
-                      <Lock className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,0,0,0.05)" }}>
+                      <Lock className="w-4 h-4" style={{ color: "rgba(0,0,0,0.45)" }} />
                     </div>
                     <div>
-                      <p className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>{tr.proRequired}</p>
-                      <p className="text-xs" style={{ color: "rgba(255,255,255,0.38)" }}>{tr.proGatedMsg}</p>
+                      <p className="font-semibold text-sm" style={{ color: "#0A0A0F", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{tr.proRequired}</p>
+                      <p className="text-xs" style={{ color: "rgba(0,0,0,0.42)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{tr.proGatedMsg}</p>
                     </div>
                   </div>
                   <button onClick={() => setShowProModal(true)}
                     className="flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm whitespace-nowrap"
-                    style={{ background: "rgba(255,255,255,0.9)", color: "#111" }}>
+                    style={{ background: "#7c3aed", color: "#fff", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                     <Crown className="w-4 h-4" /> {tr.upgradePro}
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="rounded-2xl overflow-visible"
-                  style={{ background: "var(--sp-input-bg)", border: "1px solid var(--sp-input-border)", boxShadow: "0 4px 32px rgba(0,0,0,0.3)" }}>
+                  style={{ background: "var(--sp-input-bg)", border: "1px solid var(--sp-input-border)", boxShadow: "0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)" }}>
                   {chatMode !== "normal" && (
                     <div className="flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold"
-                      style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.03)" }}>
+                      style={{ borderColor: "rgba(0,0,0,0.07)", color: "rgba(0,0,0,0.6)", background: "rgba(0,194,168,0.03)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                       {chatMode === "deep-research"        ? <><Microscope    className="w-3.5 h-3.5" style={{color:"#34D399"}} /> Deep Research Mode</>
                       : chatMode === "create-presentation" ? <><Presentation  className="w-3.5 h-3.5" style={{color:"#FBBF24"}} /> {presentationStage === "idle" ? "Slides Mode" : tr.selectSlideCountAbove}</>
                       : chatMode === "create-image"        ? <><ImagePlus     className="w-3.5 h-3.5" style={{color:"#F472B6"}} /> {imageStage === "waiting-type" ? tr.selectSlideCountAbove : "Image Mode"}</>
@@ -1490,7 +1507,7 @@ export default function AiAssistant() {
                       : chatMode === "image-analysis"      ? <><Microscope  className="w-3.5 h-3.5" style={{color:"#2DD4BF"}} /> Medical Scan Analysis (Pro)</>
                       : null}
                       {specialty !== "General" && (
-                        <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: "rgba(100,180,255,0.15)", color: "rgba(100,180,255,0.9)" }}>
+                        <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: "rgba(0,122,255,0.1)", color: "rgba(0,100,220,0.85)" }}>
                           {specialty}
                         </span>
                       )}
@@ -1501,13 +1518,13 @@ export default function AiAssistant() {
                     <div className="flex gap-2 px-4 pt-3 flex-wrap">
                       {attachments.map((a) => (
                         <div key={a.id} className="relative group flex items-center gap-2 rounded-xl px-3 py-2 text-xs max-w-[160px]"
-                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.75)" }}>
+                          style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.09)", color: "rgba(0,0,0,0.72)" }}>
                           {a.type === "image" && a.previewUrl
                             ? <img src={a.previewUrl} alt={a.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
-                            : <FileText className="w-5 h-5 shrink-0" style={{ color: "rgba(255,255,255,0.5)" }} />}
+                            : <FileText className="w-5 h-5 shrink-0" style={{ color: "rgba(0,0,0,0.42)" }} />}
                           <div className="min-w-0">
                             <p className="truncate font-medium leading-tight">{a.name}</p>
-                            <p style={{ color: "rgba(255,255,255,0.3)" }}>{a.size}</p>
+                            <p style={{ color: "rgba(0,0,0,0.32)" }}>{a.size}</p>
                           </div>
                           <button type="button" onClick={() => removeAttachment(a.id)}
                             className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full items-center justify-center hidden group-hover:flex"
@@ -1548,27 +1565,27 @@ export default function AiAssistant() {
                       <div className="relative" ref={attachMenuRef}>
                         <button type="button" onClick={() => setShowAttachMenu((v) => !v)}
                           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-                          style={{ color: showAttachMenu ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)" }}>
+                          style={{ color: showAttachMenu ? "#0A0A0F" : "rgba(0,0,0,0.38)" }}>
                           <Plus className="w-4 h-4" />
                         </button>
                         {showAttachMenu && (
-                          <div className="absolute bottom-full left-0 mb-2 rounded-xl shadow-xl overflow-hidden w-52 z-30"
-                            style={{ background: "#1E1E1E", border: "1px solid rgba(255,255,255,0.1)" }}>
-                            <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.28)" }}>{tr.attach}</div>
+                          <div className="absolute bottom-full left-0 mb-2 rounded-xl shadow-lg overflow-hidden w-52 z-30"
+                            style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.1)", boxShadow:"0 8px 32px rgba(0,0,0,0.1)" }}>
+                            <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(0,0,0,0.28)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{tr.attach}</div>
                             {[
                               { label: tr.uploadImage, sub: tr.uploadImageFormats, icon: Image, action: () => imageInputRef.current?.click() },
                               { label: tr.uploadDocument, sub: tr.uploadDocumentFormats, icon: FileText, action: () => fileInputRef.current?.click() },
                               { label: tr.takePhoto, sub: tr.useCamera, icon: Camera, action: () => { setShowAttachMenu(false); setShowCamera(true); } },
                             ].map(({ label, sub, icon: Icon, action }) => (
                               <button key={label} type="button" onClick={action}
-                                className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-white/5"
-                                style={{ color: "rgba(255,255,255,0.75)" }}>
-                                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.06)" }}>
-                                  <Icon className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                                className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-black/4"
+                                style={{ color: "rgba(0,0,0,0.75)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,0,0,0.05)" }}>
+                                  <Icon className="w-4 h-4" style={{ color: "rgba(0,0,0,0.52)" }} />
                                 </div>
                                 <div className="text-left">
                                   <p className="font-semibold leading-tight">{label}</p>
-                                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{sub}</p>
+                                  <p className="text-xs" style={{ color: "rgba(0,0,0,0.35)" }}>{sub}</p>
                                 </div>
                               </button>
                             ))}
@@ -1582,15 +1599,15 @@ export default function AiAssistant() {
                           onClick={toggleVoiceInput}
                           className="w-8 h-8 rounded-xl flex items-center justify-center transition-all"
                           title={isListening ? "Stop voice input" : "Voice input (en-IN)"}
-                          style={{ background: isListening ? "rgba(248,113,113,0.2)" : "rgba(255,255,255,0.07)", color: isListening ? "#F87171" : "rgba(255,255,255,0.5)", border: isListening ? "1px solid rgba(248,113,113,0.45)" : "1px solid transparent", animation: isListening ? "cadus-spot-breathe 1.2s ease-in-out infinite" : "none" }}>
+                          style={{ background: isListening ? "rgba(248,113,113,0.12)" : "rgba(0,0,0,0.05)", color: isListening ? "#EF4444" : "rgba(0,0,0,0.42)", border: isListening ? "1px solid rgba(248,113,113,0.35)" : "1px solid transparent", animation: isListening ? "cadus-spot-breathe 1.2s ease-in-out infinite" : "none" }}>
                           {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
                         </button>
                       )}
                       <button type="submit"
                         disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || isAnalyzingImage || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
                         className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
-                        style={{ background: "rgba(255,255,255,0.9)" }}>
-                        {isAnalyzingImage ? <Loader2 className="w-3.5 h-3.5 text-black animate-spin" /> : <Send className="w-3.5 h-3.5 text-black" />}
+                        style={{ background: "#00C2A8" }}>
+                        {isAnalyzingImage ? <Loader2 className="w-3.5 h-3.5 text-white animate-spin" /> : <Send className="w-3.5 h-3.5 text-white" />}
                       </button>
                     </div>
                   </div>
@@ -1625,11 +1642,12 @@ export default function AiAssistant() {
                           onClick={() => { if (isPro) { setShowProModal(true); return; } toggleMode(mode); }}
                           className="relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all shrink-0"
                           style={{
-                            background: isActive ? `${color}18` : "rgba(255,255,255,0.04)",
-                            border: isActive ? `1px solid ${color}45` : "1px solid rgba(255,255,255,0.08)",
-                            color: isActive ? color : "rgba(255,255,255,0.52)",
+                            background: isActive ? `${color}12` : "rgba(0,0,0,0.04)",
+                            border: isActive ? `1px solid ${color}50` : "1px solid rgba(0,0,0,0.08)",
+                            color: isActive ? color : "rgba(0,0,0,0.5)",
+                            fontFamily: "'Plus Jakarta Sans', sans-serif",
                           }}>
-                          {isPro && <span className="absolute -top-1.5 -right-1.5 text-[7px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.85)", color: "#c4b5fd" }}>PRO</span>}
+                          {isPro && <span className="absolute -top-1.5 -right-1.5 text-[7px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.12)", color: "rgba(109,40,217,0.9)", border:"1px solid rgba(109,40,217,0.2)" }}>PRO</span>}
                           <Icon className="w-3.5 h-3.5" style={{ color: isActive ? color : undefined }} />
                           {label}
                         </button>
@@ -1644,20 +1662,20 @@ export default function AiAssistant() {
             {!isProLocked && pinnedPrompts.length > 0 && (
               <div className="w-full max-w-2xl mb-4">
                 <div className="flex items-center gap-1.5 mb-2">
-                  <Tag className="w-3.5 h-3.5" style={{ color: "rgba(251,191,36,0.7)" }} />
-                  <span className="text-xs font-semibold" style={{ color: "rgba(255,255,255,0.4)" }}>Pinned Prompts</span>
+                  <Tag className="w-3.5 h-3.5" style={{ color: "rgba(217,119,6,0.7)" }} />
+                  <span className="text-xs font-semibold" style={{ color: "rgba(0,0,0,0.4)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>Pinned Prompts</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {pinnedPrompts.map((q) => (
                     <div key={q} className="flex items-center gap-1">
                       <button type="button" onClick={() => setInput(q)}
                         className="text-xs px-3 py-1.5 rounded-full transition-all"
-                        style={{ background: "rgba(251,191,36,0.07)", border: "1px solid rgba(251,191,36,0.18)", color: "rgba(253,211,77,0.85)" }}>
+                        style={{ background: "rgba(217,119,6,0.07)", border: "1px solid rgba(217,119,6,0.2)", color: "rgba(161,86,4,0.9)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                         {q}
                       </button>
                       <button type="button" onClick={() => handleTogglePin(q)}
-                        className="p-0.5 rounded hover:bg-white/5"
-                        style={{ color: "rgba(251,191,36,0.5)" }} title="Unpin">
+                        className="p-0.5 rounded hover:bg-black/5"
+                        style={{ color: "rgba(217,119,6,0.5)" }} title="Unpin">
                         <X className="w-3 h-3" />
                       </button>
                     </div>
@@ -1670,24 +1688,24 @@ export default function AiAssistant() {
             {!isProLocked && (
               <div className="w-full max-w-2xl mb-8">
                 <div className="flex items-center gap-1.5 mb-3">
-                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.22)" }}>Try a prompt</span>
-                  <button className="p-1 rounded transition-all hover:bg-white/5 ml-1" style={{ color: "rgba(255,255,255,0.3)" }}>
+                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "rgba(0,0,0,0.28)", letterSpacing:"0.12em", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>Try a prompt</span>
+                  <button className="p-1 rounded transition-all hover:bg-black/5 ml-1" style={{ color: "rgba(0,0,0,0.28)" }}>
                     <RefreshCw className="w-3 h-3" />
                   </button>
                 </div>
                 <div className="flex flex-col gap-1.5">
                   {quickSuggestions[activeModel].slice(0, 5).map((q) => (
                     <div key={q} className="group flex items-center gap-3">
-                      <div className="w-1 h-1 rounded-full shrink-0" style={{ background: "rgba(0,194,168,0.55)" }} />
+                      <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#00C2A8", opacity: 0.55 }} />
                       <button type="button" onClick={() => sendDirect(q)}
-                        className="flex-1 text-left text-sm py-1.5 transition-all hover:opacity-80"
-                        style={{ color: "rgba(255,255,255,0.52)" }}>
+                        className="flex-1 text-left text-sm py-1.5 transition-all hover:opacity-70"
+                        style={{ color: "rgba(0,0,0,0.52)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                         {q}
                       </button>
                       <button type="button" onClick={() => handleTogglePin(q)}
                         className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded"
                         title={pinnedPrompts.includes(q) ? "Unpin" : "Pin prompt"}
-                        style={{ color: pinnedPrompts.includes(q) ? "rgba(251,191,36,0.9)" : "rgba(255,255,255,0.3)" }}>
+                        style={{ color: pinnedPrompts.includes(q) ? "rgba(217,119,6,0.9)" : "rgba(0,0,0,0.28)" }}>
                         <Tag className="w-3 h-3" />
                       </button>
                     </div>
@@ -1700,13 +1718,13 @@ export default function AiAssistant() {
             {isProLocked && (
               <div className="max-w-md text-center px-4 mb-8">
                 <div className="w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                  <Crown className="w-6 h-6" style={{ color: "rgba(255,255,255,0.6)" }} />
+                  style={{ background: "rgba(109,40,217,0.08)", border: "1px solid rgba(109,40,217,0.18)" }}>
+                  <Crown className="w-6 h-6" style={{ color: "rgba(109,40,217,0.7)" }} />
                 </div>
-                <p className="text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{modelGreetings.nova46}</p>
+                <p className="text-base leading-relaxed" style={{ color: "rgba(0,0,0,0.45)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{modelGreetings.nova46}</p>
                 <button onClick={() => setShowProModal(true)}
                   className="mt-4 flex items-center gap-2 mx-auto px-6 py-2.5 rounded-xl font-bold text-sm"
-                  style={{ background: "rgba(255,255,255,0.9)", color: "#111" }}>
+                  style={{ background: "#7c3aed", color: "#fff", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                   <Crown className="w-4 h-4" /> {tr.upgradePro}
                 </button>
               </div>
@@ -1716,10 +1734,10 @@ export default function AiAssistant() {
             {sessions.some(s => s.messages.length > 0) && (
               <div className="w-full max-w-2xl">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.22)" }}>Recent chats</span>
+                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "rgba(0,0,0,0.28)", letterSpacing:"0.12em", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>Recent chats</span>
                   <button onClick={() => setSidebarView("chats")}
-                    className="text-xs flex items-center gap-1 transition-all hover:opacity-80"
-                    style={{ color: "rgba(255,255,255,0.35)" }}>
+                    className="text-xs flex items-center gap-1 transition-all hover:opacity-70"
+                    style={{ color: "#00C2A8", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                     View All <ChevronRight className="w-3 h-3" />
                   </button>
                 </div>
@@ -1732,19 +1750,19 @@ export default function AiAssistant() {
                         role="button" tabIndex={0}
                         onClick={() => setActiveSessionId(sess.id)}
                         onKeyDown={(e) => e.key === "Enter" && setActiveSessionId(sess.id)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all hover:bg-white/4"
-                        style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all hover:bg-black/4"
+                        style={{ border: "1px solid rgba(0,0,0,0.07)", background: "#FFFFFF" }}>
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-                          style={{ background: "rgba(255,255,255,0.05)" }}>
-                          <SMIcon className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.4)" }} />
+                          style={{ background: "rgba(0,0,0,0.05)" }}>
+                          <SMIcon className="w-3.5 h-3.5" style={{ color: "rgba(0,0,0,0.38)" }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium truncate" style={{ color: "rgba(255,255,255,0.72)" }}>{sess.title}</p>
-                          <p className="text-[10px] truncate" style={{ color: "rgba(255,255,255,0.28)" }}>
+                          <p className="text-xs font-medium truncate" style={{ color: "#0A0A0F", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{sess.title}</p>
+                          <p className="text-[10px] truncate" style={{ color: "rgba(0,0,0,0.35)" }}>
                             {sess.messages[0]?.content?.slice(0, 55) ?? "No messages yet"}
                           </p>
                         </div>
-                        <ChevronRight className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(255,255,255,0.2)" }} />
+                        <ChevronRight className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(0,0,0,0.2)" }} />
                       </div>
                     );
                   })}
@@ -1779,11 +1797,11 @@ export default function AiAssistant() {
                         : "overflow-hidden"
                     )}
                       style={msg.role === ChatMessageRole.user
-                        ? { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }
+                        ? { background: "rgba(0,122,255,0.1)", border: "1px solid rgba(0,122,255,0.2)" }
                         : undefined}
                     >
                       {msg.role === ChatMessageRole.user
-                        ? <User className="w-4 h-4" style={{ color: "rgba(255,255,255,0.75)" }} />
+                        ? <User className="w-4 h-4" style={{ color: "rgba(0,100,210,0.7)" }} />
                         : <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
                       }
                     </div>
@@ -1794,8 +1812,8 @@ export default function AiAssistant() {
                         msg.role === ChatMessageRole.user ? "rounded-tr-sm" : "rounded-tl-sm"
                       )}
                       style={msg.role === ChatMessageRole.user
-                        ? { background: "var(--sp-user-bubble-bg)", border: "1px solid var(--sp-user-bubble-border)", color: "var(--sp-user-text)", backdropFilter: "blur(12px)" }
-                        : { background: "var(--sp-ai-bubble-bg)", borderTop: "1px solid var(--sp-ai-bubble-border)", borderRight: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", borderLeft: "2px solid rgba(0,194,168,0.35)", color: "var(--sp-ai-text)" }
+                        ? { background: "var(--sp-user-bubble-bg)", border: "1px solid var(--sp-user-bubble-border)", color: "var(--sp-user-text)" }
+                        : { background: "var(--sp-ai-bubble-bg)", borderTop: "1px solid var(--sp-ai-bubble-border)", borderRight: "1px solid rgba(0,0,0,0.06)", borderBottom: "1px solid rgba(0,0,0,0.06)", borderLeft: "2px solid rgba(0,194,168,0.45)", color: "var(--sp-ai-text)" }
                       }
                     >
                       {!(msg as ExtendedMessage).isDeepResearch && !(msg as ExtendedMessage).isPresentation && !(msg as ExtendedMessage).slideCountOptions && !(msg as ExtendedMessage).imageUrl && !(msg as ExtendedMessage).isImageTypeSelection && msg.content && (
@@ -1812,15 +1830,15 @@ export default function AiAssistant() {
                             <div className="flex items-center gap-2 px-4 pb-3">
                               <button type="button"
                                 onClick={() => navigator.clipboard.writeText(msg.content)}
-                                className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-white/8"
-                                style={{ color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                                className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-black/5"
+                                style={{ color: "rgba(0,0,0,0.35)", border: "1px solid rgba(0,0,0,0.08)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                                 <RefreshCw className="w-3 h-3" /> Copy
                               </button>
                               <button type="button"
                                 onClick={() => handleDownloadPdf(msg.content, String(idx))}
                                 disabled={isExportingPdf === String(idx)}
-                                className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-white/8"
-                                style={{ color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                                className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-black/5"
+                                style={{ color: "rgba(0,0,0,0.35)", border: "1px solid rgba(0,0,0,0.08)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                                 {isExportingPdf === String(idx) ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
                                 {isExportingPdf === String(idx) ? "Generating..." : "Export PDF"}
                               </button>
@@ -1839,15 +1857,15 @@ export default function AiAssistant() {
                           <div className="flex items-center gap-2 px-4 py-3">
                             <button type="button"
                               onClick={() => navigator.clipboard.writeText((msg as ExtendedMessage).researchReport!)}
-                              className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-white/8"
-                              style={{ color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                              className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-black/5"
+                              style={{ color: "rgba(0,0,0,0.35)", border: "1px solid rgba(0,0,0,0.08)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                               <RefreshCw className="w-3 h-3" /> Copy Report
                             </button>
                             <button type="button"
                               onClick={() => handleDownloadPdf((msg as ExtendedMessage).researchReport!, String(idx))}
                               disabled={isExportingPdf === String(idx)}
-                              className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-white/8"
-                              style={{ color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                              className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg transition-all hover:bg-black/5"
+                              style={{ color: "rgba(0,0,0,0.35)", border: "1px solid rgba(0,0,0,0.08)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                               {isExportingPdf === String(idx) ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
                               {isExportingPdf === String(idx) ? "Generating..." : "Export PDF"}
                             </button>
@@ -1993,14 +2011,15 @@ export default function AiAssistant() {
                     </div>
                     <div className="rounded-2xl rounded-tl-sm px-5 py-3.5 flex items-center gap-3"
                       style={{
-                        background: "rgba(255,255,255,0.04)",
-                        border: "1px solid rgba(0,194,168,0.18)",
-                        boxShadow: "0 0 18px rgba(0,194,168,0.06), 0 0 32px rgba(168,85,247,0.04)",
+                        background: "#FFFFFF",
+                        border: "1px solid rgba(0,0,0,0.08)",
+                        borderLeft: "2px solid rgba(0,194,168,0.45)",
+                        boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
                       }}>
                       {isGeneratingResearch ? (
                         <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" style={{ color: "rgba(0,194,168,0.7)" }} />
-                          <span className="text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>{tr.researching}</span>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" style={{ color: "#00C2A8" }} />
+                          <span className="text-sm" style={{ color: "rgba(0,0,0,0.5)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{tr.researching}</span>
                         </>
                       ) : (
                         <>
@@ -2009,15 +2028,12 @@ export default function AiAssistant() {
                               key={i}
                               className="rounded-full"
                               style={{
-                                width: 7, height: 7,
+                                width: 6, height: 6,
                                 background: i === 0
-                                  ? "rgba(0,194,168,0.85)"
-                                  : i === 1 ? "rgba(100,160,240,0.75)" : "rgba(168,85,247,0.7)",
+                                  ? "#00C2A8"
+                                  : i === 1 ? "#007AFF" : "rgba(0,194,168,0.5)",
                                 animation: "tw-dot-bounce 1.2s ease-in-out infinite",
                                 animationDelay: `${i * 0.18}s`,
-                                boxShadow: i === 0
-                                  ? "0 0 6px rgba(0,194,168,0.5)"
-                                  : i === 2 ? "0 0 6px rgba(168,85,247,0.4)" : undefined,
                               }}
                             />
                           ))}
@@ -2035,9 +2051,9 @@ export default function AiAssistant() {
                       <CadusLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                     </div>
                     <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden"
-                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                      <div className="px-4 pt-3 pb-2 text-xs font-medium flex items-center gap-2" style={{ color: "rgba(255,255,255,0.5)" }}>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "rgba(255,255,255,0.4)" }} />
+                      style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.08)", borderLeft: "2px solid rgba(0,194,168,0.45)" }}>
+                      <div className="px-4 pt-3 pb-2 text-xs font-medium flex items-center gap-2" style={{ color: "rgba(0,0,0,0.5)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#00C2A8" }} />
                         {tr.buildingPresentation.replace("{n}", String(buildingSlideCount))}
                       </div>
                       <PresentationBuildingAnimation topic={buildingTopic} slideCount={buildingSlideCount} />
@@ -2053,19 +2069,19 @@ export default function AiAssistant() {
               <div className="max-w-3xl mx-auto">
                 {isProLocked ? (
                   <div className="rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
-                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                    style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.09)" }}>
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.07)" }}>
-                        <Lock className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,0,0,0.05)" }}>
+                        <Lock className="w-4 h-4" style={{ color: "rgba(0,0,0,0.45)" }} />
                       </div>
                       <div>
-                        <p className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>{tr.proRequired}</p>
-                        <p className="text-xs" style={{ color: "rgba(255,255,255,0.38)" }}>{tr.proGatedMsg}</p>
+                        <p className="font-semibold text-sm" style={{ color: "#0A0A0F", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{tr.proRequired}</p>
+                        <p className="text-xs" style={{ color: "rgba(0,0,0,0.42)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{tr.proGatedMsg}</p>
                       </div>
                     </div>
                     <button onClick={() => setShowProModal(true)}
                       className="flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm whitespace-nowrap"
-                      style={{ background: "rgba(255,255,255,0.9)", color: "#111" }}>
+                      style={{ background: "#7c3aed", color: "#fff", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                       <Crown className="w-4 h-4" /> {tr.upgradePro}
                     </button>
                   </div>
@@ -2075,7 +2091,7 @@ export default function AiAssistant() {
                   >
                     {chatMode !== "normal" && (
                       <div className="flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold"
-                        style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.03)" }}>
+                        style={{ borderColor: "rgba(0,0,0,0.07)", color: "rgba(0,0,0,0.6)", background: "rgba(0,194,168,0.03)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                         {chatMode === "deep-research" ? <><Microscope className="w-3.5 h-3.5" /> {tr.deepResearchMode}</>
                           : chatMode === "create-presentation" ? <><Presentation className="w-3.5 h-3.5" /> {presentationStage === "idle" ? tr.presentationMode : tr.selectSlideCountAbove}</>
                           : <><ImagePlus className="w-3.5 h-3.5" /> {imageStage === "waiting-type" ? tr.selectSlideCountAbove : tr.imageMode}</>}
@@ -2088,13 +2104,13 @@ export default function AiAssistant() {
                       <div className="flex gap-2 px-4 pt-3 flex-wrap">
                         {attachments.map((a) => (
                           <div key={a.id} className="relative group flex items-center gap-2 rounded-xl px-3 py-2 text-xs max-w-[160px]"
-                            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.75)" }}>
+                            style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.09)", color: "rgba(0,0,0,0.72)" }}>
                             {a.type === "image" && a.previewUrl
                               ? <img src={a.previewUrl} alt={a.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
-                              : <FileText className="w-5 h-5 shrink-0" style={{ color: "rgba(255,255,255,0.5)" }} />}
+                              : <FileText className="w-5 h-5 shrink-0" style={{ color: "rgba(0,0,0,0.42)" }} />}
                             <div className="min-w-0">
                               <p className="truncate font-medium leading-tight">{a.name}</p>
-                              <p style={{ color: "rgba(255,255,255,0.3)" }}>{a.size}</p>
+                              <p style={{ color: "rgba(0,0,0,0.32)" }}>{a.size}</p>
                             </div>
                             <button type="button" onClick={() => removeAttachment(a.id)}
                               className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full items-center justify-center hidden group-hover:flex"
@@ -2127,28 +2143,28 @@ export default function AiAssistant() {
                         <div className="relative" ref={attachMenuRef}>
                           <button type="button" onClick={() => setShowAttachMenu((v) => !v)}
                             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-                            style={{ color: showAttachMenu ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)" }}>
+                            style={{ color: showAttachMenu ? "#0A0A0F" : "rgba(0,0,0,0.38)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                             <Paperclip className="w-4 h-4" />
                             <span className="hidden sm:inline">{tr.attach}</span>
                           </button>
                           {showAttachMenu && (
-                            <div className="absolute bottom-full left-0 mb-2 rounded-xl shadow-xl overflow-hidden w-52 z-30"
-                              style={{ background: "#1E1E1E", border: "1px solid rgba(255,255,255,0.1)" }}>
-                              <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.28)" }}>{tr.attach}</div>
+                            <div className="absolute bottom-full left-0 mb-2 rounded-xl shadow-lg overflow-hidden w-52 z-30"
+                              style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.1)", boxShadow:"0 8px 32px rgba(0,0,0,0.1)" }}>
+                              <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: "rgba(0,0,0,0.28)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{tr.attach}</div>
                               {[
                                 { label: tr.uploadImage, sub: tr.uploadImageFormats, icon: Image, action: () => imageInputRef.current?.click() },
                                 { label: tr.uploadDocument, sub: tr.uploadDocumentFormats, icon: FileText, action: () => fileInputRef.current?.click() },
                                 { label: tr.takePhoto, sub: tr.useCamera, icon: Camera, action: () => { setShowAttachMenu(false); setShowCamera(true); } },
                               ].map(({ label, sub, icon: Icon, action }) => (
                                 <button key={label} type="button" onClick={action}
-                                  className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-white/5"
-                                  style={{ color: "rgba(255,255,255,0.75)" }}>
-                                  <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.06)" }}>
-                                    <Icon className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                                  className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-colors hover:bg-black/4"
+                                  style={{ color: "rgba(0,0,0,0.75)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                                  <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,0,0,0.05)" }}>
+                                    <Icon className="w-4 h-4" style={{ color: "rgba(0,0,0,0.52)" }} />
                                   </div>
                                   <div className="text-left">
                                     <p className="font-semibold leading-tight">{label}</p>
-                                    <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{sub}</p>
+                                    <p className="text-xs" style={{ color: "rgba(0,0,0,0.35)" }}>{sub}</p>
                                   </div>
                                 </button>
                               ))}
@@ -2158,43 +2174,43 @@ export default function AiAssistant() {
                         <button type="button" onClick={() => toggleMode("deep-research")}
                           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
                           style={chatMode === "deep-research"
-                            ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
-                            : { color: "rgba(255,255,255,0.4)" }}>
+                            ? { background: "rgba(52,211,153,0.1)", color: "rgba(5,150,105,0.9)", fontFamily:"'Plus Jakarta Sans', sans-serif" }
+                            : { color: "rgba(0,0,0,0.38)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                           <Search className="w-4 h-4" />
                           <span className="hidden sm:inline">{tr.deepResearch}</span>
                         </button>
                         <button type="button" onClick={() => toggleMode("create-image")}
                           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
                           style={chatMode === "create-image"
-                            ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
-                            : { color: "rgba(255,255,255,0.4)" }}>
+                            ? { background: "rgba(244,114,182,0.1)", color: "rgba(190,24,93,0.9)", fontFamily:"'Plus Jakarta Sans', sans-serif" }
+                            : { color: "rgba(0,0,0,0.38)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                           <ImagePlus className="w-4 h-4" />
                           <span className="hidden sm:inline">{tr.createImage}</span>
                         </button>
                         <button type="button" onClick={() => toggleMode("create-presentation")}
                           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
                           style={chatMode === "create-presentation"
-                            ? { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)" }
-                            : { color: "rgba(255,255,255,0.4)" }}>
+                            ? { background: "rgba(251,191,36,0.1)", color: "rgba(161,98,7,0.9)", fontFamily:"'Plus Jakarta Sans', sans-serif" }
+                            : { color: "rgba(0,0,0,0.38)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                           <Presentation className="w-4 h-4" />
                           <span className="hidden sm:inline">{tr.presentation}</span>
                         </button>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="hidden sm:inline text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                        <span className="hidden sm:inline text-xs" style={{ color: "rgba(0,0,0,0.32)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                           {model.name}
                         </span>
                         <button type="submit"
                           disabled={(!input.trim() && attachments.length === 0) || chatMutation.isPending || isGeneratingImage || isGeneratingPresentation || presentationStage === "waiting-slide-count" || imageStage === "waiting-type"}
                           className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
-                          style={{ background: "rgba(255,255,255,0.9)" }}>
-                          <Send className="w-3.5 h-3.5 text-black" />
+                          style={{ background: "#00C2A8" }}>
+                          <Send className="w-3.5 h-3.5 text-white" />
                         </button>
                       </div>
                     </div>
                   </form>
                 )}
-                <p className="text-center text-[11px] mt-2" style={{ color: "rgba(255,255,255,0.18)" }}>
+                <p className="text-center text-[11px] mt-2" style={{ color: "rgba(0,0,0,0.25)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                   {tr.disclaimer}
                 </p>
               </div>
@@ -2472,11 +2488,12 @@ function ThinkingTextRotator({ chatMode }: { chatMode: ChatMode }) {
       key={key}
       style={{
         fontSize: 11,
-        color: "rgba(255,255,255,0.35)",
+        color: "rgba(0,0,0,0.38)",
         letterSpacing: "0.04em",
         marginLeft: 4,
         display: "inline-block",
         animation: "cadus-think-text-fade 2.8s ease-in-out forwards",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
         minWidth: 170,
       }}
     >
@@ -2521,7 +2538,7 @@ function ImageMessageCard({
           <div style={{
             width: "100%",
             paddingBottom: "75%",
-            background: "linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(0,194,168,0.07) 50%, rgba(255,255,255,0.04) 100%)",
+            background: "linear-gradient(90deg, rgba(0,0,0,0.04) 0%, rgba(0,194,168,0.07) 50%, rgba(0,0,0,0.04) 100%)",
             backgroundSize: "800px 100%",
             animation: "cadus-skeleton-shimmer 1.5s linear infinite",
             borderRadius: 14,
@@ -2582,10 +2599,11 @@ function ImageMessageCard({
           background: "rgba(0,194,168,0.06)",
           border: "1px solid rgba(0,194,168,0.12)",
           fontSize: 11,
-          color: "rgba(255,255,255,0.45)",
+          color: "rgba(0,0,0,0.5)",
           lineHeight: 1.5,
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
         }}>
-          <span style={{ color: "rgba(0,194,168,0.7)", fontWeight: 600 }}>Note: </span>
+          <span style={{ color: "#00C2A8", fontWeight: 600 }}>Note: </span>
           This is an educational medical illustration. For any symptoms or clinical decisions, always consult a licensed doctor.
         </div>
       )}

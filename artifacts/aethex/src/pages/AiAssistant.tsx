@@ -1261,7 +1261,9 @@ export default function AiAssistant() {
       >
         {/* ── Brand header ── */}
         <div className="flex items-center gap-3 px-4 pt-4 pb-3 shrink-0">
-          <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+          <div style={{ width:38, height:38, borderRadius:10, background:"linear-gradient(135deg,#111827 0%,#1a2035 100%)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, boxShadow:"0 2px 8px rgba(0,0,0,0.18)" }}>
+            <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+          </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold tracking-tight" style={{ color: "#0A0A0F", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Cadus AI</p>
             <p className="text-[10px]" style={{ color: "rgba(0,0,0,0.38)" }}>Clinical Intelligence</p>
@@ -1465,7 +1467,9 @@ export default function AiAssistant() {
           )}
           {!sidebarOpen && (
             <div className="flex items-center gap-2 shrink-0">
-              <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+              <div style={{ width:34, height:34, borderRadius:9, background:"linear-gradient(135deg,#111827 0%,#1a2035 100%)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, boxShadow:"0 2px 6px rgba(0,0,0,0.18)" }}>
+                <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+              </div>
               <span className="text-sm font-bold" style={{ color: "#0A0A0F", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>Cadus AI</span>
             </div>
           )}
@@ -1538,9 +1542,11 @@ export default function AiAssistant() {
 
             {/* Logo + greeting hero */}
             <div className="flex flex-col items-center mb-8">
-              <div className="mb-4 relative">
-                <div style={{ position:"absolute", inset:-24, borderRadius:"50%", background:"radial-gradient(circle, rgba(0,194,168,0.14) 0%, transparent 70%)", pointerEvents:"none" }} />
-                <CadusLogo size="md" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+              <div className="mb-5 relative">
+                <div style={{ position:"absolute", inset:-28, borderRadius:"50%", background:"radial-gradient(circle, rgba(0,194,168,0.18) 0%, transparent 70%)", pointerEvents:"none" }} />
+                <div style={{ width:100, height:100, borderRadius:26, background:"linear-gradient(145deg,#0d1117 0%,#1a2035 60%,#111c2e 100%)", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 12px 40px rgba(0,194,168,0.22), 0 4px 16px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.07)", border:"1px solid rgba(0,194,168,0.18)" }}>
+                  <CadusLogo size="md" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+                </div>
               </div>
               <h1 className="text-[1.8rem] font-bold text-center leading-tight mb-2"
                 style={{ color: "#0A0A0F", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
@@ -1954,7 +1960,7 @@ export default function AiAssistant() {
                     >
                       {msg.role === ChatMessageRole.user
                         ? <User className="w-4 h-4" style={{ color: "rgba(0,100,210,0.7)" }} />
-                        : <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+                        : <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#111827 0%,#1a2035 100%)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} /></div>
                       }
                     </div>
 
@@ -2148,7 +2154,7 @@ export default function AiAssistant() {
                 {/* Image generating animation */}
                 {isGeneratingImage && (
                   <div className="flex gap-3 self-start max-w-[92%]">
-                    <div className="w-8 h-8 shrink-0 mt-1">
+                    <div className="shrink-0 mt-1" style={{ width:38, height:38, borderRadius:10, background:"linear-gradient(135deg,#111827 0%,#1a2035 100%)", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 2px 8px rgba(0,0,0,0.18)" }}>
                       <CadusLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                     </div>
                     <ImageGeneratingAnimation prompt={pendingImagePrompt} />
@@ -2158,7 +2164,7 @@ export default function AiAssistant() {
                 {/* Typing indicator */}
                 {(chatMutation.isPending || isGeneratingResearch) && (
                   <div className="flex gap-3 self-start max-w-[92%]" style={{ animation: "tw-bubble-in 0.22s ease-out both" }}>
-                    <div className="shrink-0 mt-0.5" style={{ width: 38, height: 38 }}>
+                    <div className="shrink-0 mt-0.5" style={{ width:38, height:38, borderRadius:10, background:"linear-gradient(135deg,#111827 0%,#1a2035 100%)", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 2px 8px rgba(0,0,0,0.18)" }}>
                       <CadusLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                     </div>
                     <div className="rounded-2xl rounded-tl-sm px-5 py-3.5 flex items-center gap-3"
@@ -2199,7 +2205,7 @@ export default function AiAssistant() {
                 {/* Presentation building */}
                 {isGeneratingPresentation && (
                   <div className="flex gap-3 self-start max-w-[95%] w-full">
-                    <div className="w-8 h-8 shrink-0 mt-1">
+                    <div className="shrink-0 mt-1" style={{ width:38, height:38, borderRadius:10, background:"linear-gradient(135deg,#111827 0%,#1a2035 100%)", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 2px 8px rgba(0,0,0,0.18)" }}>
                       <CadusLogo size="sm" thinking baseUrl={import.meta.env.BASE_URL} />
                     </div>
                     <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden"

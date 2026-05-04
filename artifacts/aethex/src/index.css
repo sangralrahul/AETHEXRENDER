@@ -994,3 +994,23 @@ body {
   0%, 100% { opacity: 0.07; }
   50%       { opacity: 0.18; }
 }
+
+/* ── Cadus AI v2 sidebar + tool scroll ─────────────────────────── */
+.cadus-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.cadus-sidebar-scroll::-webkit-scrollbar { width: 4px; }
+.cadus-sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+.cadus-sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+
+.cadus-tool-scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.cadus-tool-scroll::-webkit-scrollbar { display: none; }
+
+.cadus-input-box:focus-within {
+  border-color: rgba(0,194,168,0.28) !important;
+  box-shadow: 0 0 0 3px rgba(0,194,168,0.07);
+}

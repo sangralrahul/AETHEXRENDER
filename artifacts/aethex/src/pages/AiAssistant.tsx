@@ -2221,135 +2221,179 @@ export default function AiAssistant() {
 
       {/* ── Pricing Modal ── */}
       {showProModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4"
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: "rgba(10,10,15,0.6)", backdropFilter: "blur(20px)" }}
           onClick={() => setShowProModal(false)}>
-          <div className="rounded-2xl shadow-2xl w-full overflow-hidden"
-            style={{ maxWidth: 860, background: "rgba(8,10,28,0.98)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(32px)" }}
+          <div className="rounded-3xl w-full overflow-hidden"
+            style={{ maxWidth: 920, background: "#F8F7F4", boxShadow: "0 32px 80px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.08)" }}
             onClick={(e) => e.stopPropagation()}>
 
             {/* Modal header */}
-            <div className="relative px-8 pt-7 pb-5 text-center" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <div className="relative px-8 pt-8 pb-6 text-center" style={{ borderBottom: "1px solid rgba(0,0,0,0.07)" }}>
               <button onClick={() => setShowProModal(false)}
-                className="absolute top-4 right-4 p-2 rounded-lg transition-colors hover:bg-white/6"
-                style={{ color: "rgba(255,255,255,0.28)" }}>
+                className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-xl transition-colors hover:bg-black/6"
+                style={{ color: "rgba(0,0,0,0.35)" }}>
                 <X className="w-4 h-4" />
               </button>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold mb-3"
-                style={{ background: "rgba(139,92,246,0.14)", border: "1px solid rgba(139,92,246,0.22)", color: "#a78bfa" }}>
-                <Crown className="w-3 h-3" /> Cadus AI Plans
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold mb-4"
+                style={{ background: "rgba(0,194,168,0.1)", border: "1px solid rgba(0,194,168,0.22)", color: "#00A896", fontFamily:"'Plus Jakarta Sans', sans-serif", letterSpacing:"0.04em" }}>
+                <Crown className="w-3 h-3" /> CADUS AI PLANS
               </div>
-              <h2 className="text-[22px] font-bold mb-1" style={{ color: "rgba(225,235,255,0.95)" }}>Choose your plan</h2>
-              <p className="text-sm" style={{ color: "rgba(140,160,210,0.6)" }}>Elevate your clinical practice with the right tier</p>
+              <h2 className="text-[28px] font-bold mb-2 tracking-tight" style={{ color: "#0A0A0F", fontFamily:"'Cormorant Garamond', Georgia, serif" }}>Choose your plan</h2>
+              <p className="text-sm" style={{ color: "rgba(0,0,0,0.45)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>Elevate your clinical practice with the right tier</p>
               {/* Billing toggle */}
-              <div className="inline-flex items-center gap-1 mt-4 p-1 rounded-xl" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
+              <div className="inline-flex items-center gap-1 mt-5 p-1 rounded-xl" style={{ background: "rgba(0,0,0,0.05)", border: "1px solid rgba(0,0,0,0.08)" }}>
                 <button onClick={() => setBillingPeriod("monthly")}
-                  className="px-4 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                  className="px-5 py-1.5 rounded-lg text-xs font-semibold transition-all"
                   style={billingPeriod === "monthly"
-                    ? { background: "rgba(255,255,255,0.1)", color: "rgba(220,235,255,0.9)" }
-                    : { color: "rgba(140,160,210,0.5)" }}>
+                    ? { background: "#FFFFFF", color: "#0A0A0F", boxShadow: "0 1px 4px rgba(0,0,0,0.1)", fontFamily:"'Plus Jakarta Sans', sans-serif" }
+                    : { color: "rgba(0,0,0,0.38)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                   Monthly
                 </button>
                 <button onClick={() => setBillingPeriod("yearly")}
-                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                  className="flex items-center gap-2 px-5 py-1.5 rounded-lg text-xs font-semibold transition-all"
                   style={billingPeriod === "yearly"
-                    ? { background: "rgba(255,255,255,0.1)", color: "rgba(220,235,255,0.9)" }
-                    : { color: "rgba(140,160,210,0.5)" }}>
+                    ? { background: "#FFFFFF", color: "#0A0A0F", boxShadow: "0 1px 4px rgba(0,0,0,0.1)", fontFamily:"'Plus Jakarta Sans', sans-serif" }
+                    : { color: "rgba(0,0,0,0.38)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                   Yearly
-                  <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold" style={{ background: "rgba(16,185,129,0.2)", color: "#34d399" }}>Save 44%</span>
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: "rgba(0,194,168,0.12)", color: "#00A896" }}>Save 33%</span>
                 </button>
               </div>
             </div>
 
             {/* Plan cards */}
-            <div className="grid grid-cols-3 divide-x" style={{ divideColor: "rgba(255,255,255,0.06)" }}>
-
-              {/* ── Cadus Minor (Free) ── */}
+            <div className="grid grid-cols-3 gap-0">
               {([
                 {
-                  name: "Cadus Minor", badge: null, badgeBg: "", badgeColor: "",
-                  price: "Free", priceNote: "Forever free",
+                  id: "minor",
+                  name: "Cadus Minor",
+                  tagline: "Get started",
+                  badge: null as string|null,
+                  badgeStyle: {} as React.CSSProperties,
+                  price: "Free",
+                  priceSub: "Forever free · no card required",
                   highlight: false,
-                  desc: "For individuals getting started with medical AI.",
+                  desc: "Perfect for individuals exploring medical AI for the first time.",
                   features: [
-                    "20 queries per day",
-                    "Basic diagnosis support",
-                    "General medical Q&A",
-                    "Standard response speed",
-                    "Community access",
+                    { text: "20 AI queries per day", included: true },
+                    { text: "Basic diagnosis support", included: true },
+                    { text: "General medical Q&A", included: true },
+                    { text: "Standard response speed", included: true },
+                    { text: "Community access", included: true },
+                    { text: "DDx Generator", included: false },
+                    { text: "Deep Research", included: false },
+                    { text: "Medical image analysis", included: false },
                   ],
-                  cta: "Your current plan", ctaDisabled: true,
-                  ctaBg: "rgba(255,255,255,0.06)", ctaColor: "rgba(180,200,240,0.5)", ctaBorder: "1px solid rgba(255,255,255,0.08)",
+                  cta: "Your current plan",
+                  ctaDisabled: true,
+                  ctaStyle: { background: "rgba(0,0,0,0.06)", color: "rgba(0,0,0,0.35)", border: "1px solid rgba(0,0,0,0.1)" } as React.CSSProperties,
+                  cardStyle: { background: "#FFFFFF", borderRight: "1px solid rgba(0,0,0,0.07)" } as React.CSSProperties,
                 },
                 {
-                  name: "Cadus Medius", badge: "Standard", badgeBg: "rgba(59,130,246,0.18)", badgeColor: "#93c5fd",
-                  price: "Free", priceNote: "Always free",
+                  id: "medius",
+                  name: "Cadus Medius",
+                  tagline: "For students & clinicians",
+                  badge: "Standard",
+                  badgeStyle: { background: "rgba(0,122,255,0.1)", color: "#0066CC", border: "1px solid rgba(0,122,255,0.18)" } as React.CSSProperties,
+                  price: billingPeriod === "monthly" ? "₹499" : "₹333",
+                  priceSub: billingPeriod === "monthly" ? "per month" : "per month · billed ₹3,999/yr",
                   highlight: false,
-                  desc: "For students and everyday clinical practice.",
+                  desc: "For students and clinicians in everyday practice.",
                   features: [
-                    "50 queries per day",
-                    "DDx Generator",
-                    "Research summaries",
-                    "Study Hub access",
-                    "Faster response speed",
+                    { text: "50 AI queries per day", included: true },
+                    { text: "DDx Generator", included: true },
+                    { text: "Research summaries", included: true },
+                    { text: "Study Hub access", included: true },
+                    { text: "Faster response speed", included: true },
+                    { text: "Procedure guides", included: true },
+                    { text: "Deep Research", included: false },
+                    { text: "Medical image analysis", included: false },
                   ],
-                  cta: "Get started free", ctaDisabled: false,
-                  ctaBg: "rgba(59,130,246,0.18)", ctaColor: "#93c5fd", ctaBorder: "1px solid rgba(59,130,246,0.3)",
+                  cta: "Upgrade to Medius",
+                  ctaDisabled: false,
+                  ctaStyle: { background: "rgba(0,122,255,0.08)", color: "#0066CC", border: "1px solid rgba(0,122,255,0.22)" } as React.CSSProperties,
+                  cardStyle: { background: "#FFFFFF", borderRight: "1px solid rgba(0,0,0,0.07)" } as React.CSSProperties,
                 },
                 {
-                  name: "Cadus Magnus", badge: "Most Popular", badgeBg: "linear-gradient(90deg,#7c3aed,#9333ea)", badgeColor: "white",
-                  price: billingPeriod === "monthly" ? "₹299" : "₹166",
-                  priceNote: billingPeriod === "monthly" ? "/month" : "/month · billed ₹1,999/yr",
+                  id: "magnus",
+                  name: "Cadus Magnus",
+                  tagline: "Advanced clinical AI",
+                  badge: "Most Popular",
+                  badgeStyle: { background: "linear-gradient(135deg,#7c3aed,#9333ea)", color: "#fff", border: "none" } as React.CSSProperties,
+                  price: billingPeriod === "monthly" ? "₹1,499" : "₹999",
+                  priceSub: billingPeriod === "monthly" ? "per month" : "per month · billed ₹11,999/yr",
                   highlight: true,
-                  desc: "For advanced clinical work and complex cases.",
+                  desc: "For advanced clinical work, complex cases & AI-powered research.",
                   features: [
-                    "200 queries per day (Pro) / Unlimited (Max)",
-                    "Cadus Magnus advanced reasoning model",
-                    "Complex DDx & rare disease analysis",
-                    "Deep Research with web augmentation",
-                    "Medical image analysis",
-                    "Multispecialty second opinion",
-                    "PDF export & presentations",
-                    "Priority support",
+                    { text: "Unlimited AI queries", included: true },
+                    { text: "Cadus Magnus advanced model", included: true },
+                    { text: "Complex DDx & rare diseases", included: true },
+                    { text: "Deep Research + web search", included: true },
+                    { text: "Medical image analysis", included: true },
+                    { text: "Multispecialty second opinion", included: true },
+                    { text: "PDF export & presentations", included: true },
+                    { text: "Priority support", included: true },
                   ],
-                  cta: "Upgrade to Magnus", ctaDisabled: false,
-                  ctaBg: "linear-gradient(to right,#7c3aed,#9333ea)", ctaColor: "white", ctaBorder: "none",
+                  cta: "Upgrade to Magnus",
+                  ctaDisabled: false,
+                  ctaStyle: { background: "linear-gradient(135deg,#7c3aed,#9333ea)", color: "#fff", border: "none", boxShadow: "0 4px 16px rgba(124,58,237,0.35)" } as React.CSSProperties,
+                  cardStyle: { background: "linear-gradient(160deg, rgba(124,58,237,0.04) 0%, rgba(147,51,234,0.07) 100%)", borderLeft: "2px solid rgba(124,58,237,0.2)" } as React.CSSProperties,
                 },
-              ] as Array<{
-                name: string; badge: string|null; badgeBg: string; badgeColor: string;
-                price: string; priceNote: string; highlight: boolean; desc: string;
-                features: string[]; cta: string; ctaDisabled: boolean;
-                ctaBg: string; ctaColor: string; ctaBorder: string;
-              }>).map((plan) => (
-                <div key={plan.name} className="relative flex flex-col px-6 py-6"
-                  style={plan.highlight ? { background: "rgba(109,40,217,0.08)" } : {}}>
-                  {plan.badge && (
-                    <div className="inline-flex self-start items-center px-2.5 py-1 rounded-full text-[10px] font-bold mb-3"
-                      style={{ background: plan.badgeBg, color: plan.badgeColor }}>
+              ]).map((plan, pi) => (
+                <div key={plan.id} className="relative flex flex-col px-7 py-7" style={plan.cardStyle}>
+                  {/* Badge */}
+                  {plan.badge ? (
+                    <div className="inline-flex self-start items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold mb-4"
+                      style={{ ...plan.badgeStyle, fontFamily:"'Plus Jakarta Sans', sans-serif", letterSpacing:"0.04em" }}>
+                      {plan.id === "magnus" && <Crown className="w-2.5 h-2.5" />}
                       {plan.badge}
                     </div>
+                  ) : (
+                    <div className="h-7 mb-4" />
                   )}
-                  {!plan.badge && <div className="h-7 mb-3" />}
-                  <h3 className="text-base font-bold mb-0.5" style={{ color: plan.highlight ? "#c4b5fd" : "rgba(210,225,255,0.9)" }}>{plan.name}</h3>
-                  <p className="text-[11px] mb-4" style={{ color: "rgba(130,155,210,0.6)" }}>{plan.desc}</p>
-                  <div className="flex items-end gap-1 mb-1">
-                    <span className="text-3xl font-extrabold" style={{ color: plan.highlight ? "#c4b5fd" : "rgba(210,225,255,0.9)" }}>{plan.price}</span>
-                    {plan.price !== "Free" && <span className="text-xs mb-1.5" style={{ color: "rgba(130,155,210,0.55)" }}>{plan.priceNote}</span>}
+
+                  {/* Plan name + tagline */}
+                  <h3 className="text-lg font-bold mb-0.5" style={{ color: "#0A0A0F", fontFamily:"'Cormorant Garamond', Georgia, serif", fontSize: 20 }}>{plan.name}</h3>
+                  <p className="text-[11px] font-medium mb-1" style={{ color: "rgba(0,0,0,0.38)", fontFamily:"'Plus Jakarta Sans', sans-serif", textTransform:"uppercase", letterSpacing:"0.06em" }}>{plan.tagline}</p>
+                  <p className="text-xs mb-5 leading-relaxed" style={{ color: "rgba(0,0,0,0.48)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{plan.desc}</p>
+
+                  {/* Price */}
+                  <div className="mb-1">
+                    <div className="flex items-end gap-1.5">
+                      <span className="font-extrabold leading-none" style={{ color: plan.highlight ? "#7c3aed" : "#0A0A0F", fontSize: plan.price === "Free" ? 32 : 30, fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{plan.price}</span>
+                      {plan.price !== "Free" && <span className="text-xs pb-1" style={{ color: "rgba(0,0,0,0.38)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>/mo</span>}
+                    </div>
+                    <p className="text-[10px] mt-1 mb-5" style={{ color: "rgba(0,0,0,0.35)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>{plan.priceSub}</p>
                   </div>
-                  {plan.price === "Free" && <p className="text-xs mb-5" style={{ color: "rgba(130,155,210,0.5)" }}>{plan.priceNote}</p>}
-                  {plan.price !== "Free" && <p className="text-[10px] mb-5" style={{ color: "rgba(130,155,210,0.45)" }}>{plan.priceNote}</p>}
+
+                  {/* CTA */}
                   <button disabled={plan.ctaDisabled}
-                    className="w-full py-2.5 rounded-xl text-xs font-bold transition-all mb-5 disabled:cursor-not-allowed"
-                    style={{ background: plan.ctaBg, color: plan.ctaColor, border: plan.ctaBorder }}>
+                    className="w-full py-3 rounded-xl text-xs font-bold transition-all mb-6 disabled:cursor-not-allowed"
+                    style={{ ...plan.ctaStyle, fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
                     {plan.cta}
                   </button>
-                  <div className="space-y-2.5 flex-1">
+
+                  {/* Divider */}
+                  <div className="mb-4" style={{ height: 1, background: "rgba(0,0,0,0.07)" }} />
+
+                  {/* Features */}
+                  <div className="space-y-3 flex-1">
                     {plan.features.map((f) => (
-                      <div key={f} className="flex items-start gap-2">
+                      <div key={f.text} className="flex items-start gap-2.5">
                         <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                          style={{ background: plan.highlight ? "rgba(139,92,246,0.3)" : "rgba(255,255,255,0.07)" }}>
-                          <span className="text-[9px] font-bold" style={{ color: plan.highlight ? "#a78bfa" : "rgba(120,150,210,0.7)" }}>✓</span>
+                          style={{
+                            background: f.included
+                              ? plan.highlight ? "rgba(124,58,237,0.15)" : "rgba(0,194,168,0.12)"
+                              : "rgba(0,0,0,0.04)",
+                          }}>
+                          {f.included
+                            ? <span className="text-[8px] font-black" style={{ color: plan.highlight ? "#7c3aed" : "#00A896" }}>✓</span>
+                            : <span className="text-[10px] leading-none" style={{ color: "rgba(0,0,0,0.2)" }}>–</span>}
                         </div>
-                        <span className="text-[11px] leading-relaxed" style={{ color: plan.highlight ? "rgba(200,185,255,0.8)" : "rgba(130,155,210,0.65)" }}>{f}</span>
+                        <span className="text-xs leading-relaxed"
+                          style={{ color: f.included ? (plan.highlight ? "rgba(0,0,0,0.75)" : "rgba(0,0,0,0.65)") : "rgba(0,0,0,0.25)", fontFamily:"'Plus Jakarta Sans', sans-serif", textDecoration: f.included ? "none" : "none" }}>
+                          {f.text}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -2358,8 +2402,22 @@ export default function AiAssistant() {
             </div>
 
             {/* Footer note */}
-            <div className="px-8 py-3 text-center text-[11px]" style={{ borderTop: "1px solid rgba(255,255,255,0.05)", color: "rgba(100,120,170,0.5)" }}>
-              All plans include HIPAA-aligned privacy. Cancel anytime. Prices in Indian Rupees (INR).
+            <div className="px-8 py-4 flex items-center justify-between" style={{ borderTop: "1px solid rgba(0,0,0,0.07)" }}>
+              <div className="flex items-center gap-6">
+                {[
+                  { icon: "🔒", text: "HIPAA-aligned privacy" },
+                  { icon: "✦", text: "Cancel anytime" },
+                  { icon: "₹", text: "Prices in INR" },
+                ].map(({ icon, text }) => (
+                  <div key={text} className="flex items-center gap-1.5 text-[11px]"
+                    style={{ color: "rgba(0,0,0,0.38)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                    <span>{icon}</span>{text}
+                  </div>
+                ))}
+              </div>
+              <p className="text-[11px]" style={{ color: "rgba(0,0,0,0.28)", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+                Trusted by 10,000+ clinicians in India
+              </p>
             </div>
           </div>
         </div>

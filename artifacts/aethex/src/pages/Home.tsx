@@ -724,19 +724,22 @@ function NewsletterSection() {
   };
 
   return (
-    <section className="py-28 relative" style={{ borderTop: "1px solid rgba(0,0,0,0.07)", background: "#F3F1ED" }}>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 100%, rgba(0,40,140,0.06) 0%, transparent 70%)" }} />
+    <section className="py-28 relative overflow-hidden" style={{ borderTop: "1px solid rgba(0,0,0,0.07)", background: "#0A0A0F" }}>
+      {/* Dark section gradient orbs */}
+      <div className="absolute pointer-events-none" style={{ top: "-20%", left: "30%", width: "50%", aspectRatio: "1", borderRadius: "50%", background: "radial-gradient(circle, rgba(0,194,168,0.12) 0%, transparent 65%)", filter: "blur(60px)" }} />
+      <div className="absolute pointer-events-none" style={{ bottom: "-10%", right: "20%", width: "35%", aspectRatio: "1", borderRadius: "50%", background: "radial-gradient(circle, rgba(0,122,255,0.09) 0%, transparent 70%)", filter: "blur(50px)" }} />
       <div className="max-w-4xl mx-auto px-6 sm:px-8 text-center relative z-10">
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.15, color: "#0A0A0F", marginBottom: "1rem", letterSpacing: "-0.01em" }}>
+        <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", fontWeight: 600, marginBottom: 20 }}>Newsletter</div>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.15, color: "#EEEEF8", marginBottom: "1rem", letterSpacing: "-0.01em" }}>
           Weekly insights<br />
-          <span style={{ fontStyle: "italic", color: "rgba(0,0,0,0.4)" }}>delivered free.</span>
+          <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.35)" }}>delivered free.</span>
         </h2>
-        <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 14, color: "rgba(0,0,0,0.4)", maxWidth: 400, margin: "0 auto 2.5rem", lineHeight: 1.85 }}>
+        <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.32)", maxWidth: 400, margin: "0 auto 2.5rem", lineHeight: 1.85 }}>
           Clinical tips, exam updates, and exclusive deals. Join 12,000+ Indian doctors.
         </p>
         {done ? (
           <div className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl"
-            style={{ background: "rgba(0,0,0,0.05)", border: "1px solid rgba(0,0,0,0.1)", color: "rgba(0,0,0,0.75)", fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 14, fontWeight: 600 }}>
+            style={{ background: "rgba(0,194,168,0.12)", border: "1px solid rgba(0,194,168,0.25)", color: "#00C2A8", fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 14, fontWeight: 600 }}>
             <CheckCircle2 className="w-4 h-4" /> You're in. Weekly updates incoming.
           </div>
         ) : (
@@ -744,16 +747,16 @@ function NewsletterSection() {
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
               placeholder="doctor@hospital.in"
               className="flex-1 px-5 py-3.5 rounded-xl focus:outline-none"
-              style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.1)", color: "#0A0A0F", fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 14 }} />
+              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#EEEEF8", fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 14 }} />
             <button type="submit" disabled={loading}
               className="px-6 py-3.5 font-bold rounded-xl transition-all disabled:opacity-60 flex items-center gap-2 justify-center whitespace-nowrap hover:opacity-90"
-              style={{ background: "#00C2A8", color: "#000", fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              style={{ background: "#00C2A8", color: "#000", fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", boxShadow: "0 4px 20px rgba(0,194,168,0.3)" }}>
               <Send className="w-3.5 h-3.5" />
               {loading ? "Subscribing…" : "Subscribe Free"}
             </button>
           </form>
         )}
-        <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, color: "rgba(0,0,0,0.18)", marginTop: 16 }}>No spam. Unsubscribe any time.</p>
+        <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.15)", marginTop: 16 }}>No spam. Unsubscribe any time.</p>
       </div>
     </section>
   );
@@ -795,6 +798,10 @@ export default function Home() {
 
         {/* Subtle grain texture */}
         <div className="absolute inset-0 pointer-events-none" style={{ opacity: 0.018, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: "200px 200px" }} />
+        {/* Atmospheric gradient orbs */}
+        <div className="absolute pointer-events-none" style={{ top: "-8%", left: "18%", width: "42%", aspectRatio: "1", borderRadius: "50%", background: "radial-gradient(circle, rgba(0,194,168,0.13) 0%, transparent 68%)", filter: "blur(72px)" }} />
+        <div className="absolute pointer-events-none" style={{ bottom: "5%", right: "12%", width: "36%", aspectRatio: "1", borderRadius: "50%", background: "radial-gradient(circle, rgba(0,122,255,0.09) 0%, transparent 70%)", filter: "blur(60px)" }} />
+        <div className="absolute pointer-events-none" style={{ top: "28%", left: "-4%", width: "26%", aspectRatio: "1", borderRadius: "50%", background: "radial-gradient(circle, rgba(124,58,237,0.07) 0%, transparent 72%)", filter: "blur(50px)" }} />
 
         {/* Centered hero content */}
         <div className="relative z-10 w-full max-w-3xl mx-auto px-6 py-20 text-center">
@@ -806,9 +813,9 @@ export default function Home() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 mb-8"
           >
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold"
-              style={{ background: "rgba(0,194,168,0.1)", color: "#009E87", border: "1px solid rgba(0,194,168,0.22)", fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: "0.04em" }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#00C2A8", display: "inline-block" }} />
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold"
+              style={{ background: "#FFFFFF", color: "#007A6A", border: "1.5px solid rgba(0,194,168,0.3)", fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: "0.06em", boxShadow: "0 2px 16px rgba(0,194,168,0.12), 0 1px 4px rgba(0,0,0,0.06)" }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#00C2A8", display: "inline-block", boxShadow: "0 0 6px rgba(0,194,168,0.7)" }} />
               India's Clinical Platform
             </span>
           </motion.div>
@@ -929,23 +936,23 @@ export default function Home() {
             ))}
           </motion.div>
 
-          {/* Trust line */}
+          {/* Trust stats */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.9 }}
-            className="flex items-center justify-center gap-6 mt-10 pt-8"
-            style={{ borderTop: "1px solid rgba(0,0,0,0.07)" }}
+            className="flex items-center justify-center gap-8 mt-10 pt-8 flex-wrap"
+            style={{ borderTop: "1px solid rgba(0,0,0,0.08)" }}
           >
             {[
-              { value: "40,000+", label: "Doctors" },
-              { value: "20+", label: "AI Modes" },
-              { value: "2-Day", label: "Delivery" },
+              { value: "40,000+", label: "Verified Doctors" },
+              { value: "20+", label: "AI Clinical Modes" },
+              { value: "2-Day", label: "Pan-India Delivery" },
               { value: "NMC", label: "Compliant" },
             ].map((s, i) => (
-              <div key={i} className="text-center">
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, fontSize: "clamp(1.3rem, 2.5vw, 1.8rem)", color: "#0A0A0F", lineHeight: 1 }}>{s.value}</div>
-                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.18em", color: "rgba(0,0,0,0.3)", textTransform: "uppercase", marginTop: 4 }}>{s.label}</div>
+              <div key={i} className="text-center px-4">
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, fontSize: "clamp(1.6rem, 3vw, 2.2rem)", color: "#0A0A0F", lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.22em", color: "rgba(0,0,0,0.32)", textTransform: "uppercase", marginTop: 5, fontWeight: 500 }}>{s.label}</div>
               </div>
             ))}
           </motion.div>
@@ -974,6 +981,7 @@ export default function Home() {
               desc: "Instant DDx, drug interactions, SOAP notes, and evidence-based answers — powered by medical AI built for Indian physicians.",
               href: "/ai-assistant",
               cta: "Start Consulting",
+              color: "#00C2A8",
             },
             {
               index: "02",
@@ -982,6 +990,7 @@ export default function Home() {
               desc: "Structured notes, previous year questions, MCQ banks, and smart revision tools for NEET PG, NEXT, FMGE and USMLE aspirants.",
               href: "/study-hub",
               cta: "Explore Hub",
+              color: "#5856D6",
             },
             {
               index: "03",
@@ -990,6 +999,7 @@ export default function Home() {
               desc: "Stethoscopes, scrubs, surgical instruments, and essential equipment — 100% authentic, delivered pan-India in 2 days.",
               href: "/shop",
               cta: "Shop Now",
+              color: "#FF9500",
             },
           ].map((pillar, i) => (
             <Link
@@ -997,6 +1007,8 @@ export default function Home() {
               href={pillar.href}
               className="group block py-12 transition-all"
               style={{ borderBottom: "1px solid rgba(0,0,0,0.07)" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.paddingLeft = "16px"; (e.currentTarget as HTMLElement).style.borderLeft = `3px solid ${pillar.color}`; (e.currentTarget as HTMLElement).style.marginLeft = "-16px"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.paddingLeft = "0"; (e.currentTarget as HTMLElement).style.borderLeft = "none"; (e.currentTarget as HTMLElement).style.marginLeft = "0"; }}
             >
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start lg:items-center">
                 {/* Index number */}
@@ -1006,11 +1018,11 @@ export default function Home() {
 
                 {/* Service name — large */}
                 <div className="lg:col-span-3">
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4vw, 3.2rem)", color: "#0A0A0F", lineHeight: 1.15, letterSpacing: "-0.01em" }}
-                    className="group-hover:text-black transition-colors">
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 4vw, 3.2rem)", color: "#0A0A0F", lineHeight: 1.15, letterSpacing: "-0.01em", transition: "color 0.2s" }}
+                    className="group-hover:text-black">
                     {pillar.name}
                   </div>
-                  <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(0,0,0,0.38)", fontWeight: 600, marginTop: 8 }}>
+                  <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: pillar.color, fontWeight: 600, marginTop: 8, opacity: 0.8 }}>
                     {pillar.headline}
                   </div>
                 </div>
@@ -1025,9 +1037,9 @@ export default function Home() {
                 {/* CTA arrow */}
                 <div className="lg:col-span-2 lg:text-right">
                   <span className="inline-flex items-center gap-2 transition-all group-hover:gap-3"
-                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(0,0,0,0.28)", fontWeight: 600 }}>
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: pillar.color, fontWeight: 700, opacity: 0.75 }}>
                     {pillar.cta}
-                    <ArrowRight className="w-3.5 h-3.5 transition-colors group-hover:text-black/70" style={{ color: "rgba(0,0,0,0.28)" }} />
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
               </div>
@@ -1037,11 +1049,11 @@ export default function Home() {
       </section>
 
       {/* ══ AI DEMO — the centerpiece ══ */}
-      <section className="relative py-32 overflow-hidden" style={{ background: "#F3F1ED", borderTop: "1px solid rgba(0,0,0,0.07)" }}>
+      <section className="relative py-32 overflow-hidden" style={{ background: "#F0EDE8", borderTop: "1px solid rgba(0,0,0,0.07)" }}>
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 70% 60% at 100% 50%, rgba(0,50,150,0.07) 0%, transparent 60%)" }} />
+          style={{ background: "radial-gradient(ellipse 60% 70% at 95% 50%, rgba(0,194,168,0.09) 0%, transparent 60%)" }} />
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 50% 50% at 0% 50%, rgba(0,40,160,0.07) 0%, transparent 60%)" }} />
+          style={{ background: "radial-gradient(ellipse 50% 50% at 0% 50%, rgba(0,122,255,0.07) 0%, transparent 60%)" }} />
 
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -1204,12 +1216,24 @@ export default function Home() {
       <section className="py-28 relative" style={{ background: "#F3F1ED", borderTop: "1px solid rgba(0,0,0,0.07)" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex items-end justify-between mb-20">
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.15, color: "#0A0A0F", letterSpacing: "-0.01em" }}>
-              What doctors<br />
-              <em style={{ color: "rgba(0,0,0,0.35)" }}>are saying</em>
-            </h2>
-            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(0,0,0,0.22)" }}>
-              Verified reviews
+            <div>
+              <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "rgba(0,0,0,0.28)", fontWeight: 600, marginBottom: 12 }}>Testimonials</div>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2.2rem, 4.5vw, 4rem)", lineHeight: 1.15, color: "#0A0A0F", letterSpacing: "-0.01em" }}>
+                What doctors<br />
+                <em style={{ color: "rgba(0,0,0,0.35)" }}>are saying</em>
+              </h2>
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(0,0,0,0.22)" }}>
+                Verified reviews
+              </div>
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map(s => (
+                  <svg key={s} className="w-3 h-3" viewBox="0 0 24 24" fill="#FF9500">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1219,6 +1243,7 @@ export default function Home() {
                 style={{ borderTop: "1px solid rgba(0,0,0,0.07)" }}>
                 {/* Quote — wide */}
                 <div className={`lg:col-span-9 ${i % 2 !== 0 ? "lg:order-last" : ""}`}>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(1.1rem, 2vw, 1.4rem)", color: "rgba(0,194,168,0.6)", marginBottom: 12, lineHeight: 1 }}>"</div>
                   <p style={{
                     fontFamily: "'Cormorant Garamond', serif",
                     fontWeight: 300,
@@ -1227,21 +1252,21 @@ export default function Home() {
                     lineHeight: 1.42,
                     color: "rgba(0,0,0,0.7)",
                   }}>
-                    "{t.quote}"
+                    {t.quote}
                   </p>
                 </div>
 
                 {/* Attribution — narrow */}
                 <div className={`lg:col-span-3 flex flex-col justify-center ${i % 2 !== 0 ? "lg:order-first" : ""}`}>
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-                      style={{ background: "linear-gradient(135deg, #001A6E, #0048C0)" }}>
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
+                      style={{ background: "linear-gradient(135deg, #001A6E, #00C2A8)", boxShadow: "0 2px 12px rgba(0,194,168,0.25)" }}>
                       {t.initials}
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 12, fontWeight: 600, color: "#0A0A0F" }}>{t.name}</span>
-                        <BadgeCheck className="w-3 h-3" style={{ color: "rgba(0,0,0,0.48)" }} />
+                        <BadgeCheck className="w-3.5 h-3.5" style={{ color: "#00C2A8" }} />
                       </div>
                       <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 10, color: "rgba(0,0,0,0.4)" }}>{t.role}</span>
                     </div>

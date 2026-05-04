@@ -2,10 +2,10 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Subdomain routing: cadus.aethex.in → /cadus-standalone
+// Subdomain routing: cadus.aethex.in → /cadus-ai/
 if (window.location.hostname === "cadus.aethex.in") {
-  const target = "/cadus-standalone";
-  if (!window.location.pathname.startsWith(target)) {
+  const target = "/cadus-ai/";
+  if (!window.location.pathname.startsWith("/cadus-ai")) {
     window.location.replace(target);
   }
 }

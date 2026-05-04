@@ -15,7 +15,6 @@ function ScrollToTop() {
   return null;
 }
 import NotFound from "@/pages/not-found";
-import { SplashScreen, useSplashScreen } from "@/components/SplashScreen";
 
 import { Navbar, BrandSwitcherBar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -325,13 +324,10 @@ function FirebaseAuthHandler() {
 }
 
 function App() {
-  const { showSplash, handleComplete } = useSplashScreen();
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <FirebaseAuthHandler />
-        {showSplash && <SplashScreen onComplete={handleComplete} />}
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <ScrollToTop />
           <Router />

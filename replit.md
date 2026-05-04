@@ -8,7 +8,7 @@ AETHEX is India's premier one-stop medical store for doctors and medical student
 
 - **aethex** — React + Vite frontend at `/` (port 24237)
 - **api-server** — Express 5 backend at `/api` (port 8080)
-- **cadus-ai** — Standalone Cadus AI medical assistant at `/cadus-ai` (port 22530)
+- **cadus-ai** — Standalone Cadus AI medical assistant at `/cadus-ai` (port 22530) — v2 full interface redesign (May 2026)
 
 ## Features
 

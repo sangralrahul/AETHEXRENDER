@@ -66,44 +66,44 @@ function getThemeVars(theme: "dark" | "auto" | "light"): React.CSSProperties {
     "--sp-caret-color":              "#0099bb",
   } as React.CSSProperties;
 
-  /* dark + auto → clean Replit-style monochrome */
+  /* dark + auto → refined monochrome with teal accent */
   return {
-    "--sp-root-bg":                  "#000000",
-    "--sp-sidebar-bg":               "#050505",
-    "--sp-sidebar-border":           "rgba(255,255,255,0.06)",
-    "--sp-topbar-bg":                "rgba(17,17,17,0.97)",
-    "--sp-topbar-border":            "rgba(255,255,255,0.07)",
-    "--sp-divider":                  "rgba(255,255,255,0.07)",
-    "--sp-label":                    "rgba(255,255,255,0.28)",
-    "--sp-text-primary":             "rgba(255,255,255,0.9)",
-    "--sp-text-muted":               "rgba(255,255,255,0.45)",
-    "--sp-text-dim":                 "rgba(255,255,255,0.32)",
-    "--sp-text-faint":               "rgba(255,255,255,0.2)",
-    "--sp-text-footer":              "rgba(255,255,255,0.38)",
-    "--sp-model-inactive-color":     "rgba(255,255,255,0.55)",
+    "--sp-root-bg":                  "#080808",
+    "--sp-sidebar-bg":               "#0C0C0C",
+    "--sp-sidebar-border":           "rgba(255,255,255,0.055)",
+    "--sp-topbar-bg":                "rgba(12,12,12,0.98)",
+    "--sp-topbar-border":            "rgba(255,255,255,0.06)",
+    "--sp-divider":                  "rgba(255,255,255,0.06)",
+    "--sp-label":                    "rgba(255,255,255,0.25)",
+    "--sp-text-primary":             "rgba(255,255,255,0.92)",
+    "--sp-text-muted":               "rgba(255,255,255,0.42)",
+    "--sp-text-dim":                 "rgba(255,255,255,0.28)",
+    "--sp-text-faint":               "rgba(255,255,255,0.18)",
+    "--sp-text-footer":              "rgba(255,255,255,0.32)",
+    "--sp-model-inactive-color":     "rgba(255,255,255,0.52)",
     "--sp-model-inactive-bg":        "rgba(255,255,255,0.03)",
     "--sp-model-inactive-border":    "rgba(255,255,255,0.07)",
-    "--sp-model-icon-inactive":      "rgba(255,255,255,0.05)",
-    "--sp-session-active-bg":        "rgba(255,255,255,0.07)",
-    "--sp-session-active-border":    "rgba(255,255,255,0.1)",
+    "--sp-model-icon-inactive":      "rgba(255,255,255,0.04)",
+    "--sp-session-active-bg":        "rgba(255,255,255,0.06)",
+    "--sp-session-active-border":    "rgba(255,255,255,0.09)",
     "--sp-session-active-text":      "rgba(255,255,255,0.92)",
-    "--sp-session-inactive-text":    "rgba(255,255,255,0.45)",
-    "--sp-session-meta":             "rgba(255,255,255,0.22)",
-    "--sp-ai-bubble-bg":             "#1A1A1A",
-    "--sp-ai-bubble-border":         "rgba(255,255,255,0.08)",
+    "--sp-session-inactive-text":    "rgba(255,255,255,0.42)",
+    "--sp-session-meta":             "rgba(255,255,255,0.20)",
+    "--sp-ai-bubble-bg":             "#111111",
+    "--sp-ai-bubble-border":         "rgba(0,194,168,0.18)",
     "--sp-ai-text":                  "rgba(255,255,255,0.88)",
-    "--sp-user-bubble-bg":           "#2A2A2A",
-    "--sp-user-bubble-border":       "rgba(255,255,255,0.12)",
+    "--sp-user-bubble-bg":           "#1A1A1A",
+    "--sp-user-bubble-border":       "rgba(255,255,255,0.09)",
     "--sp-user-text":                "rgba(255,255,255,0.92)",
-    "--sp-input-bg":                 "#1C1C1C",
-    "--sp-input-border":             "rgba(255,255,255,0.12)",
+    "--sp-input-bg":                 "#111111",
+    "--sp-input-border":             "rgba(255,255,255,0.09)",
     "--sp-textarea-color":           "rgba(255,255,255,0.88)",
-    "--sp-placeholder-color":        "rgba(255,255,255,0.28)",
-    "--sp-new-chat-bg":              "rgba(255,255,255,0.05)",
-    "--sp-new-chat-border":          "rgba(255,255,255,0.1)",
-    "--sp-new-chat-color":           "rgba(255,255,255,0.72)",
-    "--sp-toggle-color":             "rgba(255,255,255,0.4)",
-    "--sp-caret-color":              "#FFFFFF",
+    "--sp-placeholder-color":        "rgba(255,255,255,0.25)",
+    "--sp-new-chat-bg":              "rgba(0,194,168,0.08)",
+    "--sp-new-chat-border":          "rgba(0,194,168,0.2)",
+    "--sp-new-chat-color":           "rgba(0,210,185,0.85)",
+    "--sp-toggle-color":             "rgba(255,255,255,0.38)",
+    "--sp-caret-color":              "#00C2A8",
   } as React.CSSProperties;
 }
 
@@ -1128,89 +1128,84 @@ export default function AiAssistant() {
   const yesterdaySessions = sessions.filter((s) => now - s.createdAt >= 86400000 && now - s.createdAt < 172800000);
   const olderSessions = sessions.filter((s) => now - s.createdAt >= 172800000);
 
+  const greeting = (() => {
+    const h = new Date().getHours();
+    if (h < 12) return "Good morning";
+    if (h < 17) return "Good afternoon";
+    return "Good evening";
+  })();
+  const greetingName = user?.name ? `, ${user.name.split(" ")[0]}` : "";
+
   return (
     <div className="h-screen flex overflow-hidden relative" style={{ background: "var(--sp-root-bg)", ...themeVars }}>
 
-      {/* Blink-style spotlight background — 3 layers (fully inline) */}
-      <div style={{ position:"absolute", inset:0, pointerEvents:"none", zIndex:1,
-        background:"radial-gradient(ellipse 85% 65% at 50% -5%, rgba(28,70,200,0.55) 0%, rgba(10,30,90,0.35) 40%, transparent 68%)",
-        animation:"cadus-spot-breathe 5s ease-in-out infinite" }} />
-      <div style={{ position:"absolute", inset:0, pointerEvents:"none", zIndex:1,
-        background:"radial-gradient(ellipse 42% 36% at 50% -2%, rgba(100,180,255,0.18) 0%, rgba(50,120,255,0.08) 45%, transparent 70%)",
-        animation:"cadus-spot-pulse 3.5s ease-in-out infinite", animationDelay:"-1.5s" }} />
-      <div style={{ position:"absolute", top:-40, left:"50%", transform:"translateX(-50%)", width:420, height:230,
-        borderRadius:"50%", pointerEvents:"none", zIndex:1,
-        background:"radial-gradient(ellipse at 50% 30%, rgba(60,140,255,0.14) 0%, transparent 65%)",
-        animation:"cadus-spot-pulse 4s ease-in-out infinite", animationDelay:"-0.7s" }} />
+      {/* Ambient glow — subtle teal at top, no heavy spotlight */}
+      <div style={{ position:"absolute", top:-80, left:"50%", transform:"translateX(-50%)", width:900, height:400,
+        borderRadius:"50%", pointerEvents:"none", zIndex:0,
+        background:"radial-gradient(ellipse, rgba(0,194,168,0.06) 0%, rgba(0,150,130,0.03) 45%, transparent 70%)" }} />
+      <div style={{ position:"absolute", inset:0, pointerEvents:"none", zIndex:0,
+        background:"linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%)" }} />
 
       {/* Hidden inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFileSelect(e, "image")} />
       <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.csv,.xlsx" multiple className="hidden" onChange={(e) => handleFileSelect(e, "file")} />
 
       {/* ═══════════════════════════════════════════════════════════
-          LEFT SIDEBAR — Replit style
+          LEFT SIDEBAR — v2 redesign
       ══════════════════════════════════════════════════════════════ */}
       <aside
         className={cn(
           "relative z-20 flex flex-col shrink-0 transition-all duration-300 overflow-hidden",
-          sidebarOpen ? "w-[220px]" : "w-0"
+          sidebarOpen ? "w-[240px]" : "w-0"
         )}
-        style={{
-          background: "var(--sp-sidebar-bg)",
-          borderRight: "1px solid var(--sp-sidebar-border)",
-        }}
+        style={{ background: "var(--sp-sidebar-bg)", borderRight: "1px solid var(--sp-sidebar-border)" }}
       >
-        {/* Top row: Logo + centred Search bar */}
-        <div className="flex flex-col items-center gap-2 px-3 pt-3 pb-1 shrink-0">
-          <CadusLogo size="md" thinking={false} baseUrl={import.meta.env.BASE_URL} />
-          <div className="w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <Search className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(255,255,255,0.35)" }} />
-            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>Search chats…</span>
+        {/* ── Brand header ── */}
+        <div className="flex items-center gap-3 px-4 pt-4 pb-3 shrink-0">
+          <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold tracking-tight" style={{ color: "rgba(255,255,255,0.92)" }}>Cadus AI</p>
+            <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.32)" }}>Clinical Intelligence</p>
+          </div>
+          <button onClick={() => setSidebarOpen(false)}
+            className="p-1.5 rounded-lg transition-all hover:bg-white/6 shrink-0"
+            style={{ color: "rgba(255,255,255,0.28)" }}>
+            <PanelLeft className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* ── New chat button ── */}
+        <div className="px-3 pb-3 shrink-0">
+          <button onClick={handleNewChat}
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.98]"
+            style={{ background: "var(--sp-new-chat-bg)", border: "1px solid var(--sp-new-chat-border)", color: "var(--sp-new-chat-color)" }}>
+            <Plus className="w-4 h-4" />
+            New chat
+          </button>
+        </div>
+
+        {/* ── Search bar ── */}
+        <div className="px-3 pb-2 shrink-0">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl"
+            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
+            <Search className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(255,255,255,0.28)" }} />
+            <span className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>Search chats…</span>
           </div>
         </div>
 
-        {/* Workspace selector */}
-        <div className="px-2 pb-2 shrink-0">
-          <button className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all hover:bg-white/5">
-            <div className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold text-white shrink-0"
-              style={{ background: "linear-gradient(135deg, #1a73e8, #0ea5e9)" }}>S</div>
-            <span className="flex-1 text-left text-xs font-medium truncate" style={{ color: "rgba(255,255,255,0.75)" }}>
-              Cadus AI's Workspace
-            </span>
-            <ChevronDown className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(255,255,255,0.35)" }} />
-          </button>
-        </div>
-
-        {/* Primary actions */}
-        <div className="px-3 pb-2 space-y-1 shrink-0">
-          <button onClick={handleNewChat}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white/5"
-            style={{ color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.1)" }}>
-            <Plus className="w-4 h-4" />
-            Create something new
-          </button>
-          <button onClick={() => imageInputRef.current?.click()}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all hover:bg-white/5"
-            style={{ color: "rgba(255,255,255,0.45)" }}>
-            <Upload className="w-4 h-4" />
-            Import files or images
-          </button>
-        </div>
-
-        {/* Nav links */}
+        {/* ── Nav ── */}
         <div className="px-2 pb-2 space-y-0.5 shrink-0">
           {[
             { id: "home" as const, icon: Home, label: "Home" },
-            { id: "chats" as const, icon: MessageSquare, label: "Chats" },
+            { id: "chats" as const, icon: MessageSquare, label: "All Chats" },
             { id: "models" as const, icon: Activity, label: "Models" },
           ].map(({ id, icon: Icon, label }) => (
-            <button key={id}
-              onClick={() => setSidebarView(id)}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all"
+            <button key={id} onClick={() => setSidebarView(id)}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] transition-all"
               style={{
-                background: sidebarView === id ? "rgba(255,255,255,0.07)" : "transparent",
-                color: sidebarView === id ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.5)",
+                background: sidebarView === id ? "rgba(0,194,168,0.08)" : "transparent",
+                color: sidebarView === id ? "rgba(0,210,185,0.9)" : "rgba(255,255,255,0.45)",
+                borderLeft: sidebarView === id ? "2px solid rgba(0,194,168,0.5)" : "2px solid transparent",
               }}>
               <Icon className="w-4 h-4" />
               {label}
@@ -1218,10 +1213,10 @@ export default function AiAssistant() {
           ))}
         </div>
 
-        <div className="mx-3 my-1 shrink-0" style={{ borderTop: "1px solid var(--sp-divider)" }} />
+        <div className="mx-3 my-1.5 shrink-0" style={{ borderTop: "1px solid var(--sp-divider)" }} />
 
-        {/* Session history (scrollable) */}
-        <div className="flex-1 overflow-y-auto px-2 min-h-0">
+        {/* ── Session history (scrollable) ── */}
+        <div className="flex-1 overflow-y-auto px-2 min-h-0 cadus-sidebar-scroll">
           {sidebarView === "chats" && (
             <>
               {[
@@ -1230,12 +1225,10 @@ export default function AiAssistant() {
                 { label: tr.older, list: olderSessions },
               ].map(({ label, list }) =>
                 list.length > 0 ? (
-                  <div key={label} className="mb-2">
-                    <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-1 pt-1" style={{ color: "rgba(255,255,255,0.28)" }}>
-                      {label}
-                    </p>
+                  <div key={label} className="mb-3">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest px-2 mb-1.5 pt-1"
+                      style={{ color: "rgba(255,255,255,0.22)", letterSpacing: "0.1em" }}>{label}</p>
                     {list.map((sess) => {
-                      const sm = MODELS.find((m) => m.id === sess.modelId)!;
                       const isActive = sess.id === activeSessionId;
                       return (
                         <div key={sess.id} role="button" tabIndex={0}
@@ -1243,14 +1236,14 @@ export default function AiAssistant() {
                           onKeyDown={(e) => e.key === "Enter" && setActiveSessionId(sess.id)}
                           className="group w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all mb-0.5 cursor-pointer"
                           style={{
-                            background: isActive ? "rgba(255,255,255,0.07)" : "transparent",
-                            color: isActive ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.5)",
+                            background: isActive ? "rgba(0,194,168,0.07)" : "transparent",
+                            borderLeft: isActive ? "2px solid rgba(0,194,168,0.4)" : "2px solid transparent",
                           }}>
-                          <MessageSquare className="w-3.5 h-3.5 shrink-0" />
-                          <span className="text-[12px] truncate flex-1">{sess.title}</span>
+                          <MessageSquare className="w-3 h-3 shrink-0" style={{ color: isActive ? "rgba(0,194,168,0.7)" : "rgba(255,255,255,0.28)" }} />
+                          <span className="text-[12px] truncate flex-1" style={{ color: isActive ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.5)" }}>{sess.title}</span>
                           <button onClick={(e) => handleDeleteSession(sess.id, e)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            style={{ color: "rgba(255,100,100,0.6)" }}>
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded"
+                            style={{ color: "rgba(255,100,100,0.55)" }}>
                             <X className="w-3 h-3" />
                           </button>
                         </div>
@@ -1260,30 +1253,30 @@ export default function AiAssistant() {
                 ) : null
               )}
               {sessions.every(s => s.messages.length === 0) && (
-                <p className="text-xs text-center px-2 py-4" style={{ color: "rgba(255,255,255,0.2)" }}>{tr.noChatsYet}</p>
+                <p className="text-xs text-center px-2 py-6" style={{ color: "rgba(255,255,255,0.18)" }}>{tr.noChatsYet}</p>
               )}
             </>
           )}
           {sidebarView === "models" && (
-            <div className="pt-1 space-y-1">
+            <div className="pt-1 space-y-1.5">
               {MODELS.map((m) => {
                 const MI = m.icon;
                 const isActive = m.id === activeModel;
                 return (
                   <button key={m.id} onClick={() => handleModelSelect(m)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-all"
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition-all"
                     style={isActive
-                      ? { ...m.activeStyle, borderRadius: 8 }
-                      : { color: "rgba(255,255,255,0.5)", border: "1px solid transparent" }}>
-                    <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                      ? { ...m.activeStyle, borderRadius: 12 }
+                      : { color: "rgba(255,255,255,0.48)", border: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                       style={{ background: isActive ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.05)" }}>
                       {m.pro && !isActive ? <Lock className="w-3.5 h-3.5" style={{ color: "rgba(167,139,250,0.7)" }} /> : <MI className="w-3.5 h-3.5" />}
                     </div>
-                    <div className="flex-1 text-left">
-                      <div className="text-xs font-semibold">{m.name} <span className="opacity-60 font-normal">{m.version}</span></div>
-                      <div className="text-[10px] opacity-40 truncate">{m.description}</div>
+                    <div className="flex-1 text-left min-w-0">
+                      <div className="text-xs font-semibold truncate">{m.name}</div>
+                      <div className="text-[10px] opacity-40 truncate">{m.description.split(" · ")[0]}</div>
                     </div>
-                    {m.pro && <span className="text-[9px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.4)", color: "#c4b5fd" }}>PRO</span>}
+                    {m.pro && <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full shrink-0" style={{ background: "rgba(109,40,217,0.5)", color: "#c4b5fd" }}>PRO</span>}
                   </button>
                 );
               })}
@@ -1291,14 +1284,19 @@ export default function AiAssistant() {
           )}
           {sidebarView === "home" && sessions.some(s => s.messages.length > 0) && (
             <div className="pt-1">
-              <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-1" style={{ color: "rgba(255,255,255,0.28)" }}>Recent</p>
-              {sessions.filter(s => s.messages.length > 0).slice(0, 8).map(sess => {
+              <p className="text-[10px] font-semibold uppercase tracking-widest px-2 mb-1.5"
+                style={{ color: "rgba(255,255,255,0.22)", letterSpacing: "0.1em" }}>Recent</p>
+              {sessions.filter(s => s.messages.length > 0).slice(0, 10).map(sess => {
                 const isActive = sess.id === activeSessionId;
                 return (
                   <button key={sess.id} onClick={() => setActiveSessionId(sess.id)}
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-all mb-0.5"
-                    style={{ background: isActive ? "rgba(255,255,255,0.07)" : "transparent", color: isActive ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.45)" }}>
-                    <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+                    style={{
+                      background: isActive ? "rgba(0,194,168,0.07)" : "transparent",
+                      color: isActive ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.42)",
+                      borderLeft: isActive ? "2px solid rgba(0,194,168,0.4)" : "2px solid transparent",
+                    }}>
+                    <MessageSquare className="w-3 h-3 shrink-0" style={{ color: isActive ? "rgba(0,194,168,0.6)" : "rgba(255,255,255,0.22)" }} />
                     <span className="truncate">{sess.title}</span>
                   </button>
                 );
@@ -1307,47 +1305,46 @@ export default function AiAssistant() {
           )}
         </div>
 
-        {/* Pro referral card */}
-        <div className="mx-3 mb-2 mt-2 rounded-xl shrink-0 overflow-hidden"
-          style={{ background: "linear-gradient(135deg, rgba(109,40,217,0.22) 0%, rgba(30,58,138,0.18) 100%)", border: "1px solid rgba(139,92,246,0.22)" }}>
-          <div className="px-3 pt-3 pb-2.5">
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <div className="w-4 h-4 rounded flex items-center justify-center" style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)" }}>
-                <Crown className="w-2.5 h-2.5 text-white" />
+        <div className="mx-3 my-1.5 shrink-0" style={{ borderTop: "1px solid var(--sp-divider)" }} />
+
+        {/* ── Pro upgrade card ── */}
+        <div className="mx-3 mb-3 shrink-0 rounded-2xl overflow-hidden"
+          style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.14) 0%, rgba(15,23,90,0.2) 100%)", border: "1px solid rgba(139,92,246,0.18)" }}>
+          <div className="px-3.5 py-3">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)" }}>
+                <Crown className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="text-[11px] font-bold" style={{ color: "rgba(220,210,255,0.95)" }}>Cadus Magnus</span>
-              <span className="ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(139,92,246,0.3)", color: "#c4b5fd" }}>PRO</span>
+              <span className="text-[12px] font-bold" style={{ color: "rgba(220,210,255,0.95)" }}>Cadus Magnus</span>
+              <span className="ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                style={{ background: "rgba(139,92,246,0.35)", color: "#c4b5fd", border: "1px solid rgba(167,139,250,0.2)" }}>PRO</span>
             </div>
-            <p className="text-[10px] leading-relaxed mb-2.5" style={{ color: "rgba(180,170,220,0.65)" }}>
-              Advanced diagnosis, deep research &amp; image analysis.
+            <p className="text-[10px] leading-relaxed mb-2.5" style={{ color: "rgba(180,170,220,0.6)" }}>
+              Unlock advanced diagnosis, deep research &amp; image analysis.
             </p>
             <button onClick={() => setShowProModal(true)}
-              className="w-full text-[10px] font-bold py-1.5 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-1"
-              style={{ background: "linear-gradient(to right,#7c3aed,#9333ea)", color: "white" }}>
-              <Crown className="w-3 h-3" /> View Plans
+              className="w-full text-[11px] font-bold py-2 rounded-xl transition-all hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-1.5"
+              style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)", color: "white" }}>
+              <Crown className="w-3.5 h-3.5" /> View Plans
             </button>
           </div>
         </div>
 
-        {/* Footer links */}
-        <div className="px-2 pb-3 space-y-0.5 shrink-0">
+        {/* ── Footer links ── */}
+        <div className="px-2 pb-4 space-y-0.5 shrink-0">
           {[
             { icon: BookOpen, label: "Learn" },
             { icon: FileText, label: "Documentation" },
-          ].map(({ icon: Icon, label }) => (
-            <button key={label}
+            { icon: Crown, label: "Refer & Earn", onClick: () => setShowProModal(true) },
+          ].map(({ icon: Icon, label, onClick }) => (
+            <button key={label} onClick={onClick}
               className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:bg-white/5"
-              style={{ color: "rgba(255,255,255,0.35)" }}>
+              style={{ color: "rgba(255,255,255,0.30)" }}>
               <Icon className="w-3.5 h-3.5" />
               {label}
             </button>
           ))}
-          <button onClick={() => setShowProModal(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:bg-white/5"
-            style={{ color: "rgba(255,255,255,0.35)" }}>
-            <Crown className="w-3.5 h-3.5" />
-            Refer & Earn
-          </button>
         </div>
       </aside>
 
@@ -1356,46 +1353,103 @@ export default function AiAssistant() {
       ══════════════════════════════════════════════════════════════ */}
       <div className="flex-1 flex flex-col min-h-0 relative">
 
-        {/* ── Top Banner ── */}
-        {showBanner && !hasMessages && (
-          <div className="shrink-0 flex items-center justify-center gap-3 px-4 py-2 text-sm relative"
-            style={{ background: "linear-gradient(90deg, rgba(109,40,217,0.12) 0%, rgba(30,58,138,0.1) 50%, rgba(109,40,217,0.12) 100%)", borderBottom: "1px solid rgba(139,92,246,0.15)" }}>
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)" }}>
-                <Crown className="w-3 h-3 text-white" />
-              </div>
-              <span className="text-xs font-medium" style={{ color: "rgba(200,185,255,0.75)" }}>Unlock Cadus Magnus for advanced diagnosis &amp; unlimited queries</span>
+        {/* ── Persistent top bar ── */}
+        <div className="shrink-0 flex items-center gap-3 px-4 py-2.5 relative z-10"
+          style={{ borderBottom: "1px solid var(--sp-sidebar-border)", background: "var(--sp-topbar-bg)" }}>
+          {!sidebarOpen && (
+            <button onClick={() => setSidebarOpen(true)}
+              className="p-1.5 rounded-lg transition-all hover:bg-white/6 shrink-0"
+              style={{ color: "rgba(255,255,255,0.38)" }}>
+              <PanelLeft className="w-4 h-4" />
+            </button>
+          )}
+          {!sidebarOpen && (
+            <div className="flex items-center gap-2 shrink-0">
+              <CadusLogo size="sm" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+              <span className="text-sm font-bold" style={{ color: "rgba(255,255,255,0.85)" }}>Cadus AI</span>
             </div>
-            <button onClick={() => setShowProModal(true)}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all hover:opacity-90"
-              style={{ background: "linear-gradient(to right,#7c3aed,#9333ea)", color: "white" }}>
-              See plans
-            </button>
-            <button onClick={() => setShowBanner(false)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-white/5"
-              style={{ color: "rgba(255,255,255,0.3)" }}>
-              <X className="w-3.5 h-3.5" />
-            </button>
+          )}
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            {hasMessages && (
+              <span className="text-sm truncate" style={{ color: "rgba(255,255,255,0.45)" }}>
+                {activeSession?.title ?? "New chat"}
+              </span>
+            )}
           </div>
-        )}
-
-        {/* ── HOME VIEW — Replit-style ── */}
-        {!hasMessages && (
-          <div className="flex-1 overflow-y-auto flex flex-col items-center pt-10 pb-8 px-4">
-
-            {/* Workspace selector */}
-            <button className="flex items-center gap-2 mb-7 px-3 py-1.5 rounded-xl transition-all hover:bg-white/5"
-              style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
-              <div className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold text-white"
-                style={{ background: "linear-gradient(135deg, #1a73e8, #0ea5e9)" }}>S</div>
-              <span className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Cadus AI's Workspace</span>
-              <ChevronDown className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.4)" }} />
+          {/* Model pill */}
+          <div className="relative shrink-0" ref={modelPickerRef}>
+            <button type="button" onClick={() => setShowModelPicker(v => !v)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+              style={{ background: showModelPicker ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)", color: model.activeStyle.color, border: `1px solid rgba(255,255,255,0.08)` }}>
+              <ModelIcon className="w-3.5 h-3.5" />
+              <span>{model.name}</span>
+              <ChevronDown className="w-3 h-3 opacity-50" />
             </button>
+            {showModelPicker && (
+              <div className="absolute top-full right-0 mt-1.5 rounded-2xl shadow-2xl overflow-hidden z-50 w-60"
+                style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.1)" }}>
+                <div className="px-4 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-widest"
+                  style={{ color: "rgba(255,255,255,0.25)" }}>AI Models</div>
+                {MODELS.map((m) => {
+                  const MI = m.icon;
+                  const isAct = m.id === activeModel;
+                  return (
+                    <button key={m.id} type="button"
+                      onClick={() => { setShowModelPicker(false); handleModelSelect(m); }}
+                      className="flex items-center gap-3 w-full px-4 py-3 text-sm transition-all hover:bg-white/5"
+                      style={{ background: isAct ? "rgba(255,255,255,0.05)" : "transparent" }}>
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                        style={{ background: isAct ? m.activeStyle.background : "rgba(255,255,255,0.05)", border: isAct ? m.activeStyle.border : "1px solid rgba(255,255,255,0.07)" }}>
+                        {m.pro && !isAct ? <Lock className="w-3.5 h-3.5" style={{ color: "rgba(167,139,250,0.7)" }} /> : <MI className="w-3.5 h-3.5" style={{ color: isAct ? m.activeStyle.color : "rgba(255,255,255,0.42)" }} />}
+                      </div>
+                      <div className="flex-1 text-left min-w-0">
+                        <div className="text-xs font-semibold flex items-center gap-1.5" style={{ color: isAct ? m.activeStyle.color : "rgba(255,255,255,0.78)" }}>
+                          {m.name}
+                          {m.pro && <span className="text-[8px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.45)", color: "#c4b5fd" }}>PRO</span>}
+                        </div>
+                        <div className="text-[10px] opacity-40 truncate">{m.description.split(" · ")[0]}</div>
+                      </div>
+                      {isAct && <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: m.activeStyle.color }} />}
+                    </button>
+                  );
+                })}
+                <div className="px-4 py-2.5 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                  <button onClick={() => { setShowModelPicker(false); setShowProModal(true); }}
+                    className="w-full flex items-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold transition-all hover:opacity-90"
+                    style={{ background: "linear-gradient(135deg,rgba(124,58,237,0.25),rgba(147,51,234,0.2))", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.2)" }}>
+                    <Crown className="w-3.5 h-3.5" /> Unlock Cadus Magnus
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          {/* Pro banner chip */}
+          {showBanner && !hasMessages && (
+            <button onClick={() => setShowProModal(true)}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all hover:opacity-90 shrink-0"
+              style={{ background: "linear-gradient(135deg,rgba(124,58,237,0.2),rgba(147,51,234,0.15))", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.2)" }}>
+              <Crown className="w-3 h-3" /> Upgrade
+            </button>
+          )}
+        </div>
 
-            {/* Main greeting */}
-            <h1 className="text-[2rem] font-semibold text-center mb-7 leading-snug" style={{ color: "rgba(255,255,255,0.92)" }}>
-              Hi, what do you want to diagnose today? — Cadus AI is ready.
-            </h1>
+        {/* ── HOME VIEW — v2 ── */}
+        {!hasMessages && (
+          <div className="flex-1 overflow-y-auto flex flex-col items-center pt-12 pb-8 px-4">
+
+            {/* Logo + greeting hero */}
+            <div className="flex flex-col items-center mb-8">
+              <div className="mb-4 relative">
+                <div style={{ position:"absolute", inset:-20, borderRadius:"50%", background:"radial-gradient(circle, rgba(0,194,168,0.12) 0%, transparent 70%)", pointerEvents:"none" }} />
+                <CadusLogo size="md" thinking={false} baseUrl={import.meta.env.BASE_URL} />
+              </div>
+              <h1 className="text-[1.8rem] font-bold text-center leading-tight mb-2" style={{ color: "rgba(255,255,255,0.94)" }}>
+                {greeting}{greetingName}.
+              </h1>
+              <p className="text-base text-center" style={{ color: "rgba(255,255,255,0.38)" }}>
+                What would you like to explore today?
+              </p>
+            </div>
 
             {/* ── INPUT FORM (Replit-style) ── */}
             <div className="w-full max-w-2xl mb-5">
@@ -1418,7 +1472,7 @@ export default function AiAssistant() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="rounded-2xl overflow-visible"
+                <form onSubmit={handleSubmit} className="rounded-2xl overflow-visible cadus-input-box"
                   style={{ background: "var(--sp-input-bg)", border: "1px solid var(--sp-input-border)", boxShadow: "0 4px 32px rgba(0,0,0,0.3)" }}>
                   {chatMode !== "normal" && (
                     <div className="flex items-center gap-2 px-4 py-2 border-b text-xs font-semibold"
@@ -1524,53 +1578,6 @@ export default function AiAssistant() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {/* Model picker dropdown */}
-                      <div className="relative" ref={modelPickerRef}>
-                        <button type="button"
-                          onClick={() => setShowModelPicker(v => !v)}
-                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-                          style={{ background: "rgba(255,255,255,0.07)", color: model.activeStyle.color, border: `1px solid ${model.activeStyle.border.replace("1px solid ", "")}` }}>
-                          <ModelIcon className="w-3.5 h-3.5" />
-                          <span>{model.name}</span>
-                          <ChevronDown className="w-3 h-3 opacity-60" />
-                        </button>
-                        {showModelPicker && (
-                          <div className="absolute bottom-full right-0 mb-2 rounded-xl shadow-2xl overflow-hidden z-40 w-56"
-                            style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.1)" }}>
-                            <div className="px-3 pt-2.5 pb-1 text-[10px] font-bold uppercase tracking-wider"
-                              style={{ color: "rgba(255,255,255,0.28)" }}>AI Models</div>
-                            {MODELS.map((m) => {
-                              const MI = m.icon;
-                              const isActive = m.id === activeModel;
-                              return (
-                                <button key={m.id} type="button"
-                                  onClick={() => { setShowModelPicker(false); handleModelSelect(m); }}
-                                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm transition-all hover:bg-white/5"
-                                  style={{ background: isActive ? "rgba(255,255,255,0.06)" : "transparent" }}>
-                                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                                    style={{ background: isActive ? m.activeStyle.background : "rgba(255,255,255,0.05)", border: isActive ? m.activeStyle.border : "1px solid rgba(255,255,255,0.07)" }}>
-                                    {m.pro && !isActive
-                                      ? <Lock className="w-3.5 h-3.5" style={{ color: "rgba(167,139,250,0.7)" }} />
-                                      : <MI className="w-3.5 h-3.5" style={{ color: isActive ? m.activeStyle.color : "rgba(255,255,255,0.4)" }} />}
-                                  </div>
-                                  <div className="flex-1 text-left">
-                                    <div className="text-xs font-semibold flex items-center gap-1.5"
-                                      style={{ color: isActive ? m.activeStyle.color : "rgba(255,255,255,0.75)" }}>
-                                      {m.name}
-                                      <span className="font-normal opacity-50 text-[10px]">{m.version}</span>
-                                      {m.pro && (
-                                        <span className="text-[8px] font-bold px-1 py-0.5 rounded-full ml-auto"
-                                          style={{ background: "rgba(109,40,217,0.4)", color: "#c4b5fd", border: "1px solid rgba(167,139,250,0.3)" }}>PRO</span>
-                                      )}
-                                    </div>
-                                    <div className="text-[10px] opacity-40">{m.description.split(" · ")[0]}</div>
-                                  </div>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
                       {voiceSupported && (
                         <button type="button"
                           onClick={toggleVoiceInput}
@@ -1592,85 +1599,75 @@ export default function AiAssistant() {
               )}
             </div>
 
-            {/* ── Specialty Filter ── */}
-            {!isProLocked && (
-              <div className="w-full max-w-2xl flex items-center justify-center gap-2 mb-3">
-                <div className="relative" ref={specialtyPickerRef}>
-                  <button onClick={() => setShowSpecialtyPicker(v => !v)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.65)" }}>
-                    <SlidersHorizontal className="w-3.5 h-3.5" />
-                    {specialty}
-                    <ChevronDown className="w-3 h-3 opacity-60" />
-                  </button>
-                  {showSpecialtyPicker && (
-                    <div className="absolute top-full left-0 mt-1 z-30 rounded-xl shadow-2xl overflow-hidden w-44"
-                      style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.1)" }}>
-                      {["General","Cardiology","Neurology","Paediatrics","Obstetrics","Oncology","Emergency","Surgery","Psychiatry","Nephrology","Pulmonology","Gastroenterology"].map((sp) => (
-                        <button key={sp} type="button"
-                          onClick={() => { setSpecialty(sp); setShowSpecialtyPicker(false); }}
-                          className="flex items-center w-full px-3 py-2 text-xs transition-all hover:bg-white/5 text-left"
-                          style={{ color: specialty === sp ? "rgba(100,180,255,1)" : "rgba(255,255,255,0.65)", background: specialty === sp ? "rgba(100,180,255,0.08)" : "transparent" }}>
-                          {sp}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <span className="text-[10px]" style={{ color: "rgba(255,255,255,0.25)" }}>Filter by specialty</span>
-              </div>
-            )}
-
-            {/* ── Mode pills row ── */}
+            {/* ── Tool chips row (scrollable, all tools visible) ── */}
             {!isProLocked && (() => {
-              const categories: { icon: React.ElementType; label: string; mode: ChatMode; color?: string; pro?: boolean }[] = [
-                { icon: Stethoscope,   label: "Diagnose",       mode: "normal",               color: "#60A5FA" },
-                { icon: Brain,         label: "DDx Generator",  mode: "ddx",                  color: "#A78BFA" },
-                { icon: Search,        label: "Research",       mode: "deep-research",        color: "#34D399" },
-                { icon: ImagePlus,     label: "Image",          mode: "create-image",         color: "#F472B6" },
-                { icon: Presentation,  label: "Slides",         mode: "create-presentation",  color: "#FBBF24" },
-                { icon: Pill,          label: "Drug Inter.",    mode: "drug-interactions",    color: "#F87171" },
-                { icon: Calculator,    label: "Dosage Calc",    mode: "dosage-calc",          color: "#FB923C" },
-                { icon: TestTube2,     label: "Lab Values",     mode: "lab-values",           color: "#4ADE80" },
-                { icon: ClipboardList, label: "SOAP Note",      mode: "soap-note",            color: "#38BDF8" },
-                { icon: HelpCircle,    label: "MCQ / Exam",     mode: "mcq-gen",              color: "#C084FC" },
-                { icon: Languages,     label: "Patient Edu",    mode: "patient-edu",          color: "#FB7185" },
-                { icon: Zap,           label: "Procedure",      mode: "procedure-guide",      color: "#FDE047" },
-                { icon: Microscope,    label: "Scan Analysis",  mode: "image-analysis",       color: "#2DD4BF", pro: true },
+              const allTools: { icon: React.ElementType; label: string; mode: ChatMode; color: string; pro?: boolean }[] = [
+                { icon: Stethoscope,   label: "Diagnose",      mode: "normal",              color: "#60A5FA" },
+                { icon: Brain,         label: "DDx",           mode: "ddx",                 color: "#A78BFA" },
+                { icon: Search,        label: "Research",      mode: "deep-research",       color: "#34D399" },
+                { icon: Pill,          label: "Drug Check",    mode: "drug-interactions",   color: "#F87171" },
+                { icon: Calculator,    label: "Dosage",        mode: "dosage-calc",         color: "#FB923C" },
+                { icon: TestTube2,     label: "Lab Values",    mode: "lab-values",          color: "#4ADE80" },
+                { icon: ClipboardList, label: "SOAP Note",     mode: "soap-note",           color: "#38BDF8" },
+                { icon: HelpCircle,    label: "MCQ",           mode: "mcq-gen",             color: "#C084FC" },
+                { icon: Languages,     label: "Patient Edu",   mode: "patient-edu",         color: "#FB7185" },
+                { icon: Zap,           label: "Procedure",     mode: "procedure-guide",     color: "#FDE047" },
+                { icon: ImagePlus,     label: "Image Gen",     mode: "create-image",        color: "#F472B6" },
+                { icon: Presentation,  label: "Slides",        mode: "create-presentation", color: "#FBBF24" },
+                { icon: Microscope,    label: "Scan AI",       mode: "image-analysis",      color: "#2DD4BF", pro: true },
               ];
-              const maxStart = Math.max(0, categories.length - 4);
-              const visible = categories.slice(categoryIndex, categoryIndex + 4);
               return (
-                <div className="w-full max-w-2xl flex items-center gap-2 mb-5 justify-center">
-                  <button onClick={() => setCategoryIndex(i => Math.max(0, i - 1))}
-                    disabled={categoryIndex === 0}
-                    className="p-1.5 rounded-lg transition-all disabled:opacity-20"
-                    style={{ color: "rgba(255,255,255,0.5)" }}>
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  {visible.map(({ icon: Icon, label, mode, color, pro: isPro }) => {
-                    const isActive = chatMode === mode;
-                    return (
-                      <button key={label}
-                        onClick={() => { if (isPro) { setShowProModal(true); return; } toggleMode(mode); }}
-                        className="relative flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl text-xs font-medium transition-all hover:bg-white/8 min-w-[72px]"
-                        style={{
-                          background: isActive ? `${color}18` : "rgba(255,255,255,0.04)",
-                          border: isActive ? `1px solid ${color}40` : "1px solid rgba(255,255,255,0.07)",
-                          color: isActive ? color : "rgba(255,255,255,0.55)",
-                        }}>
-                        {isPro && <span className="absolute -top-1.5 -right-1.5 text-[8px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.85)", color: "#c4b5fd" }}>PRO</span>}
-                        <Icon className="w-5 h-5" style={{ color: isActive ? color : undefined }} />
-                        {label}
+                <div className="w-full max-w-2xl mb-5">
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 cadus-tool-scroll">
+                    {allTools.map(({ icon: Icon, label, mode, color, pro: isPro }) => {
+                      const isActive = chatMode === mode;
+                      return (
+                        <button key={label}
+                          onClick={() => { if (isPro) { setShowProModal(true); return; } toggleMode(mode); }}
+                          className="relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all shrink-0"
+                          style={{
+                            background: isActive ? `${color}15` : "rgba(255,255,255,0.04)",
+                            border: isActive ? `1px solid ${color}38` : "1px solid rgba(255,255,255,0.07)",
+                            color: isActive ? color : "rgba(255,255,255,0.52)",
+                            boxShadow: isActive ? `0 0 12px ${color}15` : "none",
+                          }}>
+                          {isPro && <span className="absolute -top-1.5 -right-1.5 text-[7px] font-bold px-1 py-0.5 rounded-full" style={{ background: "rgba(109,40,217,0.9)", color: "#c4b5fd" }}>PRO</span>}
+                          <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: isActive ? color : "rgba(255,255,255,0.38)" }} />
+                          <span className="whitespace-nowrap">{label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {/* Specialty + active mode indicator row */}
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="relative" ref={specialtyPickerRef}>
+                      <button onClick={() => setShowSpecialtyPicker(v => !v)}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all"
+                        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.52)" }}>
+                        <SlidersHorizontal className="w-3 h-3" />
+                        {specialty}
+                        <ChevronDown className="w-3 h-3 opacity-50" />
                       </button>
-                    );
-                  })}
-                  <button onClick={() => setCategoryIndex(i => Math.min(maxStart, i + 1))}
-                    disabled={categoryIndex >= maxStart}
-                    className="p-1.5 rounded-lg transition-all disabled:opacity-20"
-                    style={{ color: "rgba(255,255,255,0.5)" }}>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
+                      {showSpecialtyPicker && (
+                        <div className="absolute top-full left-0 mt-1 z-30 rounded-xl shadow-2xl overflow-hidden w-44"
+                          style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.1)" }}>
+                          {["General","Cardiology","Neurology","Paediatrics","Obstetrics","Oncology","Emergency","Surgery","Psychiatry","Nephrology","Pulmonology","Gastroenterology"].map((sp) => (
+                            <button key={sp} type="button"
+                              onClick={() => { setSpecialty(sp); setShowSpecialtyPicker(false); }}
+                              className="flex items-center w-full px-3 py-2 text-xs transition-all hover:bg-white/5 text-left"
+                              style={{ color: specialty === sp ? "#00C2A8" : "rgba(255,255,255,0.62)", background: specialty === sp ? "rgba(0,194,168,0.08)" : "transparent" }}>
+                              {sp}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    {chatMode !== "normal" && (
+                      <span className="text-[10px] px-2 py-1 rounded-lg" style={{ background: "rgba(0,194,168,0.08)", color: "rgba(0,194,168,0.7)", border: "1px solid rgba(0,194,168,0.15)" }}>
+                        {chatMode.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())} active
+                      </span>
+                    )}
+                  </div>
                 </div>
               );
             })()}
@@ -1679,20 +1676,20 @@ export default function AiAssistant() {
             {!isProLocked && pinnedPrompts.length > 0 && (
               <div className="w-full max-w-2xl mb-4">
                 <div className="flex items-center gap-1.5 mb-2">
-                  <Tag className="w-3.5 h-3.5" style={{ color: "rgba(251,191,36,0.7)" }} />
-                  <span className="text-xs font-semibold" style={{ color: "rgba(255,255,255,0.4)" }}>Pinned Prompts</span>
+                  <Tag className="w-3 h-3" style={{ color: "rgba(251,191,36,0.6)" }} />
+                  <span className="text-[11px] font-semibold" style={{ color: "rgba(255,255,255,0.35)" }}>Pinned</span>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {pinnedPrompts.map((q) => (
                     <div key={q} className="flex items-center gap-1">
                       <button type="button" onClick={() => setInput(q)}
-                        className="text-xs px-3 py-1.5 rounded-full transition-all hover:bg-white/8"
-                        style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", color: "rgba(253,211,77,0.85)" }}>
+                        className="text-xs px-3 py-1.5 rounded-full transition-all hover:opacity-90"
+                        style={{ background: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.18)", color: "rgba(253,211,77,0.78)" }}>
                         {q}
                       </button>
                       <button type="button" onClick={() => handleTogglePin(q)}
-                        className="p-0.5 rounded hover:bg-white/5"
-                        style={{ color: "rgba(251,191,36,0.5)" }} title="Unpin">
+                        className="p-0.5 rounded hover:opacity-70"
+                        style={{ color: "rgba(251,191,36,0.45)" }} title="Unpin">
                         <X className="w-3 h-3" />
                       </button>
                     </div>
@@ -1701,46 +1698,46 @@ export default function AiAssistant() {
               </div>
             )}
 
-            {/* Try an example prompt */}
+            {/* ── Example prompts ── */}
             {!isProLocked && (
-              <>
-                <div className="flex items-center gap-1.5 mb-3">
-                  <span className="text-sm" style={{ color: "rgba(255,255,255,0.38)" }}>Try an example prompt</span>
-                  <button className="p-1 rounded transition-all hover:bg-white/5" style={{ color: "rgba(255,255,255,0.38)" }}>
-                    <RefreshCw className="w-3.5 h-3.5" />
-                  </button>
+              <div className="w-full max-w-2xl mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.22)", letterSpacing: "0.08em" }}>Try a prompt</span>
+                  <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
                 </div>
-                <div className="flex flex-wrap gap-2 justify-center mb-8">
+                <div className="flex flex-col gap-1.5">
                   {quickSuggestions[activeModel].map((q) => (
-                    <div key={q} className="flex items-center group relative">
+                    <div key={q} className="flex items-center gap-2 group">
                       <button type="button" onClick={() => sendDirect(q)}
-                        className="text-sm px-4 py-2 rounded-full transition-all hover:bg-white/8 pr-8"
-                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.55)" }}>
-                        {q}
+                        className="flex-1 flex items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-all hover:bg-white/5 group"
+                        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                        <div className="w-1 h-1 rounded-full shrink-0" style={{ background: "rgba(0,194,168,0.5)" }} />
+                        <span className="text-sm flex-1 truncate" style={{ color: "rgba(255,255,255,0.58)" }}>{q}</span>
+                        <Send className="w-3 h-3 opacity-0 group-hover:opacity-40 shrink-0 transition-opacity" style={{ color: "rgba(255,255,255,0.5)" }} />
                       </button>
                       <button type="button" onClick={() => handleTogglePin(q)}
-                        className="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                        title={pinnedPrompts.includes(q) ? "Unpin" : "Pin prompt"}
-                        style={{ color: pinnedPrompts.includes(q) ? "rgba(251,191,36,0.9)" : "rgba(255,255,255,0.4)" }}>
-                        <Tag className="w-3 h-3" />
+                        className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                        title={pinnedPrompts.includes(q) ? "Unpin" : "Pin"}
+                        style={{ color: pinnedPrompts.includes(q) ? "rgba(251,191,36,0.9)" : "rgba(255,255,255,0.35)" }}>
+                        <Tag className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   ))}
                 </div>
-              </>
+              </div>
             )}
 
             {/* Pro locked message */}
             {isProLocked && (
-              <div className="max-w-md text-center px-4 mb-8">
-                <div className="w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                  <Crown className="w-6 h-6" style={{ color: "rgba(255,255,255,0.6)" }} />
+              <div className="max-w-sm text-center px-4 mb-8">
+                <div className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+                  style={{ background: "linear-gradient(135deg,rgba(124,58,237,0.15),rgba(147,51,234,0.1))", border: "1px solid rgba(139,92,246,0.2)" }}>
+                  <Crown className="w-7 h-7" style={{ color: "rgba(196,181,253,0.8)" }} />
                 </div>
-                <p className="text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{modelGreetings.nova46}</p>
+                <p className="text-sm leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.42)" }}>{modelGreetings.nova46}</p>
                 <button onClick={() => setShowProModal(true)}
-                  className="mt-4 flex items-center gap-2 mx-auto px-6 py-2.5 rounded-xl font-bold text-sm"
-                  style={{ background: "rgba(255,255,255,0.9)", color: "#111" }}>
+                  className="flex items-center gap-2 mx-auto px-6 py-2.5 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+                  style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)", color: "white" }}>
                   <Crown className="w-4 h-4" /> {tr.upgradePro}
                 </button>
               </div>
@@ -1750,39 +1747,39 @@ export default function AiAssistant() {
             {sessions.some(s => s.messages.length > 0) && (
               <div className="w-full max-w-2xl">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>Your recent chats</span>
-                  <button onClick={() => setSidebarView("chats")}
-                    className="text-sm flex items-center gap-1 transition-all hover:opacity-80"
-                    style={{ color: "rgba(255,255,255,0.4)" }}>
-                    View All <ChevronRight className="w-3.5 h-3.5" />
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.22)", letterSpacing: "0.08em" }}>Recent chats</span>
+                    <div className="h-px w-8" style={{ background: "rgba(255,255,255,0.06)" }} />
+                  </div>
+                  <button onClick={() => { setSidebarView("chats"); setSidebarOpen(true); }}
+                    className="text-[11px] flex items-center gap-1 transition-all hover:opacity-80"
+                    style={{ color: "rgba(255,255,255,0.32)" }}>
+                    View all <ChevronRight className="w-3 h-3" />
                   </button>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5">
                   {sessions.filter(s => s.messages.length > 0).slice(0, 4).map((sess) => {
                     const sm = MODELS.find((m) => m.id === sess.modelId)!;
                     const SMIcon = sm?.icon ?? Activity;
                     return (
-                      <div key={sess.id}
-                        role="button" tabIndex={0}
+                      <div key={sess.id} role="button" tabIndex={0}
                         onClick={() => setActiveSessionId(sess.id)}
                         onKeyDown={(e) => e.key === "Enter" && setActiveSessionId(sess.id)}
-                        className="p-4 rounded-xl cursor-pointer transition-all hover:bg-white/6"
-                        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                            style={{ background: "rgba(255,255,255,0.06)" }}>
-                            <SMIcon className="w-4 h-4" style={{ color: "rgba(255,255,255,0.5)" }} />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-xs font-medium truncate" style={{ color: "rgba(255,255,255,0.75)" }}>{sess.title}</p>
-                            <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>{sm?.name} {sm?.version}</p>
-                          </div>
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all hover:bg-white/5"
+                        style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.055)" }}>
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                          style={{ background: sm?.activeStyle?.background ?? "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                          <SMIcon className="w-3.5 h-3.5" style={{ color: sm?.activeStyle?.color ?? "rgba(255,255,255,0.45)" }} />
                         </div>
-                        {sess.messages[0] && (
-                          <p className="text-[11px] truncate" style={{ color: "rgba(255,255,255,0.3)" }}>
-                            {sess.messages[0].content.slice(0, 60)}
-                          </p>
-                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[13px] font-medium truncate" style={{ color: "rgba(255,255,255,0.78)" }}>{sess.title}</p>
+                          {sess.messages[0] && (
+                            <p className="text-[11px] truncate mt-0.5" style={{ color: "rgba(255,255,255,0.28)" }}>
+                              {sess.messages[0].content.slice(0, 80)}
+                            </p>
+                          )}
+                        </div>
+                        <ChevronRight className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(255,255,255,0.18)" }} />
                       </div>
                     );
                   })}
@@ -1795,28 +1792,6 @@ export default function AiAssistant() {
         {/* ── CHAT VIEW (has messages) ── */}
         {hasMessages && (
           <>
-            {/* Chat topbar */}
-            <div className="shrink-0 flex items-center gap-2 px-3 py-2"
-              style={{ background: "var(--sp-topbar-bg)", borderBottom: "1px solid var(--sp-topbar-border)" }}>
-              <button onClick={() => setSidebarOpen((v) => !v)}
-                className="p-1.5 rounded-lg transition-colors hover:bg-white/5"
-                style={{ color: "rgba(255,255,255,0.4)" }}>
-                <PanelLeft className="w-5 h-5" />
-              </button>
-              <div className="w-px h-4 mx-0.5" style={{ background: "rgba(255,255,255,0.08)" }} />
-              <div className="flex items-center gap-1.5 flex-1">
-                <ModelIcon className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.4)" }} />
-                <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.45)" }}>
-                  {model.name} {model.version}
-                </span>
-              </div>
-              <button onClick={handleNewChat}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:bg-white/5"
-                style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.09)" }}>
-                <Plus className="w-3 h-3" />
-                New chat
-              </button>
-            </div>
             <div className="flex-1 min-h-0 overflow-y-auto">
               <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col gap-5 min-h-full">
 
@@ -1850,12 +1825,12 @@ export default function AiAssistant() {
 
                     {/* Bubble */}
                     <div
-                      className={cn("rounded-2xl shadow-sm overflow-hidden",
-                        msg.role === ChatMessageRole.user ? "rounded-tr-sm" : "rounded-tl-sm"
+                      className={cn("shadow-sm overflow-hidden",
+                        msg.role === ChatMessageRole.user ? "rounded-2xl rounded-tr-sm" : "rounded-2xl rounded-tl-sm"
                       )}
                       style={msg.role === ChatMessageRole.user
-                        ? { background: "var(--sp-user-bubble-bg)", border: "1px solid var(--sp-user-bubble-border)", color: "var(--sp-user-text)", backdropFilter: "blur(12px)" }
-                        : { background: "var(--sp-ai-bubble-bg)", border: "1px solid var(--sp-ai-bubble-border)", color: "var(--sp-ai-text)", backdropFilter: "blur(12px)" }
+                        ? { background: "var(--sp-user-bubble-bg)", border: "1px solid var(--sp-user-bubble-border)", color: "var(--sp-user-text)" }
+                        : { background: "var(--sp-ai-bubble-bg)", borderTop: "1px solid var(--sp-ai-bubble-border)", borderRight: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", borderLeft: "2px solid rgba(0,194,168,0.35)", color: "var(--sp-ai-text)" }
                       }
                     >
                       {!(msg as ExtendedMessage).isDeepResearch && !(msg as ExtendedMessage).isPresentation && !(msg as ExtendedMessage).slideCountOptions && !(msg as ExtendedMessage).imageUrl && !(msg as ExtendedMessage).isImageTypeSelection && msg.content && (
